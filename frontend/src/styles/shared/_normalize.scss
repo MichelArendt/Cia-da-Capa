@@ -1,0 +1,35 @@
+/* Reset margins, padding, and box-sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure 100% height */
+html, body {
+  height: 100%;
+}
+
+/* Set a base font */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Consistent anchor tag appearance */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Button normalization */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}

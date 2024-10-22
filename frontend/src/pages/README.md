@@ -1,0 +1,1 @@
+Page components (like Home, About)

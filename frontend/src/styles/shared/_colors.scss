@@ -1,0 +1,15 @@
+@use "sass:color";
+
+// Add light to a base color
+@function lightness-add($base-color, $percentage_to_add) {
+  @return color.adjust($base-color, $lightness: $percentage_to_add);
+}
+
+$color-primary-1: hsl(37, 59%, 54%);
+$color-primary-2: hsl(240, 3%, 18%);
+
+$color-secondary-2: hsl(0, 0%, 73%);
+
+.mouse-disabled {
+  cursor: not-allowed;
+}
