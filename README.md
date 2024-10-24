@@ -18,7 +18,6 @@ Cia da Capa is a trusted name in custom manufacturing, creating practical and du
 
 -   **Frontend**: React app with SCSS styles for UI/UX design.
 -   **API**: Laravel backend to serve API endpoints and handle business logic.
--   **Public Assets**: Product images and static resources for branding.
 
 # Getting Started
 
