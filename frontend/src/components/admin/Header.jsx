@@ -21,7 +21,6 @@ const Header = () => {
   return (
     <header>
       <img src={logo} alt='Cia da Capa' className='logo' />
-      <span>Administração</span>
       {isAuthenticated && (
         <button onClick={handleLogout}>Logout</button>
       )}

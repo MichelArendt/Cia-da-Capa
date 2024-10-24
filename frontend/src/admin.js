@@ -3,8 +3,6 @@ import { createRoot } from 'react-dom/client'; // Use createRoot for React 18
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import api from './api'; // Adjust the path if needed
-
-
 import useStore from './store';
 
 // Adds shared header link (material symbols, etc)
@@ -12,6 +10,7 @@ import addHeaderLink from './components/shared/HeaderLink';
 addHeaderLink();
 
 import Header from './components/shared/Header';
+import MenuAdmin from './components/admin/MenuAdmin';
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 
@@ -43,15 +42,7 @@ const AdminApp = () => {
 	return (
 		<Router basename={getBasename()}>
       <Header>
-        <span>Administração</span>
-        <Menu>
-
-        </Menu>
-        <div className={`header__menu ${isAuthenticated ? '' : 'mouse-disabled'}`}>
-          <span className="material-symbols-outlined header__menu-icon">
-            menu
-          </span>
-        </div>
+        <MenuAdmin />
       </Header>
 			{/* <Header /> */}
 			<main>

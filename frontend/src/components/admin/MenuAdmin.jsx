@@ -1,11 +1,12 @@
 import React from 'react';
+import useStore from '../../store';
 
-const Header = ({children}) => {
+const Header = () => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
 
   return(
     <>
-      {children}
+        Produtos Categorias Banner
     </>
   )
 };

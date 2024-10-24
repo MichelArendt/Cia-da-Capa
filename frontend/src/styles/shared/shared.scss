@@ -10,32 +10,25 @@
 * {
   transition: all 0.2ms linear;
 }
-
-header, .header__contents, .header__menu {
-  display: flex;
+.display-hidden {
+  display: none;
+}
+.display-visible {
+  display: block;
 }
 
 header {
-  flex-direction: column;
-  align-items: center;
   width: 100%;
-  height: 60px;
   background: $color-primary-2;
   color: $color-secondary-2;
 }
 
-.header__contents {
-  align-self: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 0 10px;
-  gap: 10px;
+.header__menu {
+  color: lightness-add($color-secondary-2, -40%);
 }
 
-.header__menu {
-  margin-left: auto;
-  color: lightness-add($color-secondary-2, -40%);
+.header__menu-links {
+  z-index: -1;
 }
 
 .header__menu-icon {
