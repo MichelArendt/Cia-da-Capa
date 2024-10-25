@@ -21,9 +21,9 @@ const Header = ({children}) => {
           onClick={toggleMenu}>
           menu
         </span>
-        <div className='header__menu-links' style={{opacity: menuHeight}}>
+        <nav >
           {children}
-        </div>
+        </nav>
       </div>
     </header>
   )

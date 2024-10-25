@@ -6,7 +6,7 @@ const Header = () => {
 
   return(
     <>
-        Produtos Categorias Banner
+        PRODUTOS CATEGORIAS BANNER
     </>
   )
 };

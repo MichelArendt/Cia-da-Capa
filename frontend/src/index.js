@@ -41,7 +41,7 @@ const App = () => {
     return (
         <Router basename={basename}>
           <Header>
-            SHARED
+            PRODUTOS CONTATO
           </Header>
           <nav>
             <Link to="/">Home</Link>
