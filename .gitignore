@@ -8,3 +8,5 @@ build/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+/api/config/database_config.php
