@@ -8,10 +8,11 @@ const Header = ({children}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState('0%'); // Store height as string with %
 
-  const toggleMenu = () => {
-    setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
-    setMenuIsOpen(!menuIsOpen);
-    console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
+  const openNav = () => {
+    // setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
+    // setMenuIsOpen(!menuIsOpen);
+    // console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
+    document.querySelector("nav").style.height = "100%";
   };
 
 
@@ -23,7 +24,7 @@ const Header = ({children}) => {
           onClick={toggleMenu}>
           menu
         </span> */}
-        <Svg type="menu" onClick={toggleMenu} />
+        <Svg type="menu" onClick={openNav} />
         <nav className='poppins-light'>
           {children}
         </nav>

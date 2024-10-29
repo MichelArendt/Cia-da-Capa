@@ -1,10 +1,11 @@
-// This file is a workaround due to VSCode extensions not supporting
+// Workaround due to VSCode extensions not supporting
 // correct Intellisense for variables imported though @use
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
 
 @use '_colors' as *;
+@use 'menu.scss';
 
 * {
   transition: all 0.2ms linear;
@@ -22,19 +23,19 @@ header {
   color: $color-secondary-2;
 }
 
-.header__menu {
-  color: lightness-add($color-secondary-2, -40%);
-}
-
-.header__menu-links {
-  z-index: -1;
-}
-
-.header__menu-icon {
-  font-size: 40px !important;
-}
-
 .logo {
   width: 186px;
   height: 40px;
 }
+
+// .header__menu {
+//   color: lightness-add($color-secondary-2, -40%);
+// }
+
+// .header__menu-links {
+//   z-index: -1;
+// }
+
+// .header__menu-icon {
+//   font-size: 40px !important;
+// }

@@ -35,17 +35,31 @@ const App = () => {
 
   // Get the base URL dynamically from the window location
     const basename = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+    const closeNav = () => {
+      // setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
+      // setMenuIsOpen(!menuIsOpen);
+      // console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
+      document.querySelector("nav").style.height = "0%";
+    };
 
     return (
         <Router basename={basename}>
           <Header>
-            PRODUTOS CONTATO
-            <Svg type="search" />
-            <Svg type="local_atm" />
+            {/* Button to close the overlay navigation */}
+            <span className="closebtn" onClick={closeNav}>&times;</span>
+            <div className='nav__content'>
+              <Link to="/produtos">PRODUTOS</Link>
+              <Link to="/contato">CONTATO</Link>
+              <div>
+                PESQUISA <Svg type="search" sizes={[20, 20]} />
+              </div>
+              <div>
+                ORÇAMENTO <Svg type="local_atm" />
+              </div>
+            </div>
           </Header>
-          <nav>
-            <Link to="/">Home</Link>
-          </nav>
+          {/* <nav>
+          </nav> */}
           <main>
             <Routes>
                 <Route path="/" element={<Home />} />
