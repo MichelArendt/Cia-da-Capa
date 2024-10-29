@@ -5,10 +5,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import api from './api'; // Adjust the path if needed
 import useStore from './store';
 
-// Adds shared header link (material symbols, etc)
-import addHeaderLink from './components/shared/HeaderLink';
-addHeaderLink();
-
 import Header from './components/shared/Header';
 import MenuAdmin from './components/admin/MenuAdmin';
 import Login from './pages/admin/Login';

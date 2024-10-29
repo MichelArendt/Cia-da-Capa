@@ -3,9 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 
-// Adds shared header link (material symbols, etc)
-import addHeaderLink from './components/shared/HeaderLink';
-addHeaderLink();
+import Svg from './components/Svg';
 
 import Header from './components/shared/Header';
 import Footer from './components/Footer';
@@ -42,6 +40,8 @@ const App = () => {
         <Router basename={basename}>
           <Header>
             PRODUTOS CONTATO
+            <Svg type="search" />
+            <Svg type="local_atm" />
           </Header>
           <nav>
             <Link to="/">Home</Link>

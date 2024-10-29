@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import Svg from '../Svg';
+
 import logo from '/assets/logo.png';
 
 const Header = ({children}) => {
@@ -17,11 +19,12 @@ const Header = ({children}) => {
     <header>
       <div className='header__contents'>
         <img src={logo} alt='Cia da Capa' className='logo' />
-        <span className="material-symbols-outlined header__menu-icon"
+        {/* <span className="material-symbols-rounded header__menu-icon"
           onClick={toggleMenu}>
           menu
-        </span>
-        <nav >
+        </span> */}
+        <Svg type="menu" onClick={toggleMenu} />
+        <nav className='poppins-light'>
           {children}
         </nav>
       </div>
