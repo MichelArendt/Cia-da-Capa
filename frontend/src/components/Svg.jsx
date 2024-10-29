@@ -1,7 +1,7 @@
 import React from 'react';
 import { svgPaths } from '../utils/svgPaths'; // Adjust the path if necessary
 
-const Svg = ({ type, width = "24px", height = "24px", fill = "#fff", sizes, ...props }) => {
+const Svg = ({ type, width = "24px", height = "24px", fill, sizes, styleResponsive, ...props }) => {
   const pathData = svgPaths[type];
 
   if (sizes) {

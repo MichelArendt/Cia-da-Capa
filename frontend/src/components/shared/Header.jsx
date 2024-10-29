@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import Svg from '../Svg';
 
@@ -19,12 +20,10 @@ const Header = ({children}) => {
   return(
     <header>
       <div className='header__contents'>
-        <img src={logo} alt='Cia da Capa' className='logo' />
-        {/* <span className="material-symbols-rounded header__menu-icon"
-          onClick={toggleMenu}>
-          menu
-        </span> */}
-        <Svg type="menu" onClick={openNav} />
+        <Link to="/">
+          <img src={logo} alt='Cia da Capa' className='logo' />
+        </Link>
+        <Svg type="menu" onClick={openNav} className='header__menu-button' sizes={[40,40]} />
         <nav className='poppins-light'>
           {children}
         </nav>

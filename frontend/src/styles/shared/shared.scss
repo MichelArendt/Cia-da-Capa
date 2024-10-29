@@ -5,10 +5,10 @@
 @forward '_typography';
 
 @use '_colors' as *;
-@use 'menu.scss';
+@use 'header.scss';
 
 * {
-  transition: all 0.2ms linear;
+  transition: all 0.2s linear;
 }
 .display-hidden {
   display: none;
@@ -16,16 +16,16 @@
 .display-visible {
   display: block;
 }
+.display__hide_on_breakpoint {
+  display: block;
 
-header {
-  width: 100%;
-  background: $color-primary-2;
-  color: $color-secondary-2;
+  @media (min-width: 650px) {
+    display: none;
+  }
 }
 
-.logo {
-  width: 186px;
-  height: 40px;
+main {
+  padding-top: 60px;
 }
 
 // .header__menu {

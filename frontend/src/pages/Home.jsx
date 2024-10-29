@@ -2,7 +2,15 @@ import React from 'react';
 
 const Home = () => (
     <div>
-      <h2>Home Page</h2>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultrices risus sit amet felis tempus, sed vehicula metus ullamcorper. Nullam id ligula id mi bibendum vulputate. Proin maximus lectus in nulla posuere, sed blandit mauris tempor. Nam imperdiet porttitor ligula, id volutpat lorem luctus eu. Cras non nisi vulputate, viverra mauris vel, euismod lectus. Phasellus viverra, arcu vitae consequat rhoncus, eros ligula imperdiet nulla, eu bibendum felis mi sed elit. Praesent sodales metus vel dolor interdum elementum. Nunc laoreet tempus euismod.
+
+Phasellus vulputate quis massa et rutrum. Proin non sollicitudin tortor. Nam tortor nisl, lacinia eu ante id, laoreet commodo erat. Pellentesque in eros et orci pharetra vulputate. Duis quis efficitur odio. Cras velit dui, interdum sit amet faucibus at, suscipit ac eros. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aenean eget quam congue, laoreet lacus tempus, convallis nisi. Maecenas ut quam urna. Phasellus lobortis in magna vel laoreet. Duis egestas aliquam urna, ut varius lorem euismod in. Nam elementum sem ipsum, eget sodales dui dictum vitae. Donec ipsum eros, sagittis at ornare eget, vehicula in mauris.
+
+Praesent in felis ultricies, scelerisque enim lobortis, blandit quam. Mauris vulputate tortor arcu, sed tempor eros blandit in. Mauris porta tortor eu leo egestas laoreet. Curabitur velit magna, mattis in dignissim sit amet, dictum et odio. In luctus diam sodales, porttitor ligula a, consequat arcu. Phasellus maximus vel dui nec eleifend. Maecenas accumsan interdum dui, consequat volutpat nulla lacinia sed. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris non fermentum felis. Sed porttitor volutpat turpis eu ultrices. Maecenas varius leo quis sapien consequat fringilla. In feugiat lacus ipsum. Donec eget auctor tortor. Mauris interdum semper mauris vitae sollicitudin. Vestibulum ut consequat nisi, a blandit leo. Mauris mattis commodo molestie.
+
+Quisque eu ante non dolor vulputate posuere eleifend vitae ligula. Etiam sodales ante nisi, eu maximus magna venenatis sed. Nunc nisi sapien, molestie vitae rhoncus eget, pellentesque interdum libero. Sed quis rutrum sapien, id facilisis metus. Aliquam in ligula venenatis, posuere eros in, bibendum orci. Aliquam quis augue ultrices arcu vulputate venenatis. Sed tincidunt, nibh ut convallis gravida, massa orci pellentesque leo, et dictum nibh diam eu metus. Nam semper erat quis malesuada pretium. Maecenas sollicitudin pulvinar massa a ornare. Ut ac vehicula turpis. Nunc pellentesque felis dolor, ac lobortis enim consectetur eu.
+
+Vivamus auctor aliquet pretium. Phasellus ac accumsan turpis, non aliquet ante. Donec neque ex, porttitor ut posuere ac, varius vel sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec eros nisl. Quisque sed mollis mi, at molestie ex. Integer orci ex, imperdiet sed elit eget, tempor semper orci. Fusce pharetra eu ex mollis porttitor. Integer quis nunc a augue auctor bibendum vel sit amet lorem. Mauris tincidunt arcu congue, interdum magna vitae, placerat sapien.
     </div>
   );
 
