@@ -9,15 +9,12 @@ const Dropdown = ({sizes = [20, 20], title = "", svg = '', children}) => {
   const [show, setShow] = useState('')
   const [rotate, setRotate] = useState('')
 
+
+  // functional updates (prev => ...) to ensure state is based on the previous value
   const toggleDropdown = () => {
-    if(show == '') {
-      setShow('show')
-      setRotate('rotate')
-    } else {
-      setShow('')
-      setRotate('')
-    }
-  }
+    setShow((prev) => (prev === '' ? 'show' : ''));
+    setRotate((prev) => (prev === '' ? 'rotate' : ''));
+  };
 
   return(
     <>
