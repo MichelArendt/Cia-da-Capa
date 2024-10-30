@@ -26,7 +26,7 @@ const Navigation = ({children}) => {
 
   return(
     <>
-      <Svg type="menu" onClick={openNav} className='' sizes={[40,40]} />
+      <Svg type="menu" onClick={openNav} sizes={[40,40]} />
         <nav className='poppins-light' ref={navRef}>
           <div className='nav__contents'>
             <img src={logo} alt='Cia da Capa' className='logo' />

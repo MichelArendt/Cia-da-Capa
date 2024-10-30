@@ -26,7 +26,7 @@ const Header = ({children}) => {
 
   return(
     <header>
-      <div className='header__contents'>
+      <div className='header__contents nav__link-style'>
         <Link to="/">
           <img src={logo} alt='Cia da Capa' className='logo' />
         </Link>
