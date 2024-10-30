@@ -29,8 +29,19 @@ main {
   padding-top: 60px;
 }
 
-.dropdown {
-  // height: 100%;
+.dropdown__btn {
+
+}
+.dropdown__sub_menu {
+  display: grid;
+  grid-template-rows: 0fr;
+
+  > div{
+    overflow: hidden;
+  }
+}
+.dropdown__sub_menu.show {
+  grid-template-rows: 1fr;
 }
 
 // .header__menu {

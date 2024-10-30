@@ -22,9 +22,7 @@ const Navigation = ({children}) => {
     // closeButtonRef.current.style.visibility = "hidden";
     // closeButtonRef.current.style.opacity = "0";
     document.body.style.overflowY = 'auto';
-    console.log('close');
   };
-
 
   return(
     <>
@@ -34,7 +32,7 @@ const Navigation = ({children}) => {
             <img src={logo} alt='Cia da Capa' className='logo' />
             {children}
           </div>
-          <span id="nav__close_button" className="nav__close_button" onClick={closeNav} ref={closeButtonRef}>&times;</span>
+          <span className="nav__close_button" onClick={closeNav} ref={closeButtonRef}>&times;</span>
         </nav>
     </>
   )
