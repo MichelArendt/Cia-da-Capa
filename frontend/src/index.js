@@ -10,6 +10,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 
 import './styles/main.scss';
+import Navigation from './components/shared/Navigation';
+import Dropdown from './components/shared/Dropdown';
 
 const App = () => {
     // const [data, setData] = useState(null);
@@ -35,32 +37,57 @@ const App = () => {
 
   // Get the base URL dynamically from the window location
     const basename = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-    const closeNav = () => {
-      // setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
-      // setMenuIsOpen(!menuIsOpen);
-      // console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
-      document.querySelector("nav").style.height = "0%";
-    };
 
     return (
         <Router basename={basename}>
           <Header>
-            {/* Button to close the overlay navigation */}
-            <span className="closebtn" onClick={closeNav}>&times;</span>
-            <div className='nav__content'>
-              <div className='nav__button nav__button-style'>
-                <Svg type="arrow_drop_down" sizes={[20, 20]} /> <Link to="/produtos">PRODUTOS</Link>
+            <Navigation>
+              <div className=''>
+                <Svg type="home" sizes={[20, 20]} /> <Link to="/">PÁGINA INICIAL</Link>
               </div>
-              <div className='nav__button nav__button-style'>
-                <Svg type="email" sizes={[20, 20]} className='display__hide_on_breakpoint' /> <Link to="/contato">CONTATO</Link>
+              <div className=''>
+                <Dropdown title='PRODUTOS'>
+                  {[
+                    'Bolsas',
+                    'Bolsas Maternidade',
+                    'Bolsas Ecológicas',
+                    'Bolsas Térmicas',
+                    'Bolsas Viagem',
+                    'Estojos',
+                    'Necessaires',
+                    'Malotes',
+                    'Mochilas',
+                    'Mochilas Saco',
+                    'Pastas',
+                    'Shoulder Bags',
+                  ]}
+                </Dropdown>
+                {/* <Svg type="arrow_drop_down" sizes={[20, 20]} /> PRODUTOS
+                <ul className='nav__dropdown'>
+                  <li>Bolsas</li>
+                  <li>Bolsas Maternidade</li>
+                  <li>Bolsas Ecológicas</li>
+                  <li>Bolsas Térmicas</li>
+                  <li>Bolsas Viagem</li>
+                  <li>Estojos</li>
+                  <li>Necessaires</li>
+                  <li>Malotes</li>
+                  <li>Mochilas</li>
+                  <li>Mochilas Saco</li>
+                  <li>Pastas</li>
+                  <li>Shoulder Bags</li>
+                </ul> */}
               </div>
-              <div className='nav__button nav__button-style'>
-                <Svg type="search" sizes={[20, 20]} className='nav__button_desktop' /> <span className='mobile__text'>PESQUISA</span>
+              <div className=''>
+                <Svg type="email" sizes={[20, 20]} className='' /> <Link to="/contato">CONTATO</Link>
               </div>
-              <div className='nav__button nav__button-style'>
-                <Svg type="local_atm" sizes={[20, 20]} className='nav__button_desktop' /> <span className='mobile__text'>ORÇAMENTO</span>
+              <div className=''>
+                <Svg type="search" sizes={[20, 20]} className='' /> <span className=''>PESQUISA</span>
               </div>
-            </div>
+              <div className=''>
+                <Svg type="local_atm" sizes={[20, 20]} className='' /> <span className='mobile__text'>ORÇAMENTO</span>
+              </div>
+            </Navigation>
           </Header>
           {/* <nav>
           </nav> */}

@@ -5,10 +5,19 @@
   @return color.adjust($base-color, $lightness: $percentage_to_add);
 }
 
-$color-primary-1: hsl(37, 59%, 54%);
-$color-primary-2: hsl(240, 3%, 18%);
+// Set color with specific opacity
+@function opacity-set($color, $alpha) {
+  $hue: color.channel($color, "hue", $space: hsl);
+  $saturation: color.channel($color, "saturation", $space: hsl);
+  $lightness: color.channel($color, "lightness", $space: hsl);
+  @return hsla($hue, $saturation, $lightness, $alpha);
+}
 
-$color-secondary-2: hsl(0, 0%, 73%);
+
+$color-primary-1: hsla(37, 59%, 54%, 1.0);
+$color-primary-2: hsla(240, 3%, 18%, 1.0);
+
+$color-secondary-2: hsla(0, 0%, 73%, 1.0);
 
 .mouse-disabled {
   cursor: not-allowed;

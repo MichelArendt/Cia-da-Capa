@@ -6,6 +6,7 @@
 
 @use '_colors' as *;
 @use 'header.scss';
+@use 'navigation.scss';
 
 * {
   transition: all 0.2s linear;
@@ -26,6 +27,10 @@
 
 main {
   padding-top: 60px;
+}
+
+.dropdown {
+  // height: 100%;
 }
 
 // .header__menu {

@@ -13,7 +13,14 @@ const Header = ({children}) => {
     // setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
     // setMenuIsOpen(!menuIsOpen);
     // console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
-    document.querySelector("nav").style.height = "100%";
+    document.querySelector("nav").style.width = "100%";
+    document.body.style.overflowY = ' hidden';
+  };
+  const closeNav = () => {
+    // setMenuHeight(menuIsOpen ? '0%' : '100%'); // Toggle between 0% and 100%
+    // setMenuIsOpen(!menuIsOpen);
+    // console.log(menuIsOpen ? 'hidden' : 'block'); // Log for debugging
+    document.querySelector("nav").style.width = "0%";
   };
 
 
@@ -23,10 +30,7 @@ const Header = ({children}) => {
         <Link to="/">
           <img src={logo} alt='Cia da Capa' className='logo' />
         </Link>
-        <Svg type="menu" onClick={openNav} className='header__menu-button nav__button-style' sizes={[40,40]} />
-        <nav className='poppins-light'>
-          {children}
-        </nav>
+        {children}
       </div>
     </header>
   )

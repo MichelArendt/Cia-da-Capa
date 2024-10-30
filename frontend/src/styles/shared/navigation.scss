@@ -1,0 +1,46 @@
+// Workaround due to VSCode extensions not supporting
+// correct Intellisense for variables imported though @use
+@forward '_normalize';
+@forward '_colors';
+@forward '_typography';
+@use '_colors' as *;
+
+nav {
+  height: 100%;
+  display: flex;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: opacity-set($color-primary-2, 0.95);
+  overflow: hidden;
+  transition: 0.5s;
+  // padding-top: 60px;
+}
+
+.nav__contents {
+  flex-grow: 1;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100%; /* Ensure contents get a height limit */
+  overflow-y: auto; /* Enable vertical scrolling only */
+  padding: 10px 0 0 10px;
+  background-color: $color-primary-2;
+}
+.nav__close_button {
+  // visibility: hidden;
+  // opacity: 0;
+  font-size: 50px;
+  line-height: 50%;
+  padding: 30px
+}
+
+.nav__dropdown {
+  height: 0;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
