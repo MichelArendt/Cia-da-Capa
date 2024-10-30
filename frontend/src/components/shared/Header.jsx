@@ -23,7 +23,7 @@ const Header = ({children}) => {
         <Link to="/">
           <img src={logo} alt='Cia da Capa' className='logo' />
         </Link>
-        <Svg type="menu" onClick={openNav} className='header__menu-button' sizes={[40,40]} />
+        <Svg type="menu" onClick={openNav} className='header__menu-button nav__button-style' sizes={[40,40]} />
         <nav className='poppins-light'>
           {children}
         </nav>

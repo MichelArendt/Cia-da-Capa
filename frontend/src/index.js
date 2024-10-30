@@ -48,16 +48,16 @@ const App = () => {
             {/* Button to close the overlay navigation */}
             <span className="closebtn" onClick={closeNav}>&times;</span>
             <div className='nav__content'>
-              <div className='nav__button'>
+              <div className='nav__button nav__button-style'>
                 <Svg type="arrow_drop_down" sizes={[20, 20]} /> <Link to="/produtos">PRODUTOS</Link>
               </div>
-              <div className='nav__button'>
+              <div className='nav__button nav__button-style'>
                 <Svg type="email" sizes={[20, 20]} className='display__hide_on_breakpoint' /> <Link to="/contato">CONTATO</Link>
               </div>
-              <div className='nav__button'>
+              <div className='nav__button nav__button-style'>
                 <Svg type="search" sizes={[20, 20]} className='nav__button_desktop' /> <span className='mobile__text'>PESQUISA</span>
               </div>
-              <div className='nav__button'>
+              <div className='nav__button nav__button-style'>
                 <Svg type="local_atm" sizes={[20, 20]} className='nav__button_desktop' /> <span className='mobile__text'>ORÇAMENTO</span>
               </div>
             </div>

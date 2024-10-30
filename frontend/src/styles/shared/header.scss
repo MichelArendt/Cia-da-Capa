@@ -66,15 +66,16 @@ nav {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
-  // justify-content: center;
   gap: 5px;
   width: 200px;
-  // background: red;
+}
+
+.nav__button-style {
   color: $color-secondary-2;
   fill: $color-secondary-2;
   cursor: pointer;
 }
-.nav__button:hover {
+.nav__button-style:hover {
   color: $color-primary-1;
   fill: $color-primary-1;
 }
