@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import Svg from '../Svg';
-
-import logo from '/assets/logo.png';
-
-const Header = ({children}) => {
+const Header = ({logo, children}) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [menuHeight, setMenuHeight] = useState('0%'); // Store height as string with %
 
@@ -26,8 +22,8 @@ const Header = ({children}) => {
 
   return(
     <header>
-      <div className='header__contents nav__link-style'>
-        <Link to="/">
+      <div className='header__contents'>
+        <Link to="/" style={{height: '40px'}}>
           <img src={logo} alt='Cia da Capa' className='logo' />
         </Link>
         {children}

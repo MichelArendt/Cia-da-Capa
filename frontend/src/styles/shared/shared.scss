@@ -28,27 +28,6 @@
 main {
   padding-top: 60px;
 }
-
-.nav__link-style, .dropdown__btn {
-  color: $color-secondary-2;
-  fill: $color-secondary-2;
-}
-
-.dropdown__btn.rotate svg:last-child {
-  rotate: 180deg;
-}
-.dropdown__sub_menu {
-  display: grid;
-  grid-template-rows: 0fr;
-
-  > div{
-    overflow: hidden;
-  }
-}
-.dropdown__sub_menu.show {
-  grid-template-rows: 1fr;
-}
-
 // .header__menu {
 //   color: lightness-add($color-secondary-2, -40%);
 // }

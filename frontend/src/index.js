@@ -3,15 +3,18 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 
-import Svg from './components/Svg';
+import Svg from './components/shared/Svg';
+import logo from '/assets/logo.png';
 
 import Header from './components/shared/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 
 import './styles/main.scss';
-import Navigation from './components/shared/Navigation';
+import Navigation from './components/shared/navigation/Navigation';
 import Dropdown from './components/shared/Dropdown';
+import Option from './components/shared/navigation/Option';
+import Contato from './pages/Contato';
 
 const App = () => {
     // const [data, setData] = useState(null);
@@ -40,13 +43,14 @@ const App = () => {
 
     return (
         <Router basename={basename}>
-          <Header>
+          <Header logo={logo}>
             <Navigation>
-              <div className=''>
-                <Svg type="home" sizes={[20, 20]} /> <Link to="/">PÁGINA INICIAL</Link>
-              </div>
-              <div className=''>
-                <Dropdown title='PRODUTOS' svg='shopping_bag'>
+              <Option>
+                <Svg type="home" /> <Link to="/">Página Inicial</Link>
+              </Option>
+
+              <Option>
+                <Dropdown title='Produtos' svg='shopping_bag'>
                   {[
                     'Bolsas',
                     'Bolsas Maternidade',
@@ -62,23 +66,26 @@ const App = () => {
                     'Shoulder Bags',
                   ]}
                 </Dropdown>
-              </div>
-              <div className=''>
-                <Svg type="email" sizes={[20, 20]} className='' /> <Link to="/contato">CONTATO</Link>
-              </div>
-              <div className=''>
-                <Svg type="search" sizes={[20, 20]} className='' /> <span className=''>PESQUISA</span>
-              </div>
-              <div className=''>
-                <Svg type="local_atm" sizes={[20, 20]} className='' /> <span className='mobile__text'>ORÇAMENTO</span>
-              </div>
+              </Option>
+
+              <Option>
+                <Svg type="email" /> <Link to="/contato">Contato</Link>
+              </Option>
+
+              <Option>
+                <Svg type="search" /> <span className=''>Pesquisa</span>
+              </Option>
+
+              <Option>
+                <Svg type="local_atm" /> <span className='mobile__text'>Orçamento</span>
+              </Option>
             </Navigation>
           </Header>
-          {/* <nav>
-          </nav> */}
+
           <main>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/contato" element={<Contato />} />
             </Routes>
           </main>
           <Footer />

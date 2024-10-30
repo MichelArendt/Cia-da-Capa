@@ -23,10 +23,9 @@ nav {
   flex-grow: 1;
   display: inline-flex;
   flex-direction: column;
-  gap: 10px;
+  // gap: 10px;
   max-height: 100%; /* Ensure contents get a height limit */
   overflow-y: auto; /* Enable vertical scrolling only */
-  padding: 10px 0 0 10px;
   background-color: $color-primary-2;
 }
 .nav__close_button {
@@ -37,10 +36,60 @@ nav {
   padding: 30px
 }
 
+.nav__option, .dropdown__btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav__option {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+}
+.nav__option.open {
+  background-color: lightness-add($color-primary-2, -5%);
+}
+
+.nav__menu_button {
+  margin-left: auto;
+}
+
+.nav__menu_button, .nav__link-style, .dropdown__btn {
+  font-size: 20px;
+  color: $color-secondary-2;
+  fill: $color-secondary-2;
+}
+
 .nav__dropdown {
   height: 0;
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+// .dropdown__btn  {
+//   width: 100%;
+// }
+.dropdown__btn span {
+  flex-grow: 1;
+}
+.dropdown__btn.rotate svg:last-child {
+  rotate: 180deg;
+}
+.dropdown__sub_menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  padding-left: 20px;
+  font-size: 16px;
+
+  > div{
+    overflow: hidden;
+    > li {
+      padding-top: 5px;
+    }
+  }
+}
+.dropdown__sub_menu.show {
+  grid-template-rows: 1fr;
 }
