@@ -2,7 +2,7 @@ import React from 'react';
 import { svgPaths } from '../utils/svgPaths'; // Adjust the path if necessary
 
 const Svg = ({ type, width = "24px", height = "24px", fill, sizes, styleResponsive, ...props }) => {
-  const pathData = svgPaths[type];
+  var pathData = svgPaths[type];
 
   if (sizes) {
     width = sizes[0];
@@ -11,7 +11,7 @@ const Svg = ({ type, width = "24px", height = "24px", fill, sizes, styleResponsi
 
   if (!pathData) {
     console.warn(`No SVG found for type: ${type}`);
-    return null;
+    pathData = svgPaths['block'];
   }
 
   return (

@@ -46,7 +46,7 @@ const App = () => {
                 <Svg type="home" sizes={[20, 20]} /> <Link to="/">PÁGINA INICIAL</Link>
               </div>
               <div className=''>
-                <Dropdown title='PRODUTOS'>
+                <Dropdown title='PRODUTOS' svg='shopping_bag'>
                   {[
                     'Bolsas',
                     'Bolsas Maternidade',
@@ -62,21 +62,6 @@ const App = () => {
                     'Shoulder Bags',
                   ]}
                 </Dropdown>
-                {/* <Svg type="arrow_drop_down" sizes={[20, 20]} /> PRODUTOS
-                <ul className='nav__dropdown'>
-                  <li>Bolsas</li>
-                  <li>Bolsas Maternidade</li>
-                  <li>Bolsas Ecológicas</li>
-                  <li>Bolsas Térmicas</li>
-                  <li>Bolsas Viagem</li>
-                  <li>Estojos</li>
-                  <li>Necessaires</li>
-                  <li>Malotes</li>
-                  <li>Mochilas</li>
-                  <li>Mochilas Saco</li>
-                  <li>Pastas</li>
-                  <li>Shoulder Bags</li>
-                </ul> */}
               </div>
               <div className=''>
                 <Svg type="email" sizes={[20, 20]} className='' /> <Link to="/contato">CONTATO</Link>

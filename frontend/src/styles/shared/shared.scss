@@ -29,8 +29,8 @@ main {
   padding-top: 60px;
 }
 
-.dropdown__btn {
-
+.dropdown__btn.rotate svg:last-child {
+  rotate: 180deg;
 }
 .dropdown__sub_menu {
   display: grid;
