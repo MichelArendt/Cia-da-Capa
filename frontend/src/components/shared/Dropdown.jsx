@@ -20,10 +20,10 @@ const Dropdown = ({sizes, title = "", svg = '', children}) => {
   };
 
   return(
-    <div>
-      <button className={`dropdown__btn poppins-light ${rotate}`} ref={dropdown__btn} onClick={toggleDropdown}>
-        <Svg type={svg} sizes={sizes}/> <span>{title}</span> <Svg type='arrow_drop_down' sizes={sizes}/>
-      </button>
+    <div className='dropdown__container'>
+      <span className={`dropdown__btn ${rotate}`} ref={dropdown__btn} onClick={toggleDropdown}>
+        <Svg type='arrow_drop_down' sizes={sizes}/> <span>{title}</span>
+      </span>
       <ul className={`dropdown__sub_menu ${show}`} ref={dropdown__sub_menu}>
         <div>
           {children.map((child, index) => (

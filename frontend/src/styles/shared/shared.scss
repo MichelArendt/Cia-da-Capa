@@ -28,6 +28,17 @@
 main {
   padding-top: 60px;
 }
+svg {
+  // background: red;
+  transform-box: view-box;
+  > g {
+
+  transform-box: view-box;
+  > path {
+    transform-box: view-box;
+  }
+  }
+}
 // .header__menu {
 //   color: lightness-add($color-secondary-2, -40%);
 // }

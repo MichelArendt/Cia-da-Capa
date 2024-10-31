@@ -6,6 +6,10 @@ const useMenuStore = create((set) => ({
     const newState = !state.isOpen;
     console.log(`Menu is now ${newState ? 'open' : 'closed'}`);
     return { isOpen: newState };
+  }),
+  closeMenu: () => set((state) => {
+    console.log(`Menu closed`);
+    return { isOpen: false };
   })
 }));
 
