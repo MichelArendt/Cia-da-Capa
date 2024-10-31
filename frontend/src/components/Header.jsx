@@ -13,6 +13,18 @@ const Header = () => {
 	const [open, setOpen] = useState('')
 	const { isOpen, toggleMenu } = useMenuStore();
 
+	// Animation
+  const [showList, setShowList] = useState(false);
+  const [triggerAnimation, setTriggerAnimation] = useState(false);
+  const handleToggle = () => {
+    // Temporarily remove show-list class to reset animation
+    setTriggerAnimation(false);
+    setTimeout(() => {
+      setTriggerAnimation(true); // Reapply show-list class after delay
+      setShowList((prev) => !prev);
+    }, 10); // Small delay to reset animation
+  };
+
 	// Store references to elements using useRef
 	const navRef = useRef(null);
 	const closeButtonRef = useRef(null);
@@ -56,22 +68,22 @@ const Header = () => {
 							</Link>
 						</li>
 						<li>
-							<Link>
+							<Link onClick={handleToggle}>
 								<Svg type="shopping_bag" />
 								<span>Produtos</span>
 							</Link>
-							<ul>
-								<li><Link to='/produtos'>Bolsas</Link></li>
-								<li><Link to='/produtos'>Bolsas</Link></li>
-								<li><Link to='/produtos'>Bolsas Ecológicas</Link></li>
-								<li><Link to='/produtos'>Bolsas Térmicas</Link></li>
-								<li><Link to='/produtos'>Bolsas Viagem</Link></li>
-								<li><Link to='/produtos'>Estojos</Link></li>
-								<li><Link to='/produtos'>Necessaires</Link></li>
-								<li><Link to='/produtos'>Malotes</Link></li>
-								<li><Link to='/produtos'>Mochilas</Link></li>
-								<li><Link to='/produtos'>Mochilas Saco</Link></li>
-								<li><Link to='/produtos'>Shoulder Bags</Link></li>
+							<ul className={triggerAnimation  ? 'show-list' : ''}>
+								<li style={{ animationDelay: "0s" }}><Link to='/produtos'>Bolsas</Link></li>
+								<li style={{ animationDelay: "0.1s" }}><Link to='/produtos'>Bolsas</Link></li>
+								<li style={{ animationDelay: "0.2s" }}><Link to='/produtos'>Bolsas Ecológicas</Link></li>
+								<li style={{ animationDelay: "0.3s" }}><Link to='/produtos'>Bolsas Térmicas</Link></li>
+								<li style={{ animationDelay: "0.4s" }}><Link to='/produtos'>Bolsas Viagem</Link></li>
+								<li style={{ animationDelay: "0.5s" }}><Link to='/produtos'>Estojos</Link></li>
+								<li style={{ animationDelay: "0.6s" }}><Link to='/produtos'>Necessaires</Link></li>
+								<li style={{ animationDelay: "0.7s" }}><Link to='/produtos'>Malotes</Link></li>
+								<li style={{ animationDelay: "0.8s" }}><Link to='/produtos'>Mochilas</Link></li>
+								<li style={{ animationDelay: "0.9s" }}><Link to='/produtos'>Mochilas Saco</Link></li>
+								<li style={{ animationDelay: "1s" }}><Link to='/produtos'>Shoulder Bags</Link></li>
 							</ul>
 						</li>
 						<li>

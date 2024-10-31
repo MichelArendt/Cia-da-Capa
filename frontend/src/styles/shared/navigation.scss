@@ -66,6 +66,23 @@ nav .dropdown_submenu {
   }
 }
 
+@keyframes nudge {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px); /* Adjust distance */
+    color: lightness-add($color-secondary-2, -50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+ul.show-list li {
+  animation: nudge 0.3s forwards ease-in-out; /* Duration of animation */
+  // animation-delay: var(--delay); /* Use custom delay for each item */
+}
 
 
 
