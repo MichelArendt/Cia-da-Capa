@@ -46,9 +46,9 @@ const Header = () => {
 	}, [ isOpen ]);
 
 	return(
-		<header>
+		<header className='poppins-light'>
 			<div className='header__contents'>
-				<button onClick={toggleMenu}>
+				<button onClick={toggleMenu} className='display__hide_on_breakpoint'>
 					<Svg type="menu" sizes={[30,30]} />
 				</button>
 
@@ -58,20 +58,20 @@ const Header = () => {
 
 				<nav ref={navRef}>
 					<ul>
-						<li>
+						<li className='display__hide_on_breakpoint'>
 							<Link to="/" className='logo'>
 									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="home" sizes={[16,16]} />
+								<Svg type="home" sizes={[16,16]} className='display__hide_on_breakpoint' />
 								<span>Página Inicial</span>
 							</Link>
 						</li>
 						<li>
 							<Link onClick={toggleAnimation}>
-								<Svg type="shopping_bag" sizes={[16,16]} />
+								<Svg type="shopping_bag" sizes={[16,16]} className='display__hide_on_breakpoint' />
 								<span>Produtos</span>
 							</Link>
 							<ul className={`dropdown__submenu ${triggerAnimation  ? 'show-list' : ''}`}>
@@ -90,12 +90,12 @@ const Header = () => {
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="email" sizes={[16,16]} />
+								<Svg type="email" sizes={[16,16]} className='display__hide_on_breakpoint' />
 								<span>Contato</span>
 							</Link>
 						</li>
 					</ul>
-					<span className="close_button" onClick={toggleMenu} ref={closeButtonRef}>&times;</span>
+					<span className="close_button display__hide_on_breakpoint" onClick={toggleMenu} ref={closeButtonRef}>&times;</span>
 				</nav>
 
 				<button>

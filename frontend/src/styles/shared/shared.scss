@@ -20,23 +20,18 @@
 .display__hide_on_breakpoint {
   display: block;
 
-  @media (min-width: 650px) {
-    display: none;
+  @media (min-width: 900px) {
+    display: none !important;
   }
 }
 
 main {
   padding-top: 60px;
 }
-svg {
-  // background: red;
-  transform-box: view-box;
-  > g {
 
-  transform-box: view-box;
-  > path {
-    transform-box: view-box;
-  }
+@media (min-width: 900px) {
+  main {
+    padding-top: 100px;
   }
 }
 // .header__menu {

@@ -127,23 +127,36 @@ ul.show-list li {
   // animation-delay: var(--delay); /* Use custom delay for each item */
 }
 
-@media (min-width: 800px) {
-  .header__contents > :first-child, nav .close_button, nav > ul > :first-child {
-    display: none;
+@media (min-width: 900px) {
+  // /* hide mobile only content  */
+  // .header__contents > :first-child, nav .close_button, nav svg, nav > ul > :first-child {
+  //   display: none;
+  // }
+  nav, .header__contents > button, nav .dropdown_button, nav svg {
+    font-size: 18px;
+}
+
+  header {
+    height: 100px;
+  }
+
+  .header__contents {
+    padding: 0 20px;
+
+    > :nth-child(2) {
+      height: 50px;
+    }
   }
 
   nav {
     width: fit-content;
     position: static;
+    text-transform: uppercase;
 
     > ul {
       display: flex;
       align-items: center;
       flex-grow: 0;
-
-      > li {
-        height: fit-content;
-      }
     }
 
     .dropdown__submenu {

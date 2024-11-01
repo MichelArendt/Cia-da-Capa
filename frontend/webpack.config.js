@@ -2,6 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const crypto = require('crypto');
+const uniqueHash = crypto.randomBytes(8).toString('hex');
 
 module.exports = {
   entry: {
@@ -10,7 +12,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../build'),  // Output to the build folder
-    filename: '[name].[contenthash].bundle.js', // Output filename with chunk name and content hash
+    filename: `[name].${uniqueHash}.bundle.js`, // Output filename with chunk name and content hash
     publicPath: '',                             // Use empty string for relative paths
   },
   module: {
