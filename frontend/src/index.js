@@ -31,9 +31,10 @@ const RouteChangeListener = () => {
       prevLocation.current = location.pathname;
     }
   }, [location]);
-  useEffect(() => {
-    toggleMenu();
-  }, []);
+
+  // useEffect(() => {
+  //   toggleMenu();
+  // }, []);
 
   return null;
 };

@@ -7,7 +7,7 @@ import DropdownNav from '/src/components/shared/navigation/DropdownNav';
 import Dropdown from '/src/components/shared/Dropdown';
 import Svg from '/src/components/shared/Svg';
 
-import logo from '/assets/logo.png';
+import logo from '/assets/logo_only_text.png';
 
 const Header = () => {
 	const [open, setOpen] = useState('')
@@ -46,19 +46,19 @@ const Header = () => {
 	return(
 		<header>
 			<div className='header__contents'>
-				<button className='menu__button' onClick={toggleMenu}>
+				<button onClick={toggleMenu}>
 					<Svg type="menu" sizes={[30,30]} />
 				</button>
 
-				<Link to="/">
-					<img src={logo} alt='Cia da Capa' className='logo' />
+				<Link to="/" className='logo' >
+					<img src={logo} alt='Cia da Capa' />
 				</Link>
 
 				<nav ref={navRef}>
 					<ul>
 						<li>
-							<Link to="/">
-									<img src={logo} alt='Cia da Capa' className='logo' />
+							<Link to="/" className='logo'>
+									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
 						<li>
@@ -74,7 +74,7 @@ const Header = () => {
 							</Link>
 							<ul className={`dropdown__submenu ${triggerAnimation  ? 'show-list' : ''}`}>
 								<li style={{ animationDelay: "0s" }}><Link to='/produtos'>Bolsas</Link></li>
-								<li style={{ animationDelay: "0.1s" }}><Link to='/produtos'>Bolsas</Link></li>
+								<li style={{ animationDelay: "0.1s" }}><Link to='/produtos'>Bolsas Maternidade</Link></li>
 								<li style={{ animationDelay: "0.2s" }}><Link to='/produtos'>Bolsas Ecológicas</Link></li>
 								<li style={{ animationDelay: "0.3s" }}><Link to='/produtos'>Bolsas Térmicas</Link></li>
 								<li style={{ animationDelay: "0.4s" }}><Link to='/produtos'>Bolsas Viagem</Link></li>
@@ -101,50 +101,8 @@ const Header = () => {
 				</button>
 
 				<button>
-					<Svg type="local_atm" sizes={[30,30]} />
+					<Svg type="remove_shopping_cart" sizes={[30,30]} />
 				</button>
-
-				{/* <nav className='nav__link-style poppins-light' ref={navRef}>
-					<div className='nav__contents'>
-						<Link to="/" className='nav__option' style={{height: '40px'}}>
-								<img src={logo} alt='Cia da Capa' className='logo' />
-						</Link>
-
-						<Link to="/" className={`nav__option `} onClick={navigationClicked}>
-							<Svg type="home" /> <span>Página Inicial</span>
-						</Link>
-
-						<div className={`nav__option ${open}`} onClick={navigationClicked}>
-							<Dropdown title='Produtos'>
-								<Link to='/produtos'>Bolsas</Link>
-								<Link to='/produtos'>Bolsas Maternidade</Link>
-								<Link to='/produtos'>Bolsas Ecológicas</Link>
-								<Link to='/produtos'>Bolsas Térmicas</Link>
-								<Link to='/produtos'>Bolsas Viagem</Link>
-								<Link to='/produtos'>Estojos</Link>
-								<Link to='/produtos'>Necessaires</Link>
-								<Link to='/produtos'>Malotes</Link>
-								<Link to='/produtos'>Mochilas</Link>
-								<Link to='/produtos'>Mochilas Saco</Link>
-								<Link to='/produtos'>Pastas</Link>
-								<Link to='/produtos'>Shoulder Bags</Link>
-							</Dropdown>
-						</div>
-
-						<Link className={`nav__option `} onClick={navigationClicked} to="/contato">
-							<Svg type="email" /> <span>Contato</span>
-						</Link>
-
-						<div className={`nav__option`} onClick={navigationClicked}>
-							<Svg type="search" /> <span>Pesquisa</span>
-						</div>
-
-						<div className={`nav__option`} onClick={navigationClicked}>
-							<Svg type="local_atm" /> <span>Orçamento</span>
-						</div>
-					</div>
-					<span className="nav__close_button" onClick={toggleMenu} ref={closeButtonRef}>&times;</span>
-				</nav> */}
 			</div>
 		</header>
 	)
