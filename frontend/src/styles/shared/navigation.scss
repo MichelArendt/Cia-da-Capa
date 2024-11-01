@@ -39,6 +39,7 @@ nav, header .menu__button, nav .dropdown_button, nav svg {
 
 nav > ul {
   background-color: $color-primary-2;
+  overflow-y: auto;
 }
 
 nav a {
@@ -57,12 +58,11 @@ nav .close_button {
   padding: 30px
 }
 
-nav .dropdown_submenu {
-  display: grid;
-  // grid-template-rows: 0fr; /* For smooth open transition */
+nav .dropdown__submenu {
+  font-size: 16px;
 
-  > div {
-    overflow: hidden;
+  > li {
+    padding-left: 30px;
   }
 }
 

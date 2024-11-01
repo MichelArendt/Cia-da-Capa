@@ -72,7 +72,7 @@ const Header = () => {
 								<Svg type="shopping_bag" />
 								<span>Produtos</span>
 							</Link>
-							<ul className={triggerAnimation  ? 'show-list' : ''}>
+							<ul className={`dropdown__submenu ${triggerAnimation  ? 'show-list' : ''}`}>
 								<li style={{ animationDelay: "0s" }}><Link to='/produtos'>Bolsas</Link></li>
 								<li style={{ animationDelay: "0.1s" }}><Link to='/produtos'>Bolsas</Link></li>
 								<li style={{ animationDelay: "0.2s" }}><Link to='/produtos'>Bolsas Ecológicas</Link></li>
