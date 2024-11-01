@@ -32,6 +32,10 @@ const Header = () => {
 	};
 
 	useEffect(() => {
+    if (window.innerWidth > 650) {
+      return;
+    }
+
 		if( isOpen ) {
 			navRef.current.style.width = "100%";
 			document.body.style.overflowY = 'hidden';

@@ -79,6 +79,7 @@ nav {
     flex-grow: 1;
     display: flex;
     justify-content: center;
+    cursor: pointer;
   }
 }
 
@@ -124,4 +125,33 @@ nav .dropdown__submenu {
 ul.show-list li {
   animation: nudge 0.3s forwards ease-in-out; /* Duration of animation */
   // animation-delay: var(--delay); /* Use custom delay for each item */
+}
+
+@media (min-width: 800px) {
+  .header__contents > :first-child, nav .close_button, nav > ul > :first-child {
+    display: none;
+  }
+
+  nav {
+    width: fit-content;
+    position: static;
+
+    > ul {
+      display: flex;
+      align-items: center;
+      flex-grow: 0;
+
+      > li {
+        height: fit-content;
+      }
+    }
+
+    .dropdown__submenu {
+      display: none;
+    }
+
+    > ul, > :first-child > :nth-child(2) {
+      padding-top: 0;
+    }
+  }
 }
