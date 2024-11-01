@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 
 import useMenuStore from '/src/store/menuStore';
 
-import DropdownNav from '/src/components/shared/navigation/DropdownNav';
-import Dropdown from '/src/components/shared/Dropdown';
 import Svg from '/src/components/shared/Svg';
 
 import logo from '/assets/logo_only_text.png';
@@ -16,7 +14,7 @@ const Header = () => {
 	// Animation
   const [showList, setShowList] = useState(false);
   const [triggerAnimation, setTriggerAnimation] = useState(false);
-  const handleToggle = () => {
+  const toggleAnimation = () => {
     // Temporarily remove show-list class to reset animation
     setTriggerAnimation(false);
     setTimeout(() => {
@@ -68,7 +66,7 @@ const Header = () => {
 							</Link>
 						</li>
 						<li>
-							<Link onClick={handleToggle}>
+							<Link onClick={toggleAnimation}>
 								<Svg type="shopping_bag" sizes={[16,16]} />
 								<span>Produtos</span>
 							</Link>

@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import api from './api'; // Adjust the path if needed
 import useStore from './store';
 
-import Header from './components/shared/Header';
+import Header from './components/admin/Header';
 import MenuAdmin from './components/admin/MenuAdmin';
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
@@ -37,9 +37,10 @@ const AdminApp = () => {
 
 	return (
 		<Router basename={getBasename()}>
-      <Header>
+      <Header />
+      {/* <Header>
         <MenuAdmin />
-      </Header>
+      </Header> */}
 			{/* <Header /> */}
 			<main>
 				{isAuthenticated ? (

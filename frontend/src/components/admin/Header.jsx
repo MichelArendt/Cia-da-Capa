@@ -20,7 +20,11 @@ const Header = () => {
 
   return (
     <header>
-      <img src={logo} alt='Cia da Capa' className='logo' />
+
+
+
+
+      {/* <img src={logo} alt='Cia da Capa' className='logo' />
       {isAuthenticated && (
         <button onClick={handleLogout}>Logout</button>
       )}
@@ -30,7 +34,7 @@ const Header = () => {
             menu
           </span>
         </button>
-      </div>
+      </div> */}
     </header>
   )};
 

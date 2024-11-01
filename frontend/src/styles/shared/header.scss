@@ -57,7 +57,6 @@ nav {
   background-color: opacity-set($color-primary-2, 0.95);
   overflow: hidden;
   transition: 0.5s;
-  // padding-top: 60px;
 
   > :first-child {
     flex-grow: 4;
@@ -87,11 +86,6 @@ nav > ul {
   background-color: $color-primary-2;
   overflow-y: auto;
   padding-top: 10px;
-
-  // > :first-child {
-  //   display: flex;
-  //   justify-content: center;
-  // }
 }
 
 nav a {

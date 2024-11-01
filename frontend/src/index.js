@@ -13,9 +13,6 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 
 import './styles/main.scss';
-import Navigation from './components/shared/navigation/Navigation';
-import Dropdown from './components/shared/Dropdown';
-import Option from './components/shared/navigation/Option';
 import Contato from './pages/Contato';
 import Produtos from './pages/Produtos';
 
