@@ -40,13 +40,18 @@ nav, header .menu__button, nav .dropdown_button, nav svg {
 nav > ul {
   background-color: $color-primary-2;
   overflow-y: auto;
+
+  // > :first-child {
+  //   display: flex;
+  //   justify-content: center;
+  // }
 }
 
 nav a {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
+  gap: 8px;
+  padding: 5px 20px;
 }
 
 nav .menu_button {
@@ -62,7 +67,7 @@ nav .dropdown__submenu {
   font-size: 16px;
 
   > li {
-    padding-left: 30px;
+    padding-left: 35px;
   }
 }
 

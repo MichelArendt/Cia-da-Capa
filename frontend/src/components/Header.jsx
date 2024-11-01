@@ -63,13 +63,13 @@ const Header = () => {
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="home" />
+								<Svg type="home" sizes={[16,16]} />
 								<span>Página Inicial</span>
 							</Link>
 						</li>
 						<li>
 							<Link onClick={handleToggle}>
-								<Svg type="shopping_bag" />
+								<Svg type="shopping_bag" sizes={[16,16]} />
 								<span>Produtos</span>
 							</Link>
 							<ul className={`dropdown__submenu ${triggerAnimation  ? 'show-list' : ''}`}>
@@ -88,7 +88,7 @@ const Header = () => {
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="email" />
+								<Svg type="email" sizes={[16,16]} />
 								<span>Contato</span>
 							</Link>
 						</li>
