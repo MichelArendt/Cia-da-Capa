@@ -48,7 +48,7 @@ const Header = () => {
 	return(
 		<header className='poppins-light'>
 			<div className='header__contents'>
-				<button onClick={toggleMenu} className='display__hide_on_breakpoint'>
+				<button onClick={toggleMenu} className='display__hide_on_breakpoint-desktop'>
 					<Svg type="menu" sizes={[30,30]} />
 				</button>
 
@@ -58,21 +58,22 @@ const Header = () => {
 
 				<nav ref={navRef}>
 					<ul>
-						<li className='display__hide_on_breakpoint'>
+						<li className='display__hide_on_breakpoint-desktop'>
 							<Link to="/" className='logo'>
 									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="home" sizes={[16,16]} className='display__hide_on_breakpoint' />
+								<Svg type="home" sizes={[16,16]} className='display__hide_on_breakpoint-desktop' />
 								<span>Página Inicial</span>
 							</Link>
 						</li>
-						<li>
+						<li className='dropdown__container'>
 							<Link onClick={toggleAnimation}>
-								<Svg type="shopping_bag" sizes={[16,16]} className='display__hide_on_breakpoint' />
+								<Svg type="shopping_bag" sizes={[16,16]} className='display__hide_on_breakpoint-desktop' />
 								<span>Produtos</span>
+								<Svg type="arrow_drop_down" sizes={[10,10]} className='display__hide_on_breakpoint-mobile' />
 							</Link>
 							<ul className={`dropdown__submenu ${triggerAnimation  ? 'show-list' : ''}`}>
 								<li style={{ animationDelay: "0s" }}><Link to='/produtos'>Bolsas</Link></li>
@@ -90,12 +91,12 @@ const Header = () => {
 						</li>
 						<li>
 							<Link to="/">
-								<Svg type="email" sizes={[16,16]} className='display__hide_on_breakpoint' />
+								<Svg type="email" sizes={[16,16]} className='display__hide_on_breakpoint-desktop' />
 								<span>Contato</span>
 							</Link>
 						</li>
 					</ul>
-					<span className="close_button display__hide_on_breakpoint" onClick={toggleMenu} ref={closeButtonRef}>&times;</span>
+					<span className="close_button display__hide_on_breakpoint-desktop" onClick={toggleMenu} ref={closeButtonRef}>&times;</span>
 				</nav>
 
 				<button>

@@ -17,16 +17,34 @@
 .display-visible {
   display: block;
 }
-.display__hide_on_breakpoint {
-  display: block;
+.display__hide_on_breakpoint-desktop {
+  display: block !important;
 
   @media (min-width: 900px) {
     display: none !important;
   }
 }
+.display__hide_on_breakpoint-mobile {
+  display: none !important;
+
+  @media (min-width: 900px) {
+    display: block !important;
+  }
+}
 
 main {
   padding-top: 60px;
+}
+
+.dropdown__container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &:hover .dropdown__submenu {
+    max-height: 500px;
+  }
 }
 
 @media (min-width: 900px) {
