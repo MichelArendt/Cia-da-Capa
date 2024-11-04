@@ -29,9 +29,9 @@ const RouteChangeListener = () => {
     }
   }, [location]);
 
-  // useEffect(() => {
-  //   toggleMenu();
-  // }, []);
+  useEffect(() => {
+    toggleMenu();
+  }, []);
 
   return null;
 };

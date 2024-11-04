@@ -4,11 +4,11 @@ const useMenuStore = create((set) => ({
   isOpen: false,
   toggleMenu: () => set((state) => {
     const newState = !state.isOpen;
-    console.log(`Menu is now ${newState ? 'open' : 'closed'}`);
+    console.log(`isOpen set ${newState}`);
     return { isOpen: newState };
   }),
   closeMenu: () => set((state) => {
-    console.log(`Menu closed`);
+    console.log(`isOpen set FALSE`);
     return { isOpen: false };
   })
 }));

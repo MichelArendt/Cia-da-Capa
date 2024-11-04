@@ -8,6 +8,8 @@
 @use 'header.scss';
 // @use 'navigation.scss';
 
+
+// UTIL - VISIBILITY
 * {
   transition: all 0.2s linear;
 }
@@ -17,34 +19,21 @@
 .display-visible {
   display: block;
 }
-.display__hide_on_breakpoint-desktop {
-  display: block !important;
-
-  @media (min-width: 900px) {
+@media (min-width: 900px) {
+  .display__hide_on-desktop {
     display: none !important;
   }
 }
-.display__hide_on_breakpoint-mobile {
-  display: none !important;
-
-  @media (min-width: 900px) {
-    display: block !important;
+@media (max-width: 900px) {
+  .display__hide_on-mobile {
+    display: none !important;
   }
 }
 
+
+// GENERAL
 main {
   padding-top: 60px;
-}
-
-.dropdown__container {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-
-  &:hover .dropdown__submenu {
-    max-height: 500px;
-  }
 }
 
 @media (min-width: 900px) {
@@ -52,6 +41,118 @@ main {
     padding-top: 100px;
   }
 }
+
+a, button, .dropdown {
+  @extend .poppins-light;
+  display: flex;
+  align-items: center; // align svgs with span
+  color: $color-secondary-2;
+
+  svg {
+    fill: $color-secondary-2;
+  }
+}
+a, button {
+  padding: 5px;
+  gap: 5px;
+
+  &:hover {
+    background-color: lightness-add($color-primary-2, 10%);
+    // background-color: yellow;
+    color: $color-primary-1;
+
+    svg {
+      fill: $color-primary-1;
+    }
+  }
+}
+
+button, .dropdown .submenu {
+  background-color: $color-primary-2;
+
+  // &:hover {
+  //   background-color: red;
+  // }
+}
+
+// DROPDOWN
+.dropdown, .dropdown .submenu {
+  // background-color: $color-primary-2;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  // line-height: 1em; // to get even padding around text
+
+}
+
+.dropdown .submenu  {
+  position: absolute;
+  max-height: 0; // for smooth hover animation
+  overflow: hidden;
+  white-space: nowrap;
+  // display: flex;
+  // flex-direction: column;
+
+  a {
+    padding: 5px 10px;
+  }
+}
+
+.dropdown:hover {
+  .header {
+    svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .submenu {
+    max-height: 1000px; // for smooth hover animation
+  }
+}
+
+// DROPDOWN ANIMATION
+@keyframes nudge {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px); /* Adjust distance */
+    color: $color-primary-1;
+
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.dropdown .submenu .option > * {
+  color: inherit; /* Ensure link inherits the color from .option so that the color property works on transition */
+}
+
+
+// .dropdown .submenu.show-list .option a {
+//   animation: nudge 0.3s forwards ease-in-out; /* Duration of animation */
+//   // animation-delay: var(--delay); /* Use custom delay for each item */
+// }
+.dropdown .submenu.show-list .option {
+  animation: nudge 0.3s forwards ease-in-out; /*
+  Duration of animation */
+  // a {
+  //   animation: colorChange 0.3s forwards ease-in-out;
+  // }
+  // animation-delay: var(--delay); /* Use custom delay for each item */
+}
+
+// .dropdown__container {
+//   position: relative;
+//   display: inline-flex;
+//   flex-direction: column;
+//   justify-content: center;
+
+//   &:hover .dropdown__submenu {
+//     max-height: 500px;
+//   }
+// }
 // .header__menu {
 //   color: lightness-add($color-secondary-2, -40%);
 // }
