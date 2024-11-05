@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { svgPaths } from '../../utils/svgPaths'; // Adjust the path if necessary
+import { svgPaths } from '/src/utils/svgPaths'; // Adjust the path if necessary
 
 const Svg = ({ type, width = 20, height = 20, fill, sizes, styleResponsive, ...props }) => {
   const svgEl = useRef(null);

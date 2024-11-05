@@ -1,14 +1,7 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
+# Enable the Rewrite Engine
+RewriteEngine On
 
-    # Serve existing files and directories directly
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Redirect 'manage' or 'manage/' to 'admin.html'
-    RewriteRule ^manage/?$ admin.html [L]
-
-    # Redirect all other requests to 'index.html'
-    RewriteRule ^.*$ index.html [L]
-</IfModule>
+# Redirect all requests to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
