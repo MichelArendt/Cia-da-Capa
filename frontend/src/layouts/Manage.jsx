@@ -1,17 +1,21 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
+// Assets
+import logo from '/assets/logo_manage.png';
+
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
 import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
+// /manage components
 import Home from '/src/pages/manage/Home';
 
 function Manage() {
   return (
     <>
-      <Header admin={true}>
+      <Header admin={true} logo={logo}>
         <li>
           <Dropdown>
             <DropdownHeader><span>Produtos</span></DropdownHeader>

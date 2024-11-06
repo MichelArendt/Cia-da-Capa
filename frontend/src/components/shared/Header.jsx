@@ -6,10 +6,11 @@ import useMenuStore from '/src/store/menuStore';
 // import { Dropdown, DropdownHeader, DropdownOption, DropdownSubmenu } from '/src/components/shared/Dropdown';
 import Svg from '/src/components/shared/Svg';
 
-import logo from '/assets/logo_only_text.png';
+import defaultLogo from '/assets/logo_only_text.png';
 
-const Header = ({ admin = false, children }) => {
+const Header = ({ admin = false, logo = defaultLogo, children }) => {
 	const { isOpen, toggleMenu } = useMenuStore();
+
 
 	// Store references to elements using useRef
 	const navRef = useRef(null);
@@ -38,7 +39,7 @@ const Header = ({ admin = false, children }) => {
 				</button>
 
 				<Link to="/" className='logo' >
-					<img src={logo} alt='Cia da Capa' />
+					<img src={logo} alt={`Cia da Capa ${admin ? '- Gerenciamento' : ''}`} />
 				</Link>
 
 				<nav ref={navRef}>
