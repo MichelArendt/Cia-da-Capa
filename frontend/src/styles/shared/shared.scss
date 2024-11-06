@@ -69,6 +69,28 @@ button, .dropdown .submenu {
   background-color: $color-primary-2;
 }
 
+// LOADING
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.spinner {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(farthest-side,$color-primary-1 100%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%, $color-primary-1);
+  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation: l13 1s infinite linear;
+}
+@keyframes l13{
+  100%{transform: rotate(1turn)}
+}
+
 // DROPDOWN
 .dropdown {
   position: relative;
@@ -85,6 +107,10 @@ button, .dropdown .submenu {
   a {
     padding: 5px 10px;
   }
+}
+
+.dropdown .submenu, .dropdown .option  {
+  min-width: 100%;
 }
 
 .dropdown:hover {
