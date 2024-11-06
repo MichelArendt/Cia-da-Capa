@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Authorization
 import api from '/src/services/api'; // Adjust the path if needed
@@ -18,6 +19,8 @@ import Login from '/src/pages/admin/Login';
 import Dashboard from '/src/pages/admin/Dashboard';
 
 function Manage() {
+  const navigate = useNavigate();
+
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setAuthenticated = useStore((state) => state.setAuthenticated);
 
@@ -33,6 +36,16 @@ function Manage() {
     };
     checkAuth();
   }, [setAuthenticated]);
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/logout');
+      setAuthenticated(false);
+      navigate('/manage'); // Redirect to login or another page
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
 
   return (
     <>
@@ -77,7 +90,7 @@ function Manage() {
               <Svg type="search" sizes={[30,30]} />
             </button>
 
-            <button>
+            <button onClick={handleLogout}>
               <Svg type="logout" sizes={[30,30]} />
             </button>
           </>
