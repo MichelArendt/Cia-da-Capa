@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
 // Shared components
@@ -6,9 +6,28 @@ import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
 import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
+// Main website components
 import Home from '/src/pages/Home';
+import ContentLoader from '../components/shared/ContentLoader';
+
+// APIs
+import * as apiPublic from '/src/services/api/public';
 
 function Main() {
+  const [categories, setCategories] = useState([]);
+
+ // First render
+  // useEffect(() => {
+  //   const loadCategories = async () => {
+  //     const data = await apiPublic.fetchProductCategories();
+  //     if (data) {
+  //       setCategories(data);
+  //     }
+  //   };
+
+  //   loadCategories();
+  // }, []);
+
   return (
     <>
       <Header
@@ -24,7 +43,13 @@ function Main() {
               <Dropdown>
                 <DropdownHeader><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
-                  <DropdownOption><Link>Bolsas</Link></DropdownOption>
+                  <ContentLoader fetchData={apiPublic.test()}>
+                  {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                  </ContentLoader>
+                  {/* <DropdownOption><Link>Bolsas</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Maternidade</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Ecológicas</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Térmicas</Link></DropdownOption>
@@ -34,7 +59,7 @@ function Main() {
                   <DropdownOption><Link>Malotes</Link></DropdownOption>
                   <DropdownOption><Link>Mochilas</Link></DropdownOption>
                   <DropdownOption><Link>Mochilas Saco</Link></DropdownOption>
-                  <DropdownOption><Link>Shoulder Bags</Link></DropdownOption>
+                  <DropdownOption><Link>Shoulder Bags</Link></DropdownOption> */}
                 </DropdownSubmenu>
               </Dropdown>
             </li>

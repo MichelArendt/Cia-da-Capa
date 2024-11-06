@@ -3,8 +3,11 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 // Authorization
-import api from '/src/services/api'; // Adjust the path if needed
+import api from '/src/services/api';
 import useStore from '/src/store';
+
+// APIs
+import apiPublic from '/src/services/api/public';
 
 // Assets
 import logo from '/assets/logo_manage.png';
@@ -15,8 +18,8 @@ import Svg from '/src/components/shared/Svg';
 import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
 // /manage components
-import Login from '/src/pages/admin/Login';
-import Dashboard from '/src/pages/admin/Dashboard';
+import Login from '/src/pages/manage/Login';
+import Dashboard from '/src/pages/manage/Dashboard';
 
 function Manage() {
   const navigate = useNavigate();
