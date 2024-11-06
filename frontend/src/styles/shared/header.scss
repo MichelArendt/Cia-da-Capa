@@ -6,12 +6,8 @@
 @use '_colors' as *;
 
 $desktop-breakpoint: 900px;
-$header-size: 60px;
-
-@media (min-width: $desktop-breakpoint) {
-  $header-size: 100px;
-}
-
+$header-size-mobile: 60px;
+$header-size-desktop: 100px;
 // normalize colors
 header, header button {
   font-size: 20px;
@@ -22,10 +18,14 @@ header {
   display: flex;
   justify-content: center;
   width: 100%;
-  height: $header-size;
+  height: $header-size-mobile; // Use mobile size by default
   background: $color-primary-2;
   color: $color-secondary-2;
   z-index: 1;
+
+  @media (min-width: $desktop-breakpoint) {
+    height: $header-size-desktop; // Use desktop size in larger screens
+  }
 }
 
 .header__contents {
@@ -42,6 +42,10 @@ header a, header .dropdown, header button, .header__contents > .logo { // fill h
 }
 .header__contents > .logo {
   padding: 10px;
+
+  @media (min-width: $desktop-breakpoint) { // desktop fixes
+    padding: 20px 10px;
+  }
 }
 
 .logo {

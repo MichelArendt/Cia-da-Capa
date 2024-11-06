@@ -38,14 +38,14 @@ const Header = ({ admin = false, logo = defaultLogo, children }) => {
 					<Svg type="menu" sizes={[30,30]} />
 				</button>
 
-				<Link to="/" className='logo' >
+				<Link to={`/${admin ? 'manage' : ''}`} className='logo' >
 					<img src={logo} alt={`Cia da Capa ${admin ? '- Gerenciamento' : ''}`} />
 				</Link>
 
 				<nav ref={navRef}>
 					<ul className='menu'>
 						<li className='display__hide_on-desktop'>
-							<Link to="/" className='logo'>
+							<Link to={`/${admin ? 'manage' : ''}`} className='logo'>
 									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
