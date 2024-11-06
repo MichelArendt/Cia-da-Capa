@@ -7,12 +7,9 @@ import '/src/styles/main.scss';
 const Main = lazy(() => import('/src/layouts/Main'));
 const Manage = lazy(() => import('/src/layouts/Manage'));
 
-// Detect the base path for deployment in a nested folder
-const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
-
 function App() {
   return (
-    <Router basename={basePath}>
+    <Router basename={process.env.PUBLIC_URL}>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/*" element={<Main />} />

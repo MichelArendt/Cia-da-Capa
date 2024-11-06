@@ -2,28 +2,31 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 const crypto = require('crypto');
 
 const buildPath = path.resolve(__dirname, '../build'); // Build directory
 const uniqueHash = crypto.randomBytes(8).toString('hex'); // Unique hash for file naming
 
-// Set deployment-specific paths based on the ENVIRONMENT variable
+// Set deployment-specific public paths based on the ENVIRONMENT variable
 const deploymentPublicPaths = {
   local: '/build/',
-  deploytest: '/testing/',
+  deploytest: '/novo/',
   production: '/'
 };
 
 module.exports = (_, argv) => {
   const environment = process.env.ENVIRONMENT || '/'; // Default to 'local' if not specified
   const isProduction = argv.mode === 'production';
+  const publicPath = deploymentPublicPaths[environment] || '/';
 
   return {
     entry: './src/index.js',
     output: {
       path: buildPath,
       filename: `[name].${uniqueHash}.bundle.js`, // Output all bundles to 'build/' directory
-      publicPath: deploymentPublicPaths[environment] || '/', // Use environment-specific path or default to '/'
+      // publicPath: deploymentPublicPaths[environment] || '/', // Use environment-specific path or default to '/'
+      publicPath: publicPath,
     },
     module: {
       rules: [
@@ -50,6 +53,11 @@ module.exports = (_, argv) => {
       extensions: ['.js', '.jsx']
     },
     plugins: [
+      // Define the PUBLIC_URL environment variable
+      new DefinePlugin({
+        'process.env.PUBLIC_URL': JSON.stringify(publicPath),
+      }),
+
       // Clean the output directory before each build
       new CleanWebpackPlugin(), // Add the plugin here
 
