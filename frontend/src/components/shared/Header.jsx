@@ -8,7 +8,7 @@ import Svg from '/src/components/shared/Svg';
 
 import defaultLogo from '/assets/logo_only_text.png';
 
-const Header = ({ admin = false, logo = defaultLogo, children }) => {
+const Header = ({ admin = false, logo = defaultLogo, navOptions, navButtons }) => {
 	const { isOpen, toggleMenu } = useMenuStore();
 
 
@@ -49,22 +49,14 @@ const Header = ({ admin = false, logo = defaultLogo, children }) => {
 									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
-            {children}
+            {navOptions}
 					</ul>
 					<button className="button-close display__hide_on-desktop" onClick={toggleMenu} ref={closeButtonRef}>
 						<Svg type="close" sizes={[32,32]} className='display__hide_on-desktop' />
 					</button>
 				</nav>
 
-				<button>
-					<Svg type="search" sizes={[30,30]} />
-				</button>
-
-				{!admin? (
-					<button>
-						<Svg type="remove_shopping_cart" sizes={[30,30]} />
-					</button>
-				) : null }
+				{navButtons}
 			</div>
 		</header>
 	)
