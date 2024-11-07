@@ -3,13 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 
-use App\Http\Controllers\Public\Auth\LoginController;
+use App\Http\Controllers\Public\UserController;
 
 use App\Http\Controllers\Public\ProductCategoryController;
 use App\Http\Controllers\Public\ProductController;
 
 // Authentication
-Route::post('/login', [LoginController::class, 'login']);
+Route::get('/user', [UserController::class, 'checkAuthStatus']);
+Route::post('/user/login', [UserController::class, 'login']);
 
 // Product Categories
 Route::get('/produtos/categorias', [ProductCategoryController::class, 'index']);

@@ -1,16 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Manage\Auth\LogoutController;
 
 use App\Http\Controllers\Manage\UserController;
-
 use App\Http\Controllers\Manage\ProductCategoryController;
 use App\Http\Controllers\Manage\ProductController;
 
 // User Management
-Route::get('/user', [UserController::class, 'show']);
-Route::post('/user/logout', [LogoutController::class, 'logout']);
+Route::post('/user/logout', [UserController::class, 'logout']);
 
 // // Product Categories Management
 // Route::post('/products/categories', [ProductCategoryController::class, 'store']);

@@ -1,13 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Public\Auth;
+namespace App\Http\Controllers\Public;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginController extends Controller
+class UserController extends Controller
 {
+    // Fetch the currently authenticated user's data
+    public function checkAuthStatus(Request $request)
+    {
+      // Sanctum automatically verifies the session cookie and authenticates the user
+      return response()->json(['authenticated' => true]);; // Returns the user object if authenticated
+    }
+
+    // Attempt login with credentials
     public function login(Request $request)
     {
       // Extract name and password from the request .payload
