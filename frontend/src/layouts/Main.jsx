@@ -8,7 +8,7 @@ import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/
 
 // Main website components
 import Home from '/src/pages/Home';
-import ContentLoader from '../components/shared/ContentLoader';
+import ContentLoader from '/src/components/shared/ContentLoader';
 
 // APIs
 import * as apiPublic from '/src/services/api/public';

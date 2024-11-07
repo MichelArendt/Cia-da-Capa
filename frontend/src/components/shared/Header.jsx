@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// Authorization
+import useStore from '/src/store';
+
 import useMenuStore from '/src/store/menuStore';
 
 // import { Dropdown, DropdownHeader, DropdownOption, DropdownSubmenu } from '/src/components/shared/Dropdown';
@@ -8,7 +11,8 @@ import Svg from '/src/components/shared/Svg';
 
 import defaultLogo from '/assets/logo_only_text.png';
 
-const Header = ({ admin = false, logo = defaultLogo, navOptions, navButtons }) => {
+const Header = ({ isManageRoute = false, logo = defaultLogo, navOptions, navButtons }) => {
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
 	const { isOpen, toggleMenu } = useMenuStore();
 
 
@@ -38,25 +42,24 @@ const Header = ({ admin = false, logo = defaultLogo, navOptions, navButtons }) =
 					<Svg type="menu" sizes={[30,30]} />
 				</button>
 
-				<Link to={`/${admin ? 'manage' : ''}`} className='logo' >
-					<img src={logo} alt={`Cia da Capa ${admin ? '- Gerenciamento' : ''}`} />
+				<Link to={`/${isManageRoute ? 'manage' : ''}`} className='logo' >
+					<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
 				</Link>
 
 				<nav ref={navRef}>
 					<ul className='menu'>
 						<li className='display__hide_on-desktop'>
-							<Link to={`/${admin ? 'manage' : ''}`} className='logo'>
+							<Link to={`/${isManageRoute ? 'manage' : ''}`} className='logo'>
 									<img src={logo} alt='Cia da Capa' />
 							</Link>
 						</li>
-            {navOptions}
+            {(!isManageRoute || isAuthenticated) ? navOptions : ''}
 					</ul>
 					<button className="button-close display__hide_on-desktop" onClick={toggleMenu} ref={closeButtonRef}>
 						<Svg type="close" sizes={[32,32]} className='display__hide_on-desktop' />
 					</button>
 				</nav>
-
-				{navButtons}
+				{(!isManageRoute || isAuthenticated) ? navButtons : ''}
 			</div>
 		</header>
 	)

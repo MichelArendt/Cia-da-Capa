@@ -52,7 +52,7 @@ function Manage() {
 
   return (
     <>
-      <Header admin={true} logo={logo}
+      <Header isManageRoute={true} logo={logo}
         navOptions={
           <>
             <li>
