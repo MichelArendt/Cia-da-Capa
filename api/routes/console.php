@@ -10,10 +10,13 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Artisan::command('routes:log-full', function () {
-    $routes = Route::getRoutes();
+    // Get and sort routes by URI
+    $routes = collect(Route::getRoutes())->sortBy(fn ($route) => $route->uri());
+
     foreach ($routes as $route) {
         $url = url($route->uri());
         Log::info("Route URL: {$url}");
     }
-    $this->info('Route URLs logged in storage/logs/laravel.log');
+
+    $this->info('Sorted route URLs logged in storage/logs/laravel.log');
 })->describe('Log full URLs of all routes');
