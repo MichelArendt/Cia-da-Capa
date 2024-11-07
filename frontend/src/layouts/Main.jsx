@@ -43,7 +43,7 @@ function Main() {
               <Dropdown>
                 <DropdownHeader><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
-                  <ContentLoader fetchData={apiPublic.test()}>
+                  <ContentLoader fetchData={apiPublic.test}>
                   {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
                     {(categories) => (
                       console.log(categories)

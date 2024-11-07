@@ -70,14 +70,14 @@ button, .dropdown .submenu {
 }
 
 // LOADING
-.loader {
+.content-loader {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
 }
 
-.spinner {
+.loader .spinner {
   width: 50px;
   aspect-ratio: 1;
   border-radius: 50%;

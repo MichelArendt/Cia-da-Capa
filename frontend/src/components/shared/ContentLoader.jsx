@@ -17,7 +17,8 @@ export function ContentLoader({ fetchData, children, emptyMessage = "Vazio" }) {
           setStatus('EMPTY');
         }
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        console.error("Passed:", fetchData);
+        console.error("Error fetching data:", error);
         setStatus('EMPTY');
       }
     };
