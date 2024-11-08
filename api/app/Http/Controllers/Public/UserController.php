@@ -6,13 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Log;
+
 class UserController extends Controller
 {
     // Fetch the currently authenticated user's data
     public function checkAuthStatus(Request $request)
     {
-      // Sanctum automatically verifies the session cookie and authenticates the user
-      return response()->json(['authenticated' => true]);; // Returns the user object if authenticated
+      // Check if a user is authenticated
+      $isAuthenticated = Auth::check();
+
+      return response()->json(['authenticated' => $isAuthenticated]);
     }
 
     // Attempt login with credentials
@@ -30,9 +34,7 @@ class UserController extends Controller
       // Regenerate the session to prevent session fixation attacks
       $request->session()->regenerate();
 
-      // Optionally, you can return the authenticated user's data
-      $user = Auth::user();
 
-      return response()->json(['message' => 'Logged in', 'user' => $user], 200);
+      return response()->json(['message' => 'Logged in'], 200);
     }
 }

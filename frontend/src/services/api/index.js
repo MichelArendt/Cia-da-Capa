@@ -35,4 +35,7 @@ async function getCsrfToken() {
   await axios.get('/api/sanctum/csrf-cookie', { withCredentials: true });
 }
 
+
+// Exporting the configured instance and helper functions if needed
+export { getCsrfToken };
 export default api;

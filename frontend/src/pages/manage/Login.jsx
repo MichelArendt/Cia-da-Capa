@@ -1,46 +1,89 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-import api from '/src/services/api';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+import apiPublic from '/src/services/api/public';
 import useStore from '/src/store';
 
+// Yup schema with validation and sanitization
+const loginSchema = Yup.object().shape({
+  name: Yup.string().trim().required('Usuário é obrigatório'),
+  password: Yup.string().min(5, 'Senha muito curta').required('Senha é obrigatória'),
+});
+
+
 const Login = () => {
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorVisibility, setErrorVisibility] = useState(false);
+  const navigate = useNavigate();
   const setAuthenticated = useStore((state) => state.setAuthenticated);
+  const lastAttemptedRoute = useStore((state) => state.lastAttemptedRoute);
+  const clearLastAttemptedRoute = useStore((state) => state.clearLastAttemptedRoute);
+  // const [name, setName] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [errorVisibility, setErrorVisibility] = useState(false);
+  // const setAuthenticated = useStore((state) => state.setAuthenticated);
   // const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async ({ name, password }, { setSubmitting, setFieldError }) => {
     try {
-      console.log(1);
+      await apiPublic.fetchCsrfToken();  // Moved CSRF fetch to apiPublic for reuse
+      const response = await apiPublic.login({ name, password });
+      console.log('response.status: ' + response.status)
 
-      // Fetch CSRF token
-      await api.get('/sanctum/csrf-cookie');
-
-      // Now make the login request
-      const response = await api.post('/login', { name, password });
       if (response.status === 200) {
-        console.log(2);
         setAuthenticated(true);
-        setErrorVisibility(false);
-        // navigate('/'); // Redirect to dashboard or desired route
+        clearLastAttemptedRoute();
+        navigate(lastAttemptedRoute || '/manage'); // Redirect to last route or default
       }
     } catch (error) {
-      console.log(3);
-      setErrorVisibility(true);
+      setFieldError('general', 'Login falhou. Verifique suas credenciais.');
+    } finally {
+      setSubmitting(false);
     }
-    console.log(4);
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <input type="name" onChange={(e) => setName(e.target.value)} placeholder="Name" />
-      <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button onClick={handleLogin}>Login</button>
-      <div style={{display: errorVisibility ? 'block' : 'none'}}>Login inválido</div>
+
+      <Formik
+        initialValues={{ name: '', password: '' }}
+        validationSchema={loginSchema}
+        onSubmit={handleLogin}
+      >
+        {({ isSubmitting, errors }) => (
+          <Form>
+            <div>
+              <label htmlFor="name">Usuário:</label>
+              <Field type="text" name="name" id="name" autoComplete="username" />
+              <ErrorMessage name="name" component="div" />
+            </div>
+
+            <div>
+              <label htmlFor="password">Senha:</label>
+              <Field type="password" name="password" id="password"  />
+              <ErrorMessage name="password" component="div" />
+            </div>
+
+            {errors.general && <div className="error-message">{errors.general}</div>}
+
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Entrando...' : 'Login'}
+            </button>
+          </Form>
+        )}
+      </Formik>
+
+
+
+
+      {/* <form action={handleLogin}>
+        <input type="text" onChange={(e) => setName(e.target.value)} placeholder="Usuário" minLength={8} />
+        <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Senha" />
+        <button type='submit'>Login</button>
+        <div style={{display: errorVisibility ? 'block' : 'none'}}>Login inválido</div>
+      </form> */}
     </div>
   );
 };

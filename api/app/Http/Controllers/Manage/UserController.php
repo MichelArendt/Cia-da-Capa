@@ -10,8 +10,8 @@ class UserController extends Controller
 {
     public function logout(Request $request)
     {
-      // Log out the user
-      Auth::logout();
+      // Use the 'web' guard to log out
+      Auth::guard('web')->logout();
 
       // Invalidate the session
       $request->session()->invalidate();

@@ -11,7 +11,7 @@ import Home from '/src/pages/Home';
 import ContentLoader from '/src/components/shared/ContentLoader';
 
 // APIs
-import * as apiPublic from '/src/services/api/public';
+import apiPublic from '/src/services/api/public';
 
 function Main() {
   const [categories, setCategories] = useState([]);
@@ -43,7 +43,7 @@ function Main() {
               <Dropdown>
                 <DropdownHeader><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
-                  <ContentLoader fetchData={apiPublic.test}>
+                  <ContentLoader fetchData={apiPublic.fetchProductCategories}>
                   {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
                     {(categories) => (
                       console.log(categories)

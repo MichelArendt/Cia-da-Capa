@@ -7,7 +7,6 @@ export function ContentLoader({ fetchData, children, emptyMessage = "Vazio" }) {
 
   useEffect(() => {
     const loadData = async () => {
-      setStatus('LOADING');
       try {
         const result = await fetchData();
         if (result && result.length > 0) {
@@ -23,7 +22,11 @@ export function ContentLoader({ fetchData, children, emptyMessage = "Vazio" }) {
       }
     };
 
-    loadData();
+    setStatus('LOADING');
+    // Check if fetchData is a function before calling it
+    if (typeof fetchData === 'function') {
+      loadData();
+    }
   }, [fetchData]);
 
   return (

@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 
-// Authorization
-import api from '/src/services/api';
+// Stores
 import useStore from '/src/store';
 
 // APIs
 import apiPublic from '/src/services/api/public';
+import apiManage from '/src/services/api/manage';
 
 // Assets
 import logo from '/assets/logo_manage.png';
@@ -16,25 +15,33 @@ import logo from '/assets/logo_manage.png';
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
 import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
+import ContentLoader from '/src/components/shared/ContentLoader'
 
 // /manage components
 import Login from '/src/pages/manage/Login';
 import Dashboard from '/src/pages/manage/Dashboard';
+import ProtectedRoutes from '../components/shared/ProtectedRoutes';
 
 function Manage() {
   const navigate = useNavigate();
 
+  // Auth
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setAuthenticated = useStore((state) => state.setAuthenticated);
+  const [loading, setLoading] = useState(true);
 
   // Check authentication status on app load
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await api.get('/user');
-        setAuthenticated(true);
+        const response = await apiPublic.checkAuthStatus();
+        setAuthenticated(response.data.authenticated);
+        console.log('1 '+ response.data.authenticated)
       } catch (error) {
         setAuthenticated(false);
+      } finally {
+        console.log('setLoading(false)')
+        setLoading(false); // Set loading to false when check is complete
       }
     };
     checkAuth();
@@ -42,13 +49,18 @@ function Manage() {
 
   const handleLogout = async () => {
     try {
-      await api.post('/logout');
+      await apiManage.user.logout();
       setAuthenticated(false);
-      navigate('/manage'); // Redirect to login or another page
+      navigate('/manage/user/login'); // Redirect to login after logout
     } catch (error) {
       console.error('Logout failed', error);
     }
   };
+
+  // //
+  // if (loading) {
+  //   return <ContentLoader />; // Display a loading message or spinner
+  // }
 
   return (
     <>
@@ -101,16 +113,43 @@ function Manage() {
       >
       </Header>
       <main>
-        {isAuthenticated ? (
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-          </Routes>
+
+        {loading ? (
+          <ContentLoader />
+        ) : isAuthenticated ? (
+          <ProtectedRoutes>
+            <Routes>
+              <Route path="/user/login" element={<Login />} />
+              <Route path="/" element={<Dashboard />} />
+              {/* Add more protected routes here */}
+            </Routes>
+          </ProtectedRoutes>
         ) : (
-            <Login />
+          <Routes>
+            <Route path="/user/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/manage/user/login" />} />
+          </Routes>
+
+
+
+
+
+
+          // <Routes>
+          //   <Route path="/user/login" element={<Login />} />
+          //   <Route
+          //     path="/*"
+          //     element={
+          //       <ProtectedRoutes>
+          //         <Routes>
+          //           <Route path="/" element={<Dashboard />} />
+          //           {/* Add more protected routes here */}
+          //         </Routes>
+          //       </ProtectedRoutes>
+          //     }
+          //   />
+          // </Routes>
         )}
-        {/* <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes> */}
       </main>
     </>
   );
