@@ -35,6 +35,6 @@ class UserController extends Controller
       $request->session()->regenerate();
 
 
-      return response()->json(['message' => 'Logged in'], 200);
+      return response()->json(['authenticated' => true], 200);
     }
 }
