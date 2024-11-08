@@ -36,11 +36,9 @@ function Manage() {
       try {
         const response = await apiPublic.checkAuthStatus();
         setAuthenticated(response.data.authenticated);
-        console.log('1 '+ response.data.authenticated)
       } catch (error) {
         setAuthenticated(false);
       } finally {
-        console.log('setLoading(false)')
         setLoading(false); // Set loading to false when check is complete
       }
     };
