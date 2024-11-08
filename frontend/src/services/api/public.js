@@ -4,7 +4,6 @@ const apiPublic = {
   fetchCsrfToken: async () => {
     try {
       await api.get('/sanctum/csrf-cookie');
-      console.log("CSRF token fetched successfully");
     } catch (error) {
       console.error("Failed to fetch CSRF token:", error);
     }

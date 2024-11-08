@@ -5,6 +5,19 @@ const api = axios.create({
   withCredentials: true, // Include cookies in requests
 });
 
+// Interceptor to handle specific status codes
+api.interceptors.response.use(
+  response => response, // Keep the default for successful responses
+  error => {
+    if (error.response && error.response.status === 401) {
+      // Return a custom response for 401 without throwing an error
+      return { data: { authenticated: false }, status: 401 };
+    }
+    // For other errors, reject as usual
+    return Promise.reject(error);
+  }
+);
+
 // Automatically include CSRF token in requests
 api.interceptors.request.use(
   async (config) => {
