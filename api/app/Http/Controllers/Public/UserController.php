@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Log;
 
@@ -22,6 +23,16 @@ class UserController extends Controller
     // Attempt login with credentials
     public function login(Request $request)
     {
+      $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'password' => 'required|string',
+      ]);
+
+      if ($validator->fails()) {
+        Log::warning('Failed login attempt', ['username' => $request->input('name')]);
+        return response()->json(['errors' => $validator->errors()], 422);
+      }
+
       // Extract name and password from the request .payload
       $credentials = $request->only('name', 'password');
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -30,21 +30,31 @@ const Login = () => {
 
   const handleLogin = async ({ name, password }, { setSubmitting, setFieldError }) => {
     try {
-      // await apiPublic.fetchCsrfToken(); // Fetch CSRF token
       const response = await apiPublic.user.login({ name, password });
 
-    // Check if login was successful
-      if (response.status === 200 && response.data.authenticated) {
+      // Check if login was successful
+      if (response && response.data && response.data.authenticated) {
         setAuthenticated(true);
         clearLastAttemptedRoute();
         navigate(lastAttemptedRoute || '/manage'); // Redirect to last route or default
       } else {
-        // Trigger the general error if response status is not 200 or not authenticated
+        // Trigger the general error if not authenticated
         setFieldError('general', 'Login inválido!');
       }
     } catch (error) {
-      // Handle network or unexpected errors
-      setFieldError('general', 'Ocorreu um erro. Tente novamente mais tarde.');
+      // Handle errors based on status code
+      if (error.response) {
+        if (error.response.status === 401) {
+          // Authentication failed
+          setFieldError('general', 'Credenciais inválidas.');
+        } else {
+          // Other server errors
+          setFieldError('general', 'Erro no servidor. Tente novamente mais tarde.');
+        }
+      } else {
+        // Network errors or unexpected errors
+        setFieldError('general', 'Erro de rede. Verifique sua conexão.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -63,15 +73,31 @@ const Login = () => {
             <Form>
               <div className="wrapper">
                 <div>
-                  <label htmlFor="name" className="sr-only">Usuário:</label>
-                  <Field type="text" name="name" id="name" autoComplete="username" placeholder='Usuário' />
+                  <label htmlFor="name" className="sr-only">
+                    Usuário:
+                  </label>
+                  <Field
+                    type="text"
+                    name="name"
+                    id="name"
+                    autoComplete="username"
+                    placeholder="Usuário"
+                  />
                   <ErrorMessage name="name" component="div" className='error-field' />
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="sr-only">Senha:</label>
-                  <Field type="password" name="password" id="password" placeholder='Senha' />
-                  <ErrorMessage name="password" component="div" className='error-field' />
+                  <label htmlFor="password" className="sr-only">
+                    Senha:
+                  </label>
+                  <Field
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Senha"
+                    autoComplete="current-password"
+                  />
+                  <ErrorMessage name="password" component="div" className="error-field" />
                 </div>
 
 

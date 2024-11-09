@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useStore from '/src/store'; // Import your Zustand store
 
 const PUBLIC_BASE_URL = '/public';
 const MANAGE_BASE_URL = '/manage';
@@ -13,8 +14,11 @@ api.interceptors.response.use(
   (response) => response, // Keep the default for successful responses
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Return a custom response for 401 without throwing an error
-      return { data: { authenticated: false }, status: 401 };
+      // Update authentication state to false
+      const setAuthenticated = useStore.getState().setAuthenticated;
+      setAuthenticated(false);
+      // Reject the error to be handled by the calling code
+      return Promise.reject(error);
     }
     // For other errors, reject as usual
     return Promise.reject(error);
@@ -58,6 +62,8 @@ const _requestHandler = async (method, url, data = null) => {
     return response;
   } catch (error) {
     console.error(`Error in ${method.toUpperCase()} ${url}:`, error);
+    // Re-throw the error so calling code can handle it
+    throw error;
   }
 };
 

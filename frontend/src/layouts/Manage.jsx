@@ -20,11 +20,12 @@ import ContentLoader from '/src/components/shared/ContentLoader'
 import Login from '/src/pages/manage/Login';
 import Dashboard from '/src/pages/manage/Dashboard';
 import ProtectedRoutes from '../components/shared/ProtectedRoutes';
+import Categories from '../pages/manage/Categories';
 
 function Manage() {
   const navigate = useNavigate();
 
-  // Auth
+  // Auth state
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setAuthenticated = useStore((state) => state.setAuthenticated);
   const [loading, setLoading] = useState(true);
@@ -36,6 +37,7 @@ function Manage() {
         const response = await apiPublic.user.getAuthDetails();
         setAuthenticated(response.data.authenticated);
       } catch (error) {
+        // If there's an error, assume not authenticated
         setAuthenticated(false);
       } finally {
         setLoading(false); // Set loading to false when check is complete
@@ -51,19 +53,18 @@ function Manage() {
       navigate('/manage/user/login'); // Redirect to login after logout
     } catch (error) {
       console.error('Logout failed', error);
+      // Optionally handle error (e.g., show a notification)
     }
   };
 
-  // //
-  // if (loading) {
-  //   return <ContentLoader />; // Display a loading message or spinner
-  // }
-
   return (
     <>
-      <Header isManageRoute={true} logo={logo}
+      <Header
+        isManageRoute={true}
+        logo={logo}
         navOptions={
           <>
+            {/* Navigation options */}
             <li>
               <Dropdown>
                 <DropdownHeader><span>Produtos</span></DropdownHeader>
@@ -74,28 +75,17 @@ function Manage() {
                       console.log(categories)
                     )}
                   </ContentLoader>
-                  {/* <DropdownOption><Link>Bolsas</Link></DropdownOption>
-                  <DropdownOption><Link>Bolsas Maternidade</Link></DropdownOption>
-                  <DropdownOption><Link>Bolsas Ecológicas</Link></DropdownOption>
-                  <DropdownOption><Link>Bolsas Térmicas</Link></DropdownOption>
-                  <DropdownOption><Link>Bolsas Viagem</Link></DropdownOption>
-                  <DropdownOption><Link>Estojos</Link></DropdownOption>
-                  <DropdownOption><Link>Necessaires</Link></DropdownOption>
-                  <DropdownOption><Link>Malotes</Link></DropdownOption>
-                  <DropdownOption><Link>Mochilas</Link></DropdownOption>
-                  <DropdownOption><Link>Mochilas Saco</Link></DropdownOption>
-                  <DropdownOption><Link>Shoulder Bags</Link></DropdownOption> */}
                 </DropdownSubmenu>
               </Dropdown>
             </li>
             <li>
-              <Link to="/produtos/cagegorias">
+              <Link to="produtos/categorias">
                 <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
                 <span>Categorias</span>
               </Link>
             </li>
             <li>
-              <Link to="/banners">
+              <Link to="banners">
                 <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
                 <span>Banners</span>
               </Link>
@@ -104,6 +94,7 @@ function Manage() {
         }
         navButtons={
           <>
+            {/* Navigation buttons */}
             <button>
               <Svg type="search" sizes={[30,30]} />
             </button>
@@ -118,40 +109,30 @@ function Manage() {
       <main>
 
         {loading ? (
+          // Display a loading component while checking authentication
           <ContentLoader />
-        ) : isAuthenticated ? (
-          <ProtectedRoutes>
-            <Routes>
-              <Route path="/user/login" element={<Login />} />
-              <Route path="/" element={<Dashboard />} />
-              {/* Add more protected routes here */}
-            </Routes>
-          </ProtectedRoutes>
         ) : (
+          // Render routes once loading is complete
           <Routes>
+            {/* Public route: Login */}
             <Route path="/user/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/manage/user/login" />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoutes>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="produtos/categorias" element={<Categories />} />
+                    {/* Add more protected routes here */}
+                    {/* Catch-all route for unmatched paths */}
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </ProtectedRoutes>
+              }
+            />
           </Routes>
-
-
-
-
-
-
-          // <Routes>
-          //   <Route path="/user/login" element={<Login />} />
-          //   <Route
-          //     path="/*"
-          //     element={
-          //       <ProtectedRoutes>
-          //         <Routes>
-          //           <Route path="/" element={<Dashboard />} />
-          //           {/* Add more protected routes here */}
-          //         </Routes>
-          //       </ProtectedRoutes>
-          //     }
-          //   />
-          // </Routes>
         )}
       </main>
     </>
