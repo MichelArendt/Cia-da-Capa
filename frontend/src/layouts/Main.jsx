@@ -11,7 +11,7 @@ import Home from '/src/pages/Home';
 import ContentLoader from '/src/components/shared/ContentLoader';
 
 // APIs
-import apiPublic from '/src/services/api/public';
+import {apiPublic} from '/src/services/api';
 
 function Main() {
   const [categories, setCategories] = useState([]);

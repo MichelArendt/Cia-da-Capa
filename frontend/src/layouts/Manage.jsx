@@ -5,8 +5,7 @@ import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 import useStore from '/src/store';
 
 // APIs
-import apiPublic from '/src/services/api/public';
-import apiManage from '/src/services/api/manage';
+import {apiPublic, apiManage} from '/src/services/api';
 
 // Assets
 import logo from '/assets/logo_manage.png';
@@ -34,7 +33,7 @@ function Manage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await apiPublic.checkAuthStatus();
+        const response = await apiPublic.user.getAuthDetails();
         setAuthenticated(response.data.authenticated);
       } catch (error) {
         setAuthenticated(false);
@@ -69,7 +68,13 @@ function Manage() {
               <Dropdown>
                 <DropdownHeader><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
-                  <DropdownOption><Link>Bolsas</Link></DropdownOption>
+                  <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+                  {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                  </ContentLoader>
+                  {/* <DropdownOption><Link>Bolsas</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Maternidade</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Ecológicas</Link></DropdownOption>
                   <DropdownOption><Link>Bolsas Térmicas</Link></DropdownOption>
@@ -79,12 +84,12 @@ function Manage() {
                   <DropdownOption><Link>Malotes</Link></DropdownOption>
                   <DropdownOption><Link>Mochilas</Link></DropdownOption>
                   <DropdownOption><Link>Mochilas Saco</Link></DropdownOption>
-                  <DropdownOption><Link>Shoulder Bags</Link></DropdownOption>
+                  <DropdownOption><Link>Shoulder Bags</Link></DropdownOption> */}
                 </DropdownSubmenu>
               </Dropdown>
             </li>
             <li>
-              <Link to="/cagegorias">
+              <Link to="/produtos/cagegorias">
                 <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
                 <span>Categorias</span>
               </Link>

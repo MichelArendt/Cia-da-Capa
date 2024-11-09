@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 // Auth
-import apiPublic from '/src/services/api/public';
+import {apiPublic} from '/src/services/api';
 import useStore from '/src/store';
 
 // Shared components
@@ -30,8 +30,8 @@ const Login = () => {
 
   const handleLogin = async ({ name, password }, { setSubmitting, setFieldError }) => {
     try {
-      await apiPublic.fetchCsrfToken(); // Fetch CSRF token
-      const response = await apiPublic.login({ name, password });
+      // await apiPublic.fetchCsrfToken(); // Fetch CSRF token
+      const response = await apiPublic.user.login({ name, password });
 
     // Check if login was successful
       if (response.status === 200 && response.data.authenticated) {

@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const PUBLIC_BASE_URL = '/public';
+const MANAGE_BASE_URL = '/manage';
+
 const api = axios.create({
   baseURL: '/api',
   withCredentials: true, // Include cookies in requests
@@ -7,8 +10,8 @@ const api = axios.create({
 
 // Interceptor to handle specific status codes
 api.interceptors.response.use(
-  response => response, // Keep the default for successful responses
-  error => {
+  (response) => response, // Keep the default for successful responses
+  (error) => {
     if (error.response && error.response.status === 401) {
       // Return a custom response for 401 without throwing an error
       return { data: { authenticated: false }, status: 401 };
@@ -22,12 +25,12 @@ api.interceptors.response.use(
 api.interceptors.request.use(
   async (config) => {
     // Get the CSRF token from the cookie
-    const xsrfToken = getCookieValue('XSRF-TOKEN');
+    const xsrfToken = _getCookieValue('XSRF-TOKEN');
 
     if (!xsrfToken) {
       // If the token doesn't exist, fetch it from the server
-      await getCsrfToken();
-      config.headers['X-XSRF-TOKEN'] = getCookieValue('XSRF-TOKEN');
+      await _fetchCsrfToken();
+      config.headers['X-XSRF-TOKEN'] = _getCookieValue('XSRF-TOKEN');
     } else {
       config.headers['X-XSRF-TOKEN'] = xsrfToken;
     }
@@ -37,18 +40,68 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Helper function to get cookie values
-function getCookieValue(name) {
+// Private helper function to get cookie values
+function _getCookieValue(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? decodeURIComponent(match[2]) : null;
 }
 
-// Function to get CSRF token from the server
-async function getCsrfToken() {
+// Private function to fetch CSRF token from the server
+async function _fetchCsrfToken() {
   await axios.get('/api/sanctum/csrf-cookie', { withCredentials: true });
 }
 
+// Centralized request handler function
+const _requestHandler = async (method, url, data = null) => {
+  try {
+    const response = await api[method](url, data);
+    return response;
+  } catch (error) {
+    console.error(`Error in ${method.toUpperCase()} ${url}:`, error);
+  }
+};
 
-// Exporting the configured instance and helper functions if needed
-export { getCsrfToken };
-export default api;
+// Public API endpoints
+const apiPublic = {
+  products: {
+    list:                  () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/`),
+    getById:               (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/${id}`),
+    getCategory:           (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/${id}/categoria`),
+    listCategories:        () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias`),
+    getCategoryById:       (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias/${id}`),
+    listCategoryProducts:  (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias/${id}/produtos`),
+  },
+  user: {
+    getAuthDetails:        () =>            _requestHandler('get', `${PUBLIC_BASE_URL}/user`),
+    login:                 (credentials) => _requestHandler('post', `${PUBLIC_BASE_URL}/user/login`, credentials),
+  },
+  banners: {
+    list:                  () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/banners`),
+    getById:               (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/banners/${id}`),
+  },
+};
+
+// Manage API endpoints
+const apiManage = {
+  products: {
+    create:                (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/produtos`, data),
+    update:                (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/produtos/${id}`, data),
+    delete:                (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/produtos/${id}`),
+    categories: {
+      create:              (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/produtos/categorias`, data),
+      update:              (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/produtos/categorias/${id}`, data),
+      delete:              (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/produtos/categorias/${id}`),
+    },
+  },
+  user: {
+    logout:                () => _requestHandler('post', `${MANAGE_BASE_URL}/user/logout`),
+  },
+  banners: {
+    create:                (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/banners`, data),
+    update:                (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/banners/${id}`, data),
+    delete:                (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/banners/${id}`),
+  },
+};
+
+export { apiPublic, apiManage }; // Export both public and manage APIs
+export default api; // Also export the Axios instance in case direct access is needed
