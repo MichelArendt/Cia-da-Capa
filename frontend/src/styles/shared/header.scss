@@ -8,45 +8,52 @@
 $desktop-breakpoint: 900px;
 $header-size-mobile: 60px;
 $header-size-desktop: 100px;
-// normalize colors
-header, header button {
-  font-size: 20px;
+
+#root > header {
+  // display: flex;
+  background-color: yellow;
 }
 
-header {
-  position: fixed; /* Stay in place */
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  height: $header-size-mobile; // Use mobile size by default
-  background: $color-primary-2;
-  color: $color-secondary-2;
-  z-index: 1;
+// header, header button {
+//   font-size: 20px;
+// }
 
-  @media (min-width: $desktop-breakpoint) {
-    height: $header-size-desktop; // Use desktop size in larger screens
-  }
-}
 
-.header__contents {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 10px;
-  width: 100%;
-  max-width: 1920px;
-}
+// // HEADER
+// header {
+//   position: fixed; /* Stay in place */
+//   display: flex;
+//   justify-content: center;
+//   width: 100%;
+//   height: $header-size-mobile; // Use mobile size by default
+//   background: $color-primary-2;
+//   color: $color-secondary-2;
+//   z-index: 1;
 
-header a, header .dropdown, header button, .header__contents > .logo { // fill header height
-  height: 100%;
-}
-.header__contents > .logo {
-  padding: 10px;
+//   @media (min-width: $desktop-breakpoint) {
+//     height: $header-size-desktop; // Use desktop size in larger screens
+//   }
+// }
 
-  @media (min-width: $desktop-breakpoint) { // desktop fixes
-    padding: 20px 10px;
-  }
-}
+// .header__contents {
+//   display: flex;
+//   align-items: center;
+//   height: 100%;
+//   padding: 0 10px;
+//   width: 100%;
+//   max-width: 1920px;
+// }
+
+// header a, header .dropdown, header button, .header__contents > .logo { // fill header height
+//   height: 100%;
+// }
+// .header__contents > .logo {
+//   padding: 10px;
+
+//   @media (min-width: $desktop-breakpoint) { // desktop fixes
+//     padding: 20px 10px;
+//   }
+// }
 
 .logo {
   display: block;
@@ -58,77 +65,91 @@ header a, header .dropdown, header button, .header__contents > .logo { // fill h
   }
 }
 
-nav {
-  position: fixed;
-  width: 0;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  display: inline-flex; // accomodate close button on mobile
-  background-color: opacity-set($color-primary-2, 0.95);
-  z-index: 1;
-}
 
-nav .menu {
-  flex-grow: 4;
-  background-color: $color-primary-2;
-}
-nav .button-close {
-  flex-grow: 1;
-  text-align: center;
-  font-size: 50px;
-  line-height: 50%;
-  padding: 30px;
-  background-color: unset;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
+// // NAV
+// nav {
+//   position: fixed;
+//   width: 0;
+//   height: 100vh;
+//   top: 0;
+//   left: 0;
+//   overflow: hidden;
+//   display: inline-flex; // accomodate close button on mobile
+//   background-color: opacity-set($color-primary-2, 0.95);
+//   z-index: 1;
+// }
 
-nav .dropdown {
-  display: block;
+// nav .menu {
+//   flex-grow: 4;
+//   background-color: $color-primary-2;
+// }
+// nav .button-close {
+//   flex-grow: 1;
+//   text-align: center;
+//   font-size: 50px;
+//   line-height: 50%;
+//   padding: 30px;
+//   background-color: unset;
+//   display: flex;
+//   justify-content: center;
+//   align-items: flex-start;
+// }
 
-  .header {
-    width: 100%;
-    // background-color: yellow;
-  }
-}
+// nav .dropdown {
+//   display: block;
 
-@media (max-width: $desktop-breakpoint) { // mobile fixes
-  nav .logo {
-    padding: 10px;
-    height: 60px;
-  }
+//   .header {
+//     width: 100%;
+//     flex-flow: row-reverse;
+//     // background-color: yellow;
+//   }
+// }
 
-  nav .dropdown .submenu { // keep dropdown always visible on mobile nav
-    position: static !important;
-    max-height: 500px !important;
+// nav a, nav button { // undo justify-center for nav
+//   justify-content: left;
+// }
 
-    a {
-      padding-left: 40px;
-    }
-  }
-  nav .dropdown:hover .header {
-    svg {
-      transform: unset;// remove arrow rotate animation since dropdown on nav mobile is always open
-    }
-  }
-}
+// // MOBILE FIXES
+// @media (max-width: $desktop-breakpoint) {
+//   nav .logo {
+//     padding: 10px;
+//     height: 60px;
+//   }
 
-@media (min-width: $desktop-breakpoint) { // desktop fixes
-  header a:not(.logo), header button {
-    padding: 0 20px; // bigger nav button spacing
-  }
+//   nav .dropdown .submenu { // keep dropdown always visible on mobile nav
+//     position: static !important;
+//     max-height: 500px !important;
 
-  nav {
-    position: static;
-    width: fit-content; // fix from width
-    height: 100%;
-    overflow: visible; // enable dropdown to show
-  }
+//     a {
+//       padding-left: 40px;
+//     }
+//   }
 
-  .menu {
-    display: inline-flex; // stack menu items horizontally
-  }
-}
+//   nav .dropdown .header {
+//     flex-flow: row;
+//   }
+
+//   nav .dropdown:hover .header {
+//     svg {
+//       transform: unset;// remove arrow rotate animation since dropdown on nav mobile is always open
+//     }
+//   }
+// }
+
+
+// // DESKTOP FIXES
+// @media (min-width: $desktop-breakpoint) { // desktop fixes
+//   header a:not(.logo), header button {
+//     padding: 0 20px; // bigger nav button spacing
+//   }
+//   nav {
+//     position: static;
+//     width: fit-content; // fix from width
+//     height: 100%;
+//     overflow: visible; // enable dropdown to show
+//   }
+
+//   .menu {
+//     display: inline-flex; // stack menu items horizontally
+//   }
+// }

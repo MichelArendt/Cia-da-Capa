@@ -8,10 +8,73 @@
 @use 'header.scss';
 
 
+// ---------------------------
 // UTIL - VISIBILITY
+// ---------------------------
 * {
   transition: all 0.2s linear;
 }
+
+// ---------------------------
+// Website containers
+// ---------------------------
+.section--full-width {
+  width: 100%;
+}
+.website--max-width {
+  width: 100%;
+  max-width: 1920px;
+}
+
+// ---------------------------
+// Base Flex class
+// ---------------------------
+.flex {
+  display: flex !important;
+
+  /* Row (Horizontal) direction */
+  &--row {
+    flex-direction: row;
+
+    /* Horizontal centering in row */
+    &--center-horizontal {
+      justify-content: center;
+    }
+
+    /* Vertical centering in row */
+    &--center-vertical {
+      align-items: center;
+    }
+
+    /* Full center in row */
+    &--center {
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  /* Column (Vertical) direction */
+  &--column {
+    flex-direction: column;
+
+    /* Horizontal centering in column */
+    &--center-horizontal {
+      align-items: center;
+    }
+
+    /* Vertical centering in column */
+    &--center-vertical {
+      justify-content: center;
+    }
+
+    /* Full center in column */
+    &--center {
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
 .display-hidden {
   display: none;
 }
@@ -42,9 +105,21 @@
 
 #root {
   height: 100%;
+
+  // // center all children
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
+
+  // > * {
+  //   width: 100%;
+  // }
 }
 
+// ---------------------------
 // GENERAL
+// ---------------------------
 main {
   padding-top: 60px;
   height: 100%;
@@ -56,45 +131,114 @@ main {
   }
 }
 
-a, button, .dropdown {
-  @extend .poppins-light;
+
+// ---------------------------
+// SMART CONTENT
+// ---------------------------
+.smart-content {
+}
+
+.smart-content--dropdown, .smart-content--select, .smart-content--collapsible, .smart-content--list {
+  background-color: green;
+}
+.smart-content__header {
+}
+.smart-content__body {
+  background-color: green;
+}
+
+.smart-content__overlay {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
   display: flex;
-  align-items: center; // align svgs with span
-  color: $color-secondary-2;
-
-  svg {
-    fill: $color-secondary-2;
-  }
-}
-a, button {
-  padding: 5px;
-  gap: 5px;
+  align-items: center;
   justify-content: center;
-
-  &:hover {
-    background-color: lightness-add($color-primary-2, 10%);
-    color: $color-primary-1;
-
-    svg {
-      fill: $color-primary-1;
-    }
-  }
-}
-button, .dropdown .submenu {
-  background-color: $color-primary-2;
-  font-size: 20px;
-
-
-  // padding-block: 0px;
-  // padding-inline: 0px;
-  // padding: 5px;
-  // background-color: red;
-  // outline: none;
-  // height: 30px;
-  // line-height: normal;
+  background-color: orange;
+  z-index: 999;
 }
 
+.smart-content__close-button {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: none;
+  border: none;
+  font-size: 50px;
+  line-height: .5em;
+  cursor: pointer;
+}
+
+.smart-content__indicator {
+  display: inline-block;
+}
+
+.smart-content__indicator--open {
+  transform: rotate(180deg);
+}
+
+.smart-content__indicator--closed {
+  transform: rotate(0deg);
+}
+
+// .smart-content__body--dropdown, .smart-content__body--select {
+//   position: fixed;
+//   height: 100vh;
+//   width: 100vw;
+//   top: 0;
+//   left: 0;
+//   display: flex;
+//   flex-direction: column;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+.smart-content__container {
+  background:red;
+
+}
+.smart-content__title {
+
+}
+
+// ---------------------------
+// DROPDOWN
+// ---------------------------
+
+// a, button, .dropdown {
+//   @extend .poppins-light;
+//   display: flex;
+//   align-items: center; // align svgs with span
+//   color: $color-secondary-2;
+
+//   svg {
+//     fill: $color-secondary-2;
+//   }
+// }
+// a, button {
+//   padding: 5px;
+//   gap: 5px;
+//   justify-content: center;
+
+//   &:hover {
+//     background-color: lightness-add($color-primary-2, 10%);
+//     color: $color-primary-1;
+
+//     svg {
+//       fill: $color-primary-1;
+//     }
+//   }
+// }
+// button, .dropdown .submenu {
+//   background-color: $color-primary-2;
+//   font-size: 20px;
+// }
+
+// ---------------------------
 // FORM
+// ---------------------------
 form {
   // background-color: red;
   padding: 20px;
@@ -155,7 +299,9 @@ form .error-message {
   padding: 15px 0 !important;
 }
 
+// ---------------------------
 // CONTENT LOADER
+// ---------------------------
 .content-loader {
   display: flex;
   align-items: center;
@@ -178,41 +324,43 @@ form .error-message {
   100%{transform: rotate(1turn)}
 }
 
-// DROPDOWN
-.dropdown {
-  position: relative;
-  display: inline-block;
+// // DROPDOWN
+// .dropdown {
+//   position: relative;
+//   display: inline-block;
 
-}
+// }
 
-.dropdown .submenu  {
-  position: absolute;
-  max-height: 0; // for smooth hover animation
-  overflow: hidden;
-  white-space: nowrap;
+// .dropdown .submenu  {
+//   position: absolute;
+//   max-height: 0; // for smooth hover animation
+//   overflow: hidden;
+//   white-space: nowrap;
 
-  a {
-    padding: 5px 10px;
-  }
-}
+//   a {
+//     padding: 5px 10px;
+//   }
+// }
 
-.dropdown .submenu, .dropdown .option  {
-  min-width: 100%;
-}
+// .dropdown .submenu, .dropdown .option  {
+//   min-width: 100%;
+// }
 
-.dropdown:hover {
-  .header {
-    svg {
-      transform: rotate(180deg);
-    }
-  }
+// .dropdown:hover {
+//   .header {
+//     svg {
+//       transform: rotate(180deg);
+//     }
+//   }
 
-  .submenu {
-    max-height: 1000px; // for smooth hover animation
-  }
-}
+//   .submenu {
+//     max-height: 1000px; // for smooth hover animation
+//   }
+// }
 
+// ---------------------------
 // DROPDOWN ANIMATION
+// ---------------------------
 @keyframes nudge {
   0% {
     transform: translateX(0);

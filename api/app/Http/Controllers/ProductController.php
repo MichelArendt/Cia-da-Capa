@@ -21,7 +21,6 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
-
     /**
      * Highlight a product.
      *

@@ -13,8 +13,9 @@ import logo from '/assets/logo_manage.png';
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
-import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
+import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
 import ContentLoader from '/src/components/shared/ContentLoader'
+import Option from '../components/shared/header/navigation/Option';
 
 // /manage components
 import Login from '/src/pages/manage/Login';
@@ -59,7 +60,47 @@ function Manage() {
 
   return (
     <>
-      <Header
+      <Header>
+        <Dropdown>
+          <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
+          <DropdownSubmenu>
+            <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+            {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+              {(categories) => (
+                console.log(categories)
+              )}
+            </ContentLoader>
+          </DropdownSubmenu>
+        </Dropdown>
+
+        <Link to="produtos/categorias">
+          <Svg type="home" sizes={[16,16]} className='' />
+          <span>Categorias</span>
+        </Link>
+
+        <Link to="banners">
+          <Svg type="home" sizes={[16,16]} className='' />
+          <span>Banners</span>
+        </Link>
+
+        <Dropdown>
+          <DropdownHeader>
+            <Svg type='search' sizes={[30,30]} />
+          </DropdownHeader>
+          <DropdownSubmenu>
+            <button>
+              SEARCH
+            </button>
+          </DropdownSubmenu>
+        </Dropdown>
+
+        <button onClick={handleLogout}>
+          <Svg type="logout" sizes={[30,30]} />
+        </button>
+      </Header>
+
+      { false == true ? (
+        <Header
         isManageRoute={true}
         logo={logo}
         navOptions={
@@ -67,7 +108,7 @@ function Manage() {
             {/* Navigation options */}
             <li>
               <Dropdown>
-                <DropdownHeader><span>Produtos</span></DropdownHeader>
+                <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
                   <ContentLoader fetchData={apiPublic.fetchProductCategories}>
                   {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
@@ -78,12 +119,21 @@ function Manage() {
                 </DropdownSubmenu>
               </Dropdown>
             </li>
-            <li>
+
+            {/* <li>
               <Link to="produtos/categorias">
                 <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
                 <span>Categorias</span>
               </Link>
-            </li>
+            </li> */}
+
+            <Option>
+              <Link to="produtos/categorias">
+                <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
+                <span>Categorias</span>
+              </Link>
+            </Option>
+
             <li>
               <Link to="banners">
                 <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
@@ -95,45 +145,57 @@ function Manage() {
         navButtons={
           <>
             {/* Navigation buttons */}
-            <button>
-              <Svg type="search" sizes={[30,30]} />
-            </button>
+            <Option>
+              <Dropdown>
+                <DropdownHeader>
+                  <Svg type='search' sizes={[30,30]} />
+                </DropdownHeader>
+                <DropdownSubmenu>
+                  <button>
+                    <Svg type="search" sizes={[30,30]} />
+                  </button>
+                </DropdownSubmenu>
+              </Dropdown>
+            </Option>
 
             <button onClick={handleLogout}>
               <Svg type="logout" sizes={[30,30]} />
             </button>
           </>
         }
-      >
-      </Header>
-      <main>
+        >
+        </Header>
 
-        {loading ? (
-          // Display a loading component while checking authentication
-          <ContentLoader />
-        ) : (
-          // Render routes once loading is complete
-          <Routes>
-            {/* Public route: Login */}
-            <Route path="/user/login" element={<Login />} />
+      ) : ('')}
+      <main className='section--full-width flex flex--row flex--row--center-horizontal'>
+        <div className="website--max-width">
+          {loading ? (
+            // Display a loading component while checking authentication
+            <ContentLoader />
+          ) : (
+            // Render routes once loading is complete
+            <Routes>
+              {/* Public route: Login */}
+              <Route path="/user/login" element={<Login />} />
 
-            {/* Protected routes */}
-            <Route
-              path="/*"
-              element={
-                <ProtectedRoutes>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="produtos/categorias" element={<Categories />} />
-                    {/* Add more protected routes here */}
-                    {/* Catch-all route for unmatched paths */}
-                    <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
-                </ProtectedRoutes>
-              }
-            />
-          </Routes>
-        )}
+              {/* Protected routes */}
+              <Route
+                path="/*"
+                element={
+                  <ProtectedRoutes>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="produtos/categorias" element={<Categories />} />
+                      {/* Add more protected routes here */}
+                      {/* Catch-all route for unmatched paths */}
+                      <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                  </ProtectedRoutes>
+                }
+              />
+            </Routes>
+          )}
+        </div>
       </main>
     </>
   );

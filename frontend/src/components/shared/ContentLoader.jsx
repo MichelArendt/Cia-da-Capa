@@ -26,6 +26,8 @@ export function ContentLoader({ fetchData, children, emptyMessage = "Vazio" }) {
     // Check if fetchData is a function before calling it
     if (typeof fetchData === 'function') {
       loadData();
+    } else {
+      setStatus('EMPTY');
     }
   }, [fetchData]);
 

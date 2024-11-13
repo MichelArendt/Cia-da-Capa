@@ -41,7 +41,7 @@ function Main() {
             </li>
             <li>
               <Dropdown>
-                <DropdownHeader><span>Produtos</span></DropdownHeader>
+                <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
                 <DropdownSubmenu>
                   <ContentLoader fetchData={apiPublic.fetchProductCategories}>
                   {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import React from 'react';
-import Svg from './Svg';
 
 export function Dropdown ({children}) {
 	// Animation
@@ -26,10 +25,9 @@ export function Dropdown ({children}) {
  );
 }
 
-export function DropdownHeader ({children, toggleAnimation}) {
+export function DropdownHeader ({toggleAnimation, children}) {
   return (
     <button className='header' onClick={toggleAnimation}>
-      <Svg type='arrow_drop_down' />
       {children}
     </button>
   );
@@ -50,12 +48,12 @@ export function DropdownSubmenu ({children, triggerAnimation}) {
   );
 }
 
-export function DropdownOption ({children, style}) {
-  return (
-    <div className='option' style={style}>
-      {children}
-    </div>
-  );
-}
+// export function DropdownOption ({children, style}) {
+//   return (
+//     <div className='option' style={style}>
+//       {children}
+//     </div>
+//   );
+// }
 
 export default Dropdown;

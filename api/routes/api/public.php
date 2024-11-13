@@ -13,12 +13,12 @@ Route::get('/user', [UserController::class, 'checkAuthStatus']);
 Route::post('/user/login', [UserController::class, 'login'])->middleware('throttle:login');
 
 // Product Categories
-Route::get('/products/categories', [ProductCategoryController::class, 'index']);
+Route::get('/produtos/categorias', [ProductCategoryController::class, 'index']);
 
 // Products
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{id}', [ProductController::class, 'show']);
-Route::get('/products/{id}/category', [ProductController::class, 'category']);
+Route::get('/produtos', [ProductController::class, 'index']);
+Route::get('/produtos/{id}', [ProductController::class, 'show']);
+Route::get('/produtos/{id}/categoria', [ProductController::class, 'category']);
 
 // fallback route can capture any unmatched routes and log them
 Route::fallback(function () {
