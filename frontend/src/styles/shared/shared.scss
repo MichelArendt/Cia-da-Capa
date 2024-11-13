@@ -144,9 +144,10 @@ main {
 .smart-content__header {
 }
 .smart-content__body {
-  background-color: green;
+  // background-color: green;
 }
 
+/* Overlay Content */
 .smart-content__overlay {
   position: fixed;
   height: 100vh;
@@ -158,6 +159,13 @@ main {
   justify-content: center;
   background-color: orange;
   z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.smart-content__overlay--visible {
+  visibility: visible;
+  opacity: 1;
 }
 
 .smart-content__close-button {
@@ -171,6 +179,7 @@ main {
   cursor: pointer;
 }
 
+/* Indicator styles */
 .smart-content__indicator {
   display: inline-block;
 }
@@ -181,6 +190,25 @@ main {
 
 .smart-content__indicator--closed {
   transform: rotate(0deg);
+}
+
+/* Wrapper */
+.smart-content__wrapper {
+  /* Common styles for wrapper if any */
+}
+
+/* Collapsible Content */
+.smart-content__wrapper--collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+
+  > .smart-content__body {
+    overflow: hidden;
+  }
+}
+
+.smart-content__wrapper--collapsible--visible {
+  grid-template-rows: 1fr;
 }
 
 // .smart-content__body--dropdown, .smart-content__body--select {

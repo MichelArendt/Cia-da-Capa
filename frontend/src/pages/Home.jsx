@@ -70,10 +70,10 @@ function Home() {
 
       <div>Welcome to the Home Page!</div>
       <SmartContent
-        contentType={SmartContentType.List}
+        contentType={SmartContentType.Dropdown}
       >
         <SmartContentHeader>
-          Dropdown with list nested
+          NAV - Dropdown list nested
         </SmartContentHeader>
 
         <SmartContentBody>
