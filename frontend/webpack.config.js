@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin } = require('webpack');
+const LiveReloadPlugin = require('webpack-livereload-plugin'); // Import LiveReloadPlugin
 const crypto = require('crypto');
 
 const buildPath = path.resolve(__dirname, '../build'); // Build directory
@@ -16,7 +17,7 @@ const deploymentPublicPaths = {
 };
 
 module.exports = (_, argv) => {
-  const environment = process.env.ENVIRONMENT || '/'; // Default to 'local' if not specified
+  const environment = process.env.ENVIRONMENT || '/'; // Default to root if not specified
   const isProduction = argv.mode === 'production';
   const publicPath = deploymentPublicPaths[environment] || '/';
 
@@ -31,9 +32,11 @@ module.exports = (_, argv) => {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           exclude: /node_modules/,
-          use: 'babel-loader'
+          use: {
+            loader: 'babel-loader',
+          },
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
@@ -50,7 +53,7 @@ module.exports = (_, argv) => {
       ]
     },
     resolve: {
-      extensions: ['.js', '.jsx']
+      extensions: ['.tsx', '.ts', '.js', '.jsx'],
     },
     plugins: [
       // Define the PUBLIC_URL environment variable
@@ -78,6 +81,13 @@ module.exports = (_, argv) => {
           },
         ],
       }),
-    ],
+
+      // Only add LiveReloadPlugin in development mode
+      !isProduction && new LiveReloadPlugin({
+        protocol: 'http',      // Set to 'http' to match Apache's protocol
+        port: 35729,           // Change this port if needed
+        appendScriptTag: true, // Inject the LiveReload script automatically
+      }),
+    ].filter(Boolean), // Filter out LiveReloadPlugin in production mode
   }
 };
