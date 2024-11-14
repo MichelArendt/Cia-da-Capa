@@ -69,6 +69,18 @@ function Home() {
 
 
       <div>Welcome to the Home Page!</div>
+      <SmartContent contentType={SmartContentType.Slider} slideDirection="right">
+        <SmartContentHeader>
+          <button>Open Slider</button>
+        </SmartContentHeader>
+        <SmartContentBody title="My Slider">
+          {/* Slider content here */}
+          <p>This is the slider content.</p>
+        </SmartContentBody>
+      </SmartContent>
+
+
+      <div>Welcome to the Home Page!</div>
       <SmartContent
         contentType={SmartContentType.Dropdown}
       >

@@ -75,7 +75,7 @@ function Manage() {
                 </Link>
               </SmartContentHeader>
               <SmartContentBody>
-                <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+                <ContentLoader fetchData={apiPublic.products.listCategories}>
                     {(categories) => (
                       console.log(categories)
                     )}

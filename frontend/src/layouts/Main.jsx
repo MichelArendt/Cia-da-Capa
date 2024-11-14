@@ -48,7 +48,7 @@ function Main() {
                 </Link>
               </SmartContentHeader>
               <SmartContentBody>
-                <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+                <ContentLoader fetchData={apiPublic.products.listCategories}>
                     {(categories) => (
                       console.log(categories)
                     )}
@@ -74,9 +74,19 @@ function Main() {
               </SmartContentBody>
             </SmartContent>
 
-            <button>
+					  <SmartContent contentType={SmartContentType.Dropdown}>
+              <SmartContentHeader hideDropdownArrow={true}>
               <Svg type="remove_shopping_cart" sizes={[30,30]} />
-            </button>
+              </SmartContentHeader>
+              <SmartContentBody title='Carrinho de orçamento'>
+                1x pasta
+              </SmartContentBody>
+            </SmartContent>
+
+
+            {/* <button>
+              <Svg type="remove_shopping_cart" sizes={[30,30]} />
+            </button> */}
           </>
         }
       />

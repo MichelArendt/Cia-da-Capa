@@ -60,6 +60,7 @@ const ContentLoader = <T,>(props: ContentLoaderProps<T>) => {
             setInternalStatus(ContentLoaderStatus.EMPTY);
           }
         } catch (error) {
+          // console.error('Passed:', fetchData);
           console.error('Error fetching data:', error);
           // Error occurred while fetching data
           setInternalStatus(ContentLoaderStatus.EMPTY);
