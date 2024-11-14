@@ -1,17 +1,29 @@
 // Workaround due to VSCode extensions not supporting
 // correct Intellisense for variables imported though @use
+@forward '_variables';
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
+
+@use '_variables' as *;
 @use '_colors' as *;
 
-$desktop-breakpoint: 900px;
-$header-size-mobile: 60px;
-$header-size-desktop: 100px;
-
-#root > header {
+.website__header {
   // display: flex;
   background-color: yellow;
+}
+
+.website__nav {
+}
+
+.header__logo {
+  display: block;
+  height: 40px;
+  flex-grow: 1;
+
+  > img {
+    height: 100%;
+  }
 }
 
 // header, header button {
@@ -54,16 +66,6 @@ $header-size-desktop: 100px;
 //     padding: 20px 10px;
 //   }
 // }
-
-.logo {
-  display: block;
-  height: 40px;
-  flex-grow: 1;
-
-  > img {
-    height: 100%;
-  }
-}
 
 
 // // NAV

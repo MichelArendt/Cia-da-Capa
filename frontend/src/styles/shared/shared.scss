@@ -1,9 +1,11 @@
 // Workaround due to VSCode extensions not supporting
 // correct Intellisense for variables imported though @use
+@forward '_variables';
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
 
+@use '_variables' as *;
 @use '_colors' as *;
 @use 'header.scss';
 
@@ -74,19 +76,19 @@
 // ---------------------------
 // UTIL - VISIBILITY
 // ---------------------------
-.display-hidden {
+.display--hidden {
   display: none;
 }
-.display-visible {
+.display--visible {
   display: block;
 }
-@media (min-width: 900px) {
-  .display__hide_on-desktop {
+@media (min-width: $breakpoint--desktop) {
+  .display--hidden--desktop {
     display: none !important;
   }
 }
-@media (max-width: 900px) {
-  .display__hide_on-mobile {
+@media (max-width: $breakpoint--desktop) {
+  .display--hidden--mobile {
     display: none !important;
   }
 }
@@ -104,6 +106,9 @@
   border: 0;
 }
 
+// ---------------------------
+// GENERAL
+// ---------------------------
 #root {
   height: 100%;
 
@@ -118,17 +123,14 @@
   // }
 }
 
-// ---------------------------
-// GENERAL
-// ---------------------------
-main {
-  padding-top: 60px;
+.website__main {
+  // padding-top: 60px;
   height: 100%;
 }
 
-@media (min-width: 900px) {
-  main {
-    padding-top: 100px;
+@media (min-width: $breakpoint--desktop) {
+  .website__main {
+    // padding-top: 100px;
   }
 }
 
@@ -333,13 +335,18 @@ form .error-message {
 // ---------------------------
 .content-loader {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 5px;
   height: 100%;
 }
 
-.loader .spinner {
+.content-loader__spinner-container{
+  padding: 5px;
+}
+
+.content-loader__spinner-container .content-loader__spinner {
   width: 50px;
   aspect-ratio: 1;
   border-radius: 50%;
