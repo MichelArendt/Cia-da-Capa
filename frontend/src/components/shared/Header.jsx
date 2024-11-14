@@ -8,13 +8,23 @@ import useMenuStore from '/src/store/menuStore';
 
 // Shared
 // import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
+import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+import ContentLoader from '/src/components/shared/ContentLoader';
 import Svg from '/src/components/shared/Svg';
-
 import defaultLogo from '/assets/logo_only_text.png';
 // import Hierarchy, { HierarchyType } from '/src/components/shared/Hierarchy';
 
+// APIs
+import {apiPublic} from '/src/services/api';
 
-const Header = ({ isManageRoute = false, logo = defaultLogo, navOptions, navButtons, children }) => {
+const Header = ({
+	isManageRoute = false,
+	logo = defaultLogo,
+	navResponsiveMenuTitle,
+	navResponsiveMenuOptions,
+	navPermanentButtons,
+	children }
+) => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
 	const { isOpen, toggleMenu } = useMenuStore();
 
@@ -39,46 +49,27 @@ const Header = ({ isManageRoute = false, logo = defaultLogo, navOptions, navButt
 	// }, [ isOpen ]);
 
 	return(
-		<header className='section--full-width flex flex--row flex--row--center-horizontal poppins-light'>
-				<nav className='website--max-width flex'>
-					{/* <Hierarchy>
-						<Hierarchy.Item label="Click to expand" isCollapsible>
-							<p>This content can be expanded or collapsed.</p>
-						</Hierarchy.Item>
-					</Hierarchy> */}
-
-
-
-
-
-
-
-
-
-
-
-
-					{/* <Dropdown>
-						<DropdownHeader sizes={[12,12]}>
-							<button
-								className=''
-								onClick={toggleMenu}
-							>
+		<header className='website__header section--full-width flex flex--row flex--row--center-horizontal poppins-light'>
+				<nav className='website__nav website--max-width flex'>
+					{/* Hide menu if manage route and not authenticated */}
+					{(!isManageRoute || isAuthenticated) ? (
+						<SmartContent contentType={SmartContentType.Dropdown}>
+							<SmartContentHeader hideDropdownArrow={true}>
 								<Svg type="menu" sizes={[30,30]} />
-							</button>
-						</DropdownHeader>
-						<DropdownSubmenu>
-							{children}
-						</DropdownSubmenu>
-					</Dropdown>
+							</SmartContentHeader>
 
-					<Link to={`/${isManageRoute ? 'manage' : ''}`} className='logo' >
+							<SmartContentBody title={navResponsiveMenuTitle}>
+								{navResponsiveMenuOptions}
+							</SmartContentBody>
+						</SmartContent>
+					) : ''}
+
+					<Link to={`/${isManageRoute ? 'manage' : ''}`} className='header__logo' >
 						<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
 					</Link>
-					<button className="button-close " onClick={toggleMenu} ref={closeButtonRef}>
-						<Svg type="close" sizes={[32,32]} className='' />
-					</button> */}
 				</nav>
+				{/* Hide permanent buttons if manage route and not authenticated */}
+				{(!isManageRoute || isAuthenticated) ? navPermanentButtons : ''}
 
 
 			{/* <div className='website--max-width'>

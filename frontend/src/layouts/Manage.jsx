@@ -13,8 +13,9 @@ import logo from '/assets/logo_manage.png';
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
+import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
-import ContentLoader from '/src/components/shared/ContentLoader'
+import ContentLoader, { ContentLoaderStatus } from '/src/components/shared/ContentLoader'
 import Option from '../components/shared/header/navigation/Option';
 
 // /manage components
@@ -60,118 +61,65 @@ function Manage() {
 
   return (
     <>
-      <Header>
-        <Dropdown>
-          <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
-          <DropdownSubmenu>
-            <ContentLoader fetchData={apiPublic.fetchProductCategories}>
-            {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
-              {(categories) => (
-                console.log(categories)
-              )}
-            </ContentLoader>
-          </DropdownSubmenu>
-        </Dropdown>
-
-        <Link to="produtos/categorias">
-          <Svg type="home" sizes={[16,16]} className='' />
-          <span>Categorias</span>
-        </Link>
-
-        <Link to="banners">
-          <Svg type="home" sizes={[16,16]} className='' />
-          <span>Banners</span>
-        </Link>
-
-        <Dropdown>
-          <DropdownHeader>
-            <Svg type='search' sizes={[30,30]} />
-          </DropdownHeader>
-          <DropdownSubmenu>
-            <button>
-              SEARCH
-            </button>
-          </DropdownSubmenu>
-        </Dropdown>
-
-        <button onClick={handleLogout}>
-          <Svg type="logout" sizes={[30,30]} />
-        </button>
-      </Header>
-
-      { false == true ? (
-        <Header
+      <Header
         isManageRoute={true}
         logo={logo}
-        navOptions={
+        navResponsiveMenuTitle="Cia da Capa - Gerenciamento"
+        navResponsiveMenuOptions={
           <>
-            {/* Navigation options */}
-            <li>
-              <Dropdown>
-                <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
-                <DropdownSubmenu>
-                  <ContentLoader fetchData={apiPublic.fetchProductCategories}>
-                  {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+            <SmartContent contentType={SmartContentType.List}>
+              <SmartContentHeader>
+                <Link to="/">
+                  <Svg type="home" sizes={[16,16]} />
+                  <span>Produtos</span>
+                </Link>
+              </SmartContentHeader>
+              <SmartContentBody>
+                <ContentLoader fetchData={apiPublic.fetchProductCategories}>
                     {(categories) => (
                       console.log(categories)
                     )}
                   </ContentLoader>
-                </DropdownSubmenu>
-              </Dropdown>
-            </li>
+              </SmartContentBody>
+            </SmartContent>
 
-            {/* <li>
-              <Link to="produtos/categorias">
-                <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
-                <span>Categorias</span>
-              </Link>
-            </li> */}
+            <Link to="produtos/categorias">
+              <Svg type="home" sizes={[16,16]} className='' />
+              <span>Categorias</span>
+            </Link>
 
-            <Option>
-              <Link to="produtos/categorias">
-                <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
-                <span>Categorias</span>
-              </Link>
-            </Option>
-
-            <li>
-              <Link to="banners">
-                <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
-                <span>Banners</span>
-              </Link>
-            </li>
+            <Link to="banners">
+              <Svg type="home" sizes={[16,16]} className='' />
+              <span>Banners</span>
+            </Link>
           </>
         }
-        navButtons={
+        navPermanentButtons={
           <>
-            {/* Navigation buttons */}
-            <Option>
-              <Dropdown>
-                <DropdownHeader>
-                  <Svg type='search' sizes={[30,30]} />
-                </DropdownHeader>
-                <DropdownSubmenu>
-                  <button>
-                    <Svg type="search" sizes={[30,30]} />
-                  </button>
-                </DropdownSubmenu>
-              </Dropdown>
-            </Option>
+            <SmartContent contentType={SmartContentType.Dropdown}>
+              <SmartContentHeader hideDropdownArrow={true}>
+                <Svg type="search" sizes={[30,30]} />
+              </SmartContentHeader>
+              <SmartContentBody title='pesquisa'>
+                <input type='text' />
+              </SmartContentBody>
+            </SmartContent>
 
             <button onClick={handleLogout}>
               <Svg type="logout" sizes={[30,30]} />
             </button>
           </>
         }
-        >
-        </Header>
-
-      ) : ('')}
-      <main className='section--full-width flex flex--row flex--row--center-horizontal'>
+      />
+      <main className='website__main section--full-width flex flex--row flex--row--center-horizontal'>
         <div className="website--max-width">
           {loading ? (
             // Display a loading component while checking authentication
-            <ContentLoader />
+            <ContentLoader
+              displayMessage="Verificando autenticação"
+              status = { ContentLoaderStatus.LOADING }
+              fallbackContent={<span>Não autenticado. Redirecionando!</span>}
+            />
           ) : (
             // Render routes once loading is complete
             <Routes>
@@ -199,6 +147,148 @@ function Manage() {
       </main>
     </>
   );
+
+  // return (
+  //   <>
+  //     <Header>
+  //       <Dropdown>
+  //         <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
+  //         <DropdownSubmenu>
+  //           <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+  //           {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+  //             {(categories) => (
+  //               console.log(categories)
+  //             )}
+  //           </ContentLoader>
+  //         </DropdownSubmenu>
+  //       </Dropdown>
+
+  //       <Link to="produtos/categorias">
+  //         <Svg type="home" sizes={[16,16]} className='' />
+  //         <span>Categorias</span>
+  //       </Link>
+
+  //       <Link to="banners">
+  //         <Svg type="home" sizes={[16,16]} className='' />
+  //         <span>Banners</span>
+  //       </Link>
+
+  //       <Dropdown>
+  //         <DropdownHeader>
+  //           <Svg type='search' sizes={[30,30]} />
+  //         </DropdownHeader>
+  //         <DropdownSubmenu>
+  //           <button>
+  //             SEARCH
+  //           </button>
+  //         </DropdownSubmenu>
+  //       </Dropdown>
+
+  //       <button onClick={handleLogout}>
+  //         <Svg type="logout" sizes={[30,30]} />
+  //       </button>
+  //     </Header>
+
+  //     { false == true ? (
+  //       <Header
+  //       isManageRoute={true}
+  //       logo={logo}
+  //       navOptions={
+  //         <>
+  //           {/* Navigation options */}
+  //           <li>
+  //             <Dropdown>
+  //               <DropdownHeader sizes={[12,12]}><span>Produtos</span></DropdownHeader>
+  //               <DropdownSubmenu>
+  //                 <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+  //                 {/* <ContentLoader fetchData={apiPublic.fetchProductCategories()}> */}
+  //                   {(categories) => (
+  //                     console.log(categories)
+  //                   )}
+  //                 </ContentLoader>
+  //               </DropdownSubmenu>
+  //             </Dropdown>
+  //           </li>
+
+  //           {/* <li>
+  //             <Link to="produtos/categorias">
+  //               <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
+  //               <span>Categorias</span>
+  //             </Link>
+  //           </li> */}
+
+  //           <Option>
+  //             <Link to="produtos/categorias">
+  //               <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
+  //               <span>Categorias</span>
+  //             </Link>
+  //           </Option>
+
+  //           <li>
+  //             <Link to="banners">
+  //               <Svg type="home" sizes={[16,16]} className='display__hide_on-desktop' />
+  //               <span>Banners</span>
+  //             </Link>
+  //           </li>
+  //         </>
+  //       }
+  //       navButtons={
+  //         <>
+  //           {/* Navigation buttons */}
+  //           <Option>
+  //             <Dropdown>
+  //               <DropdownHeader>
+  //                 <Svg type='search' sizes={[30,30]} />
+  //               </DropdownHeader>
+  //               <DropdownSubmenu>
+  //                 <button>
+  //                   <Svg type="search" sizes={[30,30]} />
+  //                 </button>
+  //               </DropdownSubmenu>
+  //             </Dropdown>
+  //           </Option>
+
+  //           <button onClick={handleLogout}>
+  //             <Svg type="logout" sizes={[30,30]} />
+  //           </button>
+  //         </>
+  //       }
+  //       >
+  //       </Header>
+
+  //     ) : ('')}
+  //     <main className='section--full-width flex flex--row flex--row--center-horizontal'>
+  //       <div className="website--max-width">
+  //         {loading ? (
+  //           // Display a loading component while checking authentication
+  //           <ContentLoader />
+  //         ) : (
+  //           // Render routes once loading is complete
+  //           <Routes>
+  //             {/* Public route: Login */}
+  //             <Route path="/user/login" element={<Login />} />
+
+  //             {/* Protected routes */}
+  //             <Route
+  //               path="/*"
+  //               element={
+  //                 <ProtectedRoutes>
+  //                   <Routes>
+  //                     <Route path="/" element={<Dashboard />} />
+  //                     <Route path="produtos/categorias" element={<Categories />} />
+  //                     {/* Add more protected routes here */}
+  //                     {/* Catch-all route for unmatched paths */}
+  //                     <Route path="*" element={<Navigate to="/" />} />
+  //                   </Routes>
+  //                 </ProtectedRoutes>
+  //               }
+  //             />
+  //           </Routes>
+  //         )}
+  //       </div>
+  //     </main>
+  //   </>
+  // );
 }
 
 export default Manage;

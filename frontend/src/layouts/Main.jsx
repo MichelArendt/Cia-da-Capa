@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
+import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
 // Main website components
@@ -27,6 +28,65 @@ function Main() {
 
   //   loadCategories();
   // }, []);
+
+  return (
+    <>
+      <Header
+        navResponsiveMenuTitle="Cia da Capa"
+        navResponsiveMenuOptions={
+          <>
+            <Link to="/">
+              <Svg type="home" sizes={[16,16]} />
+              <span>Página Inicial</span>
+            </Link>
+
+            <SmartContent contentType={SmartContentType.List}>
+              <SmartContentHeader>
+                <Link to="/">
+                  <Svg type="home" sizes={[16,16]} />
+                  <span>Produtos</span>
+                </Link>
+              </SmartContentHeader>
+              <SmartContentBody>
+                <ContentLoader fetchData={apiPublic.fetchProductCategories}>
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                  </ContentLoader>
+              </SmartContentBody>
+            </SmartContent>
+
+            <Link to="/">
+              <Svg type="email" sizes={[16,16]} className='display__hide_on-desktop' />
+              <span>Contato</span>
+            </Link>
+          </>
+        }
+
+        navPermanentButtons={
+          <>
+					  <SmartContent contentType={SmartContentType.Dropdown}>
+              <SmartContentHeader hideDropdownArrow={true}>
+                <Svg type="search" sizes={[30,30]} />
+              </SmartContentHeader>
+              <SmartContentBody title='pesquisa'>
+                <input type='text' />
+              </SmartContentBody>
+            </SmartContent>
+
+            <button>
+              <Svg type="remove_shopping_cart" sizes={[30,30]} />
+            </button>
+          </>
+        }
+      />
+      <main className='website__main'>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
+    </>
+  );
 
   return (
     <>
