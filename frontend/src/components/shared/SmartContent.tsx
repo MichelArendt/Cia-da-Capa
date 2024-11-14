@@ -109,14 +109,14 @@ const SmartContent: FC<SmartContentProps> = ({
 
 // Interface for SmartContentHeader props
 interface SmartContentHeaderProps {
-  hideDropdownArrow?: boolean;
+  hideArrow?: boolean;
   children: ReactNode;
   className?: string;
 }
 
 // SmartContentHeader component
 export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
-  hideDropdownArrow = false,
+  hideArrow = false,
   children,
   className = '',
 }) => {
@@ -175,8 +175,8 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
     >
       {children}
 
-      {/* Display the indicator if the header is clickable and hideDropdownArrow is false */}
-      {isClickable && !hideDropdownArrow && (
+      {/* Display the indicator if the header is clickable and hideArrow is false */}
+      {isClickable && !hideArrow && contentType !== SmartContentType.Slider && (
         <span className={indicatorClass} aria-hidden="true">
           ▼
         </span>

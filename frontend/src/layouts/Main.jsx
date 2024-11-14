@@ -66,7 +66,7 @@ function Main() {
         navPermanentButtons={
           <>
 					  <SmartContent contentType={SmartContentType.Dropdown}>
-              <SmartContentHeader hideDropdownArrow={true}>
+              <SmartContentHeader hideArrow={true}>
                 <Svg type="search" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='pesquisa'>
@@ -74,8 +74,8 @@ function Main() {
               </SmartContentBody>
             </SmartContent>
 
-					  <SmartContent contentType={SmartContentType.Dropdown}>
-              <SmartContentHeader hideDropdownArrow={true}>
+            <SmartContent contentType={SmartContentType.Slider} slideDirection="right">
+              <SmartContentHeader>
               <Svg type="remove_shopping_cart" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='Carrinho de orçamento'>

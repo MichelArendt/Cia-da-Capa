@@ -97,7 +97,7 @@ function Manage() {
         navPermanentButtons={
           <>
             <SmartContent contentType={SmartContentType.Dropdown}>
-              <SmartContentHeader hideDropdownArrow={true}>
+              <SmartContentHeader>
                 <Svg type="search" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='pesquisa'>

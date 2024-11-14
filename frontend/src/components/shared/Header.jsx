@@ -54,7 +54,7 @@ const Header = ({
 					{/* Hide menu if manage route and not authenticated */}
 					{(!isManageRoute || isAuthenticated) ? (
 						<SmartContent contentType={SmartContentType.Dropdown}>
-							<SmartContentHeader hideDropdownArrow={true}>
+							<SmartContentHeader hideArrow={true}>
 								<Svg type="menu" sizes={[30,30]} />
 							</SmartContentHeader>
 
