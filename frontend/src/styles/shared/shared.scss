@@ -7,10 +7,6 @@
 @use '_colors' as *;
 @use 'header.scss';
 
-
-// ---------------------------
-// UTIL - VISIBILITY
-// ---------------------------
 * {
   transition: all 0.2s linear;
 }
@@ -75,6 +71,9 @@
   }
 }
 
+// ---------------------------
+// UTIL - VISIBILITY
+// ---------------------------
 .display-hidden {
   display: none;
 }
@@ -91,6 +90,8 @@
     display: none !important;
   }
 }
+
+/* Screen reader only */
 .sr-only {
   position: absolute;
   width: 1px;
