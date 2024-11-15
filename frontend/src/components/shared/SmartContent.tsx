@@ -306,7 +306,7 @@ export const SmartContentBody: FC<SmartContentBodyProps> = ({
   // Event handler to close the overlay when clicking outside (for overlay content)
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      closeOverlay();
+      if (closeOverlay) closeOverlay();
     }
   };
 
