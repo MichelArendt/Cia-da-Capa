@@ -57,18 +57,32 @@ const SmartContent: FC<SmartContentProps> = ({
 
   // Function to toggle the content open/closed
   const toggleOverlay = () => {
-    setIsOpen((prev) => !prev);
+    setIsOpen((prev) => {
+      if (prev) {
+        closeOverlay();
+      } else {
+        openOverlay();
+      }
+      return !prev;
+    });
   };
 
   // Function to open the content
   const openOverlay = () => {
     setIsOpen(true);
+    setBodyOverflowY(true);
   };
 
   // Function to close the content (may be used by Zustand store later)
   const closeOverlay = () => {
     setIsOpen(false);
+    setBodyOverflowY(false);
   };
+
+  const setBodyOverflowY = (isEnabled: boolean) => {
+    document.body.style.overflowY = isEnabled ? 'hidden' : 'auto';
+  };
+
 
   // Determine if the content should be full-screen on mobile devices
   const fullScreenOnMobile =
