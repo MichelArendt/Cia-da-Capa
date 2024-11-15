@@ -18,12 +18,17 @@ export enum SmartContentType {
 // Context interface
 interface SmartContentContextProps {
   isOpen: boolean;
-  toggleOverlay: () => void;
-  openOverlay: () => void;
-  closeOverlay: () => void;
+  // Overlay content functions
+  toggleOverlay?: () => void;
+  openOverlay?: () => void;
+  closeOverlay?: () => void;
+  // Non-overlay content functions
+  openContent?: () => void;
+  closeContent?: () => void;
+  toggleContent?: () => void;
   contentType: SmartContentType;
   fullScreenOnMobile: boolean;
-  alwaysOverlay: boolean; // Added to handle always overlay content
+  alwaysOverlay: boolean; // to handle always overlay content
   slideDirection?: 'left' | 'right' | 'top' | 'bottom'; // Direction for Slider
 }
 
@@ -55,34 +60,55 @@ const SmartContent: FC<SmartContentProps> = ({
   // State to track if the content is open
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
-  // Function to toggle the content open/closed
-  const toggleOverlay = () => {
-    setIsOpen((prev) => {
-      if (prev) {
-        closeOverlay();
-      } else {
-        openOverlay();
-      }
-      return !prev;
-    });
+  // Function to prevent background scrolling when overlay is open
+  const setBodyOverflowY = (isEnabled: boolean) => {
+    document.body.style.overflowY = isEnabled ? 'hidden' : 'auto';
   };
 
-  // Function to open the content
+  // -------------------------
+  // Functions for Overlay Content Types
+  // -------------------------
+
+  // Function to open the overlay content
   const openOverlay = () => {
     setIsOpen(true);
     setBodyOverflowY(true);
   };
 
-  // Function to close the content (may be used by Zustand store later)
+  // Function to close the overlay content (may be used by Zustand store later)
   const closeOverlay = () => {
     setIsOpen(false);
     setBodyOverflowY(false);
   };
 
-  const setBodyOverflowY = (isEnabled: boolean) => {
-    document.body.style.overflowY = isEnabled ? 'hidden' : 'auto';
+  // Function to toggle the overlay content
+  const toggleOverlay = () => {
+    if (isOpen) {
+      closeOverlay();
+    } else {
+      openOverlay();
+    }
   };
 
+  // -------------------------
+  // Functions for Non-Overlay Content Types
+  // (separated from overlay functions for clarity)
+  // -------------------------
+
+  // Function to open the non-overlay content
+  const openContent = () => {
+    setIsOpen(true);
+  };
+
+  // Function to close the non-overlay content
+  const closeContent = () => {
+    setIsOpen(false);
+  };
+
+  // Function to toggle the non-overlay content
+  const toggleContent = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   // Determine if the content should be full-screen on mobile devices
   const fullScreenOnMobile =
@@ -93,16 +119,26 @@ const SmartContent: FC<SmartContentProps> = ({
   const alwaysOverlay = contentType === SmartContentType.Slider;
 
   // Context value to provide to child components
-  const contextValue = {
+  const contextValue: SmartContentContextProps = {
     isOpen,
-    toggleOverlay,
-    closeOverlay,
-    openOverlay,
     contentType,
     fullScreenOnMobile,
     alwaysOverlay,
     slideDirection,
   };
+
+  // Assign appropriate functions based on content type
+  if (contentType === SmartContentType.Collapsible || contentType === SmartContentType.List) {
+    // Non-overlay content types
+    contextValue.openContent = openContent;
+    contextValue.closeContent = closeContent;
+    contextValue.toggleContent = toggleContent;
+  } else {
+    // Overlay content types
+    contextValue.openOverlay = openOverlay;
+    contextValue.closeOverlay = closeOverlay;
+    contextValue.toggleOverlay = toggleOverlay;
+  }
 
   // Generate class names for the smart-content container
   const smartContentClass = classNames(
@@ -143,19 +179,28 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
   }
 
   // Destructure necessary values from context
-  const { toggleOverlay, openOverlay, contentType, isOpen } = context;
+  const {
+    contentType,
+    isOpen,
+    toggleOverlay,
+    openOverlay,
+    toggleContent,
+    openContent,
+  } = context;
 
   // Determine if the header should be clickable
   const isClickable = contentType !== SmartContentType.List;
 
   // Click handler based on content type
-  const clickHandler = () => {
-    if (contentType === SmartContentType.Collapsible) {
-      toggleOverlay();
-    } else {
-      openOverlay();
-    }
-  };
+  let clickHandler: (() => void) | undefined;
+
+  if (contentType === SmartContentType.Collapsible) {
+    clickHandler = toggleContent;
+  } else if (contentType === SmartContentType.List) {
+    clickHandler = undefined; // Not clickable
+  } else {
+    clickHandler = openOverlay;
+  }
 
   // Generate class names for the header
   const headerClass = classNames(
@@ -181,7 +226,9 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
           ? (e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                clickHandler();
+                if (clickHandler) {
+                  clickHandler();
+                }
               }
             }
           : undefined

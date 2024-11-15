@@ -83,9 +83,9 @@ const ContentLoader = <T,>(props: ContentLoaderProps<T>) => {
   }
 
   // UseEffect to log currentStatus in both modes
-  useEffect(() => {
-    console.log('ContentLoader status:', currentStatus);
-  }, [currentStatus]);
+  // useEffect(() => {
+  //   console.log('ContentLoader status:', currentStatus);
+  // }, [currentStatus]);
 
   // Rendering logic based on currentStatus
   return (
