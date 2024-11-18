@@ -45,7 +45,7 @@ const Dropdown = ({
   return (
     <SmartContentProvider contentType={SmartContentType.Dropdown}>
       <div className={`dropdown ${className}`} onClick={clickHandler}>
-        <button className="dropdown__button">
+        <button className={`dropdown__button ${headerClassName}`}>
           {headerChild} {hideArrow ? '' : <Svg type='arrow_drop_down' sizes={[15,15]} />}
         </button>
         <div

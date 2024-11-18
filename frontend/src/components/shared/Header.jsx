@@ -58,6 +58,7 @@ const Header = ({
 					{(!isManageRoute || isAuthenticated) && (
 						isWebsiteMobile ?
 							<Slider
+								headerClassName='nav__button'
 								mobileContentTitle='Menu Cia da Capa' slideInFromDirection='left'
 							>
 								<Svg type="menu" sizes={[35,35]} />

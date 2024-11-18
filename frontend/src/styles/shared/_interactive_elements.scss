@@ -48,10 +48,8 @@
 .dropdown {
   display: inline-block;
   position: relative;
-  background: green;
 }
 .dropdown__button {
-  background: yellow;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -115,6 +113,10 @@
 // -----------------------
 // Slider
 // -----------------------
+
+// .slider {
+//   display: inline-block;
+// }
 .slider__content {
   position: fixed;
   width: 100vw;

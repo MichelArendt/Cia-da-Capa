@@ -108,11 +108,18 @@ function Main() {
 
         navPermanentButtons={
           <>
-            <Dropdown hideArrow={true} mobileContentTitle='Digite seu termo de busca:'>
+            <Dropdown
+              headerClassName='nav__button'
+              hideArrow={true}
+              mobileContentTitle='Digite seu termo de busca:'
+            >
               <Svg type="search" sizes={[30,30]} />
               <input type='text' />
             </Dropdown>
-            <Slider mobileContentTitle='Carrinho de orçamento'>
+            <Slider
+              headerClassName='nav__button'
+              mobileContentTitle='Carrinho de orçamento'
+            >
               <Svg type="remove_shopping_cart" sizes={[35,35]} />
               <span>lista</span>
             </Slider>

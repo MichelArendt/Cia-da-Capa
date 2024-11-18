@@ -43,7 +43,7 @@ const Slider = ({
   return (
     <SmartContentProvider contentType={SmartContentType.Slider}>
       <div className={`slider ${className}`} onClick={clickHandler}>
-        <button className="slider__button">
+        <button className={`slider__button ${headerClassName}`}>
           {headerChild}
         </button>
         <div className={`${sliderContentClasses} ${contentClassName}`}>

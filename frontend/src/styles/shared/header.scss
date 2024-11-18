@@ -18,11 +18,14 @@
   color: $color-secondary-2;
   height: 80px;
   padding: 0 10px;
+
+  > * {
+    height: 100%;
+  }
 }
 
 .website__nav {
   @extend .flex;
-  height: 100%;
 }
 
 .website__menu {
@@ -44,6 +47,18 @@
 @media (min-width: $breakpoint--desktop) {
   .header__logo {
     order: -1; // Move logo to the start of the header
+  }
+}
+
+.nav__button {
+  @extend .flex;
+  @extend .flex--row--center;
+  height: 100%;
+  padding: 5px;
+  color: $color-secondary-2;
+
+  svg {
+    fill: $color-secondary-2;
   }
 }
 
