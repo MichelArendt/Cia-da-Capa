@@ -1,12 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
 import classNames from 'classnames';
 
+// Shared components
+import Svg from '/src/components/shared/Svg';
 import { SmartContentProvider, SmartContentType } from './shared/SmartContentContext';
 
+// Hooks
+import useStore from '/src/store';
 import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 import useToggleContent from '/src/hooks/useToggleContent'; // Custom hook to detect mobile devices
-import Svg from '/src/components/shared/Svg';
-import useStore from '/src/store';
+import { useDynamicPosition } from '/src/hooks/useDynamicPosition'; // Dynamic positioning hook
 
 
 const Dropdown = ({
@@ -31,6 +34,9 @@ const Dropdown = ({
     closeContent();
   }, [closeAllMenusSignal]);
 
+  // Use dynamic positioning only on mobile
+  const { ref, style } = useDynamicPosition(isOpen);
+
   const dropdownContentClasses = classNames(
     'dropdown__content',
     { 'dropdown__content--visible': isOpen }
@@ -42,7 +48,11 @@ const Dropdown = ({
         <button className="dropdown__button">
           {headerChild} {hideArrow ? '' : <Svg type='arrow_drop_down' sizes={[15,15]} />}
         </button>
-        <div className={`${dropdownContentClasses} ${contentClassName}`}>
+        <div
+          className={`${dropdownContentClasses} ${contentClassName}`}
+          ref={ref}
+          style={style} // Apply the dynamic positioning styles
+        >
           <div
             className="dropdown__content-wrapper"
             onClick={(e) => e.stopPropagation()} // Stop propagation
