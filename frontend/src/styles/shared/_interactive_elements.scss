@@ -1,0 +1,179 @@
+// _smart-content.scss
+
+// Import necessary variables and utilities
+@forward '_variables';
+@forward '_utils';
+@forward '_normalize';
+@forward '_colors';
+@forward '_typography';
+
+@use '_variables' as *;
+@use '_utils' as *;
+@use '_colors' as *;
+
+// Define CSS variable for breakpoint
+:root {
+  --breakpoint-desktop: #{$breakpoint--desktop}; // Desktop breakpoint variable
+}
+
+.fullscreen-interactive {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it's above other content */
+  background-color: red;
+}
+
+// -----------------------
+// General
+// -----------------------
+.overlay__button {
+
+}
+.overlay__button--close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 50px;
+  line-height: 0.6em;
+  padding: 20px;
+}
+
+// -----------------------
+// Dropdown
+// -----------------------
+.dropdown {
+  display: inline-block;
+  position: relative;
+  background: green;
+}
+.dropdown__button {
+  background: yellow;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+}
+.dropdown__content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+}
+
+/* For fullscreen mobile */
+.dropdown__content-wrapper {
+  // position: relative;
+  background: cyan;
+}
+
+.dropdown__content.dropdown__content--visible {
+  opacity: 1;
+  visibility: visible;
+}
+.dropdown__content-title {
+  padding: 5px;
+}
+
+/* Desktop */
+@media (min-width: $breakpoint--desktop) {
+  .dropdown__content {
+    // display: grid;
+    // grid-template-rows: 0fr;
+    position: absolute;
+    width: unset;
+    height: unset;
+    opacity: unset;
+    visibility: unset;
+    top: unset;
+    overflow-y: hidden;
+    overflow-x: visible;
+    max-height: 0;
+    min-width: max-content;
+  }
+
+  .dropdown:hover .dropdown__content  {
+    max-height: 500px;
+  }
+
+
+  .dropdown__content-wrapper {
+  }
+}
+
+// -----------------------
+// Slider
+// -----------------------
+.slider__content {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Directions */
+
+/* Slide in from the left */
+.slider__content--left {
+  top: 0;
+  left: -100vw;
+}
+.slider__content--left.slider__content--visible {
+  left: 0;
+}
+
+/* Slide in from the right */
+.slider__content--right {
+  top: 0;
+  left: 100vw;
+}
+.slider__content--right.slider__content--visible {
+  left: 0;
+}
+
+/* Slide in from the top */
+.slider__content--top {
+  top: -100vh;
+  left: 0;
+}
+.slider__content--top.slider__content--visible {
+  top: 0;
+}
+
+/* Slide in from the bottom */
+.slider__content--bottom {
+  top: 100vh;
+  left: 0;
+}
+.slider__content--bottom.slider__content--visible {
+  top: 0;
+}
+
+.slider__content.slider__content--visible {
+  left: 0;
+}
+
+// -----------------------
+// List
+// -----------------------
+.list {
+  background: red;
+}
+.list__content > * {
+  padding-left: 10px;
+}

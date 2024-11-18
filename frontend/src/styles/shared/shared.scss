@@ -4,7 +4,7 @@
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
-@forward '_smart_content.scss';
+@forward '_interactive_elements.scss';
 
 @use '_variables' as *;
 @use '_colors' as *;
@@ -15,101 +15,9 @@
 }
 
 // ---------------------------
-// Website containers
-// ---------------------------
-.section--full-width {
-  width: 100%;
-}
-.website--max-width {
-  width: 100%;
-  max-width: 1920px;
-}
-
-// ---------------------------
-// Base Flex class
-// ---------------------------
-.flex {
-  display: flex !important;
-
-  /* Row (Horizontal) direction */
-  &--row {
-    flex-direction: row;
-
-    /* Horizontal centering in row */
-    &--center-horizontal {
-      justify-content: center;
-    }
-
-    /* Vertical centering in row */
-    &--center-vertical {
-      align-items: center;
-    }
-
-    /* Full center in row */
-    &--center {
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
-  /* Column (Vertical) direction */
-  &--column {
-    flex-direction: column;
-
-    /* Horizontal centering in column */
-    &--center-horizontal {
-      align-items: center;
-    }
-
-    /* Vertical centering in column */
-    &--center-vertical {
-      justify-content: center;
-    }
-
-    /* Full center in column */
-    &--center {
-      justify-content: center;
-      align-items: center;
-    }
-  }
-}
-
-// ---------------------------
-// UTIL - VISIBILITY
-// ---------------------------
-.display--hidden {
-  display: none;
-}
-.display--visible {
-  display: block;
-}
-@media (min-width: $breakpoint--desktop) {
-  .display--hidden--desktop {
-    display: none !important;
-  }
-}
-@media (max-width: $breakpoint--desktop) {
-  .display--hidden--mobile {
-    display: none !important;
-  }
-}
-
-/* Screen reader only */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-// ---------------------------
 // GENERAL
 // ---------------------------
+
 #root {
   height: 100%;
 

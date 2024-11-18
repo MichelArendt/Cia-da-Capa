@@ -1,114 +1,48 @@
 import React from 'react';
 import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import { Link } from 'react-router-dom';
+import Collapsible from '/src/components/shared/smart_content/Collapsible';
+import Dropdown from '/src/components/shared/smart_content/Dropdown';
+import List from '/src/components/shared/smart_content/List';
+import Select from '/src/components/shared/smart_content/Select';
+import Slider from '/src/components/shared/smart_content/Slider';
 // import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
 function Home() {
   return (
     <>
-      <div>Welcome to the Home Page!</div>
-      <SmartContent
-        contentType={SmartContentType.Dropdown}
-      >
-        <SmartContentHeader>
-          Dropdown
-        </SmartContentHeader>
+    <Dropdown>
+      <div>Dropdown</div>
+      <div><Link to='/contact'>Contato</Link></div>
+      <div>Dropdown Item 2</div>
+    </Dropdown>
 
-        <SmartContentBody title="Menu">
-          <button>Link 1</button>
-          <button>Link 2</button>
-          <button>Link 3</button>
-        </SmartContentBody>
-      </SmartContent>
+    <Slider slideDirection="left">
+      <div>Slider Header</div>
+      <div>Slider Content Line 1</div>
+      <div>Slider Content Line 2</div>
+    </Slider>
 
-      <div>Welcome to the Home Page!</div>
-      <SmartContent
-        contentType={SmartContentType.Select}
-      >
-        <SmartContentHeader>
-        Select
-        </SmartContentHeader>
+    <Select>
+      <div>Select Header</div>
+      <div>Select Option 1</div>
+      <div>Select Option 2</div>
+    </Select>
 
-        <SmartContentBody title="Selecione um link">
-          <div>Option 1</div>
-          <div>Option 2</div>
-          <div>Option 3</div>
-          <div>Option 4</div>
-        </SmartContentBody>
-      </SmartContent>
+    <Collapsible>
+      <div>Collapsible Header</div>
+      <div>Collapsible Content Line 1</div>
+      <div>Collapsible Content Line 2</div>
+    </Collapsible>
 
-      <div>Welcome to the Home Page!</div>
-      <SmartContent
-        contentType={SmartContentType.Collapsible}
-      >
-        <SmartContentHeader>
-          Collapsible
-        </SmartContentHeader>
+    <List orientation="horizontal">
+      <div>list</div>
+      <div>List Item 1</div>
+      <div>List Item 2</div>
+      <div>List Item 3</div>
+    </List>
 
-        <SmartContentBody>
-          <a href="#link1">Link 1</a>
-          <a href="#link2">Link 2</a>
-          <a href="#link3">Link 3</a>
-        </SmartContentBody>
-      </SmartContent>
-
-      <div>Welcome to the Home Page!</div>
-      <SmartContent
-        contentType={SmartContentType.List}
-      >
-        <SmartContentHeader>
-          <Link to='/test'>Nav - this is a link to a page</Link>
-        </SmartContentHeader>
-
-        <SmartContentBody>
-          <a href="#link1">Link 1</a>
-          <a href="#link2">Link 2</a>
-          <a href="#link3">Link 3</a>
-        </SmartContentBody>
-      </SmartContent>
-
-
-      <div>Welcome to the Home Page!</div>
-      <SmartContent contentType={SmartContentType.Slider} slideDirection="right">
-        <SmartContentHeader>
-          <button>Open Slider</button>
-        </SmartContentHeader>
-        <SmartContentBody title="My Slider">
-          {/* Slider content here */}
-          <p>This is the slider content.</p>
-        </SmartContentBody>
-      </SmartContent>
-
-
-      <div>Welcome to the Home Page!</div>
-      <SmartContent
-        contentType={SmartContentType.Dropdown}
-      >
-        <SmartContentHeader>
-          NAV - Dropdown list nested
-        </SmartContentHeader>
-
-        <SmartContentBody>
-          <a href="#link1">Link 1</a>
-          <SmartContent
-            contentType={SmartContentType.List}
-          >
-            <SmartContentHeader>
-              List
-            </SmartContentHeader>
-
-            <SmartContentBody>
-              <a href="#link1">Link 4</a>
-              <a href="#link2">Link 5</a>
-              <a href="#link3">Link 6</a>
-            </SmartContentBody>
-          </SmartContent>
-          <a href="#link1">Link 2</a>
-          <a href="#link1">Link 3</a>
-        </SmartContentBody>
-      </SmartContent>
-
-      <div>
+      <br /><div>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. In finibus vel mi at sagittis. Nullam feugiat purus ac turpis consectetur tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in justo sed lectus euismod viverra lobortis a ipsum. Morbi lobortis, elit non semper luctus, libero felis ullamcorper quam, vitae malesuada massa enim sit amet tortor. Etiam quis magna arcu. Donec scelerisque libero a mi dapibus vestibulum. Praesent sodales arcu a luctus suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris ut pulvinar ipsum, vel tristique magna. Fusce est dui, dignissim sed nisi non, facilisis porttitor dolor.
 
         Cras id elit sed sem fermentum vehicula. In pulvinar, risus id sagittis congue, lectus lacus facilisis tortor, eget ullamcorper ex orci quis lectus. Donec non sapien nec metus semper molestie. Aliquam accumsan leo in risus gravida, eget fringilla tellus suscipit. Aliquam sed ipsum aliquam, pharetra tortor in, molestie dolor. Pellentesque tincidunt varius nisi nec molestie. Curabitur a varius mi. Aenean volutpat mi eget consectetur aliquam. Etiam mattis, justo sit amet cursus tempor, ligula lorem vestibulum purus, sit amet euismod massa urna ac quam. Nullam et hendrerit dolor. Donec quis dignissim risus, sit amet iaculis nunc. Phasellus rhoncus dolor eget porta gravida. In tincidunt, lorem sed commodo suscipit, lorem nisi pulvinar ante, et egestas nulla lectus vitae dolor. Praesent egestas viverra tincidunt.

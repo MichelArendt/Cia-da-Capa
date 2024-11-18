@@ -1,30 +1,54 @@
-// Workaround due to VSCode extensions not supporting
-// correct Intellisense for variables imported though @use
 @forward '_variables';
+@forward '_utils';
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
 
 @use '_variables' as *;
+@use '_utils' as *;
 @use '_colors' as *;
 
+// ---------------------------
+// Website header and nav
+// ---------------------------
 .website__header {
   // display: flex;
-  background-color: yellow;
+  background-color: $color-primary-2;
+  color: $color-secondary-2;
+  height: 80px;
+  padding: 0 10px;
 }
 
-.website__nav {
+@media (min-width: $breakpoint--desktop) {
+  .website__nav {
+    display: flex;
+  }
+}
+
+.website__menu {
+
 }
 
 .header__logo {
-  display: block;
-  height: 40px;
+  @extend .flex;
+  @extend .flex--row--center-vertical;
+  height: 100%;
   flex-grow: 1;
+  padding: 5px;
 
   > img {
-    height: 100%;
+    padding-left: 10px;
+    height: 30px;
   }
 }
+
+@media (min-width: $breakpoint--desktop) {
+  .website__menu {
+    order: 1; // Move menu to the right of logo
+  }
+}
+
+
 
 // header, header button {
 //   font-size: 20px;

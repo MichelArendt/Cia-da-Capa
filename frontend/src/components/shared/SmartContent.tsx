@@ -1,14 +1,15 @@
-
+// SmartContent.tsx
 import React, { useState, createContext, useContext, FC, ReactNode } from 'react';
 import classNames from 'classnames';
+import useIsMobile from '../../hooks/useIsWebsiteMobile'; // Import the custom hook from your specified path
 
 // Enumeration for content types
 export enum SmartContentType {
-  Dropdown = 'dropdown',
-  Select = 'select',
-  Collapsible = 'collapsible',
-  List = 'list',
-  Slider = 'slider',
+  Dropdown = 'dropdown',     // Fullscreen overlay only on mobile
+  Select = 'select',         // Fullscreen overlay only on mobile
+  Collapsible = 'collapsible', // Never fullscreen
+  List = 'list',             // Never fullscreen, can be displayed horizontally or vertically
+  Slider = 'slider',         // Always fullscreen
 }
 
 // -------------------------
@@ -23,28 +24,30 @@ interface SmartContentContextProps {
   openOverlay?: () => void;
   closeOverlay?: () => void;
   // Non-overlay content functions
+  toggleContent?: () => void;
   openContent?: () => void;
   closeContent?: () => void;
-  toggleContent?: () => void;
   contentType: SmartContentType;
-  fullScreenOnMobile: boolean;
-  alwaysOverlay: boolean; // to handle always overlay content
+  isOverlay: boolean;
+  isFullscreen: boolean;
+  isFullscreenOnMobile: boolean;
   slideDirection?: 'left' | 'right' | 'top' | 'bottom'; // Direction for Slider
+  orientation?: 'vertical' | 'horizontal'; // For List content type
 }
 
 // Create the context
 const SmartContentContext = createContext<SmartContentContextProps | undefined>(undefined);
 
 // -------------------------
-// SMART COMPONENT
+// SMART CONTENT COMPONENT
 // -------------------------
 
 // Props for SmartContent component
 interface SmartContentProps {
   contentType: SmartContentType;
   defaultOpen?: boolean;
-  label?: ReactNode; // Optional label
   slideDirection?: 'left' | 'right' | 'top' | 'bottom'; // Direction for Slider
+  orientation?: 'vertical' | 'horizontal'; // For List content type
   children: ReactNode;
   className?: string;
 }
@@ -54,6 +57,7 @@ const SmartContent: FC<SmartContentProps> = ({
   contentType,
   defaultOpen = false,
   slideDirection = 'right', // Default slide direction
+  orientation = 'vertical', // Default orientation for List
   children,
   className = '',
 }) => {
@@ -65,6 +69,20 @@ const SmartContent: FC<SmartContentProps> = ({
     document.body.style.overflowY = isEnabled ? 'hidden' : 'auto';
   };
 
+  // Determine if the content should be overlay
+  const isOverlay =
+    contentType === SmartContentType.Slider ||
+    contentType === SmartContentType.Dropdown ||
+    contentType === SmartContentType.Select;
+
+  // Determine if the content should always be fullscreen
+  const isFullscreen = contentType === SmartContentType.Slider;
+
+  // Determine if the content should be fullscreen only on mobile devices
+  const isFullscreenOnMobile =
+    contentType === SmartContentType.Dropdown ||
+    contentType === SmartContentType.Select;
+
   // -------------------------
   // Functions for Overlay Content Types
   // -------------------------
@@ -75,7 +93,7 @@ const SmartContent: FC<SmartContentProps> = ({
     setBodyOverflowY(true);
   };
 
-  // Function to close the overlay content (may be used by Zustand store later)
+  // Function to close the overlay content
   const closeOverlay = () => {
     setIsOpen(false);
     setBodyOverflowY(false);
@@ -92,7 +110,6 @@ const SmartContent: FC<SmartContentProps> = ({
 
   // -------------------------
   // Functions for Non-Overlay Content Types
-  // (separated from overlay functions for clarity)
   // -------------------------
 
   // Function to open the non-overlay content
@@ -110,35 +127,28 @@ const SmartContent: FC<SmartContentProps> = ({
     setIsOpen((prev) => !prev);
   };
 
-  // Determine if the content should be full-screen on mobile devices
-  const fullScreenOnMobile =
-    contentType === SmartContentType.Dropdown ||
-    contentType === SmartContentType.Select;
-
-  // Determine if the content should always overlay (e.g., for Slider)
-  const alwaysOverlay = contentType === SmartContentType.Slider;
-
   // Context value to provide to child components
   const contextValue: SmartContentContextProps = {
     isOpen,
     contentType,
-    fullScreenOnMobile,
-    alwaysOverlay,
+    isOverlay,
+    isFullscreen,
+    isFullscreenOnMobile,
     slideDirection,
+    orientation,
+    // Assign appropriate functions based on content type
+    ...(isOverlay
+      ? {
+          openOverlay,
+          closeOverlay,
+          toggleOverlay,
+        }
+      : {
+          openContent,
+          closeContent,
+          toggleContent,
+        }),
   };
-
-  // Assign appropriate functions based on content type
-  if (contentType === SmartContentType.Collapsible || contentType === SmartContentType.List) {
-    // Non-overlay content types
-    contextValue.openContent = openContent;
-    contextValue.closeContent = closeContent;
-    contextValue.toggleContent = toggleContent;
-  } else {
-    // Overlay content types
-    contextValue.openOverlay = openOverlay;
-    contextValue.closeOverlay = closeOverlay;
-    contextValue.toggleOverlay = toggleOverlay;
-  }
 
   // Generate class names for the smart-content container
   const smartContentClass = classNames(
@@ -146,6 +156,7 @@ const SmartContent: FC<SmartContentProps> = ({
     `smart-content--${contentType}`,
     className
   );
+
   return (
     <SmartContentContext.Provider value={contextValue}>
       <div className={smartContentClass}>{children}</div>
@@ -153,8 +164,10 @@ const SmartContent: FC<SmartContentProps> = ({
   );
 };
 
+export default SmartContent;
+
 // -------------------------
-// HEADER - Optional
+// SMART CONTENT HEADER COMPONENT
 // -------------------------
 
 // Interface for SmartContentHeader props
@@ -188,18 +201,26 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
     openContent,
   } = context;
 
-  // Determine if the header should be clickable
-  const isClickable = contentType !== SmartContentType.List;
+  // Use the custom hook to determine if the device is mobile
+  const isMobile = useIsMobile();
 
-  // Click handler based on content type
+  // Determine if the header should be clickable
+  const isClickable =
+    contentType !== SmartContentType.List &&
+    (isMobile || contentType === SmartContentType.Collapsible);
+
+  // Click handler based on content type and device type
   let clickHandler: (() => void) | undefined;
 
   if (contentType === SmartContentType.Collapsible) {
     clickHandler = toggleContent;
   } else if (contentType === SmartContentType.List) {
     clickHandler = undefined; // Not clickable
-  } else {
+  } else if (isMobile) {
+    // Assign click handler on mobile for Dropdown and Select
     clickHandler = openOverlay;
+  } else {
+    clickHandler = undefined; // Prevent click handler on desktop
   }
 
   // Generate class names for the header
@@ -237,7 +258,7 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
       {children}
 
       {/* Display the indicator if the header is clickable and hideArrow is false */}
-      {isClickable && !hideArrow && contentType !== SmartContentType.Slider && (
+      {contentType !== SmartContentType.List && !hideArrow && (
         <span className={indicatorClass} aria-hidden="true">
           ▼
         </span>
@@ -247,7 +268,7 @@ export const SmartContentHeader: FC<SmartContentHeaderProps> = ({
 };
 
 // -------------------------
-// BODY component
+// SMART CONTENT BODY COMPONENT
 // -------------------------
 
 // Interface for SmartContentBody props
@@ -275,33 +296,44 @@ export const SmartContentBody: FC<SmartContentBodyProps> = ({
   const {
     contentType,
     isOpen,
-    fullScreenOnMobile,
+    isOverlay,
+    isFullscreen,
+    isFullscreenOnMobile,
     closeOverlay,
-    alwaysOverlay,
     slideDirection,
+    orientation,
   } = context;
 
-  // Determine if the content is collapsible
-  const isCollapsible = contentType === SmartContentType.Collapsible;
+  // Use the custom hook to determine if the device is mobile
+  const isMobile = useIsMobile();
 
-  // Determine if we need to wrap the content (for collapsible or overlay content)
-  const needsWrapper = isCollapsible || fullScreenOnMobile || alwaysOverlay;
+  // **Always wrap content for Dropdown and Select to control visibility**
+  const needsWrapper = isOverlay || contentType === SmartContentType.Collapsible;
+
+  // Determine if we should show the visible class
+  const shouldShowVisibleClass =
+    (isOpen && isMobile) || // Show when open on mobile
+    (contentType === SmartContentType.Collapsible && isOpen) || // For Collapsible
+    (contentType === SmartContentType.Slider && isOpen); // For Slider
 
   // Generate class names for the outer wrapper
   const outerClass = classNames(
-    'smart-content__wrapper', // Base wrapper class
+    'smart-content__wrapper',
+    `smart-content__wrapper--${contentType}`,
     {
-      [`smart-content__wrapper--${contentType}`]: isCollapsible || fullScreenOnMobile || alwaysOverlay, // Modifier for content type
-      [`smart-content__wrapper--${contentType}--visible`]: (isCollapsible || alwaysOverlay) && isOpen, // Visible state
-      'smart-content__overlay': fullScreenOnMobile || alwaysOverlay, // Overlay class for full-screen content
-      'smart-content__overlay--visible': (fullScreenOnMobile || alwaysOverlay) && isOpen, // Visible state
-      [`smart-content__slider--${slideDirection}`]: contentType === SmartContentType.Slider, // Slide direction
+      'smart-content__wrapper--visible': shouldShowVisibleClass,
+      'smart-content__overlay': isOverlay && (isMobile || isFullscreen),
+      'smart-content__fullscreen': isFullscreen,
+      'smart-content__fullscreen--mobile': isFullscreenOnMobile,
+      [`smart-content__slider--${slideDirection}`]: contentType === SmartContentType.Slider,
     },
-    className // Additional class names passed in props
+    className
   );
 
   // Class name for the inner content
-  const innerClass = 'smart-content__body';
+  const innerClass = classNames('smart-content__body', {
+    [`smart-content__body--${orientation}`]: contentType === SmartContentType.List,
+  });
 
   // Event handler to close the overlay when clicking outside (for overlay content)
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -315,10 +347,10 @@ export const SmartContentBody: FC<SmartContentBodyProps> = ({
     return (
       <div
         className={outerClass}
-        onClick={fullScreenOnMobile || alwaysOverlay ? handleOverlayClick : undefined}
+        onClick={isOverlay && (isMobile || isFullscreen) ? handleOverlayClick : undefined}
       >
         {/* Close button for overlay content */}
-        {(fullScreenOnMobile || alwaysOverlay) && (
+        {isOverlay && (isMobile || isFullscreen) && closeOverlay && (
           <button
             className="smart-content__close-button"
             onClick={closeOverlay}
@@ -330,7 +362,7 @@ export const SmartContentBody: FC<SmartContentBodyProps> = ({
         <div
           className={innerClass}
           onClick={
-            fullScreenOnMobile || alwaysOverlay
+            isOverlay && (isMobile || isFullscreen)
               ? (e) => e.stopPropagation() // Prevent closing when clicking inside the content
               : undefined
           }
@@ -350,5 +382,3 @@ export const SmartContentBody: FC<SmartContentBodyProps> = ({
     </div>
   );
 };
-
-export default SmartContent;

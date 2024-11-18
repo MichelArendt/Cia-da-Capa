@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+
+// Hooks
+import useStore from '/src/store';
+import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
-import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
-import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
+import Dropdown from '/src/components/shared/smart_content/Dropdown';
+import List from '/src/components/shared/smart_content/List';
+import Slider from '/src/components/shared/smart_content/Slider';
+// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+// import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
 
 // Main website components
 import Home from '/src/pages/Home';
@@ -13,9 +20,29 @@ import ContentLoader from '/src/components/shared/ContentLoader';
 
 // APIs
 import {apiPublic} from '/src/services/api';
+import Contact from '../pages/Contact';
 
 function Main() {
   const [categories, setCategories] = useState([]);
+  const triggerCloseAllMenus = useStore((state) => state.triggerCloseAllMenus);
+  const isWebsiteMobile = useIsWebsiteMobile();
+
+  const location = useLocation();
+
+  // Trigger when the route changes
+  useEffect(() => {
+    triggerCloseAllMenus();
+  }, [location.pathname, triggerCloseAllMenus]);
+
+  // Trigger when the window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      triggerCloseAllMenus();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [triggerCloseAllMenus]);
 
  // First render
   // useEffect(() => {
@@ -32,10 +59,26 @@ function Main() {
   return (
     <>
       <Header
-        navResponsiveMenuTitle="Cia da Capa"
         navResponsiveMenuOptions={
           <>
-            <Link to="/">
+						{/* <Dropdown contentClassName='test'> */}
+              {isWebsiteMobile ?
+                <List>
+                  Produtos
+							    <div>Bolsas</div>
+							    <div>Pastas</div>
+                </List>
+                :
+                <Dropdown>
+                  <div>Produtos</div>
+							    <div>Bolsas</div>
+							    <div>Pastas</div>
+                </Dropdown>
+              }
+							<div><Link to='/contact'>Contato</Link></div>
+							<div>Dropdown Item 2</div>
+						{/* </Dropdown> */}
+            {/* <Link to="/">
               <Svg type="home" sizes={[16,16]} />
               <span>Página Inicial</span>
             </Link>
@@ -59,14 +102,25 @@ function Main() {
             <Link to="/">
               <Svg type="email" sizes={[16,16]} className='display__hide_on-desktop' />
               <span>Contato</span>
-            </Link>
+            </Link> */}
           </>
         }
 
         navPermanentButtons={
           <>
-					  <SmartContent contentType={SmartContentType.Dropdown}>
-              <SmartContentHeader hideArrow={true}>
+            <Dropdown hideArrow={true} mobileContentTitle='Digite seu termo de busca:'>
+              <Svg type="search" sizes={[30,30]} />
+              <input type='text' />
+            </Dropdown>
+            <Slider mobileContentTitle='Carrinho de orçamento'>
+              <Svg type="remove_shopping_cart" sizes={[35,35]} />
+              <span>lista</span>
+            </Slider>
+					  {/* <SmartContent contentType={SmartContentType.Dropdown}>
+              <SmartContentHeader
+                hideArrow={true}
+                className='smart-content__header--nav smart-content__header--button'
+              >
                 <Svg type="search" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='pesquisa'>
@@ -74,14 +128,18 @@ function Main() {
               </SmartContentBody>
             </SmartContent>
 
-            <SmartContent contentType={SmartContentType.Slider} slideDirection="right">
-              <SmartContentHeader>
-              <Svg type="remove_shopping_cart" sizes={[30,30]} />
+            <SmartContent
+              contentType={SmartContentType.Slider}
+              slideDirection="right"
+              className='smart-content__header--nav smart-content__header--button'
+            >
+              <SmartContentHeader className='smart-content__header--nav smart-content__header--button'>
+                <Svg type="remove_shopping_cart" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='Carrinho de orçamento'>
                 1x pasta
               </SmartContentBody>
-            </SmartContent>
+            </SmartContent> */}
 
 
             {/* <button>
@@ -93,6 +151,7 @@ function Main() {
       <main className='website__main'>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
     </>

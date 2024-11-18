@@ -11,7 +11,14 @@ const useStore = create((set) => ({
   setLastAttemptedRoute: (route) => set({ lastAttemptedRoute: route }),
   clearLastAttemptedRoute: () => set({ lastAttemptedRoute: null }),
 
-
+  // Close all menus signal
+  closeAllMenusSignal: 0, // Initialize the counter
+  triggerCloseAllMenus: () =>{
+    set((state) => {
+      console.log(state.closeAllMenusSignal); // Access `closeAllMenusSignal` from `state`
+      return { closeAllMenusSignal: state.closeAllMenusSignal + 1 };
+    });
+  },
 }));
 
 export default useStore;

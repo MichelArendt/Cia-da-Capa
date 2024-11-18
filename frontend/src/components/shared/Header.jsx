@@ -7,7 +7,8 @@ import useStore from '/src/store';
 import useMenuStore from '/src/store/menuStore';
 
 // Shared
-// import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
+// import Dropdown from '/src/components/shared/smart_content/Dropdown';
+import Dropdown from '/src/components/shared/smart_content/Dropdown';
 import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import ContentLoader from '/src/components/shared/ContentLoader';
 import Svg from '/src/components/shared/Svg';
@@ -16,17 +17,19 @@ import defaultLogo from '/assets/logo_only_text.png';
 
 // APIs
 import {apiPublic} from '/src/services/api';
+import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile';
+import Slider from '/src/components/shared/smart_content/Slider';
 
 const Header = ({
 	isManageRoute = false,
 	logo = defaultLogo,
-	navResponsiveMenuTitle,
 	navResponsiveMenuOptions,
 	navPermanentButtons,
 	children }
 ) => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
 	const { isOpen, toggleMenu } = useMenuStore();
+  const isWebsiteMobile = useIsWebsiteMobile();
 
 
 	// // Store references to elements using useRef
@@ -50,25 +53,44 @@ const Header = ({
 
 	return(
 		<header className='website__header section--full-width flex flex--row flex--row--center-horizontal poppins-light'>
-				<nav className='website__nav website--max-width flex'>
+				<nav className='website__nav website--max-width'>
 					{/* Hide menu if manage route and not authenticated */}
-					{(!isManageRoute || isAuthenticated) ? (
-						<SmartContent contentType={SmartContentType.Dropdown}>
-							<SmartContentHeader hideArrow={true}>
-								<Svg type="menu" sizes={[30,30]} />
-							</SmartContentHeader>
-
-							<SmartContentBody title={navResponsiveMenuTitle}>
+					{(!isManageRoute || isAuthenticated) && (
+						isWebsiteMobile ?
+							<Slider mobileContentTitle='Menu Cia da Capa' slideInFromDirection='left'>
+								<Svg type="menu" sizes={[35,35]} />
 								{navResponsiveMenuOptions}
-							</SmartContentBody>
-						</SmartContent>
-					) : ''}
+							</Slider>
+							: navResponsiveMenuOptions
+					)}
+					{/* //  (
 
-					<Link to={`/${isManageRoute ? 'manage' : ''}`} className='header__logo' >
+					// 	// <SmartContent
+					// 	// 	contentType={SmartContentType.Dropdown}
+					// 	// 	className='website__menu'
+					// 	// >
+					// 	// 	<SmartContentHeader
+					// 	// 		hideArrow={true}
+					// 	// 		className='smart-content__header--nav smart-content__header--button'
+					// 	// 	>
+					// 	// 		<Svg type="menu" sizes={[35,35]} />
+					// 	// 	</SmartContentHeader>
+
+					// 	// 	<SmartContentBody className=''>
+					// 	// 		<Link to={`/${isManageRoute ? 'manage' : ''}`} className='' >
+					// 	// 			<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
+					// 	// 		</Link>
+					// 	// 		{navResponsiveMenuOptions}
+					// 	// 	</SmartContentBody>
+					// 	// </SmartContent>
+					// ) : ''} */}
+
+					{/* <Link to={`/${isManageRoute ? 'manage' : ''}`} className='header__logo' >
 						<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
-					</Link>
+					</Link> */}
 				</nav>
 				{/* Hide permanent buttons if manage route and not authenticated */}
+
 				{(!isManageRoute || isAuthenticated) ? navPermanentButtons : ''}
 
 
