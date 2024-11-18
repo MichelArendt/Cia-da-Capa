@@ -12,17 +12,17 @@
 // Website header and nav
 // ---------------------------
 .website__header {
-  // display: flex;
+  @extend .flex;
+  @extend .flex--row--center-vertical;
   background-color: $color-primary-2;
   color: $color-secondary-2;
   height: 80px;
   padding: 0 10px;
 }
 
-@media (min-width: $breakpoint--desktop) {
-  .website__nav {
-    display: flex;
-  }
+.website__nav {
+  @extend .flex;
+  height: 100%;
 }
 
 .website__menu {
@@ -41,12 +41,17 @@
     height: 30px;
   }
 }
-
 @media (min-width: $breakpoint--desktop) {
-  .website__menu {
-    order: 1; // Move menu to the right of logo
+  .header__logo {
+    order: -1; // Move logo to the start of the header
   }
 }
+
+// @media (min-width: $breakpoint--desktop) {
+//   .website__menu {
+//     order: 1; // Move menu to the right of logo
+//   }
+// }
 
 
 

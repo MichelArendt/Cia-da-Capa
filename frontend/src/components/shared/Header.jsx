@@ -52,17 +52,27 @@ const Header = ({
 	// }, [ isOpen ]);
 
 	return(
-		<header className='website__header section--full-width flex flex--row flex--row--center-horizontal poppins-light'>
+		<header className='website__header section--full-width poppins-light'>
 				<nav className='website__nav website--max-width'>
 					{/* Hide menu if manage route and not authenticated */}
 					{(!isManageRoute || isAuthenticated) && (
 						isWebsiteMobile ?
-							<Slider mobileContentTitle='Menu Cia da Capa' slideInFromDirection='left'>
+							<Slider
+								mobileContentTitle='Menu Cia da Capa' slideInFromDirection='left'
+							>
 								<Svg type="menu" sizes={[35,35]} />
 								{navResponsiveMenuOptions}
 							</Slider>
 							: navResponsiveMenuOptions
 					)}
+
+
+					<Link
+						to={`/${isManageRoute ? 'manage' : ''}`}
+						className='header__logo'
+					>
+						<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
+					</Link>
 					{/* //  (
 
 					// 	// <SmartContent
