@@ -35,7 +35,7 @@ const Select = ({
   }, [closeAllMenusSignal]);
 
   // Use dynamic positioning only on mobile
-  const { ref, style } = useDynamicPosition(isOpen);
+  const { ref, style } = useDynamicPosition();
 
   const selectContentClasses = classNames(
     'select__content',

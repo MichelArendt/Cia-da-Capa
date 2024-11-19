@@ -27,6 +27,11 @@ const useStore = create((set) => ({
   // Is Mobile State
   isMobile: window.innerWidth < breakpointDesktop,
   setIsMobile: (value) => set({ isMobile: value }),
+
+  // Window Dimensions
+  windowWidth: window.innerWidth,
+  windowHeight: window.innerHeight,
+  setWindowDimensions: (width, height) => set({ windowWidth: width, windowHeight: height }),
 }));
 
 export default useStore;
