@@ -1,6 +1,6 @@
-@forward '_variables';
+@forward '_globals';
 
-@use '_variables' as *;
+@use '_globals' as *;
 
 // ---------------------------
 // Website containers

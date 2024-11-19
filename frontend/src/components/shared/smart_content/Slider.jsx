@@ -15,7 +15,7 @@ const Slider = ({
   children,
   slideInFromDirection = 'right', // Default slide direction
   className = '',
-  mobileContentTitle = 'Selecione uma opção:',
+  mobileContentTitle = <div className="slider__content-title">Selecione uma opção:</div>,
   headerClassName = '',
   bodyClassName = '',
   contentClassName = '',
@@ -51,7 +51,7 @@ const Slider = ({
             className="slider__content-wrapper"
             onClick={(e) => e.stopPropagation()} // Stop propagation
           >
-            {isWebsiteMobile && <div className="slider__content-title">{mobileContentTitle}</div> }
+            {isWebsiteMobile && mobileContentTitle }
             {bodyChildren}
             <button className="overlay__button overlay__button--close"  onClick={clickHandler}>&times;</button>
           </div>

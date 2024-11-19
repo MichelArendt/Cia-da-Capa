@@ -1,17 +1,17 @@
 // Workaround due to VSCode extensions not supporting
 // correct Intellisense for variables imported though @use
-@forward '_variables';
+@forward '_globals';
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
 @forward '_interactive_elements.scss';
 
-@use '_variables' as *;
+@use '_globals' as *;
 @use '_colors' as *;
 @use 'header.scss';
 
 * {
-  transition: all 0.2s linear;
+  // transition: all 0.2s linear;
 }
 
 // ---------------------------

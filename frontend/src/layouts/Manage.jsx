@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 
-// Stores
-import useStore from '/src/store';
-
 // APIs
 import {apiPublic, apiManage} from '/src/services/api';
 
 // Assets
 import logo from '/assets/logo_manage.png';
 
+// Hooks
+import useStore from '/src/store';
+import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+
 // Shared components
 import Header from '/src/components/shared/Header';
 import Svg from '/src/components/shared/Svg';
-import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
-import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
+import Dropdown from '/src/components/shared/smart_content/Dropdown';
+import List from '/src/components/shared/smart_content/List';
+import Slider from '/src/components/shared/smart_content/Slider';
+// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+// import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
 import ContentLoader, { ContentLoaderStatus } from '/src/components/shared/ContentLoader'
-import Option from '../components/shared/header/navigation/Option';
+// import Option from '../components/shared/header/navigation/Option';
 
 // /manage components
 import Login from '/src/pages/manage/Login';
@@ -26,6 +30,8 @@ import Categories from '../pages/manage/Categories';
 
 function Manage() {
   const navigate = useNavigate();
+
+  const isWebsiteMobile = useIsWebsiteMobile();
 
   // Auth state
   const isAuthenticated = useStore((state) => state.isAuthenticated);
@@ -64,10 +70,39 @@ function Manage() {
       <Header
         isManageRoute={true}
         logo={logo}
-        navResponsiveMenuTitle="Cia da Capa - Gerenciamento"
+        // navResponsiveMenuTitle="Cia da Capa - Gerenciamento"
         navResponsiveMenuOptions={
           <>
-            <SmartContent contentType={SmartContentType.List}>
+            {isWebsiteMobile ?
+              <List>
+                <span>Produtos</span>
+                <ContentLoader fetchData={apiPublic.products.listCategories}>
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                </ContentLoader>
+              </List>
+              :
+              <Dropdown>
+                <div>Produtos</div>
+                  <ContentLoader fetchData={apiPublic.products.listCategories}>
+                      {(categories) => (
+                        console.log(categories)
+                      )}
+                  </ContentLoader>
+              </Dropdown>
+            }
+            <div>
+              <Link to='./categorias'>
+                Categorias
+              </Link>
+            </div>
+            <div>
+              <Link to='./banners'>
+                Banners
+              </Link>
+            </div>
+            {/* <SmartContent contentType={SmartContentType.List}>
               <SmartContentHeader>
                 <Link to="/">
                   <Svg type="home" sizes={[16,16]} />
@@ -91,21 +126,29 @@ function Manage() {
             <Link to="banners">
               <Svg type="home" sizes={[16,16]} className='' />
               <span>Banners</span>
-            </Link>
+            </Link> */}
           </>
         }
         navPermanentButtons={
           <>
-            <SmartContent contentType={SmartContentType.Dropdown}>
+            {/* <SmartContent contentType={SmartContentType.Dropdown}>
               <SmartContentHeader>
                 <Svg type="search" sizes={[30,30]} />
               </SmartContentHeader>
               <SmartContentBody title='pesquisa'>
                 <input type='text' />
               </SmartContentBody>
-            </SmartContent>
+            </SmartContent> */}
+            <Dropdown
+              headerClassName='nav__button'
+              hideArrow={true}
+              mobileContentTitle='Digite seu termo de busca:'
+            >
+              <Svg type="search" sizes={[30,30]} />
+              <input type='text' />
+            </Dropdown>
 
-            <button onClick={handleLogout}>
+            <button onClick={handleLogout} className='nav__button'>
               <Svg type="logout" sizes={[30,30]} />
             </button>
           </>

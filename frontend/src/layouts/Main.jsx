@@ -61,22 +61,35 @@ function Main() {
       <Header
         navResponsiveMenuOptions={
           <>
-						{/* <Dropdown contentClassName='test'> */}
-              {isWebsiteMobile ?
-                <List>
-                  Produtos
-							    <div>Bolsas</div>
-							    <div>Pastas</div>
-                </List>
-                :
-                <Dropdown>
-                  <div>Produtos</div>
-							    <div>Bolsas</div>
-							    <div>Pastas</div>
-                </Dropdown>
-              }
-							<div><Link to='/contact'>Contato</Link></div>
-							<div>Dropdown Item 2</div>
+            <div>
+              <Link to='/'>
+                Página inicial
+              </Link>
+            </div>
+            {isWebsiteMobile ?
+              <List>
+                <span>Produtos</span>
+                <ContentLoader fetchData={apiPublic.products.listCategories}>
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                </ContentLoader>
+              </List>
+              :
+              <Dropdown>
+                <div>Produtos</div>
+                  <ContentLoader fetchData={apiPublic.products.listCategories}>
+                      {(categories) => (
+                        console.log(categories)
+                      )}
+                  </ContentLoader>
+              </Dropdown>
+            }
+            <div>
+              <Link to='/contato'>
+                Contato
+              </Link>
+            </div>
 						{/* </Dropdown> */}
             {/* <Link to="/">
               <Svg type="home" sizes={[16,16]} />

@@ -1,10 +1,10 @@
-@forward '_variables';
+@forward '_globals';
 @forward '_utils';
 @forward '_normalize';
 @forward '_colors';
 @forward '_typography';
 
-@use '_variables' as *;
+@use '_globals' as *;
 @use '_utils' as *;
 @use '_colors' as *;
 

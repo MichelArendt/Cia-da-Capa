@@ -55,11 +55,22 @@ const Header = ({
 		<header className='website__header section--full-width poppins-light'>
 				<nav className='website__nav website--max-width'>
 					{/* Hide menu if manage route and not authenticated */}
+					{console.log('isManageRoute ' + isManageRoute)}
+					{console.log(isAuthenticated)}
 					{(!isManageRoute || isAuthenticated) && (
+
 						isWebsiteMobile ?
 							<Slider
 								headerClassName='nav__button'
-								mobileContentTitle='Menu Cia da Capa' slideInFromDirection='left'
+								mobileContentTitle={
+									<Link
+										to={`/${isManageRoute ? 'manage' : ''}`}
+										className='header__logo'
+									>
+										<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
+									</Link>
+								}
+								slideInFromDirection='left'
 							>
 								<Svg type="menu" sizes={[35,35]} />
 								{navResponsiveMenuOptions}

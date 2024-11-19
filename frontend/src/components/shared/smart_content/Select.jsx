@@ -1,27 +1,67 @@
-// Select.jsx
+import React, { useContext, useState, useEffect } from 'react';
+import classNames from 'classnames';
 
-import React from 'react';
+// Shared components
+import Svg from '/src/components/shared/Svg';
 import { SmartContentProvider, SmartContentType } from './shared/SmartContentContext';
-import SmartContentHeader from './shared/SmartContentHeader';
-import SmartContentBody from './shared/SmartContentBody';
+
+// Hooks
+import useStore from '/src/store';
+import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+import useToggleContent from '/src/hooks/useToggleContent'; // Custom hook to detect mobile devices
+import { useDynamicPosition } from '/src/hooks/useDynamicPosition'; // Dynamic positioning hook
+
 
 const Select = ({
   children,
   hideArrow = false,
   className = '',
+  mobileContentTitle = 'Selecione uma opção:',
   headerClassName = '',
-  bodyClassName = '',
+  contentClassName = '',
 }) => {
   // Separate header and body content
   const [headerChild, ...bodyChildren] = React.Children.toArray(children);
 
+  const closeAllMenusSignal = useStore((state) => state.closeAllMenusSignal);
+  const { isOpen, closeContent, toggleContent } = useToggleContent();
+  const isWebsiteMobile = useIsWebsiteMobile();
+
+  const clickHandler = () => { isWebsiteMobile ? toggleContent() : undefined}
+
+  // Close the menu whenever the signal changes
+  useEffect(() => {
+    closeContent();
+  }, [closeAllMenusSignal]);
+
+  // Use dynamic positioning only on mobile
+  const { ref, style } = useDynamicPosition(isOpen);
+
+  const selectContentClasses = classNames(
+    'select__content',
+    { 'select__content--visible': isOpen }
+  );
+
   return (
     <SmartContentProvider contentType={SmartContentType.Select}>
-      <div className={`select smart-content ${className}`}>
-        <SmartContentHeader hideArrow={hideArrow} className={headerClassName}>
-          {headerChild}
-        </SmartContentHeader>
-        <SmartContentBody className={bodyClassName}>{bodyChildren}</SmartContentBody>
+      <div className={`select ${className}`} onClick={clickHandler}>
+        <button className={`select__button ${headerClassName}`}>
+          {headerChild} {hideArrow ? '' : <Svg type='arrow_drop_down' sizes={[15,15]} />}
+        </button>
+        <div
+          className={`${selectContentClasses} ${contentClassName}`}
+          ref={ref}
+          style={style} // Apply the dynamic positioning styles
+        >
+          <div
+            className="select__content-wrapper"
+            onClick={(e) => e.stopPropagation()} // Stop propagation
+          >
+            {isWebsiteMobile && <div className="select__content-title">{mobileContentTitle}</div> }
+            {bodyChildren}
+          </div>
+          {isWebsiteMobile && <button className="overlay__button overlay__button--close">&times;</button>}
+        </div>
       </div>
     </SmartContentProvider>
   );
