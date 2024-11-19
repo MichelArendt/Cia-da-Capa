@@ -27,35 +27,12 @@ const Header = ({
 	children }
 ) => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
-	const { isOpen, toggleMenu } = useMenuStore();
   const isMobile = useStore((state) => state.isMobile);
-
-
-	// // Store references to elements using useRef
-	// const navRef = useRef(null);
-	// const closeButtonRef = useRef(null);
-
-	// useEffect(() => {
-  //   if (window.innerWidth > 900) {
-  //     return;
-  //   }
-
-	// 	if( isOpen ) {
-	// 		navRef.current.style.width = "100%";
-	// 		document.body.style.overflowY = 'hidden';
-	// 		console.log(1)
-	// 	} else {
-	// 		navRef.current.style.width = "0%";
-	// 		document.body.style.overflowY = 'auto';
-	// 	}
-	// }, [ isOpen ]);
 
 	return(
 		<header className='website__header section--full-width poppins-light'>
 				<nav className='website__nav website--max-width'>
 					{/* Hide menu if manage route and not authenticated */}
-					{console.log('isManageRoute ' + isManageRoute)}
-					{console.log(isAuthenticated)}
 					{(!isManageRoute || isAuthenticated) && (
 
 						isMobile ?
