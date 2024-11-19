@@ -1,5 +1,5 @@
 import React from 'react';
-import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import { Link } from 'react-router-dom';
 import Collapsible from '/src/components/shared/smart_content/Collapsible';
 import Dropdown from '/src/components/shared/smart_content/Dropdown';
@@ -36,7 +36,7 @@ function Home() {
     </Collapsible>
 
     <List orientation="horizontal">
-      <div>list</div>
+      <div>Produtos:</div>
       <div>List Item 1</div>
       <div>List Item 2</div>
       <div>List Item 3</div>

@@ -17,12 +17,12 @@ const Collapsible = ({
 
   return (
     <SmartContentProvider contentType={SmartContentType.Collapsible}>
-      <div className={`collapsible smart-content ${className}`}>
+      {/* <div className={`collapsible smart-content ${className}`}>
         <SmartContentHeader hideArrow={hideArrow} className={headerClassName}>
           {headerChild}
         </SmartContentHeader>
         <SmartContentBody className={bodyClassName}>{bodyChildren}</SmartContentBody>
-      </div>
+      </div> */}
     </SmartContentProvider>
   );
 };

@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Detects mobile view
+// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Detects mobile view
+
+// Hooks
+import useStore from '/src/store';
 
 export function useDynamicPosition() {
   const elementRef = useRef(null);
   const [style, setStyle] = useState({ left: 0 }); // Default to `left: 0`
-  const isMobile = useIsWebsiteMobile(); // Check if the website is in mobile view
+  const isMobile = useStore((state) => state.isMobile);
 
   useEffect(() => {
     // Only apply positioning calculations on desktop

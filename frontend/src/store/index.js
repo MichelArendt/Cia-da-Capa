@@ -1,8 +1,13 @@
 import { create } from 'zustand';
 
+// Define breakpointDesktop outside of the store
+const breakpointDesktop = parseInt(
+  getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-desktop')
+) || 900;
+
 const useStore = create((set) => ({
   // Settings
-  breakpointDesktop: 900,
+  breakpointDesktop,
 
   // Auth
   isAuthenticated: false,
@@ -15,10 +20,13 @@ const useStore = create((set) => ({
   closeAllMenusSignal: 0, // Initialize the counter
   triggerCloseAllMenus: () =>{
     set((state) => {
-      console.log(state.closeAllMenusSignal); // Access `closeAllMenusSignal` from `state`
       return { closeAllMenusSignal: state.closeAllMenusSignal + 1 };
     });
   },
+
+  // Is Mobile State
+  isMobile: window.innerWidth < breakpointDesktop,
+  setIsMobile: (value) => set({ isMobile: value }),
 }));
 
 export default useStore;

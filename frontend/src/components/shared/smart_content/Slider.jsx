@@ -8,7 +8,7 @@ import SmartContentHeader from './shared/SmartContentHeader';
 import SmartContentBody from './shared/SmartContentBody';
 import Svg from '/src/components/shared/Svg';
 import useStore from '/src/store';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 import useToggleContent from '/src/hooks/useToggleContent'; // Custom hook to detect mobile devices
 
 const Slider = ({
@@ -25,7 +25,7 @@ const Slider = ({
 
   const closeAllMenusSignal = useStore((state) => state.closeAllMenusSignal);
   const { isOpen, closeContent, toggleContent } = useToggleContent();
-  const isWebsiteMobile = useIsWebsiteMobile();
+  const isMobile = useStore((state) => state.isMobile);
 
   const clickHandler = () => { toggleContent()}
 
@@ -51,11 +51,11 @@ const Slider = ({
             className="slider__content-wrapper"
             onClick={(e) => e.stopPropagation()} // Stop propagation
           >
-            {isWebsiteMobile && mobileContentTitle }
+            {isMobile && mobileContentTitle }
             {bodyChildren}
             <button className="overlay__button overlay__button--close"  onClick={clickHandler}>&times;</button>
           </div>
-          {isWebsiteMobile ? (
+          {isMobile ? (
             <>
             </>
           ) : (

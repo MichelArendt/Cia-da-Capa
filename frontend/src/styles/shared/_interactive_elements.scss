@@ -245,8 +245,9 @@
 // List
 // -----------------------
 .list {
-  background: red;
+}
+.list__header > * {
 }
 .list__content > * {
-  padding-left: 10px;
+  padding: 10px;
 }

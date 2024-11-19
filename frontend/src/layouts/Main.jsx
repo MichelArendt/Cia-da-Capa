@@ -3,7 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // Hooks
 import useStore from '/src/store';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 
 // Shared components
 import Header from '/src/components/shared/Header';
@@ -24,25 +24,25 @@ import Contact from '../pages/Contact';
 
 function Main() {
   const [categories, setCategories] = useState([]);
-  const triggerCloseAllMenus = useStore((state) => state.triggerCloseAllMenus);
-  const isWebsiteMobile = useIsWebsiteMobile();
+  // const triggerCloseAllMenus = useStore((state) => state.triggerCloseAllMenus);
+  const isMobile = useStore((state) => state.isMobile);
 
-  const location = useLocation();
+  // const location = useLocation();
 
-  // Trigger when the route changes
-  useEffect(() => {
-    triggerCloseAllMenus();
-  }, [location.pathname, triggerCloseAllMenus]);
+  // // Trigger when the route changes
+  // useEffect(() => {
+  //   triggerCloseAllMenus();
+  // }, [location.pathname, triggerCloseAllMenus]);
 
-  // Trigger when the window is resized
-  useEffect(() => {
-    const handleResize = () => {
-      triggerCloseAllMenus();
-    };
+  // // Trigger when the window is resized
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     triggerCloseAllMenus();
+  //   };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [triggerCloseAllMenus]);
+  //   window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, [triggerCloseAllMenus]);
 
  // First render
   // useEffect(() => {
@@ -66,7 +66,7 @@ function Main() {
                 Página inicial
               </Link>
             </div>
-            {isWebsiteMobile ?
+            {isMobile ?
               <List>
                 <span>Produtos</span>
                 <ContentLoader fetchData={apiPublic.products.listCategories}>

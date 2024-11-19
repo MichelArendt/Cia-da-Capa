@@ -9,7 +9,7 @@ import logo from '/assets/logo_manage.png';
 
 // Hooks
 import useStore from '/src/store';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 
 // Shared components
 import Header from '/src/components/shared/Header';
@@ -31,7 +31,7 @@ import Categories from '../pages/manage/Categories';
 function Manage() {
   const navigate = useNavigate();
 
-  const isWebsiteMobile = useIsWebsiteMobile();
+  const isMobile = useStore((state) => state.isMobile);
 
   // Auth state
   const isAuthenticated = useStore((state) => state.isAuthenticated);
@@ -73,7 +73,7 @@ function Manage() {
         // navResponsiveMenuTitle="Cia da Capa - Gerenciamento"
         navResponsiveMenuOptions={
           <>
-            {isWebsiteMobile ?
+            {isMobile ?
               <List>
                 <span>Produtos</span>
                 <ContentLoader fetchData={apiPublic.products.listCategories}>
@@ -93,7 +93,7 @@ function Manage() {
               </Dropdown>
             }
             <div>
-              <Link to='./categorias'>
+              <Link to='./produtos/categorias'>
                 Categorias
               </Link>
             </div>

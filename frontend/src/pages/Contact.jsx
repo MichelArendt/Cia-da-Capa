@@ -1,5 +1,5 @@
 import React from 'react';
-import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import { Link } from 'react-router-dom';
 import Collapsible from '/src/components/shared/smart_content/Collapsible';
 import Dropdown from '/src/components/shared/smart_content/Dropdown';

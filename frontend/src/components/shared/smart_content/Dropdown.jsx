@@ -7,7 +7,7 @@ import { SmartContentProvider, SmartContentType } from './shared/SmartContentCon
 
 // Hooks
 import useStore from '/src/store';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
+// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 import useToggleContent from '/src/hooks/useToggleContent'; // Custom hook to detect mobile devices
 import { useDynamicPosition } from '/src/hooks/useDynamicPosition'; // Dynamic positioning hook
 
@@ -25,9 +25,9 @@ const Dropdown = ({
 
   const closeAllMenusSignal = useStore((state) => state.closeAllMenusSignal);
   const { isOpen, closeContent, toggleContent } = useToggleContent();
-  const isWebsiteMobile = useIsWebsiteMobile();
+  const isMobile = useStore((state) => state.isMobile);
 
-  const clickHandler = () => { isWebsiteMobile ? toggleContent() : undefined}
+  const clickHandler = () => { isMobile ? toggleContent() : undefined}
 
   // Close the menu whenever the signal changes
   useEffect(() => {
@@ -57,10 +57,10 @@ const Dropdown = ({
             className="dropdown__content-wrapper"
             onClick={(e) => e.stopPropagation()} // Stop propagation
           >
-            {isWebsiteMobile && <div className="dropdown__content-title">{mobileContentTitle}</div> }
+            {isMobile && <div className="dropdown__content-title">{mobileContentTitle}</div> }
             {bodyChildren}
           </div>
-          {isWebsiteMobile && <button className="overlay__button overlay__button--close">&times;</button>}
+          {isMobile && <button className="overlay__button overlay__button--close">&times;</button>}
         </div>
       </div>
     </SmartContentProvider>

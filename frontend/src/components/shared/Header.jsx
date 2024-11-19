@@ -9,7 +9,7 @@ import useMenuStore from '/src/store/menuStore';
 // Shared
 // import Dropdown from '/src/components/shared/smart_content/Dropdown';
 import Dropdown from '/src/components/shared/smart_content/Dropdown';
-import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
+// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 import ContentLoader from '/src/components/shared/ContentLoader';
 import Svg from '/src/components/shared/Svg';
 import defaultLogo from '/assets/logo_only_text.png';
@@ -17,7 +17,6 @@ import defaultLogo from '/assets/logo_only_text.png';
 
 // APIs
 import {apiPublic} from '/src/services/api';
-import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile';
 import Slider from '/src/components/shared/smart_content/Slider';
 
 const Header = ({
@@ -29,7 +28,7 @@ const Header = ({
 ) => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
 	const { isOpen, toggleMenu } = useMenuStore();
-  const isWebsiteMobile = useIsWebsiteMobile();
+  const isMobile = useStore((state) => state.isMobile);
 
 
 	// // Store references to elements using useRef
@@ -59,7 +58,7 @@ const Header = ({
 					{console.log(isAuthenticated)}
 					{(!isManageRoute || isAuthenticated) && (
 
-						isWebsiteMobile ?
+						isMobile ?
 							<Slider
 								headerClassName='nav__button'
 								mobileContentTitle={
