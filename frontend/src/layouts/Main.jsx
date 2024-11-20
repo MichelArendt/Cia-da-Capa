@@ -11,50 +11,18 @@ import Svg from '/src/components/shared/Svg';
 import Dropdown from '/src/components/shared/smart_content/Dropdown';
 import List from '/src/components/shared/smart_content/List';
 import Slider from '/src/components/shared/smart_content/Slider';
-// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
-// import { Dropdown, DropdownHeader, DropdownSubmenu, DropdownOption } from '/src/components/shared/Dropdown';
+import ContentLoader from '/src/components/shared/ContentLoader';
 
 // Main website components
 import Home from '/src/pages/Home';
-import ContentLoader from '/src/components/shared/ContentLoader';
 
 // APIs
-import {apiPublic} from '/src/services/api';
+import {apiPublic} from '../services/api/_axiosInstance';
 import Contact from '../pages/Contact';
 
 function Main() {
   const [categories, setCategories] = useState([]);
-  // const triggerCloseAllMenus = useStore((state) => state.triggerCloseAllMenus);
   const isMobile = useStore((state) => state.isMobile);
-
-  // const location = useLocation();
-
-  // // Trigger when the route changes
-  // useEffect(() => {
-  //   triggerCloseAllMenus();
-  // }, [location.pathname, triggerCloseAllMenus]);
-
-  // // Trigger when the window is resized
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     triggerCloseAllMenus();
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, [triggerCloseAllMenus]);
-
- // First render
-  // useEffect(() => {
-  //   const loadCategories = async () => {
-  //     const data = await apiPublic.fetchProductCategories();
-  //     if (data) {
-  //       setCategories(data);
-  //     }
-  //   };
-
-  //   loadCategories();
-  // }, []);
 
   return (
     <>
@@ -69,20 +37,20 @@ function Main() {
             {isMobile ?
               <List>
                 <span>Produtos</span>
-                <ContentLoader fetchData={apiPublic.products.listCategories}>
+                {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
                     {(categories) => (
                       console.log(categories)
                     )}
-                </ContentLoader>
+                </ContentLoader> */}
               </List>
               :
               <Dropdown>
                 <div>Produtos</div>
-                  <ContentLoader fetchData={apiPublic.products.listCategories}>
+                  {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
                       {(categories) => (
                         console.log(categories)
                       )}
-                  </ContentLoader>
+                  </ContentLoader> */}
               </Dropdown>
             }
             <div>
@@ -169,10 +137,12 @@ function Main() {
         }
       />
       <main className='website__main'>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+        <div className='website__main-wrapper'>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </div>
       </main>
     </>
   );

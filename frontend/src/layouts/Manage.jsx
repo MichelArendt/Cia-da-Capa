@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 
 // APIs
-import {apiPublic, apiManage} from '/src/services/api';
+import {apiPublic, apiManage} from '../services/api/_axiosInstance';
 
 // Assets
 import logo from '/assets/logo_manage.png';
@@ -19,7 +19,7 @@ import List from '/src/components/shared/smart_content/List';
 import Slider from '/src/components/shared/smart_content/Slider';
 // import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
 // import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
-import ContentLoader, { ContentLoaderStatus } from '/src/components/shared/ContentLoader'
+import ContentLoader, { ContentLoaderStatus } from '/src/components/shared/ContentLoader.jsx'
 // import Option from '../components/shared/header/navigation/Option';
 
 // /manage components
@@ -154,13 +154,13 @@ function Manage() {
           </>
         }
       />
-      <main className='website__main section--full-width flex flex--row flex--row--center-horizontal'>
+      <main className='website__main'>
         <div className="website--max-width">
           {loading ? (
             // Display a loading component while checking authentication
             <ContentLoader
               displayMessage="Verificando autenticação"
-              status = { ContentLoaderStatus.LOADING }
+              // status = { ContentLoaderStatus.LOADING }
               fallbackContent={<span>Não autenticado. Redirecionando!</span>}
             />
           ) : (

@@ -35,6 +35,12 @@
 .website__main {
   // padding-top: 60px;
   height: 100%;
+  @extend .flex;
+  @extend .flex--row--center-horizontal;
+}
+
+.website__main-wrapper {
+  @extend .website--max-width;
 }
 
 @media (min-width: $breakpoint--desktop) {
@@ -64,10 +70,10 @@
 
 //   &:hover {
 //     background-color: lightness-add($color-primary-2, 10%);
-//     color: $color-primary-1;
+//     color: $color-primary--main;
 
 //     svg {
-//       fill: $color-primary-1;
+//       fill: $color-primary--main;
 //     }
 //   }
 // }
@@ -116,12 +122,12 @@ form .wrapper {
 form input {
   font-size: 20px;
   padding: 15px;
-  border: 1px solid $color-primary-1;
+  border: 1px solid $color-primary--main;
   border-top: none;
   border-left: none;
   border-right: none;
   background: #fbfbfb;
-  color: $color-primary-1;
+  color: $color-primary--main;
   outline: none;
 }
 
@@ -138,6 +144,43 @@ form .error-message {
   text-align: center;
   padding: 15px 0 !important;
 }
+
+form > label {
+  @extend .flex;
+  @extend .flex--column;
+  padding: 20px;
+}
+
+// ---------------------------
+// FEEDBACK - Errors and Success
+// ---------------------------
+.feedback {
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+
+  &--success {
+    background-color: $color-feedback--success-bg;
+    color: $color-feedback--success;
+  }
+
+  &--error {
+    background-color: $color-feedback--error-bg;
+    color: $color-feedback--error;
+  }
+
+  &--info {
+    background-color: $color-feedback--info-bg;
+    color: $color-feedback--info;
+  }
+
+  &--warning {
+    background-color: $color-feedback--warning-bg;
+    color: $color-feedback--warning;
+  }
+}
+
 
 // ---------------------------
 // CONTENT LOADER
@@ -160,8 +203,8 @@ form .error-message {
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(farthest-side,$color-primary-1 100%,#0000) top/8px 8px no-repeat,
-    conic-gradient(#0000 30%, $color-primary-1);
+    radial-gradient(farthest-side,$color-primary--main 100%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%, $color-primary--main);
   -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
   animation: l13 1s infinite linear;
 }
@@ -212,7 +255,7 @@ form .error-message {
   }
   50% {
     transform: translateX(10px); /* Adjust distance */
-    color: $color-primary-1;
+    color: $color-primary--main;
 
   }
   100% {

@@ -13,9 +13,9 @@
 // ---------------------------
 .website__header {
   @extend .flex;
-  @extend .flex--row--center-vertical;
-  background-color: $color-primary-2;
-  color: $color-secondary-2;
+  @extend .flex--row--center-horizontal;
+  background-color: $color-primary--dark;
+  color: $color-secondary--light;
   height: 80px;
   padding: 0 10px;
 
@@ -24,7 +24,14 @@
   }
 }
 
+.website__header-wrapper {
+  @extend .website--max-width;
+  @extend .flex;
+  // @extend .flex--row--center-horizontal;
+}
+
 .website__nav {
+  flex-grow: 1;
   @extend .flex;
 }
 
@@ -55,10 +62,10 @@
   @extend .flex--row--center;
   height: 100%;
   padding: 5px;
-  color: $color-secondary-2;
+  color: $color-secondary--light;
 
   svg {
-    fill: $color-secondary-2;
+    fill: $color-secondary--light;
   }
 }
 
@@ -82,8 +89,8 @@
 //   justify-content: center;
 //   width: 100%;
 //   height: $header-size-mobile; // Use mobile size by default
-//   background: $color-primary-2;
-//   color: $color-secondary-2;
+//   background: $color-primary--dark;
+//   color: $color-secondary--light;
 //   z-index: 1;
 
 //   @media (min-width: $desktop-breakpoint) {
@@ -121,13 +128,13 @@
 //   left: 0;
 //   overflow: hidden;
 //   display: inline-flex; // accomodate close button on mobile
-//   background-color: opacity-set($color-primary-2, 0.95);
+//   background-color: opacity-set($color-primary--dark, 0.95);
 //   z-index: 1;
 // }
 
 // nav .menu {
 //   flex-grow: 4;
-//   background-color: $color-primary-2;
+//   background-color: $color-primary--dark;
 // }
 // nav .button-close {
 //   flex-grow: 1;

@@ -40,7 +40,7 @@
   font-size: 50px;
   line-height: 0.6em;
   padding: 20px;
-  color: $color-secondary-2
+  color: $color-secondary--light
 }
 
 // -----------------------
@@ -192,7 +192,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  background: opacity-set($color-primary-2, 0.99);
+  background: opacity-set($color-primary--dark, 0.99);
 }
 
 /* Directions */
