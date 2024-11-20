@@ -131,18 +131,12 @@ form input {
   outline: none;
 }
 
+form input:disabled {
+  background: #c6c6c6;
+}
+
 form button[type="submit"] {
   padding: 20px;
-}
-
-form .error-message, form .error-field {
-  color: darkred;
-}
-
-form .error-message {
-  display: flex;
-  text-align: center;
-  padding: 15px 0 !important;
 }
 
 form > label {
@@ -158,7 +152,7 @@ form > label {
   padding: 1rem;
   border-radius: 4px;
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem;
 
   &--success {
     background-color: $color-feedback--success-bg;
