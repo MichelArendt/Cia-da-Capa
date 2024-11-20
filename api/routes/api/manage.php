@@ -9,6 +9,9 @@ use App\Http\Controllers\ProductController;
 // User Management
 Route::post('/user/logout', [UserController::class, 'logout']);
 
+// Create a product
+Route::post('/products/categories', [ProductCategoryController::class, 'createCategory']);
+
 // Highlight a product
 Route::post('/products/{product}/highlight', [ProductController::class, 'highlight']);
 
