@@ -70,12 +70,12 @@ const _requestHandler = async (method, url, data = null) => {
 // Public API endpoints
 const apiPublic = {
   products: {
-    list:                  () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/`),
-    getById:               (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/${id}`),
-    getCategory:           (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/${id}/categoria`),
-    listCategories:        () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias`),
-    getCategoryById:       (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias/${id}`),
-    listCategoryProducts:  (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/produtos/categorias/${id}/produtos`),
+    list:                  () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/products/`),
+    getById:               (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/products/${id}`),
+    getCategory:           (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/products/${id}/category`),
+    listCategories:        () =>    _requestHandler('get', `${PUBLIC_BASE_URL}/products/categories`),
+    getCategoryById:       (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/products/categories/${id}`),
+    listCategoryProducts:  (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/products/categories/${id}/products`),
   },
   user: {
     getAuthDetails:        () =>            _requestHandler('get', `${PUBLIC_BASE_URL}/user`),
@@ -90,13 +90,13 @@ const apiPublic = {
 // Manage API endpoints
 const apiManage = {
   products: {
-    create:                (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/produtos`, data),
-    update:                (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/produtos/${id}`, data),
-    delete:                (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/produtos/${id}`),
+    create:                (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/products`, data),
+    update:                (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/products/${id}`, data),
+    delete:                (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/products/${id}`),
     categories: {
-      create:              (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/produtos/categorias`, data),
-      update:              (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/produtos/categorias/${id}`, data),
-      delete:              (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/produtos/categorias/${id}`),
+      create:              (data) =>      _requestHandler('post', `${MANAGE_BASE_URL}/products/categories`, data),
+      update:              (id, data) =>  _requestHandler('put', `${MANAGE_BASE_URL}/products/categories/${id}`, data),
+      delete:              (id) =>        _requestHandler('delete', `${MANAGE_BASE_URL}/products/categories/${id}`),
     },
   },
   user: {
