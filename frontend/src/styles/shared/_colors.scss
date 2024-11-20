@@ -13,11 +13,32 @@
   @return hsla($hue, $saturation, $lightness, $alpha);
 }
 
+// Primary Colors
+$primary--main: hsla(37, 59%, 54%, 1.0);         // Primary color 1
+$primary--dark: hsla(240, 3%, 18%, 1.0);         // Primary color 2
 
-$color-primary-1: hsla(37, 59%, 54%, 1.0);
-$color-primary-2: hsla(240, 3%, 18%, 1.0);
+// Secondary Colors
+$secondary--light: hsla(0, 0%, 73%, 1.0);        // Secondary color 1
 
-$color-secondary-2: hsla(0, 0%, 73%, 1.0);
+// Success Colors
+$feedback--success: hsla(120, 61%, 45%, 1.0);    // Success text
+$feedback--success-bg: hsla(120, 61%, 93%, 1.0); // Success background
+
+// Error Colors
+$feedback--error: hsla(0, 68%, 46%, 1.0);        // Error text
+$feedback--error-bg: hsla(0, 68%, 93%, 1.0);     // Error background
+
+// Info Colors
+$feedback--info: hsla(208, 90%, 50%, 1.0);       // Info text
+$feedback--info-bg: hsla(208, 90%, 93%, 1.0);    // Info background
+
+// Warning Colors
+$feedback--warning: hsla(39, 100%, 45%, 1.0);    // Warning text
+$feedback--warning-bg: hsla(39, 100%, 93%, 1.0); // Warning background
+
+// Neutral Colors
+$neutral--main: hsla(0, 0%, 20%, 1.0);           // Neutral text
+$neutral--bg: hsla(0, 0%, 96%, 1.0);             // Neutral background
 
 .mouse-disabled {
   cursor: not-allowed;
