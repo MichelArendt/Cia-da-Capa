@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Define a rate limiter for login attempts
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(3)->by($request->ip());
+            return Limit::perMinute(333)->by($request->ip());
         });
     }
 }

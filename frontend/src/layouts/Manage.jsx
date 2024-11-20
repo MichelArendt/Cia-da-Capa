@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 
 // APIs
-import {apiPublic, apiManage} from '../services/api/_axiosInstance';
+// import { useQueryClient } from '@tanstack/react-query';
+import { useAuthDetails } from '/src/services/api/usePublicApi';
+import { useLogout } from '/src/services/api/useManageApi';
 
 // Assets
 import logo from '/assets/logo_manage.png';
 
 // Hooks
 import useStore from '/src/store';
-// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 
 // Shared components
 import Header from '/src/components/shared/Header';
@@ -17,10 +18,7 @@ import Svg from '/src/components/shared/Svg';
 import Dropdown from '/src/components/shared/smart_content/Dropdown';
 import List from '/src/components/shared/smart_content/List';
 import Slider from '/src/components/shared/smart_content/Slider';
-// import SmartContent, { SmartContentHeader, SmartContentBody, SmartContentType } from '/src/components/shared/SmartContent';
-// import { Dropdown, DropdownHeader, DropdownSubmenu } from '/src/components/shared/Dropdown';
 import ContentLoader, { ContentLoaderStatus } from '/src/components/shared/ContentLoader.jsx'
-// import Option from '../components/shared/header/navigation/Option';
 
 // /manage components
 import Login from '/src/pages/manage/Login';
@@ -33,7 +31,7 @@ function Manage() {
 
   const isMobile = useStore((state) => state.isMobile);
 
-  // Auth state
+  // Auth
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setAuthenticated = useStore((state) => state.setAuthenticated);
   const [loading, setLoading] = useState(true);
@@ -42,7 +40,7 @@ function Manage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await apiPublic.user.getAuthDetails();
+        const response = await useAuthDetails();
         setAuthenticated(response.data.authenticated);
       } catch (error) {
         // If there's an error, assume not authenticated
@@ -56,7 +54,8 @@ function Manage() {
 
   const handleLogout = async () => {
     try {
-      await apiManage.user.logout();
+      // await apiManage.user.logout();
+      useLogout();
       setAuthenticated(false);
       navigate('/manage/user/login'); // Redirect to login after logout
     } catch (error) {
@@ -76,20 +75,20 @@ function Manage() {
             {isMobile ?
               <List>
                 <span>Produtos</span>
-                <ContentLoader fetchData={apiPublic.products.listCategories}>
+                {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
                     {(categories) => (
                       console.log(categories)
                     )}
-                </ContentLoader>
+                </ContentLoader> */}
               </List>
               :
               <Dropdown>
                 <div>Produtos</div>
-                  <ContentLoader fetchData={apiPublic.products.listCategories}>
-                      {(categories) => (
-                        console.log(categories)
-                      )}
-                  </ContentLoader>
+                {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
+                    {(categories) => (
+                      console.log(categories)
+                    )}
+                </ContentLoader> */}
               </Dropdown>
             }
             <div>

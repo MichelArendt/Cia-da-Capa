@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from 'react';
 
 // APIs
-import {apiPublic, apiManage} from '/src/services/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProductCategories } from '/src/services/api/usePublicApi';
+
+// Shared components
+import ContentLoader from '/src/components/shared/ContentLoader';
+import List from '/src/components/shared/smart_content/List';
+import CategoryForm from '/src/components/manage/forms/CategoryForm';
 
 const Categories = () => {
-  const [ categories, setCategories ] = useState([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const listCategories = async () => {
-
-      try {
-        const response = await apiPublic.products.listCategories();
-        console.log({response})
-        console.log(response.data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    console.log(1)
-    listCategories();
-  }, []);
+  const refreshCategories = () => {
+    queryClient.invalidateQueries(['categories']); // Re-fetch categories
+  };
 
   return(
     <>
-      <h2>Categories</h2>
-      {categories.length === 0 ? (
-        <p>Nenhuma categoria cadastrada</p>
-      ) : (
-        <ul>
-          {categories.map((category, index) => (
-            <li key={index}>{category.name}</li>
-          ))}
-        </ul>
-      )}
+      <CategoryForm onSave={refreshCategories} />
+
+      <List>
+        <h2>Categorias</h2>
+        {/* For fetching categories */}
+        <ContentLoader hook={useProductCategories} fallbackContent="Não há categorias disponíveis!">
+          {(categories) => (
+            categories.length !== 0 ?
+            <ul>
+              {categories.map((category) => (
+                <li key={category.id}>{category.name}</li>
+              ))}
+            </ul>
+            : 'Não há categorias disponíveis!'
+          )}
+        </ContentLoader>
+      </List>
     </>
   );
 }

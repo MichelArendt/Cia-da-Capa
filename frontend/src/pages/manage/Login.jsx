@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 // Auth
-import {apiPublic} from '/src/services/api';
+import { useLogin } from '/src/services/api/usePublicApi';
 import useStore from '/src/store';
 
 // Shared components
 import ContentLoader from '/src/components/shared/ContentLoader'
+import Feedback from '/src/components/shared/feedback/Feedback';
 
 // Yup schema with validation and sanitization
 const loginSchema = Yup.object().shape({
@@ -22,42 +23,39 @@ const Login = () => {
   const setAuthenticated = useStore((state) => state.setAuthenticated);
   const lastAttemptedRoute = useStore((state) => state.lastAttemptedRoute);
   const clearLastAttemptedRoute = useStore((state) => state.clearLastAttemptedRoute);
-  // const [name, setName] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [errorVisibility, setErrorVisibility] = useState(false);
-  // const setAuthenticated = useStore((state) => state.setAuthenticated);
-  // const navigate = useNavigate();
 
-  const handleLogin = async ({ name, password }, { setSubmitting, setFieldError }) => {
-    try {
-      const response = await apiPublic.user.login({ name, password });
+  const { mutate, isLoading, error } = useLogin();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
-      // Check if login was successful
-      if (response && response.data && response.data.authenticated) {
+  const handleLogin = (values, { setSubmitting, setFieldError, setStatus }) => {
+    setIsCheckingAuth(true);
+
+    mutate(values, {
+      onSuccess: (data) => {
         setAuthenticated(true);
         clearLastAttemptedRoute();
         navigate(lastAttemptedRoute || '/manage'); // Redirect to last route or default
-      } else {
-        // Trigger the general error if not authenticated
-        setFieldError('general', 'Login inválido!');
-      }
-    } catch (error) {
-      // Handle errors based on status code
-      if (error.response) {
-        if (error.response.status === 401) {
-          // Authentication failed
-          setFieldError('general', 'Credenciais inválidas.');
+      },
+      onError: (error) => {
+        console.log(2)
+        if (error.response?.status === 401) {
+          setStatus('Credenciais inválidas.');
+        } else if (error.response) {
+          setStatus('Erro no servidor. Tente novamente mais tarde.');
         } else {
-          // Other server errors
-          setFieldError('general', 'Erro no servidor. Tente novamente mais tarde.');
+          setStatus('Erro de rede. Verifique sua conexão.');
         }
-      } else {
-        // Network errors or unexpected errors
-        setFieldError('general', 'Erro de rede. Verifique sua conexão.');
+
+        console.log(6)
+        // Reset the checking state on error
+        setIsCheckingAuth(false);
+        setSubmitting(false);
+      },
+      onSettled: () => {
+        setSubmitting(false);
       }
-    } finally {
-      setSubmitting(false);
-    }
+    })
+
   };
 
   return (
@@ -66,51 +64,50 @@ const Login = () => {
         validationSchema={loginSchema}
         onSubmit={handleLogin}
       >
-        {({ isSubmitting, errors }) => (
-          isSubmitting ? (
-            <ContentLoader /> // Display the loader when submitting
-          ) : (
-            <Form>
-              <div className="wrapper">
-                <div>
-                  <label htmlFor="name" className="sr-only">
-                    Usuário:
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    id="name"
-                    autoComplete="username"
-                    placeholder="Usuário"
-                  />
-                  <ErrorMessage name="name" component="div" className='error-field' />
-                </div>
+        {({ isSubmitting, errors, status }) => (
+          <Form>
+            {isCheckingAuth ? <ContentLoader /> :
+            <div className="wrapper">
+             {status && <Feedback type='error'>{status}</Feedback>}
 
-                <div>
-                  <label htmlFor="password" className="sr-only">
-                    Senha:
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="Senha"
-                    autoComplete="current-password"
-                  />
-                  <ErrorMessage name="password" component="div" className="error-field" />
-                </div>
-
-
-                {errors.general && <div className="error-message">{errors.general}</div>}
-
-                <div>
-                  <button type="submit" disabled={isSubmitting}>
-                    <span>Login</span>
-                  </button>
-                </div>
+              <div>
+                <label htmlFor="name" className="sr-only">
+                  Usuário:
+                </label>
+                <Field
+                  type="text"
+                  name="name"
+                  id="name"
+                  autoComplete="username"
+                  placeholder="Usuário"
+                  disabled={isSubmitting}
+                />
+                <ErrorMessage name="name" component="div" className='feedback feedback--error' />
               </div>
-            </Form>
-          )
+
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  Senha:
+                </label>
+                <Field
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="Senha"
+                  autoComplete="current-password"
+                  disabled={isSubmitting}
+                />
+                <ErrorMessage name="password" component="div" className="feedback feedback--error" />
+              </div>
+
+              <div>
+                <button type="submit" disabled={isSubmitting}>
+                  <span>Login</span>
+                </button>
+              </div>
+            </div>
+            }
+          </Form>
         )}
       </Formik>
   );

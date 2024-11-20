@@ -23,7 +23,7 @@ const ContentLoader = ({
     ({ isLoading, isError, error, data, mutate, mutateAsync } = result);
   } else {
     // Use external states if provided
-    isLoading = externalIsLoading;
+    isLoading = externalIsLoading || true;
     isError = externalIsError;
     error = externalError;
     data = externalData;
