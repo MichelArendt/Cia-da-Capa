@@ -37,6 +37,7 @@
     "webpack-livereload-plugin": "^3.0.2"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.60.6",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
