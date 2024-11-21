@@ -5,8 +5,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 // Auth
-import { useLogin } from '/src/services/api/usePublicApi';
 import useStore from '/src/store';
+import { useLogin } from '/src/services/api/usePublicApi';
+import { useAuthHandler } from '/src/hooks/useAuthHandler';
 
 // Shared components
 import ContentLoader from '/src/components/shared/ContentLoader'
@@ -26,18 +27,15 @@ const Login = () => {
 
   const { mutate, isLoading, error } = useLogin();
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+  const { handleAuthSuccess } = useAuthHandler();
 
   const handleLogin = (values, { setSubmitting, setFieldError, setStatus }) => {
     setIsCheckingAuth(true);
 
     mutate(values, {
       onSuccess: (data) => {
-        setAuthenticated(true);
-        clearLastAttemptedRoute();
-        navigate(lastAttemptedRoute || '/manage'); // Redirect to last route or default
       },
       onError: (error) => {
-        console.log(2)
         if (error.response?.status === 401) {
           setStatus('Credenciais inválidas.');
         } else if (error.response) {
@@ -46,7 +44,6 @@ const Login = () => {
           setStatus('Erro de rede. Verifique sua conexão.');
         }
 
-        console.log(6)
         // Reset the checking state on error
         setIsCheckingAuth(false);
         setSubmitting(false);

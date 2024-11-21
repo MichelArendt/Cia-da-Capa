@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, Navigate  } from 'react-router-dom';
 
 // APIs
-// import { useQueryClient } from '@tanstack/react-query';
 import { useAuthDetails } from '/src/services/api/usePublicApi';
 import { useLogout } from '/src/services/api/useManageApi';
+import { useProductCategories } from '/src/services/api/usePublicApi'
+
+// Auth
+import { useAuthHandler } from '/src/hooks/useAuthHandler';
 
 // Assets
 import logo from '/assets/logo_manage.png';
@@ -34,23 +37,42 @@ function Manage() {
   // Auth
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setAuthenticated = useStore((state) => state.setAuthenticated);
-  const [loading, setLoading] = useState(true);
+  const [isCheckingAuth, setIscheckingAuth] = useState(true);
+  const { isPending, isFetching, isError, isSuccess, data, error } = useAuthDetails();
+  const { handleAuthSuccess } = useAuthHandler();
 
   // Check authentication status on app load
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await useAuthDetails();
-        setAuthenticated(response.data.authenticated);
-      } catch (error) {
-        // If there's an error, assume not authenticated
-        setAuthenticated(false);
-      } finally {
-        setLoading(false); // Set loading to false when check is complete
-      }
-    };
-    checkAuth();
-  }, [setAuthenticated]);
+    if (isPending || isFetching) {
+      setIscheckingAuth(true);
+    } else if (isError) {
+        console.error(error);
+     } else {
+      handleAuthSuccess(data.authenticated);
+      setIscheckingAuth(false);
+    }
+  }, [isPending, isError, isSuccess]);
+
+  // useEffect(() => {
+  //   console.log(1)
+  //   const checkAuth = async () => {
+  //     console.log(2)
+  //     try {
+  //       console.log(3)
+  //       console.log(4)
+  //       console.log(response)
+  //       setAuthenticated(response.data.authenticated);
+  //     } catch (error) {
+  //       // If there's an error, assume not authenticated
+  //       console.error(error)
+  //       setAuthenticated(false);
+  //     } finally {
+  //       console.log(6)
+  //       setIscheckingAuth(false); // Set loading to false when check is complete
+  //     }
+  //   };
+  //   checkAuth();
+  // }, [setAuthenticated]);
 
   const handleLogout = async () => {
     try {
@@ -75,11 +97,17 @@ function Manage() {
             {isMobile ?
               <List>
                 <span>Produtos</span>
-                {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
-                    {(categories) => (
-                      console.log(categories)
-                    )}
-                </ContentLoader> */}
+                <ContentLoader hook={useProductCategories} fallbackContent='Categorias indisponíveis'>
+                  {(categories) => (
+                    categories.length !== 0 ?
+                    <ul>
+                      {categories.map((category) => (
+                        <li key={category.id}>{category.name}</li>
+                      ))}
+                    </ul>
+                    : 'Não há categorias disponíveis!'
+                  )}
+                </ContentLoader>
               </List>
               :
               <Dropdown>
@@ -155,7 +183,7 @@ function Manage() {
       />
       <main className='website__main'>
         <div className="website--max-width">
-          {loading ? (
+          {isCheckingAuth ? (
             // Display a loading component while checking authentication
             <ContentLoader
               displayMessage="Verificando autenticação"
