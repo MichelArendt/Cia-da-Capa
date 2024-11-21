@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-// import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Detects mobile view
 
 // Hooks
 import useStore from '/src/store';
@@ -18,12 +17,14 @@ export function useDynamicPosition() {
     const rect = elementRef.current.getBoundingClientRect();
     const newStyle = {};
 
-    // If the dropdown overflows on the right, align to the right
-    if (rect.right > windowWidth) {
-      newStyle.right = 0;
+    // Check if the element's left edge is beyond the middle of the screen
+    if (rect.left > windowWidth / 2) {
+      console.log("Anchor to right");
+      newStyle.right = 0; // Anchor to the right
       newStyle.left = 'auto';
     } else {
-      newStyle.left = 0;
+      console.log("Anchor to left");
+      newStyle.left = 0; // Anchor to the left
       newStyle.right = 'auto';
     }
 
