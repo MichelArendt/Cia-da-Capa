@@ -1,13 +1,12 @@
 import { create } from 'zustand';
 
-// Define breakpointDesktop outside of the store
-const breakpointDesktop = parseInt(
-  getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-desktop')
-) || 900;
+// Define breakpointDesktop before creating the store
+const breakpointDesktop = 900; // Default value for the desktop breakpoint
 
 const useStore = create((set) => ({
   // Settings
-  breakpointDesktop,
+  breakpointDesktop: 900,
+  setBreakpointDesktop: (value) => set({ breakpointDesktop: value }),
 
   // Auth
   isAuthenticated: false,

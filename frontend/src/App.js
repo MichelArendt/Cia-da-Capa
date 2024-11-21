@@ -27,6 +27,19 @@ function LocationListener() {
 }
 
 function App() {
+  const setBreakpointDesktop = useStore((state) => state.setBreakpointDesktop);
+
+  useEffect(() => {
+    // Function to get the CSS custom property
+    const getBreakpointDesktop = () => {
+      const value = getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-desktop');
+      return parseInt(value, 10) || 900; // Default to 900px if undefined
+    };
+
+    // Update the Zustand store with the CSS variable
+    setBreakpointDesktop(getBreakpointDesktop());
+  }, [setBreakpointDesktop]);
+
   // Use the global resize listener to manage isMobile state
   useGlobalResizeListener();
 

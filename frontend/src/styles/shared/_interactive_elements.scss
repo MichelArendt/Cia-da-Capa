@@ -12,10 +12,6 @@
 @use '_colors' as *;
 
 // Define CSS variable for breakpoint
-:root {
-  --breakpoint-desktop: #{$breakpoint--desktop}; // Desktop breakpoint variable
-}
-
 .fullscreen-interactive {
   width: 100vw;
   height: 100vh;

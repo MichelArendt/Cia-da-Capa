@@ -13,6 +13,10 @@
 * {
   // transition: all 0.2s linear;
 }
+:root {
+  --breakpoint-desktop: #{$breakpoint--desktop}; // Desktop breakpoint variable
+}
+
 
 // ---------------------------
 // GENERAL
