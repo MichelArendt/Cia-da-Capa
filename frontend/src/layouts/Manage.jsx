@@ -40,50 +40,53 @@ function Manage() {
   const [isCheckingAuth, setIscheckingAuth] = useState(true);
   const { isPending, isFetching, isError, isSuccess, data, error } = useAuthDetails();
   const { handleAuthSuccess } = useAuthHandler();
+  const { mutate: logout } = useLogout(); // Extract the mutate function from the hook
+  const [ contentLoaderMessage, setContentLoaderMessage ] = useState('Carregando');
 
   // Check authentication status on app load
   useEffect(() => {
+    setAuthenticated(false);
+
     if (isPending || isFetching) {
       setIscheckingAuth(true);
     } else if (isError) {
-        console.error(error);
+      console.error('Checking auth failed: ', error);
+      setIscheckingAuth(false);
      } else {
       handleAuthSuccess(data.authenticated);
       setIscheckingAuth(false);
     }
+
   }, [isPending, isError, isSuccess]);
 
-  // useEffect(() => {
-  //   console.log(1)
-  //   const checkAuth = async () => {
-  //     console.log(2)
-  //     try {
-  //       console.log(3)
-  //       console.log(4)
-  //       console.log(response)
-  //       setAuthenticated(response.data.authenticated);
-  //     } catch (error) {
-  //       // If there's an error, assume not authenticated
-  //       console.error(error)
-  //       setAuthenticated(false);
-  //     } finally {
-  //       console.log(6)
-  //       setIscheckingAuth(false); // Set loading to false when check is complete
-  //     }
-  //   };
-  //   checkAuth();
-  // }, [setAuthenticated]);
+  useEffect(() => {
+    if (!isAuthenticated && !isCheckingAuth) {
+      navigate('/manage/user/login'); // Redirect to login after logout
+    }
+  }, [isAuthenticated, isCheckingAuth, navigate]);
 
   const handleLogout = async () => {
     try {
-      // await apiManage.user.logout();
-      useLogout();
-      setAuthenticated(false);
-      navigate('/manage/user/login'); // Redirect to login after logout
+      logout(null, {
+        onSuccess: () => {
+          setAuthenticated(false); // Update state after successful logout
+        },
+        onError: (error) => {
+          console.error('Logout falhou: ', error);
+          // Optionally handle the error (e.g., show a notification)
+        },
+      });
     } catch (error) {
-      console.error('Logout failed', error);
-      // Optionally handle error (e.g., show a notification)
+      console.error('Erro inesperado durante logout: ', error);
     }
+
+    // try {
+    //   useLogout();
+    // } catch (error) {
+    //   console.error('Logout failed: ', error);
+    //   // Optionally handle error (e.g., show a notification)
+    // }
+    // setAuthenticated(false);
   };
 
   return (

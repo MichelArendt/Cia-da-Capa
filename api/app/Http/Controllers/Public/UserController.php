@@ -29,7 +29,10 @@ class UserController extends Controller
       ]);
 
       if ($validator->fails()) {
-        Log::warning('Failed login attempt', ['username' => $request->input('name')]);
+        Log::warning('Failed login attempt', [
+          'username' => $request->input('name'),
+          'ip' => $request->ip()
+        ]);
         return response()->json(['errors' => $validator->errors()], 422);
       }
 

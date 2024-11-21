@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -21,21 +21,34 @@ const loginSchema = Yup.object().shape({
 
 const Login = () => {
   const navigate = useNavigate();
-  const setAuthenticated = useStore((state) => state.setAuthenticated);
-  const lastAttemptedRoute = useStore((state) => state.lastAttemptedRoute);
-  const clearLastAttemptedRoute = useStore((state) => state.clearLastAttemptedRoute);
+  const [ contentLoaderMessage, setContentLoaderMessage ] = useState('Carregando');
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  // const setAuthenticated = useStore((state) => state.setAuthenticated);
+  // const lastAttemptedRoute = useStore((state) => state.lastAttemptedRoute);
+  // const clearLastAttemptedRoute = useStore((state) => state.clearLastAttemptedRoute);
 
   const { mutate, isLoading, error } = useLogin();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const { handleAuthSuccess } = useAuthHandler();
 
   const handleLogin = (values, { setSubmitting, setFieldError, setStatus }) => {
     setIsCheckingAuth(true);
+    setContentLoaderMessage('Verificando autenticação');
 
     mutate(values, {
       onSuccess: (data) => {
+        setContentLoaderMessage('Autenticação verificada');
+        if (data.authenticated) {
+          setContentLoaderMessage('Redirecionando...');
+          setIsRedirecting(true); // Set redirecting state to display loader
+          handleAuthSuccess(data.authenticated); // Use your handler for redirection
+        } else {
+          setStatus('Credenciais inválidas.');
+        }
       },
       onError: (error) => {
+        setContentLoaderMessage('Erro na autenticação');
         if (error.response?.status === 401) {
           setStatus('Credenciais inválidas.');
         } else if (error.response) {
@@ -49,11 +62,16 @@ const Login = () => {
         setSubmitting(false);
       },
       onSettled: () => {
+        setContentLoaderMessage('Autenticação finalizada');
+        setIsCheckingAuth(false);
         setSubmitting(false);
       }
     })
-
   };
+
+  // useEffect(() => {
+  //   console.log(isCheckingAuth + ' '+ isRedirecting + ' '+ isAuthenticated)
+  // }, [isCheckingAuth, isRedirecting, isAuthenticated]);
 
   return (
       <Formik
@@ -63,7 +81,7 @@ const Login = () => {
       >
         {({ isSubmitting, errors, status }) => (
           <Form>
-            {isCheckingAuth ? <ContentLoader /> :
+            {isCheckingAuth || isRedirecting ? <ContentLoader displayMessage={contentLoaderMessage} /> :
             <div className="wrapper">
              {status && <Feedback type='error'>{status}</Feedback>}
 
