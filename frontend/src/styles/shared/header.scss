@@ -44,10 +44,8 @@
   @extend .flex--row--center-vertical;
   height: 100%;
   flex-grow: 1;
-  padding: 5px;
 
   > img {
-    padding-left: 10px;
     height: 30px;
   }
 }
@@ -59,13 +57,39 @@
 
 .nav__button {
   @extend .flex;
-  @extend .flex--row--center;
+  @extend .flex--row--center-vertical;
+  @extend .poppins-light;
   height: 100%;
-  padding: 5px;
+  padding: 10px;
+  // color: $color-secondary--light;
+  font-size: 20px;
+
+  // svg {
+  //   fill: $color-secondary--light;
+  // }
+}
+.nav--interactive {
+  @extend .transition--default;
   color: $color-secondary--light;
+  // background-color: lightness-add($color-primary--dark, 10%);
 
   svg {
     fill: $color-secondary--light;
+  }
+}
+.nav--interactive:hover {
+  @extend .transition--default;
+  color: $color-primary--main;
+  background-color: lightness-add($color-primary--dark, 10%);
+
+  svg {
+    fill: $color-primary--main;
+  }
+}
+@media (min-width: $breakpoint--desktop) {
+  .nav__button {
+    justify-content: center;
+    align-items: center;
   }
 }
 
