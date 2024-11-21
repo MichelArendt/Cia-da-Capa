@@ -19,11 +19,9 @@ export function useDynamicPosition() {
 
     // Check if the element's left edge is beyond the middle of the screen
     if (rect.left > windowWidth / 2) {
-      console.log("Anchor to right");
       newStyle.right = 0; // Anchor to the right
       newStyle.left = 'auto';
     } else {
-      console.log("Anchor to left");
       newStyle.left = 0; // Anchor to the left
       newStyle.right = 'auto';
     }

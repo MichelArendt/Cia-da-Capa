@@ -25,7 +25,7 @@ const List = ({
     <SmartContentProvider contentType={SmartContentType.List}>
       <div className={`list ${className}`}>
         <div className={`list__header ${headerClassName}`}>{headerChild}</div>
-        <div className='list__content'>{bodyChildren}</div>
+        <ul className='list__content'>{bodyChildren}</ul>
       </div>
     </SmartContentProvider>
   );

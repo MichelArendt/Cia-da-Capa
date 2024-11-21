@@ -17,6 +17,7 @@ const Dropdown = ({
   hideArrow = false,
   className = '',
   mobileContentTitle = 'Selecione uma opção:',
+  buttonClickHandler,
   headerClassName = '',
   contentClassName = '',
 }) => {
@@ -45,7 +46,7 @@ const Dropdown = ({
   return (
     <SmartContentProvider contentType={SmartContentType.Dropdown}>
       <div className={`dropdown ${className}`} onClick={clickHandler}>
-        <button className={`dropdown__button ${headerClassName}`}>
+        <button className={`dropdown__button ${headerClassName}`} onClick={buttonClickHandler}>
           {headerChild} {hideArrow ? '' : <Svg type='arrow_drop_down' sizes={[15,15]} />}
         </button>
         <div

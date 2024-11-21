@@ -33,7 +33,7 @@ const Header = ({
 
 						isMobile ?
 							<Slider
-								headerClassName='nav__button'
+								headerClassName='nav__button nav--interactive'
 								mobileContentTitle={
 									<Link
 										to={`/${isManageRoute ? 'manage' : ''}`}
