@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
 // Hooks
 import useStore from '/src/store';
+import { useProductCategories } from '/src/services/api/usePublicApi';
 // import useIsWebsiteMobile from '/src/hooks/useIsWebsiteMobile'; // Custom hook to detect mobile devices
 
 // Shared components
@@ -17,12 +18,32 @@ import ContentLoader from '/src/components/shared/ContentLoader';
 import Home from '/src/pages/Home';
 
 // APIs
-import {apiPublic} from '../services/api/_axiosInstance';
-import Contact from '../pages/Contact';
+import {apiPublic} from '/src/services/api/_axiosInstance';
+import Contact from '/src/pages/Contact';
 
 function Main() {
-  const [categories, setCategories] = useState([]);
   const isMobile = useStore((state) => state.isMobile);
+  const navigate = useNavigate();
+
+  // Fetch categories data
+  const { data: categories, isLoading, error } = useProductCategories();
+
+  const renderCategories = () => {
+    if (isLoading) return <span>Loading...</span>;
+    if (error) return <span>Error loading categories</span>;
+
+    // Check if categories exist and are non-empty
+    console.log(categories.length)
+    if (!categories || categories.length === 0) {
+      return <span>Sem categorias</span>;
+    }
+
+    return (
+      categories.map((category) => (
+        <li className='list__content--item' key={category.id}>{category.name}</li>
+      ))
+    );
+  };
 
   return (
     <>
@@ -30,31 +51,23 @@ function Main() {
         navResponsiveMenuOptions={
           <>
             <div>
-              <Link to='/'>
+              <Link to='/' className='nav__button nav--interactive'>
                 Página inicial
               </Link>
             </div>
             {isMobile ?
               <List>
-                <span>Produtos</span>
-                {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
-                    {(categories) => (
-                      console.log(categories)
-                    )}
-                </ContentLoader> */}
+                <button className='nav__button nav--interactive' onClick={() => navigate('/produtos/')}>Produtos</button>
+                {renderCategories()}
               </List>
               :
-              <Dropdown>
-                <div>Produtos</div>
-                  {/* <ContentLoader fetchData={apiPublic.products.listCategories}>
-                      {(categories) => (
-                        console.log(categories)
-                      )}
-                  </ContentLoader> */}
+              <Dropdown className='nav--interactive' headerClassName='nav__button nav--interactive' buttonClickHandler={() => navigate('/produtos/')}>
+                <span>Produtos</span>
+                {renderCategories()}
               </Dropdown>
             }
             <div>
-              <Link to='/contato'>
+              <Link to='/contato' className='nav__button nav--interactive'>
                 Contato
               </Link>
             </div>
@@ -90,7 +103,8 @@ function Main() {
         navPermanentButtons={
           <>
             <Dropdown
-              headerClassName='nav__button'
+              className='nav--interactive'
+              headerClassName='nav__button nav--interactive'
               hideArrow={true}
               mobileContentTitle='Digite seu termo de busca:'
             >
@@ -98,7 +112,7 @@ function Main() {
               <input type='text' />
             </Dropdown>
             <Slider
-              headerClassName='nav__button'
+              headerClassName='nav__button nav--interactive'
               mobileContentTitle='Carrinho de orçamento'
             >
               <Svg type="remove_shopping_cart" sizes={[35,35]} />
