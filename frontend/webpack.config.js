@@ -22,6 +22,7 @@ module.exports = (_, argv) => {
   const publicPath = deploymentPublicPaths[environment] || '/';
 
   return {
+    devtool: isProduction ? 'source-map' : 'eval-source-map', // Use source maps based on mode
     entry: './src/index.js',
     output: {
       path: buildPath,
