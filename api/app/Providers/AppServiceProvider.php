@@ -31,8 +31,8 @@ class AppServiceProvider extends ServiceProvider
         // Rate limit API requests set to 2 per second and 40 per minute
         RateLimiter::for('api', function (Request $request) {
             return [
-                Limit::perSecond(2)->by($request->ip()),  // Limit by IP for per-second rate
-                Limit::perMinute(60)->by($request->ip()), // Limit by IP for per-minute rate
+                Limit::perSecond(333)->by($request->ip()),  // Limit by IP for per-second rate
+                Limit::perMinute(333)->by($request->ip()), // Limit by IP for per-minute rate
             ];
         });
 
