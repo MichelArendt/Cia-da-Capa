@@ -7,7 +7,8 @@ import useGlobalResizeListener from '/src/hooks/useGlobalResizeListener';
 
 // Shared
 import '/src/styles/main.scss';
-import ContentLoader from './components/shared/ContentLoader';
+import ContentLoader from '/src/components/shared/ContentLoader';
+import AuthChecker from '/src/components/shared/authentication/AuthChecker';
 
 // Lazy load the Manage component
 const Main = lazy(() => import('/src/layouts/Main'));
@@ -51,7 +52,11 @@ function App() {
       }>
         <Routes>
           <Route path="/*" element={<Main />} />
-          <Route path="/manage/*" element={<Manage />} />
+          <Route path="/manage/*" element={
+            <AuthChecker>
+              <Manage />
+            </AuthChecker>
+          } />
         </Routes>
       </Suspense>
     </Router>

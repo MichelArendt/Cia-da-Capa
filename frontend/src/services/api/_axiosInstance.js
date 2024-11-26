@@ -78,7 +78,7 @@ const apiPublic = {
     listCategoryProducts:  (id) =>  _requestHandler('get', `${PUBLIC_BASE_URL}/products/categories/${id}/products`),
   },
   user: {
-    getAuthDetails:        () =>            _requestHandler('get', `${PUBLIC_BASE_URL}/user`),
+    getAuthStatus:        () =>            _requestHandler('get', `${PUBLIC_BASE_URL}/user`),
     login:                 (credentials) => _requestHandler('post', `${PUBLIC_BASE_URL}/user/login`, credentials),
   },
   banners: {

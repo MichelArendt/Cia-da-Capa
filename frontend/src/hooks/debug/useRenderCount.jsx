@@ -9,7 +9,7 @@ const useRenderCount = (component) => {
 
   useEffect(() => {
     renderCount.current += 1;
-    console.log(`[${component.name.toUpperCase()}] Render Count: ${renderCount.current}`);
+    console.log(`[${component.name}] Render Count: ${renderCount.current}`);
   });
 };
 

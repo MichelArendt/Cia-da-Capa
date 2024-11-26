@@ -8,12 +8,12 @@ const useStore = create((set) => ({
   breakpointDesktop: 900,
   setBreakpointDesktop: (value) => set({ breakpointDesktop: value }),
 
-  // Auth
-  isAuthenticated: false,
-  lastAttemptedRoute: null,
-  setAuthenticated: (value) => set({ isAuthenticated: value }),
-  setLastAttemptedRoute: (route) => set({ lastAttemptedRoute: route }),
-  clearLastAttemptedRoute: () => set({ lastAttemptedRoute: null }),
+  // // Auth
+  // isAuthenticated: false,
+  // lastAttemptedRoute: null,
+  // setAuthenticated: (value) => set({ isAuthenticated: value }),
+  // setLastAttemptedRoute: (route) => set({ lastAttemptedRoute: route }),
+  // clearLastAttemptedRoute: () => set({ lastAttemptedRoute: null }),
 
   // Close all menus signal
   closeAllMenusSignal: 0, // Initialize the counter

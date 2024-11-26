@@ -1,27 +1,33 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useStore from '/src/store';
+
+// Debug
+import useRenderCount from '/src/hooks/debug/useRenderCount';
+
+// Authorization
+import useAuthStore from '/src/store/authStore';
+
+// Shared components
+import ContentLoader from '/src/components/shared/ContentLoader.jsx'
 
 const ProtectedRoutes = ({ children }) => {
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
-  const setLastAttemptedRoute = useStore((state) => state.setLastAttemptedRoute);
+  useRenderCount(ProtectedRoutes);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
+  const setLastAttemptedRoute = useAuthStore((state) => state.setLastAttemptedRoute);
   const location = useLocation();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // Save the current location to redirect after login
-      setLastAttemptedRoute(location.pathname + location.search);
-    }
-  }, [isAuthenticated, location, setLastAttemptedRoute]);
+  console.log('-------------------------------- ');
 
-  if (!isAuthenticated) {
-    // // Save the current location to redirect after login
-    // setLastAttemptedRoute(location.pathname + location.search);
-    // Redirect to login page
-    return <Navigate to="/manage/user/login" />;
+  if (isCheckingAuth) {
+    return <ContentLoader displayMessage="Verificando autenticação..." />;
   }
 
-  // If authenticated, render the child routes
+  if (isAuthenticated === false) {
+    setLastAttemptedRoute(location);
+    return <Navigate to="/manage/user/login" state={{ from: location }} />;
+  }
+
   return children;
 };
 
