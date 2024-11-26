@@ -5,10 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
-    "build:local": "cross-env ENVIRONMENT=local webpack --mode development",
+    "build:development": "cross-env ENVIRONMENT=development webpack --mode development",
     "build:deploytest": "cross-env ENVIRONMENT=deploytest webpack --mode production",
     "build:production": "cross-env ENVIRONMENT=production webpack --mode production",
-    "watch": "cross-env ENVIRONMENT=local webpack --watch --mode development"
+    "watch": "cross-env ENVIRONMENT=development webpack --watch --mode development"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
+    "dotenv-webpack": "^8.1.0",
     "html-webpack-plugin": "^5.6.3",
     "sass": "^1.80.6",
     "sass-loader": "^16.0.3",

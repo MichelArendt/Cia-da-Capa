@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { DefinePlugin } = require('webpack');
-const LiveReloadPlugin = require('webpack-livereload-plugin'); // Import LiveReloadPlugin
+const LiveReloadPlugin = require('webpack-livereload-plugin');
+const Dotenv = require('dotenv-webpack');
 const crypto = require('crypto');
 
 const buildPath = path.resolve(__dirname, '../build'); // Build directory
@@ -11,7 +12,7 @@ const uniqueHash = crypto.randomBytes(8).toString('hex'); // Unique hash for fil
 
 // Set deployment-specific public paths based on the ENVIRONMENT variable
 const deploymentPublicPaths = {
-  local: '/build/',
+  development: '/build/',
   deploytest: '/novo/',
   production: '/'
 };
@@ -22,7 +23,7 @@ module.exports = (_, argv) => {
   const publicPath = deploymentPublicPaths[environment] || '/';
 
   return {
-    devtool: isProduction ? 'source-map' : 'eval-source-map', // Use source maps based on mode
+    devtool: isProduction ? 'source-map' : 'cheap-module-source-map', // Use source maps based on mode
     entry: './src/index.js',
     output: {
       path: buildPath,
@@ -57,6 +58,13 @@ module.exports = (_, argv) => {
       extensions: ['.tsx', '.ts', '.js', '.jsx'],
     },
     plugins: [
+      new Dotenv({
+        path: path.resolve(__dirname, '../.env'), // Path to your .env file (default: './.env')
+        safe: true, // Load .env.example (if available) to validate environment variables
+        systemvars: true, // Load system variables if present
+        allowEmptyValues: false, // Disallow empty variables
+      }),
+
       // Define the PUBLIC_URL environment variable
       new DefinePlugin({
         'process.env.PUBLIC_URL': JSON.stringify(publicPath),
