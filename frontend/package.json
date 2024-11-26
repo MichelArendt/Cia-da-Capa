@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.60.6",
+    "@welldone-software/why-did-you-render": "^8.0.3",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "formik": "^2.4.6",
