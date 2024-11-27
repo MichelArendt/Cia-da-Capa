@@ -23,7 +23,7 @@ const ProtectedRoutes = ({ children }) => {
     return <ContentLoader displayMessage="Verificando autenticação..." />;
   }
 
-  if (isAuthenticated === false) {
+  if (isAuthenticated !== true) {
     setLastAttemptedRoute(location);
     return <Navigate to="/manage/user/login" state={{ from: location }} />;
   }

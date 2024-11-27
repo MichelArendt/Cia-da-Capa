@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
+// Stores
+import categoryStore from '/src/store/useCategoryStore';
+
 // APIs
 import { useQueryClient } from '@tanstack/react-query';
-import { useProductCategories } from '/src/services/api/usePublicApi';
+// import { useProductCategories } from '/src/services/api/usePublicApi';
 
 // Shared components
 import ContentLoader from '/src/components/shared/ContentLoader';
@@ -12,17 +15,16 @@ import CategoryForm from '/src/components/manage/forms/CategoryForm';
 const Categories = () => {
   const queryClient = useQueryClient();
 
-  const refreshCategories = () => {
-    queryClient.invalidateQueries(['categories']); // Re-fetch categories
-  };
+  // const refreshCategories = () => {
+  //   queryClient.invalidateQueries(['categories']); // Re-fetch categories
+  // };
 
   return(
     <>
-      <CategoryForm onSave={refreshCategories} />
+      <CategoryForm onSave={categoryStore.invalidateCategories} />
 
-      <List>
+      {/* <List>
         <h2>Categorias</h2>
-        {/* For fetching categories */}
         <ContentLoader hook={useProductCategories} fallbackContent="Não há categorias disponíveis!">
           {(categories) => (
             categories.length !== 0 ?
@@ -34,7 +36,7 @@ const Categories = () => {
             : 'Não há categorias disponíveis!'
           )}
         </ContentLoader>
-      </List>
+      </List> */}
     </>
   );
 }

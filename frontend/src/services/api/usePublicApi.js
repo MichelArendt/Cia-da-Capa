@@ -95,8 +95,17 @@ export function useFetchAuthStatus(options = {}) {
   return useQuery({
     queryKey: ['authStatus'],
     queryFn: async () => {
+      console.log(111)
       const response = await apiPublic.user.getAuthStatus();
+      console.log(response.data)
+      console.log(222)
       return response.data;
+    },
+    onSuccess: (data) => {
+      console.log('onSuccess triggered:', data); // Ensure this is logged
+    },
+    onError: (error) => {
+      console.error('onError triggered:', error); // Ensure error handling is triggered
     },
     ...options, // Spread the options into useQuery
   });

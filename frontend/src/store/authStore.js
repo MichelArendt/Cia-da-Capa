@@ -7,12 +7,12 @@ const useAuthStore = create((set, get) => ({
   lastAttemptedRoute: null,
 
   // Update authentication state
-  updateAuthStatus: (isAuthenticated, error ) => {
+  updateAuthStatus: (isAuthenticated, error = null ) => {
     set((state) => ({
       ...state,
       isAuthenticated: isAuthenticated,
       error: error,
-      isCheckingAuth: false, // Always stop checking when status is updated
+      // isCheckingAuth: false, // Always stop checking when status is updated
     }))
   },
 
@@ -53,8 +53,8 @@ const useAuthStore = create((set, get) => ({
   navigateToLastAttemptedRoute: (navigate) => {
     const { lastAttemptedRoute } = get();
     const targetRoute = lastAttemptedRoute || '/manage';
-    navigate(targetRoute);
     set({ lastAttemptedRoute: null }); // Clear after navigating
+    navigate(targetRoute);
   },
 
   // Clear the last attempted route

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 // Authorization
 import useStore from '/src/store';
+import useAuthStore from '/src/store/authStore';
 
 import useMenuStore from '/src/store/menuStore';
 
@@ -15,14 +16,21 @@ import defaultLogo from '/assets/logo_only_text.png';
 // APIs
 import Slider from '/src/components/shared/smart_content/Slider';
 
+// Debug
+import useRenderCount from '/src/hooks/debug/useRenderCount';
+
 const Header = ({
 	isManageRoute = false,
 	logo = defaultLogo,
 	navResponsiveMenuOptions,
 	navPermanentButtons
 }) => {
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  useRenderCount(Header);
   const isMobile = useStore((state) => state.isMobile);
+
+  // Fetch isAuthenticated only if isManageRoute is true
+  const isAuthenticated = isManageRoute ? useAuthStore((state) => state.isAuthenticated) : null;
+	console.log(isAuthenticated)
 
 	return(
 		<header className='website__header poppins-light'>
@@ -51,15 +59,31 @@ const Header = ({
 					)}
 
 
-					<Link
+					{isAuthenticated ?
+						<Link
+							to={`/${isManageRoute ? 'manage' : ''}`}
+							className='header__logo'
+						>
+							<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
+						</Link>
+					:
+						<span
+							to={`/${isManageRoute ? 'manage' : ''}`}
+							className='header__logo'
+						>
+							<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
+						</span>
+					}
+					{/* <Link
 						to={`/${isManageRoute ? 'manage' : ''}`}
 						className='header__logo'
 					>
 						<img src={logo} alt={`Cia da Capa ${isManageRoute ? '- Gerenciamento' : ''}`} />
-					</Link>
+					</Link> */}
 				</nav>
 
 				{/* Hide permanent buttons if manage route and not authenticated */}
+				{/* {console.log('HEADER isAuthenticated:', isAuthenticated)} */}
 				{(!isManageRoute || isAuthenticated) ? navPermanentButtons : ''}
 			</div>
 		</header>

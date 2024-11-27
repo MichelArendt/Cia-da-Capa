@@ -1,45 +1,148 @@
-import React,  {useEffect} from 'react';
+import React, {useRef, useEffect} from 'react';
 import { useFetchAuthStatus, useLogin } from '/src/services/api/usePublicApi';
 import { useLogout } from '/src/services/api/useManageApi';
 import queryClient from '/src/services/api/queryClient';
-import useAuthStore from '/src/store/authStore';
+import { useShallow } from 'zustand/react/shallow'
 
 // Debug
 import useRenderCount from '/src/hooks/debug/useRenderCount';
 
+// Stores
+import useAuthStore from '/src/store/authStore';
+
 export const useAuthManager = () => {
   useRenderCount(useAuthManager);
   const setCheckingAuth = useAuthStore((state) => state.setCheckingAuth);
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
   const updateAuthStatus = useAuthStore((state) => state.updateAuthStatus);
-  // const { isPending, isFetching, isSuccess, data, isError, error } = useFetchAuthStatus();
+  // const shouldFetchRef = useRef(false); // Ref to control the fetch
 
-  // Fetch authentication status
-  const { refetch: fetchAuthStatus } = useFetchAuthStatus({
-    onSuccess: (data) => {
-      updateAuthStatus(data?.authenticated, null);
-      console.log('data?.authenticated: ' + data?.authenticated)
-      setCheckingAuth(false);
-      console.log(2)
-    },
-    onError: (error) => {
-      console.error('Authentication fetch failed:', error);
-      updateAuthStatus(false, error?.message);
-      setCheckingAuth(false);
-      console.log(3)
-    },
-    onSettled: () => {
-      setCheckingAuth(false);
-      console.log(4)
-    },
-    enabled: false, // Disable automatic fetching
-  })
+  // Conditionally fetch auth status
+  const { refetch } = useFetchAuthStatus({
+    enabled: false, // Always disable automatic fetching
+  });
+
+  const checkUserAuthStatus = async () => {
+    console.log('Initiating auth check...');
+    setCheckingAuth(true); // Mark as checking
+    // refetch(); // Trigger the fetch manually
+
+    try {
+      const result = await refetch(); // Await the refetch result
+
+      console.log('result:', result);
+      if (result?.status === 'success') {
+        updateAuthStatus(result.data.authenticated)
+        console.log('authenticated:', result.data);
+      } else {
+        console.log('result.data:', result.data);
+        updateAuthStatus(false, result.error);
+      }
+    } catch (err) {
+      console.error('Auth check failed:', err);
+    } finally {
+      setCheckingAuth(false); // Mark as finished
+    }
+  };
 
   useEffect(() => {
-    setCheckingAuth(true);
-    fetchAuthStatus();
-    console.log(1)
-  }, []);
-  // }, [fetchAuthStatus, setCheckingAuth]);
+    console.log('isCheckingAuth: ' + isCheckingAuth)
+  }, [isCheckingAuth]);
+  // const { data, error } = useFetchAuthStatus();
+
+  // console.log(1)
+  // if (data) {
+  //   console.log(2.1)
+  //   if (data.response) {
+  //     console.log(3)
+  //     updateAuthStatus(data.response);
+  //   }
+
+  //   if(isCheckingAuth) {
+  //       // setCheckingAuth(false);
+
+  //   }
+  //   console.log(isCheckingAuth)
+  //   // else {
+  //   //   setCheckingAuth(false);
+  //   // }
+  // } else if (error) {
+  //   console.log(2.2)
+  //   updateAuthStatus(false, error); // Handle errors gracefully
+  //   console.error(error);
+  // }
+
+  // const { data, isPending, isSuccess, isError, error } = useFetchAuthStatus();
+
+  // if (data) {
+  //   if (data.response) {
+  //     console.log(1)
+  //     setCheckingAuth(data.response);
+  //   } else {
+  //       setCheckingAuth(false);
+  //   }
+  // } else if (isPending) {
+  //   return '';
+  // } else if (error) {
+  //   setCheckingAuth(false); // Handle errors gracefully
+  //   console.error(error);0
+  // }
+
+  // // Fetch authentication status automatically
+  // const { isFetching } = useFetchAuthStatus({
+  //   onSuccess: (data) => {
+  //     console.log(11);
+  //     updateAuthStatus(data?.authenticated, null);
+  //     console.log('data?.authenticated:', data?.authenticated);
+  //   },
+  //   onError: (error) => {
+  //     console.error('Authentication fetch failed:', error);
+  //     updateAuthStatus(false, error?.message);
+  //     console.log(22);
+  //   },
+  //   onSettled: () => {
+  //     console.log(33);
+  //   },
+  // });
+
+  // // Use useEffect to update state when isFetching changes
+  // useEffect(() => {
+  //   setCheckingAuth(isFetching);
+  //   if (isFetching) {
+  //     console.log(1);
+  //   } else {
+
+  //     console.log(2);
+  //   }
+  // }, [isFetching, setCheckingAuth]);
+
+  // // Fetch authentication status
+  // const { refetch: fetchAuthStatus } = useFetchAuthStatus({
+  //   onSuccess: (data) => {
+  //     updateAuthStatus(data?.authenticated, null);
+  //     console.log('data?.authenticated: ' + data?.authenticated)
+  //     setCheckingAuth(false);
+  //     console.log(2)
+  //   },
+  //   onError: (error) => {
+  //     console.error('Authentication fetch failed:', error);
+  //     updateAuthStatus(false, error?.message);
+  //     setCheckingAuth(false);
+  //     console.log(3)
+  //   },
+  //   onSettled: () => {
+  //     setCheckingAuth(false);
+  //     console.log(4)
+  //   },
+  //   // enabled: false, // Disable automatic fetching
+  // })
+
+  // useEffect(() => {
+  //   setCheckingAuth(true);
+  //   fetchAuthStatus();
+  //   console.log(1)
+  // }, []);
+  // // }, [fetchAuthStatus, setCheckingAuth]);
 
 
 
@@ -138,7 +241,7 @@ export const useAuthManager = () => {
     }
   };
 
-  return { handleLogin, handleLogout };
+  return { handleLogin, handleLogout, checkUserAuthStatus };
 };
 
 export default useAuthManager;

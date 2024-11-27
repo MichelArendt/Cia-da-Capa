@@ -34,8 +34,16 @@ const Login = () => {
   //   }
   // }, [isAuthenticated, lastAttemptedRoute, navigate]);
 
-  // Redirect if already logged in
-  if (isAuthenticated) { navigateToLastAttemptedRoute(navigate) }
+  // // Redirect if already logged in
+  // if (isAuthenticated) { return navigateToLastAttemptedRoute(navigate) }
+
+
+  // Redirect if the user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigateToLastAttemptedRoute(navigate); // Redirect the user to their intended route
+    }
+  }, [isAuthenticated, navigate, navigateToLastAttemptedRoute]);
 
   // Form submission
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
@@ -48,7 +56,9 @@ const Login = () => {
     setSubmitting(false);
   };
 
-
+  if (isAuthenticated !== false) {
+    return <ContentLoader displayMessage='Redirecionando' />
+  }
 
   // const { mutateAsync } = useLogin();
   // const { updateAuthStatus } = useAuthStore();

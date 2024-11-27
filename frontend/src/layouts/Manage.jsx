@@ -29,6 +29,7 @@ import ProtectedRoutes from '/src/components/shared/ProtectedRoutes';
 import Categories from '/src/pages/manage/Categories';
 
 function Manage() {
+  console.log('-----------------------------')
   useRenderCount(Manage);
   // useWhyDidYouRender(Manage);
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function Manage() {
   const isMobile = useStore((state) => state.isMobile);
 
   // Auth
-  const { isCheckingAuth } = useAuthStore();
+  const { isCheckingAuth } = useAuthStore((state) => state.isCheckingAuth);
   const { handleLogout } = useAuthManager();
   // useAuthManager();
   // const isAuthenticated = useStore((state) => state.isAuthenticated);
