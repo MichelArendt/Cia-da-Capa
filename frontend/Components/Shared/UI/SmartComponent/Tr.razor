@@ -1,0 +1,38 @@
+﻿@inherits SmartComponentBase
+
+<CascadingValue Value="this">
+    <tr class="@ClassName @ActiveClass" @onmouseover="HandleMouseOver" @onmouseout="HandleMouseOut">
+        @ChildContent
+    </tr>
+</CascadingValue>
+
+
+@code {
+    private string ActiveClass { get; set; } = "";
+
+    [CascadingParameter]
+    private Table? Parent { get; set; }
+
+    [Parameter]
+    public string? ClassName { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Parent == null)
+        {
+            throw new InvalidOperationException($"{nameof(Tr)} must be used within a {nameof(Table)}.");
+        }
+    }
+
+    private void HandleMouseOver(){
+        ActiveClass = "active-row";
+    }
+
+    private void HandleMouseOut()
+    {
+        ActiveClass = "";
+    }
+}

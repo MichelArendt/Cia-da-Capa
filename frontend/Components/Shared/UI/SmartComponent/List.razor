@@ -1,0 +1,29 @@
+﻿@inherits SmartComponentBase
+
+<div class="list">
+    <div class="list__header @HeaderClassName">
+        @HeaderContent
+    </div>
+    <ul class="list__content list__content--@Orientation">
+        @BodyContent
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; } // Holds the first child
+
+    [Parameter]
+    public string? HeaderClassName { get; set; } 
+
+    [Parameter]
+    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+
+    [Parameter]
+    public ListOrientation Orientation { get; set; } = ListOrientation.vertical;
+    public enum ListOrientation
+    {
+        vertical,
+        horizontal,
+    }
+}

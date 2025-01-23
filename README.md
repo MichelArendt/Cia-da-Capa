@@ -6,73 +6,64 @@ This project is the official **website for Cia da Capa**, a company specializing
 
 Cia da Capa is a trusted name in custom manufacturing, creating practical and durable products for organizations and individuals. From backpacks to folders, every product is crafted with care, ensuring a balance between style and function.
 
-## Features
+## Project Structure
 
--   **React Frontend**: Dynamic, responsive SPA (Single Page Application) built with React.
--   **Laravel API Backend**: Secure API endpoints to manage product data and handle administrative tasks.
--   **Authentication System**: Admin login using Laravel Sanctum for secure access.
--   **Design and Layout**: Uses CSS Grid and Flexbox for flexible and modern layout structures.
--   **Shared Hosting Setup**: Configured for deployment on shared hosting with Apache.
+- **/api/**: Contains the PHP backend code using FlightPHP for API routing.
+- **/frontend/**: Contains the .NET 9 Blazor frontend code, including SCSS files.
+- **/build/**: Contains the build output for deployment.
 
-## Folder Structure
-
--   **Frontend**: React app with SCSS styles for UI/UX design.
--   **API**: Laravel backend to serve API endpoints and handle business logic.
+## Dependencies
+- **Frontend**: .NET 9 SDK, Node.js, and NPM for SCSS compilation.
+- **Backend**: PHP 8+ with FlightPHP for API routing.
 
 # Getting Started
 
+## 1. Clone the repository.
+Clone the repository to your local machine:
 
-1.  Clone the repository.
-2.  Create a file named **database_config.php** inside **api/config**. Example below.
-3.  Run `npm install` in the frontend folder to set up the frontend.
-4.  Use `composer install` on the server to set up Laravel.
-5.  Configure the environment variables in `.env` for database and API connections.
-6.  Build the front-end with **npm run build**. It outputs to /build folder which this project is configured to be able to serve such as https://localhost/build.
-7.  On `/api` run the commands (shown below) to create the admin user to access `./manage`
-9.  On `/api` run **php artisan serve** to serve the API.
-10.  Visit https://localhost/build
-
-### Files you need to manually create
-You must create a file named **database_config.php** inside **api/config**. Example:
-
+```bash
+git clone https://github.com/your-repo-url.git
 ```
+
+## 2. Create a file named **database.php** inside **/api/flight/config/**. Example below:
+
+
+```php
 <?php
 return [
-	'default' => env('DB_CONNECTION', 'mysql'),
-		'connections' => [
-			'mysql' => [
-			'driver' => 'mysql',
-			'url' => env('DATABASE_URL'),
-			'host' => env('DB_HOST', '127.0.0.1'),
-			'port' => env('DB_PORT', '3306'),
-			'database' => env('DB_DATABASE', 'ciadacapa'),
-			'username' => env('DB_USERNAME', 'root'),
-			'password' => env('DB_PASSWORD', ''),
-			'unix_socket' => env('DB_SOCKET', ''),
-			'charset' => 'utf8mb4',
-			'collation' => 'utf8mb4_unicode_ci',
-			'prefix' => '',
-			'prefix_indexes' => true,
-			'strict' => true,
-			'engine' => null,
-			'options' => extension_loaded('pdo_mysql') ? array_filter([
-			PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-			]) : [],
-		],
-	],
+    'host' => 'localhost',
+    'dbname' => 'mydb',
+    'username' => 'root',
+    'password' => 'mypw',
+    'charset' => 'utf8'
 ];
+
+```
+Replace the values (**mydb**, **root**, **mypw**) with your actual database credentials.
+
+## 3. (Optional) Modifying the Project
+
+### Frontend SCSS Autocompile
+If you are modifying the frontend and working with `.SCSS` files, run the following NPM command under the `/frontend/` directory to automatically compile changes:
+
+```bash
+npm run watch
 ```
 
+## 4. Launch
 
-### Creating admin user
-On `/api` run the commands:
+### **(Option 1)** Deploy the App
+To deploy the application, navigate to the `/build/` directory and run the following command:
+
+```bash
+dotnet publish -c Debug /p:NoIncremental=true /p:PublishTrimmed=false
 ```
-use Illuminate\Support\Facades\Hash;
-$user = new \App\Models\User();
-$user->name = 'admin';
-$user->email = 'admin@example.com';
-$user->password = Hash::make('admin');
-$user->save();
-exit
+
+This will publish the app in Debug mode without incremental compilation or trimming.
+
+### **(Option 2)** Run on .NET Development Server
+To run the app on the .NET development server, use the following command:
+
+```bash
+dotnet run
 ```
-This creates **admin** for both user and password

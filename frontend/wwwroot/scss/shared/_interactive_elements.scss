@@ -1,0 +1,309 @@
+// _smart-content.scss
+
+// Import necessary variables and utilities
+@forward '_globals';
+@forward '_utils';
+@forward '_normalize';
+@forward '_colors';
+@forward '_typography';
+
+@use '_globals' as *;
+@use '_utils' as *;
+@use '_colors' as *;
+
+// Define CSS variable for breakpoint
+.fullscreen-interactive {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it's above other content */
+  background-color: red;
+}
+
+// -----------------------
+// General
+// -----------------------
+button {
+    @extend .roboto-light;
+}
+.overlay__button {
+
+}
+.overlay__button--close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 50px;
+  line-height: 0.6em;
+  padding: 20px;
+  color: $color-secondary--light;
+}
+
+// -----------------------
+// Dropdown
+// -----------------------
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+.dropdown__button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+}
+.dropdown__content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: all linear 0.2s;
+}
+
+/* For fullscreen mobile */
+.dropdown__content-wrapper {
+  //background: cyan;
+}
+
+.dropdown__content.dropdown__content--visible {
+  opacity: 1;
+  visibility: visible;
+}
+.dropdown__content-title {
+  padding: 5px;
+}
+
+/* Desktop */
+@media (min-width: $breakpoint--desktop) {
+    .svg--rotate {
+        transition: all linear 0.2s;
+    }
+
+    .dropdown__content {
+        position: absolute;
+        width: unset;
+        height: unset;
+        //opacity: unset;
+        //visibility: unset;
+        top: unset;
+        overflow-y: hidden;
+        overflow-x: visible;
+        //max-height: 0;
+        min-width: max-content;
+        transform: translateY(-100%);
+    }
+
+    .dropdown:hover {
+
+        .dropdown__content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .svg--rotate {
+            transform: rotate(180deg);
+        }
+    }
+
+
+  .dropdown__content-wrapper {
+  }
+}
+
+// -----------------------
+// Select
+// -----------------------
+.select {
+  display: inline-block;
+  position: relative;
+}
+.select__button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+}
+.select__content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+  transition: max-height 0.5s linear, opacity 0.2s linear;
+}
+
+/* For fullscreen mobile */
+.select__content-wrapper {
+  background: cyan;
+}
+
+.select__content.select__content--visible {
+  opacity: 1;
+  visibility: visible;
+}
+.select__content-title {
+  padding: 5px;
+}
+
+/* Desktop */
+@media (min-width: $breakpoint--desktop) {
+  .select__content {
+    position: absolute;
+    width: unset;
+    height: unset;
+    opacity: unset;
+    visibility: unset;
+    top: unset;
+    overflow-y: hidden;
+    overflow-x: visible;
+    max-height: 0;
+    min-width: max-content;
+    transition: max-height 0.5s linear;
+  }
+
+  .select:hover .select__content  {
+    max-height: 500px;
+  }
+
+
+  .select__content-wrapper {
+  }
+}
+
+// -----------------------
+// Slider
+// -----------------------
+
+.slider {
+  display: inline-block;
+}
+.slider__content {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background: opacity-set($color-primary--dark, 0.99);
+}
+
+/* Directions */
+
+/* Slide in from the left */
+.slider__content--left {
+  top: 0;
+  left: -100vw;
+  transition: left .2s linear;
+}
+.slider__content--left.slider__content--visible {
+  left: 0;
+}
+
+/* Slide in from the right */
+.slider__content--right {
+  top: 0;
+  left: 100vw;
+  transition: left .2s linear;
+}
+.slider__content--right.slider__content--visible {
+  left: 0;
+}
+
+/* Slide in from the top */
+.slider__content--top {
+  top: -100vh;
+  left: 0;
+  transition: top .2s linear;
+}
+.slider__content--top.slider__content--visible {
+  top: 0;
+}
+
+/* Slide in from the bottom */
+.slider__content--bottom {
+  top: 100vh;
+  left: 0;
+  transition: top .2s linear;
+}
+.slider__content--bottom.slider__content--visible {
+  top: 0;
+}
+
+.slider__content.slider__content--visible {
+  left: 0;
+}
+
+// -----------------------
+// List
+// -----------------------
+.list {
+}
+.list__header {
+}
+.list__content {
+}
+.list__content--item {
+  padding-left: 20px;
+  list-style: none;
+}
+
+// -----------------------
+// Table
+// -----------------------
+.table {
+    border-collapse: collapse;
+    //margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.table thead tr {
+    background-color: $color-primary--dark;
+    color: #ffffff;
+    text-align: left;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid opacity-set($color-primary--dark, 25%);
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: opacity-set($color-primary--dark, 10%);
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: 2px solid $color-primary--dark;
+}
+
+.table tbody tr.active-row {
+    background-color: opacity-set($color-primary--main, 50%);
+}
+
+.table__actions {
+    //padding: 5px;
+}

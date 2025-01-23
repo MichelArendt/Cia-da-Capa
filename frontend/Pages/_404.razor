@@ -1,0 +1,14 @@
+﻿@using frontend.Components.Shared.UI.SVG
+
+<PageTitle>@PageTitle</PageTitle>
+
+<div class="not-found ">
+    <Svg Path=@Svg.Paths.SadFace Width="200" Height="200" />
+    <h1>404</h1>
+    <h2>Página não encontrada</h2>
+</div>
+
+@code {
+    [Parameter]
+    public string PageTitle { get; set; } = "Cia da Capa";
+}

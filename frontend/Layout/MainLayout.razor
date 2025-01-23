@@ -1,0 +1,116 @@
+﻿@inherits LayoutComponentBase
+
+@using frontend.Services
+@using frontend.Components.Shared
+@using frontend.Components.Shared.UI.SmartComponent
+@using frontend.Components.Shared.UI.SVG
+
+@inject AppStateService AppState
+
+@* <HeadContent> *@
+@* 	<link rel="stylesheet" href="css/main.css" /> *@
+@* </HeadContent> *@
+
+<Header>
+	<NavResponsiveMenuOptions>
+		<div>
+			<NavLink href="" class="nav__button nav--interactive">
+				Página Inicial
+			</NavLink>
+		</div>
+		@if (AppState.IsMobile)
+		{ 
+			<List>
+				<HeaderContent>
+					<button class="nav__button nav--interactive" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button>
+				</HeaderContent>
+				<BodyContent>
+					<li>CATEGORIAS</li>
+				</BodyContent>
+			</List>
+		}
+		else
+		{
+			<Dropdown 
+				ClassName="nav--interactive"
+				HeaderClassName="nav__button nav--interactive"
+				OnClick="@(() => Navigation.NavigateTo("produto"))"
+			>
+				<HeaderContent>
+					<span>CATEGORIAS</span>
+				</HeaderContent>
+				<BodyContent>
+					<li>CATEGORIAS</li>
+				</BodyContent>
+			</Dropdown>
+		}
+		<div>
+			<NavLink href="/contato" class="nav__button nav--interactive">
+				Contato
+			</NavLink>
+		</div>
+	</NavResponsiveMenuOptions>
+
+	<NavPermanentButtons>
+		<Dropdown 
+			ClassName="nav--interactive"
+			HeaderClassName="nav__button nav--interactive"
+			HideArrow="true"
+		>
+			<HeaderContent>
+				<Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
+			</HeaderContent>
+
+			<BodyMobileContentTitle>
+				<div>Digite seu termo de busca:</div>
+			</BodyMobileContentTitle>
+
+			<BodyContent>
+				<input type='text' />
+			</BodyContent>
+		</Dropdown>
+		<Slider 
+			Direction="Slider.SlideFromDirection.right"
+			HeaderClassName="nav__button nav--interactive"
+		>
+			<HeaderContent>
+				<Svg Path="@Svg.Paths.RemoveShoppingCart" Width="35" Height="35" />
+			</HeaderContent>
+
+			<BodyMobileContentTitle>
+				<div>Carrinho de orçamento</div>
+			</BodyMobileContentTitle>
+
+			<BodyContent>
+				<div>lista</div>
+			</BodyContent>
+		</Slider>
+	</NavPermanentButtons>
+</Header>
+
+<main class='website__main'>
+	<div class='website__main-wrapper'>
+		@Body
+	</div>
+</main>
+
+@code {
+	[Inject]
+	private NavigationManager Navigation { get; set; } = default!;
+
+	protected override void OnInitialized() {
+		// Subscribe to IsMobileChanged
+		AppState.IsMobileChanged += HandleIsMobileChanged;
+	}
+
+	private void HandleIsMobileChanged()
+	{
+		InvokeAsync(StateHasChanged); // Trigger re-render
+	}
+
+	public void Dispose()
+	{
+		// Unsubscribe to avoid memory leaks
+		AppState.IsMobileChanged -= HandleIsMobileChanged;
+	}
+}

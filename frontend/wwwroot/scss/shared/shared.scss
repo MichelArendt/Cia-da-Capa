@@ -1,0 +1,246 @@
+// Workaround due to VSCode extensions not supporting
+// correct Intellisense for variables imported though @use
+@forward '_globals';
+@forward '_normalize';
+@forward '_colors';
+@forward '_typography';
+@forward '_interactive_elements.scss';
+
+@use '_globals' as *;
+@use '_colors' as *;
+@use 'header.scss';
+
+* {
+  // transition: all 0.2s linear;
+}
+:root {
+  --breakpoint-desktop: #{$breakpoint--desktop}; // Desktop breakpoint variable
+}
+
+// ---------------------------
+// GENERAL
+// ---------------------------
+
+#app {
+    height: 100%;
+}
+
+a {
+  color: $color-primary--main;
+}
+
+a:hover {
+  color: $color-secondary--main;
+}
+
+.website__main {
+    // padding-top: 60px;
+    height: calc(100% - 80px);
+    @extend .flex;
+    @extend .flex--row--center-horizontal;
+    @extend .roboto-light;
+}
+
+.website__main-wrapper {
+  @extend .website--max-width;
+}
+
+@media (min-width: $breakpoint--desktop) {
+  .website__main {
+    // padding-top: 100px;
+  }
+}
+
+// ---------------------------
+// DROPDOWN
+// ---------------------------
+
+// a, button, .dropdown {
+//   @extend .poppins-light;
+//   display: flex;
+//   align-items: center; // align svgs with span
+//   color: $color-secondary-2;
+
+//   svg {
+//     fill: $color-secondary-2;
+//   }
+// }
+// a, button {
+//   padding: 5px;
+//   gap: 5px;
+//   justify-content: center;
+
+//   &:hover {
+//     background-color: lightness-add($color-primary-2, 10%);
+//     color: $color-primary--main;
+
+//     svg {
+//       fill: $color-primary--main;
+//     }
+//   }
+// }
+// button, .dropdown .submenu {
+//   background-color: $color-primary-2;
+//   font-size: 20px;
+// }
+
+// ---------------------------
+// FORM
+// ---------------------------
+.form__title {
+    color: $color-primary--main;
+    text-align: center;
+    padding: 20px;
+}
+
+// ---------------------------
+// FEEDBACK - Errors and Success
+// ---------------------------
+.feedback {
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin: 0.5rem;
+
+    &--success {
+        background-color: $color-feedback--success-bg;
+        color: $color-feedback--success;
+    }
+
+    &--error {
+        background-color: $color-feedback--error-bg;
+        color: $color-feedback--error;
+    }
+
+    &--info {
+        background-color: $color-feedback--info-bg;
+        color: $color-feedback--info;
+    }
+
+    &--warning {
+        background-color: $color-feedback--warning-bg;
+        color: $color-feedback--warning;
+    }
+}
+
+
+// ---------------------------
+// CONTENT LOADER
+// ---------------------------
+.content-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  height: 100%;
+}
+
+.content-loader__spinner-container{
+  padding: 5px;
+}
+
+.content-loader__spinner-container .content-loader__spinner {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(farthest-side,$color-primary--main 100%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%, $color-primary--main);
+  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation: l13 1s infinite linear;
+}
+@keyframes l13{
+  100%{transform: rotate(1turn)}
+}
+
+// // DROPDOWN
+// .dropdown {
+//   position: relative;
+//   display: inline-block;
+
+// }
+
+// .dropdown .submenu  {
+//   position: absolute;
+//   max-height: 0; // for smooth hover animation
+//   overflow: hidden;
+//   white-space: nowrap;
+
+//   a {
+//     padding: 5px 10px;
+//   }
+// }
+
+// .dropdown .submenu, .dropdown .option  {
+//   min-width: 100%;
+// }
+
+// .dropdown:hover {
+//   .header {
+//     svg {
+//       transform: rotate(180deg);
+//     }
+//   }
+
+//   .submenu {
+//     max-height: 1000px; // for smooth hover animation
+//   }
+// }
+
+// ---------------------------
+// DROPDOWN ANIMATION
+// ---------------------------
+@keyframes nudge {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px); /* Adjust distance */
+    color: $color-primary--main;
+
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.dropdown .submenu .option > * {
+  color: inherit; /* Ensure link inherits the color from .option so that the color property works on transition */
+}
+
+.dropdown .submenu.show-list .option {
+  animation: nudge 0.3s forwards ease-in-out; /*
+  Duration of animation */
+}
+
+// ---------------------------
+// 404 - PAGE NOT FOUND
+// ---------------------------
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    > svg {
+        fill: #777777;
+    }
+
+    > h1 {
+        color: #777777;
+        font-size: 80px;
+        padding: 20px 0;
+    }
+
+    > h2 {
+        color: #b5b9b8;
+    }
+
+    * {
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+}

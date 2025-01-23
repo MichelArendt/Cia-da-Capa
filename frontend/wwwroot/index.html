@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <base href="/build/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cia da Capa</title>
+    <!--<base href="/novo/" />-->
+
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/manage/manage.css" />
+    <link rel="stylesheet" href="css/app.css" />
+
+    <!-- Browsers -->
+    <link rel="icon" type="image/png" href="images/favicons/favicon-16x16.png" />
+    <link rel="icon" type="image/png" href="images/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" href="images/favicons/favicon-48x48.png" />
+    <link rel="icon" href="images/favicons/favicon.ico"> <!-- Fallback for older browsers -->
+    <!-- Apple Devices -->
+    <link rel="apple-touch-icon" sizes="120x120" href="images/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="images/favicons/apple-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicons/apple-icon-180x180.png">
+
+    <link href="frontend.styles.css" rel="stylesheet" />
+    <link href="manifest.webmanifest" rel="manifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script src="js/resizeListener.js"></script>
+    <script src="js/svgHelper.js"></script>
+    <script src="js/getBoundingClientRect.js"></script>
+</body>
+
+</html>

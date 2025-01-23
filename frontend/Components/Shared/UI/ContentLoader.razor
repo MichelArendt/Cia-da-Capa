@@ -1,0 +1,11 @@
+﻿<div class="content-loader">
+    <div class="content-loader__spinner-container">
+        <div class="content-loader__spinner"></div>
+    </div>
+    @DisplayMessage
+</div>
+
+@code {
+    [Parameter]
+    public string DisplayMessage { get; set; } = "Carregando...";
+}

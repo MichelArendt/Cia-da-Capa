@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/aspnet-watch.json",
+  "watch": {
+    "files": [
+      "**/*.cs",
+      "**/*.razor",
+      "wwwroot/css/**/*.css"
+    ],
+    "exclude": [
+      "bin/",
+      "obj/",
+      "node_modules/"
+    ]
+  }
+}

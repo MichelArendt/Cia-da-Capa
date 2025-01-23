@@ -1,0 +1,109 @@
+﻿@using frontend.Components.Shared.Utilities
+@using frontend.Components.Shared.UI
+@using frontend.Services
+@using frontend.Services.API
+@using frontend.Pages
+
+@inject NavigationManager Navigation
+@inject AppStateService AppState
+@inject UserService UserService
+
+<Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="HandleNavigationAsync">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        @{
+            var uri = Navigation.Uri;
+            if (uri.Contains("/manage/"))
+            {
+                // Manually show "Manage" style content
+                <LayoutView Layout="@typeof(ManageLayout)">
+                    <_404 PageTitle="404 (Gerenciamento)" />
+                </LayoutView>
+            }
+            else
+            {
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <_404 PageTitle="404 - Cia da Capa" />
+                </LayoutView>
+            }
+        }
+    </NotFound>
+</Router>
+
+<ResizeListener />
+
+@if (AppState.IsCheckingAuth)
+{
+    <ContentLoader DisplayMessage="Verificando sessão..." />
+}
+
+@code {
+    // [Inject]
+    // private NavigationManager Navigation { get; set; } = default!;
+
+    // [Inject]
+    // private AppStateService AppState { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Let this component know if IsCheckingAuth or IsAuthenticated changes, re-render
+        AppState.IsCheckingAuthChanged += StateHasChanged;
+        AppState.IsAuthenticatedChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppState.IsCheckingAuthChanged -= StateHasChanged;
+        AppState.IsAuthenticatedChanged -= StateHasChanged;
+    }
+
+    private async Task HandleNavigationAsync(NavigationContext context)
+    {
+        // If path starts with "manage" and user not going to manage/login,
+        // but we do not know or suspect they are not authenticated:
+        // e.g.: /manage/somepage requires user to be authenticated
+        if (context.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
+            && !context.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase))
+        {
+            // If user not known to be authenticated, do a server check
+            if (!AppState.IsAuthenticated)
+            {
+                // Show the loader
+                AppState.IsCheckingAuth = true;
+
+                // Actually call the server
+                var response = await UserService.ValidateSessionAsync();
+
+                // Done checking
+                AppState.IsCheckingAuth = false;
+
+                // If not valid, push them to /manage/login
+                if (!response)
+                {
+                    AppState.IsAuthenticated = false;
+                    Navigation.NavigateTo("manage/login");
+                }
+                else
+                {
+                    AppState.IsAuthenticated = true;
+                    // Let them continue to the route
+                }
+            }
+        }
+        // // If path starts with "manage" and user is not authenticated
+        // // But skip if they are navigating to "manage/login" already
+        // if (args.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
+        //     && !args.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase)
+        //     && !AppState.IsAuthenticated)
+        // {
+        //     Navigation.NavigateTo("manage/login", forceLoad: false);
+        // }
+
+        // // Because we are not awaiting anything, just return a completed task
+        // // to satisfy the OnNavigateAsync signature
+        // return Task.CompletedTask;
+    }
+}

@@ -1,0 +1,72 @@
+﻿@using frontend.Services
+@using frontend.Components.Shared.UI.SmartComponent
+@using frontend.Components.Shared.UI.SVG
+
+@inject AppStateService AppState
+
+<header class='website__header poppins-light'>
+	<div class='website__header-wrapper'>
+		<nav class='website__nav'>
+			@if (!AppState.IsManageRoute || AppState.IsAuthenticated)
+			{
+				@if (AppState.IsMobile)
+				{
+					<Slider Direction="Slider.SlideFromDirection.left"
+							HeaderClassName="nav__button nav--interactive">
+						<HeaderContent>
+							<Svg Path=@Svg.Paths.Menu Width="35" Height="35" />
+						</HeaderContent>
+
+						<BodyMobileContentTitle>
+							<NavLink href="@LogoLink" class="header__logo">
+								<img src="@LogoImage" alt="@LogoAlt" />
+							</NavLink>
+						</BodyMobileContentTitle>
+
+						<BodyContent>
+							@NavResponsiveMenuOptions
+						</BodyContent>
+					</Slider>
+				}
+				else
+				{
+					@NavResponsiveMenuOptions
+				}
+			}
+
+			<NavLink href="@LogoLink"
+			class="header__logo">
+				<img src="@LogoImage" alt="@LogoAlt" />
+			</NavLink>
+		</nav>
+
+		@if(!AppState.IsManageRoute || AppState.IsAuthenticated){
+			@NavPermanentButtons
+		}
+	</div>
+</header>
+
+@code {
+	[Parameter]
+	public RenderFragment? NavResponsiveMenuOptions { get; set; }
+
+	[Parameter]
+	public RenderFragment? NavPermanentButtons { get; set; }
+
+	private string? LogoImage { get; set; } = "images/logo.png";
+	private string? LogoAlt { get; set; } = "Cia da Capa";
+	private string? LogoLink { get; set; } = "";
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		if (AppState.IsManageRoute)
+		{
+			LogoImage = "images/logo_manage.png";
+			LogoAlt = "Cia da Capa - Gerenciamento";
+			LogoLink = "manage";
+			AppState.IsAuthenticatedChanged += StateHasChanged;
+		}
+	}
+}

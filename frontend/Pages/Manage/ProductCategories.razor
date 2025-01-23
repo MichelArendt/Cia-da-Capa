@@ -1,0 +1,205 @@
+﻿@page "/manage/categorias"
+@layout ManageLayout
+
+@using System.ComponentModel.DataAnnotations;
+@using frontend.DTOs
+@using frontend.Services.API
+@using frontend.Components.Shared.UI.SmartComponent
+@using frontend.Components.Shared.UI.SVG
+
+@inject ProductCategoryService ProductCategoryService
+
+<PageTitle>Categorias (Gerenciamento)</PageTitle>
+
+<h2>Adicionar nova categoria de produto</h2>
+
+<EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    @* @if (!string.IsNullOrEmpty(errorMessage)) *@
+    @* { *@
+    @*     <div class="error-message">@errorMessage</div> *@
+    @* } *@
+    <ValidationSummary />
+
+    <div>
+        <label for="name">
+            Nome:
+        </label>
+
+        <InputText name="name"
+        id="name"
+        autocomplete="name"
+        placeholder="Mochila"
+        @bind-Value="newProductModel.Name"
+        disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Name)" />
+    </div>
+
+    <div>
+        <label for="reference">
+            Referência:
+        </label>
+
+        <InputText name="reference"
+        id="reference"
+        autocomplete="reference"
+        placeholder="MO"
+        @bind-Value="newProductModel.Reference"
+        disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Reference)" />
+    </div>
+
+    <div>
+        <label for="isActive">
+            Ativo:
+        </label>
+
+        <InputCheckbox id="isActive"
+        @bind-Value="newProductModel.IsActive"
+        disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.IsActive)" />
+    </div>
+
+    <div>
+        <button type="submit" disabled="@IsSubmitting">Adicionar categoria</button>
+    </div>
+</EditForm>
+
+<List>
+    <HeaderContent>
+        <h2>Categorias</h2>
+    </HeaderContent>
+
+    <BodyContent>
+        @if (productCategories.Count == 0)
+        {
+            <span>Não há categorias cadastradas.</span>
+        }
+        else
+        {
+            <Table>
+                <Thead>
+                    <Tr>
+                        <Th>Nome</Th>
+                        <Th>Referência</Th>
+                        <Th>Ativo</Th>
+                        <Th>Produtos</Th>
+                        <Th></Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    @foreach (ProductCategoryDto category in productCategories)
+                    {
+                        <Tr ClassName="table__item">
+                            <Td>@category.Name</Td>
+                            <Td>@category.Reference</Td>
+                            <Td><InputCheckbox @bind-Value="category.IsActive" /></Td>
+                            <Td>0</Td>
+                            <Td>
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="20" Height="20" />
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="20" Height="20" />
+                            </Td>
+                        </Tr>
+                    }
+                </Tbody>
+            </Table>
+
+                @* <BodyContent>
+                @* @foreach (ProductCategoryDto category in productCategories) *@
+                @* { *@
+                @*     <Tr> *@
+                @*         <Td>X</Td> *@
+                @*         <Td>@category.Name</Td> *@
+                @*         <Td>@category.Reference</Td> *@
+                @*         <Td><InputCheckbox @bind-Value="category.IsActive" /></Td> *@
+                @*         <Td>0</Td> *@
+                @*     </Tr> *@
+                @* </BodyContent> *@
+            @* <table> *@
+            @*     <tr> *@
+            @*         <th>Remover</th> *@
+            @*         <th>Nome</th> *@
+            @*         <th>Referência</th> *@
+            @*         <th>Ativo</th> *@
+            @*         <th>Produtos</th> *@
+            @*     </tr> *@
+            @*     @foreach (ProductCategoryDto category in productCategories) *@
+            @*     { *@
+            @*         <tr> *@
+            @*             <td>X</td> *@
+            @*             <td>@category.Name</td> *@
+            @*             <td>@category.Reference</td> *@
+            @*             <td><InputCheckbox @bind-Value="category.IsActive" /></td> *@
+            @*             <td>0</td> *@
+            @*         </tr> *@
+            @*     } *@
+            @* </table> *@
+        }
+    </BodyContent>
+</List>
+
+@code {
+    private List<ProductCategoryDto> productCategories = new();
+    private NewProductModel newProductModel = new();
+    private string? errorMessage;
+    private bool IsSubmitting { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList(); 
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsSubmitting = true;
+        errorMessage = null;
+
+        var dto = new NewProductCategoryDto
+        {
+                Name = newProductModel.Name,
+                Reference = newProductModel.Reference,
+                IsActive = newProductModel.IsActive,
+        };
+
+        var response = await ProductCategoryService.CreateNewProductCategoryAsync(dto);
+
+        // Console.WriteLine(response);
+        // Console.WriteLine(await response.Content.ReadAsStringAsync());
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(1);
+            // Reset form fields
+            newProductModel = new NewProductModel();
+
+            // Re-fetch categories to update the list
+            productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
+
+            // Re-render UI (forces Blazor to recognize the changes)
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine(2);
+            errorMessage = $"Erro ao adicionar categoria: {await response.Content.ReadAsStringAsync()}";
+            StateHasChanged();
+        }
+
+        IsSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        errorMessage = "Por favor corrija os erros abaixo.";
+    }
+
+    public class NewProductModel
+    {
+        [Required(ErrorMessage = "Nome é obrigatório.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Referência é obrigatória")]
+        public string Reference { get; set; } = string.Empty;
+
+        public bool IsActive { get; set; } = true;
+    }
+}

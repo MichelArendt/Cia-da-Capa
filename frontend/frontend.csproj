@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	<PublishDir>..\build\</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.1" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Manage\" />
+    <Folder Include="Utilties\" />
+    <Folder Include="Shared\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+	<!-- <Target Name="LogPublishedFiles" AfterTargets="Publish">
+		<Message Text="Listing all files in $(PublishDir):" Importance="high" />
+		<Exec Command="dir $(PublishDir) /s" />
+	</Target> -->
+	
+	<!-- Clean the /build folder before publish -->
+	<Target Name="CleanBuildFolder" BeforeTargets="PrepareForPublish">
+		<Message Text="Cleaning folder: $(PublishDir)" Importance="high" />
+		<RemoveDir Directories="$(PublishDir)" />
+		<MakeDir Directories="$(PublishDir)" />
+		<Message Text="Folder $(PublishDir) has been cleaned and recreated." Importance="high" />
+	</Target>
+
+	<!-- Flatten output of all files in wwwroot into ../build/ -->
+	<Target Name="FlattenOutput" AfterTargets="Publish">
+		<!-- Include all files under wwwroot -->
+		<ItemGroup>
+			<AllPublishedFiles Include="$(PublishDir)wwwroot\**\*" />
+		</ItemGroup>
+
+		<!-- Copy them into the build folder, preserving subfolder structure but removing 'wwwroot' from the path -->
+		<Copy SourceFiles="@(AllPublishedFiles)" DestinationFolder="$(PublishDir)%(AllPublishedFiles.RecursiveDir)" />
+
+		<!-- Remove the now-empty wwwroot folder -->
+		<RemoveDir Directories="$(PublishDir)wwwroot" />
+	</Target>
+
+	<Target Name="CompileSCSS" BeforeTargets="Build">
+		<Exec Command="sass wwwroot/scss/manage/manage.scss:wwwroot/css/manage/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css --no-source-map" />
+	</Target>
+</Project>

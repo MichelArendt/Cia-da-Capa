@@ -1,0 +1,46 @@
+﻿@using frontend.Services
+
+@inject IJSRuntime JSRuntime
+@inject AppStateService AppState
+
+@code {
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+
+    private DotNetObjectReference<ResizeListener>? dotNetRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dotNetRef = DotNetObjectReference.Create(this);
+        await JSRuntime.InvokeVoidAsync("resizeListener.initialize", dotNetRef);
+        await UpdateDimensionsAsync();
+    }
+
+    [JSInvokable]
+    public async Task UpdateDimensionsAsync()
+    {
+        var dimensions = await JSRuntime.InvokeAsync<WindowDimensions>("resizeListener.getDimensions");
+        Width = dimensions.Width;
+        Height = dimensions.Height;
+        AppState.BrowserWidth = Width;
+        AppState.IsMobile = Width < AppState.BreakpointDesktop;
+        // Console.WriteLine("IsMobile " + AppState.IsMobile);
+
+        // StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (dotNetRef != null)
+        {
+            await JSRuntime.InvokeVoidAsync("resizeListener.dispose");
+            dotNetRef.Dispose();
+        }
+    }
+
+    private class WindowDimensions
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+}

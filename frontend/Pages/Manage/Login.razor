@@ -1,0 +1,121 @@
+﻿@page "/manage/login"
+@layout ManageLayout
+
+@using System.ComponentModel.DataAnnotations;
+@using frontend.DTOs
+@using frontend.Services
+@using frontend.Services.API
+@using frontend.Components.Shared.UI
+
+@inject UserService UserService
+@inject NavigationManager NavManager
+@inject AppStateService AppState
+
+<PageTitle>Login (Gerenciamento)</PageTitle>
+
+
+@if (IsSubmitting)
+{
+    <ContentLoader DisplayMessage="Verificando credenciais" />
+}
+else
+{
+    <EditForm class='login-form' Model="@loginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="login-form__wrapper">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <Feedback Type="Feedback.FeedbackType.error">
+                    @errorMessage
+                </Feedback>
+            }
+
+            <div>
+                <label for="username" class="sr-only">
+                    Username:
+                </label>
+
+                <InputText
+                name="username"
+                id="username"
+                autocomplete="username"
+                placeholder="Usuário"
+                @bind-Value="loginModel.Username"
+                disabled="@IsSubmitting" />
+                <ValidationMessage For="@(() => loginModel.Username)" />
+            </div>
+
+            <div>
+                <label for="password" class="sr-only">
+                    Password:
+                </label>
+
+                <InputText type="password"
+                name="password"
+                id="password"
+                autocomplete="current-password"
+                placeholder="Senha"
+                @bind-Value="loginModel.Password"
+                disabled="@IsSubmitting"/>
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+
+            <div>
+                <button type="submit" @onclick="HandleValidSubmit" disabled="@IsSubmitting">Login</button>
+            </div>
+        </div>
+    </EditForm>
+
+}
+
+@code {
+    private LoginModel loginModel = new();
+    private string? errorMessage;
+    private bool IsSubmitting { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsSubmitting = true;
+
+        var dto = new UserLoginRequest
+        {
+            Username = loginModel.Username,
+            Password = loginModel.Password
+        };
+
+        var success = await UserService.LoginAsync(dto);
+        if (success)
+        {
+            // The server sets the cookie if credentials are valid
+            AppState.IsAuthenticated = true;
+            NavManager.NavigateTo("manage/");
+        }
+        else
+        {
+            errorMessage = "Credenciais inválidas.";
+        }
+
+        IsSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        errorMessage = "Por favor corrija os erros abaixo.";
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "Usuário é obrigatório.")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Senha é obrigatória.")]
+        public string Password { get; set; } = string.Empty;
+    }
+}

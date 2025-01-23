@@ -1,0 +1,147 @@
+﻿@inherits LayoutComponentBase
+
+@using frontend.Services
+@using frontend.Services.API
+@using frontend.Components.Shared
+@using frontend.Components.Shared.UI
+@using frontend.Components.Shared.UI.SmartComponent
+@using frontend.Components.Shared.UI.SVG
+
+@inject AppStateService AppState
+@inject NavigationManager Navigation
+@inject UserService UserService
+
+@* <HeadContent> *@
+@*     <link rel="stylesheet" href="css/manage/manage.css" /> *@
+@* </HeadContent> *@
+<PageTitle>Gerenciamento - Cia da Capa</PageTitle>
+
+<Header>
+    <NavResponsiveMenuOptions>
+        @* <div> *@
+        @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
+        @*         Página Inicial *@
+        @*     </NavLink> *@
+        @* </div> *@
+        @if (AppState.IsMobile)
+        {
+            <List>
+                <HeaderContent>
+                    <button class="nav__button nav--interactive"
+                            @onclick="@(() => Navigation.NavigateTo("manage/produto"))">
+                        Produtos
+                    </button>
+                </HeaderContent>
+                <BodyContent>
+                    <li>CATEGORIAS</li>
+                </BodyContent>
+            </List>
+        }
+        else
+        {
+            <Dropdown ClassName="nav--interactive"
+                      HeaderClassName="nav__button nav--interactive"
+                      OnClick="@(() => Navigation.NavigateTo("manage/produto"))">
+                <HeaderContent>
+                    <span>Produtos</span>
+                </HeaderContent>
+                <BodyContent>
+                    <li>CATEGORIAS</li>
+                </BodyContent>
+            </Dropdown>
+        }
+        <div>
+            <NavLink href="manage/categorias" class="nav__button nav--interactive">
+                Categorias
+            </NavLink>
+        </div>
+        <div>
+            <NavLink href="manage/banners" class="nav__button nav--interactive">
+                Banners
+            </NavLink>
+        </div>
+    </NavResponsiveMenuOptions>
+
+    <NavPermanentButtons>
+        <Dropdown ClassName="nav--interactive"
+                  HeaderClassName="nav__button nav--interactive"
+                  HideArrow="true">
+            <HeaderContent>
+                <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
+            </HeaderContent>
+
+            <BodyMobileContentTitle>
+                <div>Digite seu termo de busca:</div>
+            </BodyMobileContentTitle>
+
+            <BodyContent>
+                <input type='text' />
+            </BodyContent>
+        </Dropdown>
+
+        <button class="nav__button nav--interactive"
+                @onclick="@UserLogout"
+                alt="Logout">
+            <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
+        </button>
+    </NavPermanentButtons>
+</Header>
+
+<main class='website__main'>
+    <div class='website__main-wrapper'>
+        @Body
+    </div>
+</main>
+
+@code {
+    @* private bool IsAuthenticating = false; *@
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        AppState.IsManageRoute = true;
+        AppState.IsMobileChanged += StateHasChanged;
+        AppState.IsAuthenticatedChanged += StateHasChanged;
+    }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var currentUri = Navigation.Uri;
+
+    //     if (!AppState.IsAuthenticated && !currentUri.Contains("manage/login"))
+    //     {
+    //         // Attempt to validate the session cookie with the server
+    //         Console.WriteLine("validating");
+    //         var response = await UserService.ValidateSessionAsync();
+    //         Console.WriteLine(response);
+    //         if (response)
+    //         {
+    //             Console.WriteLine("ManageLayout - Authenticated: " + true);
+    //             AppState.IsAuthenticated = true;
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("ManageLayout - Authenticated: " + false);
+    //             AppState.IsAuthenticated = false;
+    //             Navigation.NavigateTo("manage/login");
+    //         }
+    //     }
+
+    //     IsAuthenticating = false;
+    // }
+
+    private async Task UserLogout()
+    {
+        if (AppState.IsAuthenticated)
+        {
+            var response = await UserService.LogoutAsync();
+            if (response)
+            {
+                AppState.IsAuthenticated = false;
+                Navigation.NavigateTo("manage/login");
+            }
+        }
+    }
+}
+

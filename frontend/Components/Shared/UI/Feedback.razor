@@ -1,0 +1,18 @@
+﻿<div class="feedback feedback--@Type">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] 
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public FeedbackType Type { get; set; } = FeedbackType.success;
+    public enum FeedbackType
+    {
+        success,
+        error,
+        info,
+        warning
+    }
+}

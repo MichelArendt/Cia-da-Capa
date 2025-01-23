@@ -1,0 +1,125 @@
+﻿@inherits SmartComponentBase
+
+@using frontend.Services
+@using frontend.Components.Shared.UI.SVG
+@using frontend.Services.Interop
+
+@inject IJSRuntime JSRuntime
+@inject AppStateService AppState
+
+<div class="dropdown @ClassName" @onclick="Toggle">
+    <button class="dropdown__button @HeaderClassName" @onclick="OnClick">
+        @HeaderContent
+        @if (!HideArrow)
+        {
+            <Svg ClassName="svg--rotate" Path="@Svg.Paths.ArrowDropDown" Width="15" Height="15" />
+        }
+    </button>
+
+    <div class="dropdown__content @(IsOpen ? "dropdown__content--visible" : "")"
+    style="@DynamicStyle"
+    @ref="DropdownRef"
+    >
+        <div class="dropdown__content-wrapper"
+        @onclick:stopPropagation>
+            @if (AppState.IsMobile) {
+                Console.WriteLine(AppState.IsMobile);
+                <div class="dropdown__content-title">@BodyMobileContentTitle</div>
+            }
+            @BodyContent
+        </div>
+        @if (AppState.IsMobile)
+        {
+            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? ClassName { get; set; }
+
+    [Parameter]
+    public string? HeaderClassName { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; } // Holds the first child
+
+    [Parameter]
+    public RenderFragment? BodyMobileContentTitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+
+    [Parameter]
+    public bool HideArrow { get; set; } = false;
+
+    private string? DynamicStyle { get; set; }
+    private ElementReference DropdownRef; // Element reference for the dropdown
+
+    // private void ClickHandler(){
+    //     if (AppState.IsMobile) {
+    //         Toggle();
+    //     }
+    // }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        AppState.WindowResized += UpdateDynamicPosition;
+        // Console.WriteLine("dropdown initialized");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Console.WriteLine(firstRender + " " + AppState.IsMobile);
+        if (firstRender)
+        {
+            await UpdateDynamicPosition();
+        }
+    }
+
+    private async Task UpdateDynamicPosition()
+    {
+        // Console.WriteLine("UpdateDynamicPosition");
+        // Console.WriteLine("1");
+        if (DropdownRef.Id == default)
+        {
+            // Console.WriteLine("DropdownRef is not yet valid");
+            return;
+        }
+        DOMRect elementBoundingRect = await JSRuntime.InvokeAsync<DOMRect>("getBoundingClientRect", DropdownRef);
+
+        if (elementBoundingRect == null)
+        {
+            // Console.WriteLine("DropdownRef is NULL");
+            return;
+        }
+
+        // Console.WriteLine("2");
+        // Console.WriteLine(elementBoundingRect);
+        // Console.WriteLine("elementBoundingRect.Right [" + elementBoundingRect.Right + "] AppState.BrowserWidth[" + AppState.BrowserWidth + "]");
+        if (elementBoundingRect.Right >= AppState.BrowserWidth)
+        {
+            // Console.WriteLine("+++ BIGGER");
+            DynamicStyle = $"right: 0; left: auto;";
+            StateHasChanged();
+        }
+        // else
+        // {
+        //     Console.WriteLine("--- smaller");
+        //     DynamicStyle = $"right: auto; left: 0;";
+        // }
+        // DynamicStyle = $"top: {elementBoundingRect.Top}px; left: {elementBoundingRect.Left}px;";
+        // Console.WriteLine(DynamicStyle);
+    }
+    public void Dispose()
+    {
+        // e.g.
+        AppState.WindowResized -= UpdateDynamicPosition;
+    }
+}

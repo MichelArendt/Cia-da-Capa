@@ -1,0 +1,43 @@
+﻿@inherits SmartComponentBase
+
+@using frontend.Services
+
+@inject AppStateService AppState
+
+<div class="slider" @onclick="Toggle">
+    <button class="slider__button @HeaderClassName">
+        @HeaderContent
+    </button>
+    <div class="slider__content slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
+        <div class="slider__content-wrapper"
+        @onclick:stopPropagation>
+            @BodyMobileContentTitle
+            @BodyContent
+            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; } // Holds the first child
+
+    [Parameter]
+    public string? HeaderClassName { get; set; }
+
+    [Parameter]
+    public RenderFragment? BodyMobileContentTitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+
+    [Parameter]
+    public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
+    public enum SlideFromDirection
+    {
+        left,
+        right,
+        top,
+        bottom
+    }
+}
