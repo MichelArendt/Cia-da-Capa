@@ -9,12 +9,12 @@ Cia da Capa is a trusted name in custom manufacturing, creating practical and du
 ## Project Structure
 
 - **/api/**: Contains the PHP backend code using FlightPHP for API routing.
-- **/frontend/**: Contains the .NET 9 Blazor frontend code, including SCSS files.
+- **/frontend/**: Contains the .NET 9 Blazor WASM frontend code, including SCSS files.
 - **/build/**: Contains the build output for deployment.
 
 ## Dependencies
 - **Frontend**: .NET 9 SDK, Node.js, and NPM for SCSS compilation.
-- **Backend**: PHP 8+ with FlightPHP for API routing.
+- **Backend**: MySQL and PHP 8+.
 
 # Getting Started
 
@@ -22,7 +22,7 @@ Cia da Capa is a trusted name in custom manufacturing, creating practical and du
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/your-repo-url.git
+git clone https://github.com/MichelArendt/Cia-da-Capa.git
 ```
 
 ## 2. Create a file named **database.php** inside **/api/flight/config/**. Example below:
