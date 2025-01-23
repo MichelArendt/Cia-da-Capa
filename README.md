@@ -50,18 +50,37 @@ If you are modifying the frontend and working with `.SCSS` files, run the follow
 npm run watch
 ```
 
-## 4. Launch
+## 4. Launch Options
 
-### **(Option 1)** Deploy the App
-To deploy the application, navigate to the `/build/` directory and run the following command:
+### 4.1 Deploy the App
+To deploy the application, navigate to the `/frontend/` directory and run the following command:
 
 ```bash
 dotnet publish -c Debug /p:NoIncremental=true /p:PublishTrimmed=false
 ```
 
-This will publish the app in Debug mode without incremental compilation or trimming.
+This will publish the app in Debug mode without incremental compilation or trimming. It wil also flatten the output to deploy it into a single folder.
 
-### **(Option 2)** Run on .NET Development Server
+If you wish to change the deployment directory not to be **/build/** change:
+
+#### - frontend/wwwroot/index.html
+
+Either remove or change base at **head** tag:
+
+```html
+<base href="/build/" />
+```
+
+#### - frontend/frontend.csproj
+
+Also change **PublishDir** to match the directory of **index.html** (step above):
+
+```xml
+<PublishDir>..\build\</PublishDir>
+```
+
+
+### 4.2 Run on .NET Development Server
 To run the app on the .NET development server, use the following command:
 
 ```bash
