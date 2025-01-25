@@ -567,6 +567,10 @@ button {
   text-align: left;
 }
 
+.table__sorting-arrow {
+  fill: #ffffff;
+}
+
 .table th,
 .table td {
   padding: 12px 15px;

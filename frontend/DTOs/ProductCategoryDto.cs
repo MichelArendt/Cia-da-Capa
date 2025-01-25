@@ -22,7 +22,7 @@ namespace frontend.DTOs
         {
             public static readonly SortField Name = new("Name", c => c.Name);
             public static readonly SortField Reference = new("Reference", c => c.Reference);
-            public static readonly SortField IsActive = new("Name", c => c.IsActive);
+            public static readonly SortField IsActive = new("IsActive", c => c.IsActive);
 
             public struct SortField
             {

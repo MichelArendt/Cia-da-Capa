@@ -82,15 +82,59 @@
             <Table>
                 <Thead>
                     <Tr>
-                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">Ativo</Th>
+                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
+                            Ativo
+                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.IsActive))
+                            {
+                                @if (isDescending)
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                }
+                                else
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                }
+                            }
+                        </Th>
                         <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))">
                             Nome
+                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Name))
+                            {
+                                @if (isDescending)
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                }
+                                else
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                }
+                            }
                         </Th>
-                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th>
+                        @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))"> *@
+                        @*     Nome *@
+                        @* </Th> *@
+                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
+                            Referência
+                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
+                            {
+                                @if (isDescending)
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                }
+                                else
+                                {
+                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                }
+                            }
+                        </Th>
+                        @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th> *@
                         <Th>Produtos</Th>
                         <Th>Ações</Th>
                     </Tr>
                 </Thead>
+
+                
+
                 <Tbody>
                     @foreach (ProductCategoryDto category in productCategories)
                     {
