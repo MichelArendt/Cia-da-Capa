@@ -1,8 +1,10 @@
 ﻿@page "/manage/categorias"
 @layout ManageLayout
 
+@using System.Linq.Expressions
 @using System.ComponentModel.DataAnnotations;
 @using frontend.DTOs
+@using frontend.DTOs.Contracts
 @using frontend.Services.API
 @using frontend.Components.Shared.UI.SmartComponent
 @using frontend.Components.Shared.UI.SVG
@@ -80,63 +82,49 @@
             <Table>
                 <Thead>
                     <Tr>
-                        <Th>Nome</Th>
-                        <Th>Referência</Th>
-                        <Th>Ativo</Th>
+                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">Ativo</Th>
+                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))">
+                            Nome
+                        </Th>
+                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th>
                         <Th>Produtos</Th>
-                        <Th></Th>
+                        <Th>Ações</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     @foreach (ProductCategoryDto category in productCategories)
                     {
                         <Tr ClassName="table__item">
+                            <Td>
+                                @if (category.IsActive)
+                                {
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOn" Width="30" Height="30" />
+                                }
+                                else
+                                {
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOff" Width="30" Height="30" />
+                                }
+                            </Td>
                             <Td>@category.Name</Td>
                             <Td>@category.Reference</Td>
-                            <Td><InputCheckbox @bind-Value="category.IsActive" /></Td>
                             <Td>0</Td>
                             <Td>
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="20" Height="20" />
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="20" Height="20" />
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
                             </Td>
                         </Tr>
                     }
                 </Tbody>
             </Table>
-
-                @* <BodyContent>
-                @* @foreach (ProductCategoryDto category in productCategories) *@
-                @* { *@
-                @*     <Tr> *@
-                @*         <Td>X</Td> *@
-                @*         <Td>@category.Name</Td> *@
-                @*         <Td>@category.Reference</Td> *@
-                @*         <Td><InputCheckbox @bind-Value="category.IsActive" /></Td> *@
-                @*         <Td>0</Td> *@
-                @*     </Tr> *@
-                @* </BodyContent> *@
-            @* <table> *@
-            @*     <tr> *@
-            @*         <th>Remover</th> *@
-            @*         <th>Nome</th> *@
-            @*         <th>Referência</th> *@
-            @*         <th>Ativo</th> *@
-            @*         <th>Produtos</th> *@
-            @*     </tr> *@
-            @*     @foreach (ProductCategoryDto category in productCategories) *@
-            @*     { *@
-            @*         <tr> *@
-            @*             <td>X</td> *@
-            @*             <td>@category.Name</td> *@
-            @*             <td>@category.Reference</td> *@
-            @*             <td><InputCheckbox @bind-Value="category.IsActive" /></td> *@
-            @*             <td>0</td> *@
-            @*         </tr> *@
-            @*     } *@
-            @* </table> *@
         }
     </BodyContent>
 </List>
+
+
+@* <NewTable
+        Data="productCategories"
+        DisplayColumns="@(new Expression<Func<ProductCategoryDto, object>>[]{ c => c.IsActive, c => c.Name, c => c.Reference})"
+        CustomRenderers="CustomColumnRenderers"  /> *@
 
 @code {
     private List<ProductCategoryDto> productCategories = new();
@@ -144,10 +132,28 @@
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
 
+    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Name;
+    private bool isDescending = false;
+
     protected override async Task OnInitializedAsync()
     {
-        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList(); 
+        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
+        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
     }
+
+    // private Dictionary<Expression<Func<ProductCategoryDto, object>>, RenderFragment<ProductCategoryDto>> CustomColumnRenderers = new()
+    // {
+    //     { c => c.IsActive, category => (builder) =>
+    //         {
+    //             builder.OpenElement(0, "span");
+    //             builder.AddAttribute(1, "class", category.IsActive ? "status-active" : "status-inactive");
+    //             builder.AddMarkupContent(2, category.IsActive
+    //                 ? "<svg width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='green'/></svg>"
+    //                 : "<svg width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='red'/></svg>");
+    //             builder.CloseElement();
+    //         }
+    //     }
+    // };
 
     private async Task HandleValidSubmit()
     {
@@ -201,5 +207,45 @@
         public string Reference { get; set; } = string.Empty;
 
         public bool IsActive { get; set; } = true;
+    }
+  
+    private void SortCategoriesBy(ProductCategoryDto.SortBy.SortField sortField)
+    {
+        if (currentSortField.ColumnName == sortField.ColumnName)
+        {
+            isDescending = !isDescending; // Toggle order if clicking the same column
+        }
+        else
+        {
+            currentSortField = sortField;
+            isDescending = false; // Default to ascending when switching columns
+        }
+
+        productCategories = isDescending
+            ? productCategories.OrderByDescending(sortField.Selector).ToList()
+            : productCategories.OrderBy(sortField.Selector).ToList();
+
+        Console.WriteLine($"Sorting by: {currentSortField.ColumnName}, Order: {(isDescending ? "Descending" : "Ascending")}");
+        StateHasChanged();
+    }
+
+    private async Task DeleteCategory(int categoryId)
+    {
+        var response = await ProductCategoryService.DeleteProductCategoryAsync(categoryId);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Category {categoryId} deleted successfully.");
+
+            // Remove item manually
+            productCategories = productCategories.Where(c => c.Id != categoryId).ToList();
+
+            StateHasChanged(); // Re-render UI
+        }
+        else
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Failed to delete category {categoryId}: {errorMessage}");
+        }
     }
 }

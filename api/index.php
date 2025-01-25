@@ -1,7 +1,7 @@
 <?php
 
 require 'flight/Flight.php';
-require 'flight/lib/rb.php'; // RedBeanPHP
+// require 'flight/lib/rb.php'; // RedBeanPHP
 
 
 require 'flight/models/UserModel.php';
@@ -14,13 +14,13 @@ $config = require 'flight/config/database.php';
 
 // Set Up Database Connection Using Config
 $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
-R::setup($dsn, $config['username'], $config['password']);
+// R::setup($dsn, $config['username'], $config['password']);
 
 // Prevent RedBean from modifying schema in production
-R::freeze(true);
+// R::freeze(true);
 
 // Store RedBean instance in Flight (for easy access later)
-Flight::set('rb', R::getRedBean());
+// Flight::set('rb', R::getRedBean());
 
 // // Register UserModel in Flight
 // require 'flight/models/UserModel.php';
@@ -100,6 +100,7 @@ Flight::route('POST /manage/user/validate', 'Controllers\Manage\UserController->
 
 // Product Category
 Flight::route('POST /manage/products/categories', 'Controllers\Manage\ProductCategoryController->create');
+Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\ProductCategoryController->delete');
 
 // --------------------------------
 // ROUTES - 404

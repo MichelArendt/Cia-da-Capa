@@ -35,6 +35,7 @@
             public static class ProductCategory
             {
                 public const string Create = "/api/manage/products/categories";
+                public const string Delete = "/api/manage/products/categories";
             }
         }
     }

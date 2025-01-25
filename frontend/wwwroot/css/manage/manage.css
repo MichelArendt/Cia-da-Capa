@@ -588,6 +588,10 @@ button {
   background-color: hsla(37, 59%, 54%, 0.5);
 }
 
+.table__actions:hover {
+  fill: hsl(24, 70%, 50%);
+}
+
 .website__header {
   background-color: hsl(240, 3%, 18%);
   color: hsl(0, 0%, 73%);

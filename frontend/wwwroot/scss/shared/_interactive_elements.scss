@@ -307,3 +307,6 @@ button {
 .table__actions {
     //padding: 5px;
 }
+.table__actions:hover {
+    fill: $color-secondary--main;
+}

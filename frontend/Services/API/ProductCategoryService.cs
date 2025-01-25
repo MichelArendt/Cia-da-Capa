@@ -27,5 +27,10 @@ namespace frontend.Services.API
 
             return response;
         }
+
+        public async Task<HttpResponseMessage> DeleteProductCategoryAsync(int id)
+        {
+            return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductCategory.Delete}/{id}");
+        }
     }
 }

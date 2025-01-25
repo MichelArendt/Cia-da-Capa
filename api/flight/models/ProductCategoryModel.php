@@ -40,25 +40,57 @@ class ProductCategoryModel {
       }
   }
   // create product category
-    public function create(string $name, string $reference, bool $isActive = true): ?int {
+  public function create(string $name, string $reference, bool $isActive = true): ?int {
+    try {
+        $stmt = $this->db->prepare("
+            INSERT INTO product_categories (name, reference, is_active, created_at, updated_at)
+            VALUES (:name, :reference, :is_active, NOW(), NOW())"
+        );
+
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':reference', $reference, PDO::PARAM_STR);
+        $stmt->bindParam(':is_active', $isActive, PDO::PARAM_BOOL);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to insert product category.");
+        }
+
+        return (int) $this->db->lastInsertId();
+    } catch (Exception $e) {
+        error_log("Database Error in create(): " . $e->getMessage());
+        return null;
+    }
+  }
+
+  // Delete product category by ID
+  public function delete($id) {
       try {
-          $stmt = $this->db->prepare("
-              INSERT INTO product_categories (name, reference, is_active, created_at, updated_at)
-              VALUES (:name, :reference, :is_active, NOW(), NOW())"
-          );
-
-          $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-          $stmt->bindParam(':reference', $reference, PDO::PARAM_STR);
-          $stmt->bindParam(':is_active', $isActive, PDO::PARAM_BOOL);
-
-          if (!$stmt->execute()) {
-              throw new Exception("Failed to insert product category.");
+          // Check if the category exists
+          $stmt = $this->db->prepare("SELECT id FROM product_categories WHERE id = ?");
+          $stmt->execute([$id]);
+          if (!$stmt->fetch()) {
+              throw new Exception("Category not found.");
           }
 
-          return (int) $this->db->lastInsertId();
+          // Check if there are any products associated with this category
+          $stmt = $this->db->prepare("SELECT COUNT(*) as product_count FROM products WHERE category_id = ?");
+          $stmt->execute([$id]);
+          $productCount = $stmt->fetch(PDO::FETCH_ASSOC)['product_count'] ?? 0;
+
+          if ($productCount > 0) {
+              throw new Exception("Cannot delete category. There are $productCount products linked to this category.");
+          }
+
+          // Delete the category
+          $stmt = $this->db->prepare("DELETE FROM product_categories WHERE id = ?");
+          $stmt->execute([$id]);
+
+          http_response_code(200);
+          echo json_encode(["message" => "Category deleted successfully."]);
       } catch (Exception $e) {
-          error_log("Database Error in create(): " . $e->getMessage());
-          return null;
+          error_log("Error deleting category: " . $e->getMessage());
+          http_response_code(400);
+          echo json_encode(["error" => $e->getMessage()]);
       }
   }
 }
