@@ -35,10 +35,11 @@ class ProductCategoryModel {
           $stmt->execute();
           return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
       } catch (Exception $e) {
-          error_log("Database Error in getAll(): " . $e->getMessage());
+          error_log("Database Error in ProductCategoryModel->getAll(): " . $e->getMessage());
           return null;
       }
   }
+
   // create product category
   public function create(string $name, string $reference, bool $isActive = true): ?int {
     try {
@@ -57,7 +58,7 @@ class ProductCategoryModel {
 
         return (int) $this->db->lastInsertId();
     } catch (Exception $e) {
-        error_log("Database Error in create(): " . $e->getMessage());
+        error_log("Database Error in ProductCategoryModel->create(): " . $e->getMessage());
         return null;
     }
   }
@@ -88,7 +89,7 @@ class ProductCategoryModel {
           http_response_code(200);
           echo json_encode(["message" => "Category deleted successfully."]);
       } catch (Exception $e) {
-          error_log("Error deleting category: " . $e->getMessage());
+          error_log("Error deleting ProductCategoryModel->delete: " . $e->getMessage());
           http_response_code(400);
           echo json_encode(["error" => $e->getMessage()]);
       }

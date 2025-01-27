@@ -5,8 +5,10 @@ require 'flight/Flight.php';
 
 
 require 'flight/models/UserModel.php';
+require 'flight/models/ProductModel.php';
 require 'flight/models/ProductCategoryModel.php';
 use Models\UserModel;
+use Models\ProductModel;
 use Models\ProductCategoryModel;
 
 // Load Config
@@ -35,6 +37,7 @@ try {
     Flight::set('db', $pdo);
 
     Flight::set('userModel', new UserModel($pdo));
+    Flight::set('productModel', new ProductModel($pdo));
     Flight::set('productCategoryModel', new ProductCategoryModel($pdo));
 } catch (Exception $e) {
     die("Database connection failed: " . $e->getMessage());
@@ -76,6 +79,9 @@ Flight::route('GET /', function () {
 
 // User
 Flight::route('POST /public/user/login', 'Controllers\Public\UserController->login');
+
+// Product
+Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
 
 // Product Category
 Flight::route('GET /public/products/categories', 'Controllers\Public\ProductCategoryController->getAll');
