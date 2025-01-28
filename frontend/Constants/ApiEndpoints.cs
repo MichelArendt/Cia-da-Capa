@@ -18,6 +18,11 @@
             {
                 public const string GetAll = "/api/public/products/categories";
             }
+
+            public static class ProductSizeLabel
+            {
+                public const string GetAll = "/api/public/products/size-labels";
+            }
         }
         public static class Manage
         {
@@ -36,6 +41,12 @@
             {
                 public const string Create = "/api/manage/products/categories";
                 public const string Delete = "/api/manage/products/categories";
+            }
+
+            public static class ProductSizeLabel
+            {
+                public const string Create = "/api/manage/products/size-labels";
+                public const string Delete = "/api/manage/products/size-labels";
             }
         }
     }

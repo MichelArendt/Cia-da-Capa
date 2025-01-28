@@ -751,28 +751,51 @@ a:hover {
 Duration of animation */
 }
 
-.not-found {
+.page__404, .page__500 {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
 }
-.not-found > svg {
-  fill: #777777;
-}
-.not-found > h1 {
-  color: #777777;
+.page__404 > h1, .page__500 > h1 {
   font-size: 80px;
   padding: 20px 0;
 }
-.not-found > h2 {
-  color: #b5b9b8;
-}
-.not-found * {
+.page__404 *, .page__500 * {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-style: normal;
+}
+
+.page__404 > svg {
+  fill: #777777;
+}
+.page__404 > h1 {
+  color: #777777;
+}
+.page__404 > h2 {
+  color: #b5b9b8;
+}
+
+.page__500 {
+  padding: 20px;
+  background: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+}
+.page__500 > svg {
+  fill: #d9534f;
+}
+.page__500 > h1 {
+  color: #d9534f;
+}
+.page__500 > h2 {
+  color: #ff7675;
+  padding-bottom: 20px;
+}
+.page__500 > ul {
+  padding: 20px;
+  list-style: disc;
 }
 
 main {

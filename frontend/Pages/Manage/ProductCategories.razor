@@ -5,10 +5,12 @@
 @using System.ComponentModel.DataAnnotations;
 @using frontend.DTOs
 @using frontend.DTOs.Contracts
+@using frontend.Services
 @using frontend.Services.API
 @using frontend.Components.Shared.UI.SmartComponent
 @using frontend.Components.Shared.UI.SVG
 
+@inject AppStateService AppState
 @inject ProductCategoryService ProductCategoryService
 
 <PageTitle>Categorias (Gerenciamento)</PageTitle>
@@ -30,7 +32,7 @@
 
         <InputText name="name"
         id="name"
-        autocomplete="name"
+        autocomplete="on"
         placeholder="Mochila"
         @bind-Value="newProductCategoryModel.Name"
         disabled="@IsSubmitting" />
@@ -44,7 +46,7 @@
 
         <InputText name="reference"
         id="reference"
-        autocomplete="reference"
+        autocomplete="on"
         placeholder="MO"
         @bind-Value="newProductCategoryModel.Reference"
         disabled="@IsSubmitting" />
@@ -133,7 +135,7 @@
                     </Tr>
                 </Thead>
 
-                
+
 
                 <Tbody>
                     @foreach (ProductCategoryDto category in productCategories)
@@ -179,9 +181,28 @@
     private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Name;
     private bool isDescending = false;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        AppState.Product.Categories.StateChanged += StateHasChanged;
+        SyncProductCategories();
+    }
+
+    public void Dispose()
+    {
+        AppState.Product.Categories.StateChanged -= StateHasChanged;
+    }
+
+    private void SyncProductCategories()
+    {
+        productCategories = AppState.Product.Categories.Items;
+        StateHasChanged();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
+        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
         // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
     }
 
@@ -222,10 +243,11 @@
             newProductCategoryModel = new NewProductCategoryModel();
 
             // Re-fetch categories to update the list
-            productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
+            await AppState.Product.Categories.FetchItems();
+            // AppState.CategoriesList = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
 
             // Re-render UI (forces Blazor to recognize the changes)
-            StateHasChanged();
+            // StateHasChanged();
         }
         else
         {

@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
+@using frontend.Handlers
+@using frontend.Pages
 @using frontend.Services
 @using frontend.Services.API
 @using frontend.Components.Shared
@@ -16,113 +18,132 @@
 @* <HeadContent> *@
 @*     <link rel="stylesheet" href="css/manage/manage.css" /> *@
 @* </HeadContent> *@
-<PageTitle>Gerenciamento - Cia da Capa</PageTitle>
 
-<Header>
-    <NavResponsiveMenuOptions>
-        @* <div> *@
-        @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
-        @*         Página Inicial *@
-        @*     </NavLink> *@
-        @* </div> *@
-        @if (AppState.IsMobile)
-        {
-            <List>
-                <HeaderContent>
-                    <button class="nav__button nav--interactive"
-                            @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
-                        Produtos
-                    </button>
-                </HeaderContent>
-                <BodyContent>
-                    @if (productCategories.Count == 0)
-                    {
-                        <li>Não há categorias cadastradas.</li>
-                    }
-                    else
-                    {
-                        @foreach (ProductCategoryDto category in productCategories)
+@if (AppState.Product.Categories.State == FetchState.Fetching || AppState.Product.SizeLabels.State == FetchState.Fetching)
+{
+    <ContentLoader />
+}
+else if (AppState.Product.Categories.State == FetchState.Failed || AppState.Product.SizeLabels.State == FetchState.Failed)
+{
+
+    <PageTitle>500 - Cia da Capa</PageTitle>
+    <_500 />
+}
+else
+{
+    <PageTitle>Gerenciamento - Cia da Capa</PageTitle>
+
+    <Header>
+        <NavResponsiveMenuOptions>
+            @* <div> *@
+            @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
+            @*         Página Inicial *@
+            @*     </NavLink> *@
+            @* </div> *@
+            @if (AppState.IsMobile)
+            {
+                <List>
+                    <HeaderContent>
+                        <button class="nav__button nav--interactive"
+                        @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
+                            Produtos
+                        </button>
+                    </HeaderContent>
+                    <BodyContent>
+                        @if (!AppState.Product.Categories.Items.Any())
                         {
-                            <li>@category.Name</li>
+                            <li>Não há categorias cadastradas!</li>
                         }
-                    }
-                </BodyContent>
-            </List>
-        }
-        else
-        {
+                        else
+                        {
+                            @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                            {
+                                <li>@category.Name</li>
+                            }
+                        }
+                    </BodyContent>
+                </List>
+            }
+            else
+            {
+                <Dropdown ClassName="nav--interactive"
+                HeaderClassName="nav__button nav--interactive"
+                OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
+                    <HeaderContent>
+                        <span>Produtos</span>
+                    </HeaderContent>
+                    <BodyContent>
+                        @if (!AppState.Product.Categories.Items.Any())
+                        {
+                            <li>Não há categorias cadastradas!</li>
+                        }
+                        else
+                        {
+                            <li>
+                                <NavLink href="manage/produtos/adicionar">
+                                    Adicionar produto
+                                </NavLink>
+                            </li>
+                            @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                            {
+                                <li>@category.Name</li>
+                            }
+                        }
+                    </BodyContent>
+                </Dropdown>
+            }
+            <div>
+                <NavLink href="manage/banners" class="nav__button nav--interactive">
+                    Banners
+                </NavLink>
+            </div>
+            <div>
+                <NavLink href="manage/categorias" class="nav__button nav--interactive">
+                    Categorias
+                </NavLink>
+            </div>
+            <div>
+                <NavLink href="manage/rotulos" class="nav__button nav--interactive">
+                    Rótulos
+                </NavLink>
+            </div>
+        </NavResponsiveMenuOptions>
+
+        <NavPermanentButtons>
             <Dropdown ClassName="nav--interactive"
-                      HeaderClassName="nav__button nav--interactive"
-                      OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
+            HeaderClassName="nav__button nav--interactive"
+            HideArrow="true">
                 <HeaderContent>
-                    <span>Produtos</span>
+                    <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
                 </HeaderContent>
+
+                <BodyMobileContentTitle>
+                    <div>Digite seu termo de busca:</div>
+                </BodyMobileContentTitle>
+
                 <BodyContent>
-                    @if (productCategories.Count == 0)
-                    {
-                        <li>Não há categorias cadastradas. Cadastre alguma antes de adicionar produtos!</li>
-                    }
-                    else
-                    {
-                        <li>
-                            <NavLink href="manage/produtos/adicionar">
-                                Adicionar produto
-                            </NavLink>
-                        </li>
-                        @foreach (ProductCategoryDto category in productCategories)
-                        {
-                            <li>@category.Name</li>
-                        }
-                    }
+                    <input type='text' />
                 </BodyContent>
             </Dropdown>
-        }
-        <div>
-            <NavLink href="manage/categorias" class="nav__button nav--interactive">
-                Categorias
-            </NavLink>
+
+            <button class="nav__button nav--interactive"
+            @onclick="@UserLogout"
+            alt="Logout">
+                <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
+            </button>
+        </NavPermanentButtons>
+    </Header>
+
+    <main class='website__main'>
+        <div class='website__main-wrapper'>
+            @Body
         </div>
-        <div>
-            <NavLink href="manage/banners" class="nav__button nav--interactive">
-                Banners
-            </NavLink>
-        </div>
-    </NavResponsiveMenuOptions>
-
-    <NavPermanentButtons>
-        <Dropdown ClassName="nav--interactive"
-                  HeaderClassName="nav__button nav--interactive"
-                  HideArrow="true">
-            <HeaderContent>
-                <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
-            </HeaderContent>
-
-            <BodyMobileContentTitle>
-                <div>Digite seu termo de busca:</div>
-            </BodyMobileContentTitle>
-
-            <BodyContent>
-                <input type='text' />
-            </BodyContent>
-        </Dropdown>
-
-        <button class="nav__button nav--interactive"
-                @onclick="@UserLogout"
-                alt="Logout">
-            <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
-        </button>
-    </NavPermanentButtons>
-</Header>
-
-<main class='website__main'>
-    <div class='website__main-wrapper'>
-        @Body
-    </div>
-</main>
+    </main>
+}
 
 @code {
     @* private bool IsAuthenticating = false; *@
-    private List<ProductCategoryDto> productCategories = new();
+    @* private List<ProductCategoryDto> productCategories = new(); *@
 
     protected override void OnInitialized()
     {
@@ -131,11 +152,22 @@
         AppState.IsManageRoute = true;
         AppState.IsMobileChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
+        AppState.Product.Categories.StateChanged += StateHasChanged;
+        AppState.Product.SizeLabels.StateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppState.IsMobileChanged -= StateHasChanged;
+        AppState.IsAuthenticatedChanged -= StateHasChanged;
+        AppState.Product.Categories.StateChanged -= StateHasChanged;
+        AppState.Product.SizeLabels.StateChanged -= StateHasChanged;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
+        await AppState.Product.Categories.FetchItems();
+        await AppState.Product.SizeLabels.FetchItems();
     }
 
     // protected override async Task OnInitializedAsync()

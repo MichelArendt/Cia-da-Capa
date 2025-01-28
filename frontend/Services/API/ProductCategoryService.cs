@@ -14,9 +14,16 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        public async Task<List<ProductCategoryDto>> GetProductCategoriesAsync()
+        public async Task<List<ProductCategoryDto>?> GetProductCategoriesAsync()
         {
             var response = await _httpClient.GetAsync(ApiEndpoints.Public.ProductCategory.GetAll);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Return null to indicate an error or DB problem
+                return null;
+            }
+
 
             return await ApiServiceHelper.DeserializeResponse<List<ProductCategoryDto>>(response);
         }

@@ -3,8 +3,10 @@
 
 @using System.ComponentModel.DataAnnotations
 @using frontend.DTOs
+@using frontend.Services
 @using frontend.Services.API
 
+@inject AppStateService AppState
 @inject ProductCategoryService ProductCategoryService
 @inject ProductService ProductService
 
@@ -12,60 +14,69 @@
 
 <h3>Adicionar Novo Produto</h3>
 
-<EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div>
-        <label for="title">Título:</label>
-        <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Nome do produto" autocomplete="on" disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Title)" />
+@if (!AppState.Product.Categories.Items.Any())
+{
+    <div class="feedback feedback--error">
+        Antes de adicionar um produto você deve adicionar uma categoria!
     </div>
+}
+else
+{
+    <EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div>
-        <label for="reference">Referência:</label>
-        <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="Código único" autocomplete="on" disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Reference)" />
-    </div>
+        <div>
+            <label for="title">Título:</label>
+            <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Nome do produto" autocomplete="on" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => newProductModel.Title)" />
+        </div>
 
-    <div>
-        <label for="description">Descrição:</label>
-        <InputTextArea id="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Description)" />
-    </div>
+        <div>
+            <label for="reference">Referência:</label>
+            <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="Código único" autocomplete="on" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => newProductModel.Reference)" />
+        </div>
 
-    <div>
-        <label for="category_id">Categoria:</label>
-        <InputSelect id="category_id" @bind-Value="newProductModel.CategoryId" disabled="@IsSubmitting">
-            <option value="0">Selecione uma categoria...</option>
-            @foreach (var category in productCategories)
-            {
-                <option value="@category.Id">@category.Name</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => newProductModel.CategoryId)" />
-    </div>
+        <div>
+            <label for="description">Descrição:</label>
+            <InputTextArea id="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => newProductModel.Description)" />
+        </div>
 
-    <div>
-        <label for="isActive">Ativo:</label>
-        <InputCheckbox id="isActive" @bind-Value="newProductModel.IsActive" disabled="@IsSubmitting" />
-    </div>
+        <div>
+            <label for="category_id">Categoria:</label>
+            <InputSelect id="category_id" @bind-Value="newProductModel.CategoryId" disabled="@IsSubmitting">
+                <option value="0">Selecione uma categoria...</option>
+                @foreach (var category in AppState.Product.Categories.Items)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => newProductModel.CategoryId)" />
+        </div>
 
-    <div>
-        <label for="isHighlighted">Destacado:</label>
-        <InputCheckbox id="isHighlighted" @bind-Value="newProductModel.IsHighlighted" disabled="@IsSubmitting" />
-    </div>
+        <div>
+            <label for="isActive">Ativo:</label>
+            <InputCheckbox id="isActive" @bind-Value="newProductModel.IsActive" disabled="@IsSubmitting" />
+        </div>
 
-    <div>
-        <label for="priority">Prioridade:</label>
-        <InputNumber id="priority" @bind-Value="newProductModel.Priority" disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Priority)" />
-    </div>
+        <div>
+            <label for="isHighlighted">Destacado:</label>
+            <InputCheckbox id="isHighlighted" @bind-Value="newProductModel.IsHighlighted" disabled="@IsSubmitting" />
+        </div>
 
-    <div>
-        <button type="submit" disabled="@IsSubmitting">Adicionar Produto</button>
-    </div>
-</EditForm>
+        <div>
+            <label for="priority">Prioridade:</label>
+            <InputNumber id="priority" @bind-Value="newProductModel.Priority" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => newProductModel.Priority)" />
+        </div>
+
+        <div>
+            <button type="submit" disabled="@IsSubmitting">Adicionar Produto</button>
+        </div>
+    </EditForm>
+}
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -74,13 +85,24 @@
 
 @code {
     private NewProductModel newProductModel = new();
-    private List<ProductCategoryDto> productCategories = new();
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        // AppState.CategoriesListChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        // AppState.CategoriesListChanged -= StateHasChanged;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        productCategories = await ProductCategoryService.GetProductCategoriesAsync();
+        // AppState.ProductCategories = await ProductCategoryService.GetProductCategoriesAsync();
+        // StateHasChanged();
     }
 
     private async Task HandleValidSubmit()

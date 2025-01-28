@@ -17,7 +17,7 @@ class ProductSizeLabelModel {
       $query = "
           CREATE TABLE IF NOT EXISTS product_size_labels (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
+            name VARCHAR(255) NOT NULL,
             label VARCHAR(50) UNIQUE NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

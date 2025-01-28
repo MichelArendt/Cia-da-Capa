@@ -1,7 +1,20 @@
-﻿namespace frontend.Services
+﻿using frontend.DTOs;
+using frontend.Services.API;
+using System.Net.NetworkInformation;
+
+namespace frontend.Services
 {
     public class AppStateService
     {
+        //protected readonly IServiceProvider _serviceProvider;
+        public ProductStateService Product { get; }
+
+        public AppStateService(ProductStateService productStateService)
+        {
+            Product = productStateService;
+        }
+
+
         public int BreakpointDesktop { get; } = 800;
 
         private int _browserWidth;
@@ -71,5 +84,6 @@
 
         public bool IsManageRoute { get; set; } = false;
 
+        //public bool IsFetchingProductCategories { get; set; } = true;
     }
 }

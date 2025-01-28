@@ -6,8 +6,8 @@ namespace frontend.DTOs
     {
         public int Id { get; set; }
 
-        [Display(Name = "Título")]
-        public string Title { get; set; } = string.Empty;
+        [Display(Name = "Nome")]
+        public string Name { get; set; } = string.Empty;
 
         [Display(Name = "Etiqueta")]
         public string Label { get; set; } = string.Empty;
@@ -17,5 +17,11 @@ namespace frontend.DTOs
 
         [Display(Name = "Atualizado em")]
         public DateTime UpdatedAt { get; set; }
+    }
+
+    public record NewProductSizeLabelDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
     }
 }
