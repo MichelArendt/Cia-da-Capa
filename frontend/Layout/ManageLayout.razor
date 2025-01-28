@@ -6,9 +6,11 @@
 @using frontend.Components.Shared.UI
 @using frontend.Components.Shared.UI.SmartComponent
 @using frontend.Components.Shared.UI.SVG
+@using frontend.DTOs
 
 @inject AppStateService AppState
 @inject NavigationManager Navigation
+@inject ProductCategoryService ProductCategoryService
 @inject UserService UserService
 
 @* <HeadContent> *@
@@ -28,12 +30,22 @@
             <List>
                 <HeaderContent>
                     <button class="nav__button nav--interactive"
-                            @onclick="@(() => Navigation.NavigateTo("manage/produto"))">
+                            @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
                         Produtos
                     </button>
                 </HeaderContent>
                 <BodyContent>
-                    <li>CATEGORIAS</li>
+                    @if (productCategories.Count == 0)
+                    {
+                        <li>Não há categorias cadastradas.</li>
+                    }
+                    else
+                    {
+                        @foreach (ProductCategoryDto category in productCategories)
+                        {
+                            <li>@category.Name</li>
+                        }
+                    }
                 </BodyContent>
             </List>
         }
@@ -41,12 +53,27 @@
         {
             <Dropdown ClassName="nav--interactive"
                       HeaderClassName="nav__button nav--interactive"
-                      OnClick="@(() => Navigation.NavigateTo("manage/produto"))">
+                      OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
                 <HeaderContent>
                     <span>Produtos</span>
                 </HeaderContent>
                 <BodyContent>
-                    <li>CATEGORIAS</li>
+                    @if (productCategories.Count == 0)
+                    {
+                        <li>Não há categorias cadastradas. Cadastre alguma antes de adicionar produtos!</li>
+                    }
+                    else
+                    {
+                        <li>
+                            <NavLink href="manage/produtos/adicionar">
+                                Adicionar produto
+                            </NavLink>
+                        </li>
+                        @foreach (ProductCategoryDto category in productCategories)
+                        {
+                            <li>@category.Name</li>
+                        }
+                    }
                 </BodyContent>
             </Dropdown>
         }
@@ -95,6 +122,7 @@
 
 @code {
     @* private bool IsAuthenticating = false; *@
+    private List<ProductCategoryDto> productCategories = new();
 
     protected override void OnInitialized()
     {
@@ -103,6 +131,11 @@
         AppState.IsManageRoute = true;
         AppState.IsMobileChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
     }
 
     // protected override async Task OnInitializedAsync()

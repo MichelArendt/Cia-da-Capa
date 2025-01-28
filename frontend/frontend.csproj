@@ -20,7 +20,8 @@
     <Folder Include="Components\Manage\" />
     <Folder Include="Utilties\" />
     <Folder Include="Shared\" />
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\banners\" />
+    <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
 	<!-- <Target Name="LogPublishedFiles" AfterTargets="Publish">

@@ -1,0 +1,24 @@
+﻿@page "/manage/produtos"
+@layout ManageLayout
+
+@using frontend.DTOs
+@using frontend.Services.API
+
+@inject ProductService ProductService
+
+<h3>Produtos</h3>
+
+@foreach (ProductDto product in products)
+{
+    <div>@product.Title @product.Reference @product.Description</div>
+}
+
+@code {
+    private List<ProductDto> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = (await ProductService.GetProductsAsync()).ToList();
+        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
+    }
+}

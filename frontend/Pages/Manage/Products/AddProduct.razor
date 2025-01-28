@@ -1,0 +1,144 @@
+﻿@page "/manage/produtos/adicionar"
+@layout ManageLayout
+
+@using System.ComponentModel.DataAnnotations
+@using frontend.DTOs
+@using frontend.Services.API
+
+@inject ProductCategoryService ProductCategoryService
+@inject ProductService ProductService
+
+<PageTitle>Adicionar Produto (Gerenciamento)</PageTitle>
+
+<h3>Adicionar Novo Produto</h3>
+
+<EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="title">Título:</label>
+        <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Nome do produto" autocomplete="on" disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Title)" />
+    </div>
+
+    <div>
+        <label for="reference">Referência:</label>
+        <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="Código único" autocomplete="on" disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Reference)" />
+    </div>
+
+    <div>
+        <label for="description">Descrição:</label>
+        <InputTextArea id="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Description)" />
+    </div>
+
+    <div>
+        <label for="category_id">Categoria:</label>
+        <InputSelect id="category_id" @bind-Value="newProductModel.CategoryId" disabled="@IsSubmitting">
+            <option value="0">Selecione uma categoria...</option>
+            @foreach (var category in productCategories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => newProductModel.CategoryId)" />
+    </div>
+
+    <div>
+        <label for="isActive">Ativo:</label>
+        <InputCheckbox id="isActive" @bind-Value="newProductModel.IsActive" disabled="@IsSubmitting" />
+    </div>
+
+    <div>
+        <label for="isHighlighted">Destacado:</label>
+        <InputCheckbox id="isHighlighted" @bind-Value="newProductModel.IsHighlighted" disabled="@IsSubmitting" />
+    </div>
+
+    <div>
+        <label for="priority">Prioridade:</label>
+        <InputNumber id="priority" @bind-Value="newProductModel.Priority" disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductModel.Priority)" />
+    </div>
+
+    <div>
+        <button type="submit" disabled="@IsSubmitting">Adicionar Produto</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">@errorMessage</div>
+}
+
+@code {
+    private NewProductModel newProductModel = new();
+    private List<ProductCategoryDto> productCategories = new();
+    private string? errorMessage;
+    private bool IsSubmitting { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productCategories = await ProductCategoryService.GetProductCategoriesAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsSubmitting = true;
+        errorMessage = null;
+
+        // Convert NewProductModel to NewProductDto
+        var newProductDto = new NewProductDto
+            {
+                Title = newProductModel.Title,
+                Reference = newProductModel.Reference,
+                Description = newProductModel.Description,
+                CategoryId = newProductModel.CategoryId,
+                IsActive = newProductModel.IsActive,
+                IsHighlighted = newProductModel.IsHighlighted,
+                Priority = newProductModel.Priority
+            };
+
+        var response = await ProductService.CreateNewProductAsync(newProductDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            newProductModel = new NewProductModel(); // Reset form after successful submission
+            errorMessage = null;
+            StateHasChanged();
+        }
+        else
+        {
+            errorMessage = $"Erro ao adicionar produto: {await response.Content.ReadAsStringAsync()}";
+            StateHasChanged();
+        }
+
+        IsSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        errorMessage = "Por favor, corrija os erros acima.";
+    }
+
+    public class NewProductModel
+    {
+        [Required(ErrorMessage = "Título é obrigatório.")]
+        public string Title { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Referência é obrigatória.")]
+        public string Reference { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Categoria é obrigatória.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Selecione uma categoria válida.")]
+        public int CategoryId { get; set; }
+
+        public string? Description { get; set; }
+
+        public bool IsActive { get; set; } = true;
+        public bool IsHighlighted { get; set; } = false;
+
+        public int? Priority { get; set; } = 0;
+    }
+}

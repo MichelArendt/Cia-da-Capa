@@ -15,7 +15,7 @@
 
 <h2>Adicionar nova categoria de produto</h2>
 
-<EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+<EditForm Model="@newProductCategoryModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
     @* @if (!string.IsNullOrEmpty(errorMessage)) *@
     @* { *@
@@ -32,9 +32,9 @@
         id="name"
         autocomplete="name"
         placeholder="Mochila"
-        @bind-Value="newProductModel.Name"
+        @bind-Value="newProductCategoryModel.Name"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Name)" />
+        <ValidationMessage For="@(() => newProductCategoryModel.Name)" />
     </div>
 
     <div>
@@ -46,9 +46,9 @@
         id="reference"
         autocomplete="reference"
         placeholder="MO"
-        @bind-Value="newProductModel.Reference"
+        @bind-Value="newProductCategoryModel.Reference"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.Reference)" />
+        <ValidationMessage For="@(() => newProductCategoryModel.Reference)" />
     </div>
 
     <div>
@@ -57,9 +57,9 @@
         </label>
 
         <InputCheckbox id="isActive"
-        @bind-Value="newProductModel.IsActive"
+        @bind-Value="newProductCategoryModel.IsActive"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductModel.IsActive)" />
+        <ValidationMessage For="@(() => newProductCategoryModel.IsActive)" />
     </div>
 
     <div>
@@ -172,7 +172,7 @@
 
 @code {
     private List<ProductCategoryDto> productCategories = new();
-    private NewProductModel newProductModel = new();
+    private NewProductCategoryModel newProductCategoryModel = new();
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
 
@@ -206,9 +206,9 @@
 
         var dto = new NewProductCategoryDto
         {
-                Name = newProductModel.Name,
-                Reference = newProductModel.Reference,
-                IsActive = newProductModel.IsActive,
+                Name = newProductCategoryModel.Name,
+                Reference = newProductCategoryModel.Reference,
+                IsActive = newProductCategoryModel.IsActive,
         };
 
         var response = await ProductCategoryService.CreateNewProductCategoryAsync(dto);
@@ -219,7 +219,7 @@
         {
             Console.WriteLine(1);
             // Reset form fields
-            newProductModel = new NewProductModel();
+            newProductCategoryModel = new NewProductCategoryModel();
 
             // Re-fetch categories to update the list
             productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
@@ -242,7 +242,7 @@
         errorMessage = "Por favor corrija os erros abaixo.";
     }
 
-    public class NewProductModel
+    public class NewProductCategoryModel
     {
         [Required(ErrorMessage = "Nome é obrigatório.")]
         public string Name { get; set; } = string.Empty;
