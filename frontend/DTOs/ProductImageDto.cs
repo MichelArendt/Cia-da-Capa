@@ -1,0 +1,27 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace frontend.DTOs
+{
+    public record ProductImageDto
+    {
+        public int Id { get; set; }
+
+        [Display(Name = "ID do Produto")]
+        public int ProductId { get; set; }
+
+        [Display(Name = "ID da Variante do Produto")]
+        public int? ProductVariantId { get; set; }
+
+        [Display(Name = "Caminho do Arquivo")]
+        public string FilePath { get; set; } = string.Empty;
+
+        [Display(Name = "Prioridade")]
+        public int Priority { get; set; } = 0;
+
+        [Display(Name = "Criado em")]
+        public DateTime CreatedAt { get; set; }
+
+        [Display(Name = "Atualizado em")]
+        public DateTime UpdatedAt { get; set; }
+    }
+}
