@@ -5,11 +5,25 @@ require 'flight/Flight.php';
 
 
 require 'flight/models/UserModel.php';
-require 'flight/models/ProductModel.php';
-require 'flight/models/ProductCategoryModel.php';
 use Models\UserModel;
-use Models\ProductModel;
+
+require 'flight/models/ProductCategoryModel.php';
 use Models\ProductCategoryModel;
+
+require 'flight/models/ProductModel.php';
+use Models\ProductModel;
+
+require 'flight/models/ProductVariantModel.php';
+use Models\ProductVariantModel;
+
+require 'flight/models/ProductSizeLabelModel.php';
+use Models\ProductSizeLabelModel;
+
+require 'flight/models/ProductSizeModel.php';
+use Models\ProductSizeModel;
+
+require 'flight/models/ProductImageModel.php';
+use Models\ProductImageModel;
 
 // Load Config
 $config = require 'flight/config/database.php';
@@ -37,8 +51,12 @@ try {
     Flight::set('db', $pdo);
 
     Flight::set('userModel', new UserModel($pdo));
-    Flight::set('productModel', new ProductModel($pdo));
     Flight::set('productCategoryModel', new ProductCategoryModel($pdo));
+    Flight::set('productModel', new ProductModel($pdo));
+    Flight::set('productVariantModel', new ProductVariantModel($pdo));
+    Flight::set('productSizeLabelModel', new ProductSizeLabelModel($pdo));
+    Flight::set('productSizeModel', new ProductSizeModel($pdo));
+    Flight::set('productImageModel', new ProductImageModel($pdo));
 } catch (Exception $e) {
     die("Database connection failed: " . $e->getMessage());
 }
@@ -62,12 +80,14 @@ Flight::before('start', function () {
 // CONTROLLERS - public
 // --------------------------------
 require 'flight/controllers/public/UserController.php';
+require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
 
 // --------------------------------
 // CONTROLLERS - manage
 // --------------------------------
 require 'flight/controllers/manage/UserController.php';
+require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
 
 // --------------------------------
@@ -105,6 +125,7 @@ Flight::route('POST /manage/user/logout', 'Controllers\Manage\UserController->lo
 Flight::route('POST /manage/user/validate', 'Controllers\Manage\UserController->validateSession');
 
 // Product Category
+Flight::route('POST /manage/products', 'Controllers\Manage\ProductController->create');
 Flight::route('POST /manage/products/categories', 'Controllers\Manage\ProductCategoryController->create');
 Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\ProductCategoryController->delete');
 

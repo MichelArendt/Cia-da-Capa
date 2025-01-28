@@ -7,18 +7,25 @@ use PDO;
 
 class AuthMiddleware {
     public static function checkAuth() {
-        error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE)); // Log all cookies for debugging
-        error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
 
         error_log("AuthMiddleware 1");
 
-        // Get token from cookie
-        if (!isset($_COOKIE['session_token'])) {
-            error_log("AuthMiddleware: No session token found.");
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
+        // First, check if ANY cookies exist
+        if (empty($_COOKIE)) {
+            error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE)); // Log all cookies for debugging
+            error_log("AuthMiddleware: No cookies found in request.");
+            echo json_encode(['error' => "Unauthorized: No cookies found."]);
             exit;
         }
+
+        // Second, check if the 'session_token' key exists
+        if (!isset($_COOKIE['session_token'])) {
+            error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
+            error_log("AuthMiddleware: session_token is missing.");
+            echo json_encode(['error' => "Unauthorized: Session token is missing."]);
+            exit;
+        }
+
 
         error_log("AuthMiddleware 2");
 
