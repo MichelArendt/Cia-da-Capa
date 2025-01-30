@@ -655,7 +655,7 @@ button {
   }
 }
 :root {
-  --breakpoint-desktop: 800px;
+  --breakpoint-desktop: $breakpoint--desktop;
 }
 
 #app {

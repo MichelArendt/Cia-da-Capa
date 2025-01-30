@@ -1,0 +1,43 @@
+﻿@page "/manage/produtos/editar/{id:int}"
+@layout ManageLayout
+
+@using frontend.Components.Shared.UI
+@using frontend.DTOs
+@using frontend.Services.API
+
+@inject ProductService ProductService
+
+<h3>Editando </h3>
+
+@if (isFetching)
+{
+    <ContentLoader DisplayMessage="Carregando informações do produto..." />
+} else {
+    <div>
+        @product?.Title
+    </div>
+    <div>
+        @product?.Reference
+    </div>
+    <div>
+        @product?.Description
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private bool isFetching = true;
+    private ProductDto? product;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            product = await ProductService.GetProductByIdAsync(Id);
+        }
+
+        isFetching = false;
+    }
+}

@@ -12,6 +12,7 @@
             public static class Product
             {
                 public const string GetAll = "/api/public/products";
+                public const string GetById = "/api/public/products/";
             }
 
             public static class ProductCategory

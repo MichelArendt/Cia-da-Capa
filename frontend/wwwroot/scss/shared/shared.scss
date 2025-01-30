@@ -10,11 +10,11 @@
 @use '_colors' as *;
 @use 'header';
 
-* {
-  // transition: all 0.2s linear;
-}
+// * {
+//   // transition: all 0.2s linear;
+// }
 :root {
-  --breakpoint-desktop: #{$breakpoint--desktop}; // Desktop breakpoint variable
+  --breakpoint-desktop: $breakpoint--desktop; // Desktop breakpoint variable
 }
 
 // ---------------------------
@@ -50,39 +50,6 @@ a:hover {
     // padding-top: 100px;
   }
 }
-
-// ---------------------------
-// DROPDOWN
-// ---------------------------
-
-// a, button, .dropdown {
-//   @extend .poppins-light;
-//   display: flex;
-//   align-items: center; // align svgs with span
-//   color: $color-secondary-2;
-
-//   svg {
-//     fill: $color-secondary-2;
-//   }
-// }
-// a, button {
-//   padding: 5px;
-//   gap: 5px;
-//   justify-content: center;
-
-//   &:hover {
-//     background-color: lightness-add($color-primary-2, 10%);
-//     color: $color-primary--main;
-
-//     svg {
-//       fill: $color-primary--main;
-//     }
-//   }
-// }
-// button, .dropdown .submenu {
-//   background-color: $color-primary-2;
-//   font-size: 20px;
-// }
 
 // ---------------------------
 // FORM

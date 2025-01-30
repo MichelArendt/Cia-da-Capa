@@ -44,6 +44,18 @@ class ProductModel {
       }
   }
 
+  // Fetch by ID
+  public function getById($id): array {
+      try {
+          $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
+          $stmt->execute([$id]);
+          return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure an empty array if no results
+      } catch (Exception $e) {
+          error_log("Database Error in ProductModel->getById(): " . $e->getMessage());
+          return null;
+      }
+  }
+
   // Create a new product
   public function create(string $title, string $reference, ?string $description, int $categoryId, bool $isActive, bool $isHighlighted, int $priority): ?int {
       try {
@@ -59,7 +71,7 @@ class ProductModel {
                                       VALUES (?, ?, ?, ?, ?, ?, ?)");
           $stmt->execute([$title, $reference, $description, $categoryId, (int)$isActive, (int)$isHighlighted, $priority]);
 
-          return $this->db->lastInsertId(); // ✅ Return new product ID
+          return $this->db->lastInsertId(); // Return new product ID
       } catch (Exception $e) {
           error_log("Erro ao criar produto: " . $e->getMessage());
           return null;

@@ -17,12 +17,29 @@ class ProductController {
         throw new Exception("Failed to retrieve products.");
       }
 
-      http_response_code(200);
-      echo json_encode($products);
+      Flight::json($products, 200);
     } catch (Exception $e) {
-      error_log("Error in ProductController::getAll(): " . $e->getMessage());
-      http_response_code(500);
-      echo json_encode(["error" => "An internal server error occurred."]);
+      $message = "Error in ProductController::getAll(): " . $e->getMessage();
+      error_log($message);
+      Flight::json(["message" => $message], 500);
+    }
+  }
+
+  public function getById($id){
+    try {
+      $productModel = Flight::get('productModel');
+      $product = $productModel->getById($id);
+
+      if($product === null) {
+            Flight::json(["error" => "Product with ID $id not found"], 404);
+            return;
+      }
+
+      Flight::json($product, 200);
+    } catch (Exception $e) {
+      $message = "Error in ProductController::getById(): " . $e->getMessage();
+      error_log($message);
+      Flight::json(["message" => $message], 500);
     }
   }
 }

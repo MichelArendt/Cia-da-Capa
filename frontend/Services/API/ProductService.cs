@@ -21,6 +21,16 @@ namespace frontend.Services.API
 
             return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
         }
+
+        public async Task<ProductDto> GetProductByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.GetById + id);
+
+            Console.WriteLine(response.Content.ReadAsStringAsync());
+
+            return await ApiServiceHelper.DeserializeResponse<ProductDto>(response);
+        }
+
         public async Task<HttpResponseMessage> CreateNewProductAsync(NewProductDto product)
         {
             return await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.Product.Create, product);

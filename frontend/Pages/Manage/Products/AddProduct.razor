@@ -2,10 +2,12 @@
 @layout ManageLayout
 
 @using System.ComponentModel.DataAnnotations
+@using System.Text.Json
 @using frontend.DTOs
 @using frontend.Services
 @using frontend.Services.API
 
+@inject NavigationManager NavigationManager
 @inject AppStateService AppState
 @inject ProductCategoryService ProductCategoryService
 @inject ProductService ProductService
@@ -20,6 +22,12 @@
         Antes de adicionar um produto você deve adicionar uma categoria!
     </div>
 }
+else if (!AppState.Product.SizeLabels.Items.Any())
+{
+    <div class="feedback feedback--error">
+        Antes de adicionar um produto você deve adicionar um rótulo de tamanho!
+    </div>
+}
 else
 {
     <EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
@@ -28,13 +36,13 @@ else
 
         <div>
             <label for="title">Título:</label>
-            <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Nome do produto" autocomplete="on" disabled="@IsSubmitting" />
+            <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@IsSubmitting" />
             <ValidationMessage For="@(() => newProductModel.Title)" />
         </div>
 
         <div>
             <label for="reference">Referência:</label>
-            <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="Código único" autocomplete="on" disabled="@IsSubmitting" />
+            <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="001" autocomplete="on" disabled="@IsSubmitting" />
             <ValidationMessage For="@(() => newProductModel.Reference)" />
         </div>
 
@@ -73,7 +81,7 @@ else
         </div>
 
         <div>
-            <button type="submit" disabled="@IsSubmitting">Adicionar Produto</button>
+            <button type="submit" disabled="@IsSubmitting">Adicionar @AppState.Product.Categories.Items.Find(c => c.Id == newProductModel.CategoryId)?.Reference-@newProductModel.Reference e continuar para próximo passo</button>
         </div>
     </EditForm>
 }
@@ -126,8 +134,20 @@ else
 
         if (response.IsSuccessStatusCode)
         {
+            var jsonResponse = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+            if (jsonResponse.TryGetProperty("id", out var idProperty) && idProperty.TryGetInt32(out int newProductId))
+            {
+                // Redirect to edit page with the new product ID
+                NavigationManager.NavigateTo($"manage/produtos/editar/{newProductId}");
+                errorMessage = null;
+            }
+            else
+            {
+                errorMessage = "Produto criado, mas ID não retornado.";
+            }
+
             newProductModel = new NewProductModel(); // Reset form after successful submission
-            errorMessage = null;
             StateHasChanged();
         }
         else
