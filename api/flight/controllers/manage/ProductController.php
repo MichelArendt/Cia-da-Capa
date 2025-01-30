@@ -3,7 +3,6 @@
 namespace Controllers\Manage;
 
 use Flight;
-use PDO;
 use Exception;
 
 class ProductController {
@@ -16,17 +15,17 @@ class ProductController {
           $data = json_decode(file_get_contents("php://input"), true);
 
           // Validate required fields
-          if (empty($data['title']) || empty($data['reference']) || empty($data['category_id'])) {
-              throw new Exception("Título, Referência e Categoria são obrigatórios.");
+          if (empty($data['title']) || empty($data['reference']) || empty($data['categoryId'])) {
+            throw new Exception("Título, Referência e Categoria são obrigatórios.");
           }
 
           // Extract data and apply defaults
           $title = trim($data['title']);
           $reference = trim($data['reference']);
           $description = isset($data['description']) ? trim($data['description']) : null;
-          $categoryId = (int) $data['category_id'];
-          $isActive = isset($data['is_active']) ? (bool) $data['is_active'] : true;
-          $isHighlighted = isset($data['is_highlighted']) ? (bool) $data['is_highlighted'] : false;
+          $categoryId = (int) $data['categoryId'];
+          $isActive = isset($data['isActive']) ? (bool) $data['isActive'] : true;
+          $isHighlighted = isset($data['isHighlighted']) ? (bool) $data['isHighlighted'] : false;
           $priority = isset($data['priority']) ? (int) $data['priority'] : 0;
 
           // Call model to insert product
@@ -38,17 +37,13 @@ class ProductController {
           }
 
           // Respond with success
-          http_response_code(201);
-          echo json_encode([
-              "message" => "Produto criado com sucesso.",
-              "id" => $newProductId
-          ]);
-
+        Flight::json([
+            "message" => "Produto criado com sucesso.",
+            "id" => $newProductId], 201);
       } catch (Exception $e) {
           // Log and return error
-          error_log("Erro em ProductController->create(): " . $e->getMessage());
-          http_response_code(400);
-          echo json_encode(["error" => $e->getMessage()]);
+          error_log("Error in ProductController->create(): " . $e->getMessage());
+          Flight::json(["message" => "Error in ProductController::create(): " . $e->getMessage()], 500);
       }
   }
 }

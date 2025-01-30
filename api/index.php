@@ -82,6 +82,7 @@ Flight::before('start', function () {
 require 'flight/controllers/public/UserController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
+require 'flight/controllers/public/ProductSizeLabelController.php';
 
 // --------------------------------
 // CONTROLLERS - manage
@@ -89,6 +90,7 @@ require 'flight/controllers/public/ProductCategoryController.php';
 require 'flight/controllers/manage/UserController.php';
 require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
+require 'flight/controllers/manage/ProductSizeLabelController.php';
 
 // --------------------------------
 // ROUTES - public
@@ -100,11 +102,15 @@ Flight::route('GET /', function () {
 // User
 Flight::route('POST /public/user/login', 'Controllers\Public\UserController->login');
 
-// Product
-Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
-
 // Product Category
 Flight::route('GET /public/products/categories', 'Controllers\Public\ProductCategoryController->getAll');
+
+// Product Size Labels
+Flight::route('GET /public/products/size-labels', 'Controllers\Public\ProductSizeLabelController->getAll');
+
+// Product
+Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
+Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getById');
 
 // --------------------------------
 // ROUTES - manage
@@ -128,6 +134,9 @@ Flight::route('POST /manage/user/validate', 'Controllers\Manage\UserController->
 Flight::route('POST /manage/products', 'Controllers\Manage\ProductController->create');
 Flight::route('POST /manage/products/categories', 'Controllers\Manage\ProductCategoryController->create');
 Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\ProductCategoryController->delete');
+
+// Product Size Label
+Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSizeLabelController->create');
 
 // --------------------------------
 // ROUTES - 404

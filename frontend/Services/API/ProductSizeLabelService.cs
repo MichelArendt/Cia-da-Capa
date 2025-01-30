@@ -28,7 +28,7 @@ namespace frontend.Services.API
             return await ApiServiceHelper.DeserializeResponse<List<ProductSizeLabelDto>>(response);
         }
 
-        public async Task<HttpResponseMessage> CreateNewSizeLabelAsync(NewProductSizeLabelDto dto)
+        public async Task<HttpResponseMessage> CreateNewProductSizeLabelAsync(NewProductSizeLabelDto dto)
         {
             var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.ProductSizeLabel.Create, dto);
 

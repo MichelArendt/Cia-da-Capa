@@ -3,7 +3,6 @@
 namespace Controllers\Manage;
 
 use Flight;
-use PDO;
 use Exception;
 
 class ProductCategoryController {

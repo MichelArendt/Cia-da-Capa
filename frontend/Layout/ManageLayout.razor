@@ -73,17 +73,18 @@ else
                         <span>Produtos</span>
                     </HeaderContent>
                     <BodyContent>
+                        <li>
+                            <NavLink href="manage/produtos/adicionar">
+                                Adicionar produto
+                            </NavLink>
+                        </li>
+
                         @if (!AppState.Product.Categories.Items.Any())
                         {
                             <li>Não há categorias cadastradas!</li>
                         }
                         else
                         {
-                            <li>
-                                <NavLink href="manage/produtos/adicionar">
-                                    Adicionar produto
-                                </NavLink>
-                            </li>
                             @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
                             {
                                 <li>@category.Name</li>

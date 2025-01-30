@@ -1,0 +1,215 @@
+﻿@page "/manage/rotulos"
+@layout ManageLayout
+
+@using System.Linq.Expressions
+@using System.ComponentModel.DataAnnotations;
+@using frontend.DTOs
+@using frontend.DTOs.Contracts
+@using frontend.Services
+@using frontend.Services.API
+@using frontend.Components.Shared.UI.SmartComponent
+@using frontend.Components.Shared.UI.SVG
+
+@inject AppStateService AppState
+@inject ProductSizeLabelService ProductSizeLabelService
+
+<PageTitle>Etiquetas de Tamanho (Gerenciamento)</PageTitle>
+
+<h2>Adicionar nova etiqueta de tamanho de produto</h2>
+
+<EditForm Model="@newProductSizeLabelModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="feedback feedback--error">@errorMessage</div>
+    }
+    <ValidationSummary />
+
+    <div>
+        <label for="name">
+            Nome (Pequeno, Médio, Grande etc):
+        </label>
+
+        <InputText name="name"
+        id="name"
+        autocomplete="on"
+        placeholder="Pequeno"
+        @bind-Value="newProductSizeLabelModel.Name"
+        disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductSizeLabelModel.Name)" />
+    </div>
+
+    <div>
+        <label for="label">
+            Etiqueta (P, M, G, etc):
+        </label>
+
+        <InputText name="label"
+        id="label"
+        autocomplete="on"
+        placeholder="P"
+        @bind-Value="newProductSizeLabelModel.Label"
+        disabled="@IsSubmitting" />
+        <ValidationMessage For="@(() => newProductSizeLabelModel.Label)" />
+    </div>
+
+    <div>
+        <button type="submit" disabled="@IsSubmitting">Adicionar etiqueta</button>
+    </div>
+</EditForm>
+
+<List>
+    <HeaderContent>
+        <h2>Etiquetas de Tamanho</h2>
+    </HeaderContent>
+
+    <BodyContent>
+        @if (productSizeLabels.Count == 0)
+        {
+            <span>Não há etiquetas cadastradas.</span>
+        }
+        else
+        {
+            <Table>
+                <Thead>
+                    <Tr>
+                        <Th>
+                            Etiqueta
+                            <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                        </Th>
+                        <Th>
+                            Nome
+                        </Th>
+                        <Th>Ações</Th>
+                    </Tr>
+                </Thead>
+
+
+
+                <Tbody>
+                    @foreach (ProductSizeLabelDto sizeLabel in productSizeLabels)
+                    {
+                        <Tr ClassName="table__item">
+                            <Td>@sizeLabel.Label</Td>
+                            <Td>@sizeLabel.Name</Td>
+                            <Td>
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
+                            </Td>
+                        </Tr>
+                    }
+                </Tbody>
+            </Table>
+        }
+    </BodyContent>
+</List>
+
+
+@* <NewTable
+        Data="productCategories"
+        DisplayColumns="@(new Expression<Func<ProductCategoryDto, object>>[]{ c => c.IsActive, c => c.Name, c => c.Reference})"
+        CustomRenderers="CustomColumnRenderers"  /> *@
+
+@code {
+    private List<ProductSizeLabelDto> productSizeLabels = new();
+    private NewProductSizeLabelDto newProductSizeLabelModel = new();
+    private string? errorMessage;
+    private bool IsSubmitting { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        AppState.Product.SizeLabels.StateChanged += StateHasChanged;
+        SyncProductSizeLabels();
+    }
+
+    public void Dispose()
+    {
+        AppState.Product.SizeLabels.StateChanged -= StateHasChanged;
+    }
+
+    private void SyncProductSizeLabels()
+    {
+        productSizeLabels = AppState.Product.SizeLabels.Items;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
+        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsSubmitting = true;
+        errorMessage = null;
+
+        var dto = new NewProductSizeLabelDto
+        {
+                Name = newProductSizeLabelModel.Name,
+                Label = newProductSizeLabelModel.Label,
+        };
+
+        var response = await ProductSizeLabelService.CreateNewProductSizeLabelAsync(dto);
+
+        // Console.WriteLine(response);
+        // Console.WriteLine(await response.Content.ReadAsStringAsync());
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(1);
+            // Reset form fields
+            newProductSizeLabelModel = new NewProductSizeLabelDto();
+
+            // Re-fetch categories to update the list
+            await AppState.Product.SizeLabels.FetchItems();
+            // AppState.CategoriesList = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
+
+            // Re-render UI (forces Blazor to recognize the changes)
+            // StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine(2);
+            errorMessage = $"Erro ao adicionar etiqueta: {await response.Content.ReadAsStringAsync()}";
+            StateHasChanged();
+        }
+
+        IsSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        errorMessage = "Por favor corrija os erros abaixo.";
+    }
+
+    public class NewProductSizeLabelsModel
+    {
+        [Required(ErrorMessage = "Nome é obrigatório.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Etiqueta é obrigatória")]
+        public string Label { get; set; } = string.Empty;
+    }
+
+    private async Task DeleteSizeLabel(int sizeLabeId)
+    {
+        var response = await ProductSizeLabelService.DeleteProductSizeLabelAsync(sizeLabeId);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Size label {sizeLabeId} deleted successfully.");
+
+            // Remove item manually
+            productSizeLabels = productSizeLabels.Where(c => c.Id != sizeLabeId).ToList();
+
+            StateHasChanged(); // Re-render UI
+        }
+        else
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Failed to delete size label {sizeLabeId}: {errorMessage}");
+        }
+    }
+}
