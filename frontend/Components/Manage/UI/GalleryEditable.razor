@@ -1,0 +1,78 @@
+﻿@using frontend.DTOs
+@using frontend.Components.Shared.UI.SVG
+
+@inject HttpClient Http
+
+<div class="gallery-editable">
+    <div class="gallery-editable__header">
+        <InputFile class="gallery-editable__input-file"
+                   multiple
+                   accept=".jpeg,.jpg,.png,.webp"
+                   OnChange="HandleFileSelected"
+                   @ondragenter="HandleDragEnter"
+                   @ondragleave="HandleDragEnd"
+                   @ondrop="HandleDrop">
+        </InputFile>
+
+        <div class="gallery-editable__drop-overlay @(isDragging ? "gallery-editable__drop-overlay--show" : "")">
+            <Svg Path="@Svg.Paths.Upload" Width="30" Height="30" />
+            <span>Solte os arquivos aqui!</span>
+        </div>
+    </div>
+
+    <div class="gallery-editable__images">
+        1
+    </div>
+</div>
+
+@code {
+    private List<ProductImageDto> uploadedFiles = new(); // List to store uploaded file details
+    private bool isUploading = false; // Tracks upload status
+    private int _dragDepth = 0;
+    private bool isDragging = false; // Prevents continuous event firing
+
+    private void HandleDragEnter()
+    {
+        _dragDepth++;
+        if (!isDragging) // Prevent spamming
+        {
+            @* Console.WriteLine("GalleryEditable HandleDragOver"); *@
+            isDragging = true;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleDragEnd()
+    {
+        _dragDepth--;
+        if (_dragDepth <= 0)
+        {
+            @* Console.WriteLine("GalleryEditable HandleDragEnd"); *@
+            isDragging = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleDrop(DragEventArgs e)
+    {
+        @* Console.WriteLine("GalleryEditable HandleDrop"); *@
+        _dragDepth = 0;
+        isDragging = false;
+
+        if (e.DataTransfer?.Files.Length > 0)
+        {
+            foreach (var file in e.DataTransfer.Files)
+            {
+                Console.WriteLine($"Dropped File: {file}");
+            }
+        }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            Console.WriteLine($"File Selected: {file.Name}");
+        }
+    }
+}

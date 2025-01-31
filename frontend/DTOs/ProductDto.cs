@@ -28,6 +28,10 @@ namespace frontend.DTOs
 
         public DateTime CreatedAt { get; set; } // Creation timestamp
         public DateTime UpdatedAt { get; set; } // Last update timestamp
+
+        public List<ProductSizeDto> Sizes { get; set; } = [];
+        public List<ProductImageDto> Images { get; set; } = [];
+        public List<ProductVariantDto> Variants { get; set; } = [];
     }
     public class NewProductDto
     {

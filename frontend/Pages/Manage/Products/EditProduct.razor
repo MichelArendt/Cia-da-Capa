@@ -1,6 +1,7 @@
 ﻿@page "/manage/produtos/editar/{id:int}"
 @layout ManageLayout
 
+@using frontend.Components.Manage.UI
 @using frontend.Components.Shared.UI
 @using frontend.DTOs
 @using frontend.Services.API
@@ -22,6 +23,10 @@
     <div>
         @product?.Description
     </div>
+
+    <GalleryEditable>
+
+    </GalleryEditable>
 }
 
 @code {
@@ -30,12 +35,14 @@
 
     private bool isFetching = true;
     private ProductDto? product;
+    // private ProductImageDto? productImages;
 
     protected override async Task OnInitializedAsync()
     {
         if (Id > 0)
         {
             product = await ProductService.GetProductByIdAsync(Id);
+            // productImages = await ProductService.GetProductByIdAsync(Id);
         }
 
         isFetching = false;

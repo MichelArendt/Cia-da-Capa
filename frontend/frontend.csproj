@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Manage\" />
     <Folder Include="Shared\" />
     <Folder Include="Utilties\" />
     <Folder Include="wwwroot\images\banners\" />

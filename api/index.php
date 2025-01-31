@@ -108,6 +108,9 @@ Flight::route('GET /public/products/categories', 'Controllers\Public\ProductCate
 // Product Size Labels
 Flight::route('GET /public/products/size-labels', 'Controllers\Public\ProductSizeLabelController->getAll');
 
+// Product Images
+// Flight::route('GET /public/products/@id/images/', 'Controllers\Public\ProductController->getById');
+
 // Product
 Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
 Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getById');

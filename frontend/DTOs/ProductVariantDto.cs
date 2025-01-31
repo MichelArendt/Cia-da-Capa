@@ -17,5 +17,7 @@ namespace frontend.DTOs
 
         [Display(Name = "Atualizado em")]
         public DateTime UpdatedAt { get; set; }
+
+        public List<ProductImageDto> Images { get; set; } = [];
     }
 }
