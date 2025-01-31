@@ -751,6 +751,47 @@ a:hover {
 Duration of animation */
 }
 
+.gallery-editable {
+  background: red;
+}
+
+.gallery-editable__header {
+  position: relative;
+}
+
+.gallery-editable__input-file {
+  background: hsl(240, 3%, 18%);
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+}
+
+.gallery-editable__drop-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Ensures the parent div captures drag events */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  background: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+  transition: all 0.1s linear;
+}
+.gallery-editable__drop-overlay > svg {
+  fill: hsl(0, 0%, 73%);
+}
+.gallery-editable__drop-overlay--show {
+  opacity: 1;
+  visibility: visible;
+}
+
 .page__404, .page__500 {
   display: flex;
   flex-direction: column;

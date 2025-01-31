@@ -12,10 +12,25 @@
             public static class Product
             {
                 public const string GetAll = "/api/public/products";
-                public const string GetById = "/api/public/products/";
+                //public const string GetById = "/api/public/products/";
+
+                public static string ById(int id)
+                {
+                    return $"/api/public/products/{id}";
+                }
+
+                //public static class Images
+                //{
+                //    public const string GetAll = "/api/public/products/categories";
+                //}
             }
 
             public static class ProductCategory
+            {
+                public const string GetAll = "/api/public/products/categories";
+            }
+
+            public static class ProductImage
             {
                 public const string GetAll = "/api/public/products/categories";
             }

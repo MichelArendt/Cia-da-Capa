@@ -24,9 +24,7 @@ namespace frontend.Services.API
 
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.GetById + id);
-
-            Console.WriteLine(response.Content.ReadAsStringAsync());
+            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.ById(id));
 
             return await ApiServiceHelper.DeserializeResponse<ProductDto>(response);
         }

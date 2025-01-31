@@ -182,6 +182,56 @@ a:hover {
 }
 
 // ---------------------------
+// Gallery
+// ---------------------------
+.gallery-editable {
+  background: red;
+}
+
+.gallery-editable__header {
+  position: relative;
+}
+
+.gallery-editable__input-file {
+  background: $color-primary--dark;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+}
+
+.gallery-editable__drop-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Ensures the parent div captures drag events */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  background: $color-primary--dark;
+  color: $color-secondary--light;
+  transition: all 0.1s linear;
+
+  > svg {
+    fill: $color-secondary--light;
+  }
+
+  &--show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.gallery-editable__images {
+
+}
+
+// ---------------------------
 // 404 & 500
 // ---------------------------
 .page__404, .page__500 {
