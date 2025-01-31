@@ -36,7 +36,8 @@ class UserController {
         'path' => '/'
     ]);
 
-    echo json_encode(['message' => 'Logged out successfully']);
+    $message = "Logged out successfully";
+    Flight::json(["message" => $message], 200);
   }
 
   public function validateSession() {
@@ -56,7 +57,8 @@ class UserController {
 
     // ✅ If token is valid, return 200 OK
     error_log("UserController validateSession");
-    echo json_encode(['message' => 'Session is valid']);
+    $message = "Session is valid";
+    Flight::json(["message" => $message], 200);
   }
 }
 ?>

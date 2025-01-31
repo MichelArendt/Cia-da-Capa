@@ -12,17 +12,17 @@ class AuthMiddleware {
 
         // First, check if ANY cookies exist
         if (empty($_COOKIE)) {
-            error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE)); // Log all cookies for debugging
-            error_log("AuthMiddleware: No cookies found in request.");
-            echo json_encode(['error' => "Unauthorized: No cookies found."]);
+            $message = "Unauthorized: No cookies found.";
+            error_log($message . ": " . json_encode($_COOKIE)); // Log all cookies for debugging
+            Flight::json(["message" => $message], 401);
             exit;
         }
 
         // Second, check if the 'session_token' key exists
         if (!isset($_COOKIE['session_token'])) {
-            error_log("AuthMiddleware Cookies: " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
-            error_log("AuthMiddleware: session_token is missing.");
-            echo json_encode(['error' => "Unauthorized: Session token is missing."]);
+            $message = "Unauthorized: Session token is missing.";
+            error_log($message . ": " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
+            Flight::json(["message" => $message], 401);
             exit;
         }
 
@@ -43,8 +43,8 @@ class AuthMiddleware {
 
         if (!$user) {
             error_log("AuthMiddleware 3.3");
-            http_response_code(401);
-            echo json_encode(['error' => 'Session is invalid']);
+            $message = "Unauthorized: Session is invalid.";
+            Flight::json(["message" => $message], 401);
             exit;
         }
         error_log("AuthMiddleware 4");
