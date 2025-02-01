@@ -2,6 +2,9 @@
 {
     public static class ApiEndpoints
     {
+        /// <summary>
+        /// /public Endpoints
+        /// </summary>
         public static class Public
         {
             public static class User
@@ -19,10 +22,13 @@
                     return $"/api/public/products/{id}";
                 }
 
-                //public static class Images
-                //{
-                //    public const string GetAll = "/api/public/products/categories";
-                //}
+                public static class Images
+                {
+                    public static string GetImagesForProductWithId(int id)
+                    {
+                        return $"/api/public/products/{id}/images";
+                    }
+                }
             }
 
             public static class ProductCategory
@@ -40,6 +46,10 @@
                 public const string GetAll = "/api/public/products/size-labels";
             }
         }
+
+        /// <summary>
+        /// /manage Endpoints
+        /// </summary>
         public static class Manage
         {
             public static class User
@@ -51,6 +61,18 @@
             public static class Product
             {
                 public const string Create = "/api/manage/products";
+
+                public static class Images
+                {
+                    public static string UploadToProductWithId(int id)
+                    {
+                        return $"/api/manage/products/{id}/images/upload";
+                    }
+                    public static string DeleteImage(int id)
+                    {
+                        return $"/api/manage/products/images/";
+                    }
+                }
             }
 
             public static class ProductCategory
