@@ -1,9 +1,27 @@
 <?php
 
 require 'flight/Flight.php';
-// require 'flight/lib/rb.php'; // RedBeanPHP
 
+// --------------------------------
+// FILE UPLOAD
+// --------------------------------
+define('BASE_ROOT', dirname(__FILE__));
+Flight::set('base_root', BASE_ROOT);
 
+// Define the upload directory path
+$uploadDir = BASE_ROOT . "/../images/products/";
+
+// Ensure the directory exists
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true); // Recursively create the directory
+}
+
+// Now, safely use realpath() to normalize the path
+Flight::set('upload_dir-product', realpath($uploadDir));
+
+// --------------------------------
+// BASE CONFIGURATION
+// --------------------------------
 require 'flight/models/UserModel.php';
 use Models\UserModel;
 
@@ -90,6 +108,7 @@ require 'flight/controllers/public/ProductSizeLabelController.php';
 require 'flight/controllers/manage/UserController.php';
 require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
+require 'flight/controllers/manage/ProductImageController.php';
 require 'flight/controllers/manage/ProductSizeLabelController.php';
 
 // --------------------------------
@@ -140,6 +159,14 @@ Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\Prod
 
 // Product Size Label
 Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSizeLabelController->create');
+
+// Product Images
+Flight::route('POST /manage/products/@id/images/upload', 'Controllers\Manage\ProductImageController->uploadImage');
+Flight::route('GET /manage/products/@id/images', 'Controllers\Manage\ProductImageController->getImagesByProductId');
+Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteImage');
+
+// Product Variant
+Flight::route('POST /manage/products/@id/variant/@variantId/images/upload', 'Controllers\Manage\ProductImageController->uploadVariantImage');
 
 // --------------------------------
 // ROUTES - 404
