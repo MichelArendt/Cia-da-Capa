@@ -15,7 +15,7 @@ class ProductImageModel {
   // Check if the table exists and create it if necessary
   private function createTableIfNotExists() {
       $query = "
-          C REATE TABLE IF NOT EXISTS product_images (
+          CREATE TABLE IF NOT EXISTS product_images (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NULL,
             product_variant_id INT NULL,
