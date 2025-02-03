@@ -12,7 +12,7 @@ class ProductVariantModel {
       $this->createTableIfNotExists();
   }
 
-  // ✅ Check if the table exists and create it if necessary
+  // Check if the table exists and create it if necessary
   private function createTableIfNotExists() {
       $query = "
           CREATE TABLE IF NOT EXISTS product_variants (
