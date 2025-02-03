@@ -17,7 +17,8 @@ if (!is_dir($uploadDir)) {
 }
 
 // Now, safely use realpath() to normalize the path
-Flight::set('upload_dir-product', realpath($uploadDir));
+Flight::set('upload-dir__product', realpath($uploadDir));
+Flight::set('upload-image__max-file-size', 5 * 1024 * 1024); // 5MB
 
 // --------------------------------
 // BASE CONFIGURATION
@@ -76,6 +77,7 @@ try {
     Flight::set('productSizeModel', new ProductSizeModel($pdo));
     Flight::set('productImageModel', new ProductImageModel($pdo));
 } catch (Exception $e) {
+  error_log($e->getMessage());
     die("Database connection failed: " . $e->getMessage());
 }
 
