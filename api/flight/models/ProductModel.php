@@ -45,7 +45,7 @@ class ProductModel {
   }
 
   // Fetch by ID
-  public function getById($id): array {
+  public function getById($id) {
       try {
           $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
           $stmt->execute([$id]);
