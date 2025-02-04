@@ -1,4 +1,5 @@
 build/
+images/
 
 # Ignore everything in the .vscode folder
 .vscode/*
