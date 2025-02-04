@@ -53,4 +53,9 @@
 	<Target Name="CompileSCSS" BeforeTargets="Build">
 		<Exec Command="sass wwwroot/scss/manage/manage.scss:wwwroot/css/manage/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css --no-source-map" />
 	</Target>
+	
+	<Target Name="RemoveSRIIfDebug" AfterTargets="Publish">
+		<Exec Condition="'$(Configuration)' == 'Debug'"
+			  Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
+	</Target>
 </Project>
