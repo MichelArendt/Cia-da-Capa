@@ -43,7 +43,9 @@ Replace the values (**mydb**, **root**, **mypw**) with your actual database cred
 
 ## 3. Launch Options
 
-### 3.1. Deploy the App (OPTION 1)
+There are two options that you can choose from below.
+
+## 3.1. Deploy the App (OPTION 1)
 To deploy the application, navigate to the `/frontend/` directory and run the following command:
 
 ```bash
@@ -62,9 +64,7 @@ Either remove or change base at **head** tag:
 <base href="/build/" />
 ```
 
-## Modifying SCSS (Optional)
-
-### Frontend SCSS Autocompile
+### Frontend SCSS Autocompile (Optional)
 If you are modifying the frontend and working with `.SCSS` files, run the following NPM command under the `/frontend/` directory to automatically compile changes and replace the files on the build folder:
 
 ```bash
@@ -82,7 +82,7 @@ Also change **PublishDir** to match the directory of **index.html** (step above)
 ```
 
 
-### 3.2 Run on .NET Development Server (OPTION 1)
+## 3.2 Run on .NET Development Server (OPTION 2)
 To run the app on the .NET development server, use the following command:
 
 ```bash
