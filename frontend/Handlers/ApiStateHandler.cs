@@ -41,5 +41,15 @@
 
             StateChanged?.Invoke();
         }
+         
+        public bool IsFetching()
+        {
+            return State == FetchState.Fetching;
+        }
+
+        public bool HasFailed()
+        {
+            return State == FetchState.Failed;
+        }
     }
 }
