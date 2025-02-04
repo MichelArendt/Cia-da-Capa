@@ -62,7 +62,7 @@ Either remove or change base at **head** tag:
 <base href="/build/" />
 ```
 
-## 3.2 Modifying the Project (Optional)
+## Modifying SCSS (Optional)
 
 ### Frontend SCSS Autocompile
 If you are modifying the frontend and working with `.SCSS` files, run the following NPM command under the `/frontend/` directory to automatically compile changes and replace the files on the build folder:
