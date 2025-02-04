@@ -33,6 +33,7 @@ namespace frontend.DTOs
         public List<ProductImageDto> Images { get; set; } = [];
         public List<ProductVariantDto> Variants { get; set; } = [];
     }
+
     public class NewProductDto
     {
         public string Title { get; set; } = string.Empty;
