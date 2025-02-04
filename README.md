@@ -41,18 +41,9 @@ return [
 ```
 Replace the values (**mydb**, **root**, **mypw**) with your actual database credentials.
 
-## 3. (Optional) Modifying the Project
+## 3. Launch Options
 
-### Frontend SCSS Autocompile
-If you are modifying the frontend and working with `.SCSS` files, run the following NPM command under the `/frontend/` directory to automatically compile changes:
-
-```bash
-npm run watch
-```
-
-## 4. Launch Options
-
-### 4.1 Deploy the App
+### 3.1. Deploy the App (OPTION 1)
 To deploy the application, navigate to the `/frontend/` directory and run the following command:
 
 ```bash
@@ -71,6 +62,17 @@ Either remove or change base at **head** tag:
 <base href="/build/" />
 ```
 
+## 3.2 Modifying the Project (Optional)
+
+### Frontend SCSS Autocompile
+If you are modifying the frontend and working with `.SCSS` files, run the following NPM command under the `/frontend/` directory to automatically compile changes and replace the files on the build folder:
+
+```bash
+npm run watch
+```
+
+The command above will also run BrowserSync on http://localhost:3000, so you can connect through that and modify the SCSS to your liking with hot-reload.
+
 #### - frontend/frontend.csproj
 
 Also change **PublishDir** to match the directory of **index.html** (step above):
@@ -80,7 +82,7 @@ Also change **PublishDir** to match the directory of **index.html** (step above)
 ```
 
 
-### 4.2 Run on .NET Development Server
+### 3.2 Run on .NET Development Server (OPTION 1)
 To run the app on the .NET development server, use the following command:
 
 ```bash
