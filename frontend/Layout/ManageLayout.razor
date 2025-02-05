@@ -19,13 +19,14 @@
 @*     <link rel="stylesheet" href="css/manage/manage.css" /> *@
 @* </HeadContent> *@
 
-@if (AppState.Product.Categories.State == FetchState.Fetching || AppState.Product.SizeLabels.State == FetchState.Fetching)
+@if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching())
 {
+    Console.WriteLine("Manage Layout: ContentLoader");
     <ContentLoader />
 }
-else if (AppState.Product.Categories.State == FetchState.Failed || AppState.Product.SizeLabels.State == FetchState.Failed)
+else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed())
 {
-
+    Console.WriteLine("Manage Layout: AppState.Product.Categories.HasFailed()");
     <PageTitle>500 - Cia da Capa</PageTitle>
     <_500 />
 }

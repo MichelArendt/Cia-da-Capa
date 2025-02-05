@@ -1,15 +1,18 @@
 <?php
 
 require 'flight/Flight.php';
+require 'flight/helpers/ErrorHandler.php';
 
 // --------------------------------
 // FILE UPLOAD
 // --------------------------------
-define('BASE_ROOT', dirname(__FILE__));
-Flight::set('base_root', BASE_ROOT);
+define('API_ROOT', dirname(__FILE__)); // Current file's directory
+define('WEBSITE_ROOT', dirname(API_ROOT)); // One level above API_ROO
+Flight::set('api_root', API_ROOT);
+Flight::set('website_root', WEBSITE_ROOT);
 
 // Define the upload directory path
-$uploadDir = BASE_ROOT . "/../images/products/";
+$uploadDir = WEBSITE_ROOT . "/images/products/";
 
 // Ensure the directory exists
 if (!is_dir($uploadDir)) {
@@ -102,6 +105,8 @@ Flight::before('start', function () {
 require 'flight/controllers/public/UserController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
+require 'flight/controllers/public/ProductImageController.php';
+require 'flight/controllers/public/ProductVariantController.php';
 require 'flight/controllers/public/ProductSizeLabelController.php';
 
 // --------------------------------
@@ -130,7 +135,11 @@ Flight::route('GET /public/products/categories', 'Controllers\Public\ProductCate
 Flight::route('GET /public/products/size-labels', 'Controllers\Public\ProductSizeLabelController->getAll');
 
 // Product Images
+Flight::route('GET /public/products/@id/images', 'Controllers\Public\ProductImageController->getImagesByProductId');
 // Flight::route('GET /public/products/@id/images/', 'Controllers\Public\ProductController->getById');
+
+// Product Variants
+Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVariantController->getVariantsForProductWithId');
 
 // Product
 Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
@@ -164,10 +173,9 @@ Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSi
 
 // Product Images
 Flight::route('POST /manage/products/@id/images/upload', 'Controllers\Manage\ProductImageController->uploadImage');
-Flight::route('GET /manage/products/@id/images', 'Controllers\Manage\ProductImageController->getImagesByProductId');
 Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteImage');
 
-// Product Variant
+// Product Variants
 Flight::route('POST /manage/products/@id/variant/@variantId/images/upload', 'Controllers\Manage\ProductImageController->uploadVariantImage');
 
 // --------------------------------
@@ -188,6 +196,20 @@ Flight::route('GET /debug/routes', function () {
 
   header('Content-Type: application/json');
   echo json_encode($routes, JSON_PRETTY_PRINT);
+});
+
+// --------------------------------
+// Global error handler
+// --------------------------------
+Flight::map('error', function (Throwable $ex) {
+  error_log("Flight Error: " . $ex->getMessage()); // Log the error
+
+  // Set HTTP 500
+  Flight::halt(500, json_encode([
+    'success' => false,
+    'error'   => 'Internal Server Error',
+    'message' => $ex->getMessage()
+  ]));
 });
 
 // --------------------------------

@@ -1,18 +1,21 @@
 ﻿@using frontend.DTOs
 @using frontend.Components.Shared.UI.SVG
+@using frontend.Services.API
+@using frontend.ViewModels
 
 @inject HttpClient Http
+@inject ProductImageService ProductImagesService
 
 <div class="gallery-editable">
     <div class="gallery-editable__header">
         <InputFile class="gallery-editable__input-file"
-                   multiple
-                   accept=".jpeg,.jpg,.png,.webp"
-                   OnChange="HandleFileSelected"
-                   @ondragenter="HandleDragEnter"
-                   @ondragleave="HandleDragEnd"
-                   @ondrop="HandleDrop">
-        </InputFile>
+            multiple
+            accept=".jpeg,.jpg,.png,.webp"
+            OnChange="HandleFiles"
+            @ondragenter="HandleDragEnter"
+            @ondragleave="HandleDragEnd"
+            maxAllowedSize
+            @ref="inputFileRef" />
 
         <div class="gallery-editable__drop-overlay @(isDragging ? "gallery-editable__drop-overlay--show" : "")">
             <Svg Path="@Svg.Paths.Upload" Width="30" Height="30" />
@@ -21,58 +24,157 @@
     </div>
 
     <div class="gallery-editable__images">
-        1
+        @if (Product?.Images?.Items?.Any() == true)
+        {
+            @foreach (var productImage in Product.Images.Items)
+            {
+                <div class="gallery-editable__draggable-image" draggable="true" >
+                    <button 
+                        class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
+                        @onclick="@(() => DeleteImage(productImage.Id))"
+                        draggable="false"
+                        disabled="@isUploading"
+                    >
+                        Remover
+                    </button>
+                    <img src="@productImage.ThumbnailFilePath" draggable="false" />
+                </div>
+            }
+        }
+        else
+        {
+            <span>Nenhuma imagem encontrada.</span>
+        }
     </div>
 </div>
 
 @code {
-    private List<ProductImageDto> uploadedFiles = new(); // List to store uploaded file details
+    [Parameter]
+    public int ProductId { get; set; }
+
+    [Parameter]
+    public ProductViewModel? Product { get; set; }
+
+    @* private List<ProductImageDto> uploadedFiles = new(); // List to store uploaded file details *@
+    private InputFile? inputFileRef;
     private bool isUploading = false; // Tracks upload status
     private int _dragDepth = 0;
     private bool isDragging = false; // Prevents continuous event firing
 
     private void HandleDragEnter()
     {
-        _dragDepth++;
-        if (!isDragging) // Prevent spamming
+        if (!isUploading)
         {
-            @* Console.WriteLine("GalleryEditable HandleDragOver"); *@
-            isDragging = true;
-            StateHasChanged();
+            _dragDepth++;
+            if (!isDragging) // Prevent spamming
+            {
+                Console.WriteLine($"GalleryEditable HandleDragOver, depth: {_dragDepth}");
+                isDragging = true;
+                StateHasChanged();
+            }
         }
     }
 
     private void HandleDragEnd()
     {
-        _dragDepth--;
-        if (_dragDepth <= 0)
+        if (!isUploading)
         {
-            @* Console.WriteLine("GalleryEditable HandleDragEnd"); *@
-            isDragging = false;
-            StateHasChanged();
-        }
-    }
-
-    private async Task HandleDrop(DragEventArgs e)
-    {
-        @* Console.WriteLine("GalleryEditable HandleDrop"); *@
-        _dragDepth = 0;
-        isDragging = false;
-
-        if (e.DataTransfer?.Files.Length > 0)
-        {
-            foreach (var file in e.DataTransfer.Files)
+            _dragDepth--;
+            if (_dragDepth <= 0)
             {
-                Console.WriteLine($"Dropped File: {file}");
+                Console.WriteLine($"GalleryEditable HandleDragEnd, depth: {_dragDepth}");
+                isDragging = false;
+                StateHasChanged();
             }
         }
     }
 
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    private async Task HandleFiles(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles())
+        _dragDepth = 0;
+        if (!isUploading)
         {
-            Console.WriteLine($"File Selected: {file.Name}");
+            if (Product != null)
+            {
+                isDragging = false;
+                isUploading = true;
+                StateHasChanged();
+                foreach (var file in e.GetMultipleFiles())
+                {
+                    Console.WriteLine($"File Selected: {file.Name}");
+                    await ConvertAndUploadImage(file);
+                }
+
+                await Product.LoadImagesAsync();
+                isUploading = false;
+                inputFileRef = null;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task ConvertAndUploadImage(IBrowserFile file)
+    {
+        try
+        {
+            Console.WriteLine("📌 Reading file bytes...");
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream(ProductImageService.MaxFileSize).CopyToAsync(memoryStream);
+            byte[] fileBytes = memoryStream.ToArray();
+
+            Console.WriteLine("📌 Uploading file...");
+            var response = await ProductImagesService.UploadFileToServer(ProductId, file);
+
+            if (response == null)
+            {
+                throw new Exception($"Upload failed for {file.Name}");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"[{response.StatusCode}] {errorMessage}");
+            }
+
+            Console.WriteLine($"✅ Successfully uploaded {file.Name}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error processing file {file.Name}: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteImage(int imageId)
+    {
+        if (!isUploading)
+        {
+            Console.WriteLine($"GalleryEditable->DeleteImage {imageId}");
+            var response = await ProductImagesService.DeleteImage(imageId);
+
+            if (response == null)
+            {
+                throw new Exception($"Delete failed for image");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"[{response.StatusCode}] {errorMessage}");
+            }
+
+            if (Product != null && Product.Images != null)
+            {
+                var image = Product.Images.Items.Find(i => i.Id == imageId);
+
+                if (image != null)
+                {
+                    Product.Images.Items.Remove(image);
+                }
+                else
+                {
+                    await Product.LoadImagesAsync();
+                }
+            }
         }
     }
 }

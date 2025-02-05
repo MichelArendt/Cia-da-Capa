@@ -22,11 +22,11 @@ namespace frontend.Services.API
             return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
         }
 
-        public async Task<ProductDto> GetProductByIdAsync(int id)
+        public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
             var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.ById(id));
 
-            return await ApiServiceHelper.DeserializeResponse<ProductDto>(response);
+            return response.IsSuccessStatusCode ? await ApiServiceHelper.DeserializeResponse<ProductDto>(response) : null;
         }
 
         public async Task<HttpResponseMessage> CreateNewProductAsync(NewProductDto product)

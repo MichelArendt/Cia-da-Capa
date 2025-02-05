@@ -20,6 +20,8 @@ class ProductImageModel {
             product_id INT NULL,
             product_variant_id INT NULL,
             file_path VARCHAR(255) NOT NULL,
+            thumbnail_file_path VARCHAR(255) NOT NULL,
+            medium_file_path VARCHAR(255) NOT NULL,
             priority INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -39,11 +41,13 @@ class ProductImageModel {
 
   public function addImage($data) {
       try {
-          $query = "INSERT INTO product_images (product_id, file_path, priority) VALUES (:product_id, :file_path, :priority)";
+          $query = "INSERT INTO product_images (product_id, file_path, thumbnail_file_path, medium_file_path, priority) VALUES (:product_id, :file_path, :thumbnail_file_path, :medium_file_path, :priority)";
           $stmt = $this->db->prepare($query);
           return $stmt->execute([
               ':product_id' => $data['product_id'],
               ':file_path' => $data['file_path'],
+              ':thumbnail_file_path' => $data['thumbnail_file_path'],
+              ':medium_file_path' => $data['medium_file_path'],
               ':priority' => $data['priority']
           ]);
       } catch (Exception $e) {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace frontend.DTOs
 {
@@ -15,6 +16,12 @@ namespace frontend.DTOs
         [Display(Name = "Caminho do Arquivo")]
         public string FilePath { get; set; } = string.Empty;
 
+        [Display(Name = "Caminho do Arquivo thumbnail")]
+        public string ThumbnailFilePath { get; set; } = string.Empty;
+
+        [Display(Name = "Caminho do Arquivo médio")]
+        public string MediumFilePath { get; set; } = string.Empty;
+
         [Display(Name = "Prioridade")]
         public int Priority { get; set; } = 0;
 
@@ -24,13 +31,13 @@ namespace frontend.DTOs
         [Display(Name = "Atualizado em")]
         public DateTime UpdatedAt { get; set; }
     }
-    public record NewProductImageDto
-    {
-        public int ProductId { get; set; }
+    //public record NewProductImageDto
+    //{
+    //    public int ProductId { get; set; }
 
-        public int? ProductVariantId { get; set; }
+    //    public int? ProductVariantId { get; set; }
 
-        public string FilePath { get; set; } = string.Empty;
-        public int Priority { get; set; } = 0;
-    }
+    //    public string FilePath { get; set; } = string.Empty;
+    //    public int Priority { get; set; } = 0;
+    //}
 }

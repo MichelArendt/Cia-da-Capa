@@ -5,28 +5,37 @@
 @using frontend.Components.Shared.UI
 @using frontend.DTOs
 @using frontend.Services.API
+@using frontend.ViewModels
 
 @inject ProductService ProductService
-
-<h3>Editando </h3>
+@inject ProductVariantService ProductVariantService
+@inject ProductImageService ProductImageService
 
 @if (isFetching)
 {
     <ContentLoader DisplayMessage="Carregando informações do produto..." />
-} else {
+}
+else if (product == null)
+{
+    <h3>Produto não encontrado.</h3>
+}
+else
+{
+    <h3>Editando </h3>
+
     <div>
-        @product?.Title
-    </div>
-    <div>
-        @product?.Reference
-    </div>
-    <div>
-        @product?.Description
+        @product?.Details.Title
     </div>
 
-    <GalleryEditable>
+    <div>
+        @product?.Details.Reference
+    </div>
 
-    </GalleryEditable>
+    <div>
+        @product?.Details.Description
+    </div>
+
+    <GalleryEditable ProductId="Id" Product="product" />
 }
 
 @code {
@@ -34,16 +43,27 @@
     public int Id { get; set; }
 
     private bool isFetching = true;
-    private ProductDto? product;
+    private ProductDto? productDto;
+    private ProductViewModel? product;
     // private ProductImageDto? productImages;
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine(product);
         if (Id > 0)
         {
-            product = await ProductService.GetProductByIdAsync(Id);
-            // productImages = await ProductService.GetProductByIdAsync(Id);
+            Console.WriteLine(1);
+            productDto = await ProductService.GetProductByIdAsync(Id);
+
+            Console.WriteLine(2);
+            if (productDto != null)
+            {
+                Console.WriteLine(2.2);
+                product = new ProductViewModel(productDto, ProductService, ProductVariantService, ProductImageService);
+                await product.LoadDetailsAsync();
+            }
         }
+        Console.WriteLine(3);
 
         isFetching = false;
     }

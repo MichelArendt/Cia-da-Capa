@@ -287,34 +287,48 @@ button {
   /* Column (Vertical) direction */
 }
 .flex--row {
+  display: flex;
   flex-direction: row;
   /* Horizontal centering in row */
   /* Vertical centering in row */
   /* Full center in row */
 }
 .flex--row--center-horizontal, .website__header, .website__main {
+  display: flex;
+  flex-direction: row;
   justify-content: center;
 }
 .flex--row--center-vertical, .header__logo, .nav__button {
+  display: flex;
+  flex-direction: row;
   align-items: center;
 }
-.flex--row--center {
+.flex--row--center, .gallery-editable__draggable-image {
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
-.flex--column, .login-form > label {
+.flex--column, .login-form > label, .gallery-editable__images {
+  display: flex;
   flex-direction: column;
   /* Horizontal centering in column */
   /* Vertical centering in column */
   /* Full center in column */
 }
 .flex--column--center-horizontal {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 .flex--column--center-vertical {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 .flex--column--center {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -672,6 +686,7 @@ a:hover {
 
 .website__main {
   height: calc(100% - 80px);
+  padding: 0 10px;
 }
 
 .form__title {
@@ -749,47 +764,6 @@ a:hover {
 .dropdown .submenu.show-list .option {
   animation: nudge 0.3s forwards ease-in-out; /*
 Duration of animation */
-}
-
-.gallery-editable {
-  background: red;
-}
-
-.gallery-editable__header {
-  position: relative;
-}
-
-.gallery-editable__input-file {
-  background: hsl(240, 3%, 18%);
-  width: 100%;
-  height: 100%;
-  padding: 30px;
-}
-
-.gallery-editable__drop-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 30px;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none; /* Ensures the parent div captures drag events */
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  font-size: 20px;
-  background: hsl(240, 3%, 18%);
-  color: hsl(0, 0%, 73%);
-  transition: all 0.1s linear;
-}
-.gallery-editable__drop-overlay > svg {
-  fill: hsl(0, 0%, 73%);
-}
-.gallery-editable__drop-overlay--show {
-  opacity: 1;
-  visibility: visible;
 }
 
 .page__404, .page__500 {
@@ -898,4 +872,89 @@ Duration of animation */
 
 .login-form > label {
   padding: 20px;
+}
+
+.gallery-editable__header {
+  position: relative;
+}
+
+.gallery-editable__input-file {
+  background: hsl(240, 3%, 18%);
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+}
+
+.gallery-editable__drop-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Ensures the parent div captures drag events */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  background: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+  transition: all 0.1s linear;
+}
+.gallery-editable__drop-overlay > svg {
+  fill: hsl(0, 0%, 73%);
+}
+.gallery-editable__drop-overlay--show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gallery-editable__images {
+  gap: 20px;
+  padding: 20px 20px;
+  background: hsla(240, 3%, 18%, 0.05);
+}
+
+.gallery-editable__draggable-image {
+  position: relative;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  transition: all linear 0.1s;
+}
+.gallery-editable__draggable-image > img {
+  max-height: 292px;
+}
+
+.gallery-editable__draggable-image:hover {
+  border: 1px solid hsl(37, 59%, 54%);
+  box-shadow: 1px 1px 10px hsl(37, 59%, 54%); /* Soft shadow */
+}
+
+.gallery-editable__delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  background-color: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+}
+
+.gallery-editable__delete-button:hover {
+  background-color: hsl(37, 59%, 54%);
+  color: hsl(240, 3%, 18%);
+  transition: all linear 0.2s;
+}
+
+.gallery-editable__delete-button:disabled {
+  background-color: hsl(0, 0%, 73%);
+  cursor: not-allowed;
+}
+
+.gallery-editable__drag-cursor {
+  border-top: 1px solid black;
+  margin-top: 5px;
 }

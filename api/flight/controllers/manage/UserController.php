@@ -56,7 +56,6 @@ class UserController {
     // }
 
     // ✅ If token is valid, return 200 OK
-    error_log("UserController validateSession");
     $message = "Session is valid";
     Flight::json(["message" => $message], 200);
   }

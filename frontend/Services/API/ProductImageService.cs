@@ -1,5 +1,8 @@
 ﻿using frontend.Constants;
+using frontend.DTOs;
+using frontend.Helpers;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.Generic;
 using System.Net.Http.Headers;
 
 namespace frontend.Services.API
@@ -32,6 +35,43 @@ namespace frontend.Services.API
 
             var response = await _httpClient.PostAsync(ApiEndpoints.Manage.Product.Images.UploadToProductWithId(productId), content);
             return response;
+        }
+
+        public async Task<List<ProductImageDto>?> GetImagesForProductId(int id)
+        {
+            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.Images.GetByProductId(id));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("ProductImageService 1");
+                // Return null to indicate an error or DB problem
+                return null;
+            }
+
+
+            Console.WriteLine("ProductImageService 2");
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            return await JsonHelper.Deserialize<List<ProductImageDto>>(response);
+            //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
+        }
+
+        public async Task<HttpResponseMessage?> DeleteImage(int imageId)
+        {
+            var response = await _httpClient.DeleteAsync(NewApiEndpoints.Manage.Product.Image.Delete(imageId));
+            //var response = await _httpClient.GetAsync(NewApiEndpoints.Manage.Product.);
+            Console.WriteLine("ProductImageService->DeleteImage " + NewApiEndpoints.Manage.Product.Image.Delete(imageId));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("ProductImageService->DeleteImage 1");
+                // Return null to indicate an error or DB problem
+                return null;
+            }
+
+            Console.WriteLine("ProductImageService->DeleteImage 2");
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            return response;
+            //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
         }
     }
 }

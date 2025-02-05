@@ -36,19 +36,19 @@ else
 
         <div>
             <label for="title">Título:</label>
-            <InputText id="title" @bind-Value="newProductModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@IsSubmitting" />
+            <InputText id="title" name="title" @bind-Value="newProductModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@IsSubmitting" />
             <ValidationMessage For="@(() => newProductModel.Title)" />
         </div>
 
         <div>
             <label for="reference">Referência:</label>
-            <InputText id="reference" @bind-Value="newProductModel.Reference" placeholder="001" autocomplete="on" disabled="@IsSubmitting" />
+            <InputText id="reference" name="reference" @bind-Value="newProductModel.Reference" placeholder="001" autocomplete="on" disabled="@IsSubmitting" />
             <ValidationMessage For="@(() => newProductModel.Reference)" />
         </div>
 
         <div>
             <label for="description">Descrição:</label>
-            <InputTextArea id="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
+            <InputTextArea id="description" name="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
             <ValidationMessage For="@(() => newProductModel.Description)" />
         </div>
 

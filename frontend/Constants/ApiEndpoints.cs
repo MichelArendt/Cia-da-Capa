@@ -24,9 +24,26 @@
 
                 public static class Images
                 {
-                    public static string GetImagesForProductWithId(int id)
+                    public static string GetByProductId(int id)
                     {
                         return $"/api/public/products/{id}/images";
+                    }
+                }
+
+                public static class Variants
+                {
+
+                    public static string GetByProductId(int id)
+                    {
+                        return $"/api/public/products/{id}/variants";
+                    }
+
+                    public static class Images
+                    {
+                        public static string GetByProductAndVariantId(int id, int variantId)
+                        {
+                            return $"/api/public/products/{id}/variants/{variantId}/images";
+                        }
                     }
                 }
             }

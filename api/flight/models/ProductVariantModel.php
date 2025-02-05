@@ -29,13 +29,13 @@ class ProductVariantModel {
   }
 
   // Fetch all products
-  public function getAll(): array {
+  public function getVariantsForProductWithId($id): array {
       try {
-          $stmt = $this->db->prepare("SELECT * FROM product_variants");
-          $stmt->execute();
-          return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
+          $stmt = $this->db->prepare("SELECT * FROM product_variants WHERE product_id = :product_id");
+          $stmt->execute([':product_id' => $id]);
+          return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
       } catch (Exception $e) {
-          error_log("Database Error in ProductVariantModel->getAll(): " . $e->getMessage());
+          error_log("Database Error in ProductVariantModel->getVariantsForProductWithId(): " . $e->getMessage());
           return null;
       }
   }
