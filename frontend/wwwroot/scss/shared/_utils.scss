@@ -21,20 +21,27 @@
 
   /* Row (Horizontal) direction */
   &--row {
+    display: flex;
     flex-direction: row;
 
     /* Horizontal centering in row */
     &--center-horizontal {
+      display: flex;
+      flex-direction: row;
       justify-content: center;
     }
 
     /* Vertical centering in row */
     &--center-vertical {
+      display: flex;
+      flex-direction: row;
       align-items: center;
     }
 
     /* Full center in row */
     &--center {
+      display: flex;
+      flex-direction: row;
       justify-content: center;
       align-items: center;
     }
@@ -42,20 +49,27 @@
 
   /* Column (Vertical) direction */
   &--column {
+    display: flex;
     flex-direction: column;
 
     /* Horizontal centering in column */
     &--center-horizontal {
+      display: flex;
+      flex-direction: column;
       align-items: center;
     }
 
     /* Vertical centering in column */
     &--center-vertical {
+      display: flex;
+      flex-direction: column;
       justify-content: center;
     }
 
     /* Full center in column */
     &--center {
+      display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
     }
