@@ -12,4 +12,11 @@ class ErrorHandler
         error_log($message);
         Flight::json(["message" => $message], 500);
     }
+
+    public static function logError(string $customMessage, string $methodName)
+    {
+        $message = "Error in {$methodName}: " . $customMessage;
+        error_log($message);
+        Flight::json(["message" => $message], 500);
+    }
 }
