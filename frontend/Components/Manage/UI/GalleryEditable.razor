@@ -30,7 +30,7 @@
             <span>Solte os arquivos aqui!</span>
         </div>
 
-        <span class ="gallery-editable__header-info">O número no canto superior direito da foto é a prioridade da foto. Quanto menor, antes aparece para os clientes. Arraste as fotos para reordená-las. </span>
+        <span class ="gallery-editable__header-info">O número no canto superior esquerdo é a prioridade da foto. Quanto menor, antes aparece para os clientes. Arraste as fotos para reordená-las. </span>
 
         <div class="gallery-editable__reorder-save-overlay @(orderingChanged ? "gallery-editable__reorder-save-overlay--visible" : "")">
             <button @onclick="@(() => SaveReordering())">SALVAR NOVA ORDEM DAS FOTOS</button>
@@ -49,7 +49,7 @@
             {
                 <div 
                 class="gallery-editable__draggable-image"
-                draggable="true"
+                     draggable="@(!_deletingImages.Any() ? "true" : "false")"
                 @ondragstart="@(() => HandleReorderStart(productImage.Id))"
                 @ondragover="@((e) => HandleReorderOver(e, productImage.Id))"
                 @ondrop="@(() => HandleReorderEnd(productImage.Id))"
@@ -59,15 +59,20 @@
                     </div>
 
                     <button 
-                    class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
-                    @onclick="@(() => DeleteImage(productImage.Id))"
-                    draggable="false"
-                    disabled="@isUploading"
-                    >
+                        class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
+                        @onclick="@(() => DeleteImage(productImage.Id))"
+                        draggable="false"
+                        disabled="@(isUploading || orderingChanged)"
+                            title="@((isUploading || orderingChanged) ? "Não é permitido remover as imagens agora!" : "Remover image" )">
                         Remover
                     </button>
 
                     <img src="@productImage.ThumbnailFilePath" draggable="false" />
+
+                    @if (_deletingImages.Contains(productImage.Id)) // 🔹 Show loader only for deleting images
+                    {
+                        <ContentLoader ExtraClass="gallery-editable__content-loader gallery-editable__content-loader--visible" DisplayMessage="Removendo imagem..." />
+                    }
                 </div>
             }
         }
@@ -96,10 +101,14 @@
     private int _fileUploadCounter;
     private string _currentFile = "";
     private string _contentLoaderExtraClass = "gallery-editable__content-loader";
+    private HashSet<int> _deletingImages = new();
 
     private void HandleReorderStart(int productId)
     {
-        draggedProductId = productId;
+        if (!_deletingImages.Any())
+        {
+            draggedProductId = productId;
+        }
     }
 
     private void HandleReorderOver(DragEventArgs e, int hoveredProductId)
@@ -214,7 +223,6 @@
                     _currentFile = file.Name;
                     StateHasChanged();
                     Console.WriteLine($"File Selected: {file.Name}");
-                    await Task.Delay(2000);
                     await ConvertAndUploadImage(file);
                 }
 
@@ -263,6 +271,9 @@
         if (!isUploading)
         {
             Console.WriteLine($"GalleryEditable->DeleteImage {imageId}");
+            _deletingImages.Add(imageId); // Track which image is being deleted
+            StateHasChanged(); // Force UI update
+            await Task.Delay(10000);
             var response = await ProductImagesService.DeleteImage(imageId);
 
             if (response == null)
@@ -303,6 +314,9 @@
                     await Product.LoadImagesAsync();
                 }
             }
+
+            _deletingImages.Remove(imageId); // Remove from tracking list
+            StateHasChanged(); // Update UI again
         }
     }
 

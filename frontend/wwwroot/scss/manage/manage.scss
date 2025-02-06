@@ -234,17 +234,18 @@
 }
 
 .gallery-editable__content-loader {
-    background-color: $color-primary--dark;
+    background-color: opacity-set($color-primary--dark, 90%);
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     opacity: 0;
     z-index: 100;
     display: none;
     transition: all linear 0.1s;
+    color: $color-primary--main;
 
     &--visible {
+        display: flex;
         opacity: 1;
-        display: block;
     }
 }
