@@ -1,11 +1,37 @@
-﻿<div class="content-loader">
+﻿<div class="content-loader @ExtraClass">
     <div class="content-loader__spinner-container">
         <div class="content-loader__spinner"></div>
     </div>
-    @DisplayMessage
+
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <p>@DisplayMessage</p>
+    }
 </div>
 
 @code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     [Parameter]
     public string DisplayMessage { get; set; } = "Carregando...";
+
+    [Parameter]
+    public string ExtraClass { get; set; } = "";
+
+    private string _previousExtraClass = "";
+
+    protected override void OnParametersSet()
+    {
+        if (_previousExtraClass != ExtraClass) // Only trigger if changed
+        {
+            _previousExtraClass = ExtraClass;
+            StateHasChanged(); // Force UI update
+        }
+    }
 }
