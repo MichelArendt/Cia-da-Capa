@@ -55,7 +55,14 @@
 	</Target>
 	
 	<Target Name="RemoveSRIIfDebug" AfterTargets="Publish">
-		<Exec Condition="'$(Configuration)' == 'Debug'"
-			  Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
+		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
 	</Target>
+	
+	<ItemGroup>
+	  <EditorConfigFiles Remove="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Include="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
+	</ItemGroup>
 </Project>

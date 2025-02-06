@@ -64,9 +64,9 @@ namespace frontend.ViewModels
             Images = new ApiStateHandler<ProductImageDto>(
                 async () => await _productImageService.GetImagesForProductId(this.Details.Id));
 
-            await Task.WhenAll(
-                Images.FetchItems()
-            );
+            await Images.FetchItems();
+
+            Images.Reorder(im => im.Priority);
         }
 
         //public async Task LoadDetailsAsync()

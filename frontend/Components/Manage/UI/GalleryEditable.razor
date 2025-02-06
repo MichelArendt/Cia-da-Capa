@@ -8,19 +8,28 @@
 
 <div class="gallery-editable">
     <div class="gallery-editable__header">
+        <label for="file" class="gallery-editable__header-info">
+            Clique aqui e escolha os arquivos, ou os arraste aqui!
+        </label>
+        
         <InputFile class="gallery-editable__input-file"
+            id="file" 
+            name="file"
             multiple
             accept=".jpeg,.jpg,.png,.webp"
             OnChange="HandleFiles"
-            @ondragenter="HandleDragEnter"
-            @ondragleave="HandleDragEnd"
+            @ondragenter="HandleFilesDragEnter"
+            @ondragleave="HandleFilesDragEnd"
             maxAllowedSize
-            @ref="inputFileRef" />
+            @ref="inputFileRef" 
+        />
 
-        <div class="gallery-editable__drop-overlay @(isDragging ? "gallery-editable__drop-overlay--show" : "")">
+        <div class="gallery-editable__drop-files-overlay @(isDragging ? "gallery-editable__drop-files-overlay--show" : "")">
             <Svg Path="@Svg.Paths.Upload" Width="30" Height="30" />
             <span>Solte os arquivos aqui!</span>
         </div>
+
+        <span class ="gallery-editable__header-info">O número no canto superior direito da foto é a prioridade da foto. Quanto menor, antes aparece para os clientes. Arraste as fotos para reordená-las. </span>
     </div>
 
     <div class="gallery-editable__images">
@@ -28,15 +37,26 @@
         {
             @foreach (var productImage in Product.Images.Items)
             {
-                <div class="gallery-editable__draggable-image" draggable="true" >
+                <div 
+                class="gallery-editable__draggable-image"
+                draggable="true"
+                @ondragstart="@(() => HandleReorderStart(productImage.Id))"
+                @ondragover="@((e) => HandleReorderOver(e, productImage.Id))"
+                @ondrop="@(() => HandleReorderEnd(productImage.Id))"
+                >
+                    <div class="gallery-editable__image-priority">
+                        @productImage.Priority
+                    </div>
+
                     <button 
-                        class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
-                        @onclick="@(() => DeleteImage(productImage.Id))"
-                        draggable="false"
-                        disabled="@isUploading"
+                    class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
+                    @onclick="@(() => DeleteImage(productImage.Id))"
+                    draggable="false"
+                    disabled="@isUploading"
                     >
                         Remover
                     </button>
+
                     <img src="@productImage.ThumbnailFilePath" draggable="false" />
                 </div>
             }
@@ -60,8 +80,48 @@
     private bool isUploading = false; // Tracks upload status
     private int _dragDepth = 0;
     private bool isDragging = false; // Prevents continuous event firing
+    private int? draggedProductId = null; // Stores the ID of the dragged item
 
-    private void HandleDragEnter()
+    private void HandleReorderStart(int productId)
+    {
+        draggedProductId = productId;
+    }
+
+    private void HandleReorderOver(DragEventArgs e, int hoveredProductId)
+    {
+        if (draggedProductId == null || draggedProductId == hoveredProductId)
+            return;
+
+        var draggedItem = Product?.Images?.Items.FirstOrDefault(im => im.Id == draggedProductId);
+        var hoveredItem = Product?.Images?.Items.FirstOrDefault(im => im.Id == hoveredProductId);
+
+        if (draggedItem != null && hoveredItem != null && Product?.Images != null)
+        {
+            int draggedIndex = Product.Images.Items.IndexOf(draggedItem);
+            int hoveredIndex = Product.Images.Items.IndexOf(hoveredItem);
+
+            // Swap positions
+            Product.Images.Items.RemoveAt(draggedIndex);
+            Product.Images.Items.Insert(hoveredIndex, draggedItem);
+
+            // Swap priorities
+            int tempPriority = draggedItem.Priority;
+            draggedItem.Priority = hoveredItem.Priority;
+            hoveredItem.Priority = tempPriority;
+
+            // Reorder to reflect changes
+            Product.Images.Reorder(im => im.Priority);
+
+            StateHasChanged(); // 🔹 Force UI to re-render
+        }
+    }
+
+    private void HandleReorderEnd(int droppedProductId)
+    {
+        draggedProductId = null; // Reset drag state
+    }
+
+    private void HandleFilesDragEnter()
     {
         if (!isUploading)
         {
@@ -75,7 +135,7 @@
         }
     }
 
-    private void HandleDragEnd()
+    private void HandleFilesDragEnd()
     {
         if (!isUploading)
         {
@@ -177,4 +237,5 @@
             }
         }
     }
+
 }

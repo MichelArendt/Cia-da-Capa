@@ -293,7 +293,7 @@ button {
   /* Vertical centering in row */
   /* Full center in row */
 }
-.flex--row--center-horizontal, .website__header, .website__main {
+.flex--row--center-horizontal, .website__header, .website__main, .gallery-editable__images {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -309,14 +309,14 @@ button {
   justify-content: center;
   align-items: center;
 }
-.flex--column, .login-form > label, .gallery-editable__images {
+.flex--column, .login-form > label {
   display: flex;
   flex-direction: column;
   /* Horizontal centering in column */
   /* Vertical centering in column */
   /* Full center in column */
 }
-.flex--column--center-horizontal {
+.flex--column--center-horizontal, .gallery-editable__header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -876,16 +876,30 @@ Duration of animation */
 
 .gallery-editable__header {
   position: relative;
+  background: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+}
+
+.gallery-editable__header-info {
+  padding: 5px;
+  width: 100%;
+  text-align: center;
 }
 
 .gallery-editable__input-file {
-  background: hsl(240, 3%, 18%);
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  z-index: 2;
   padding: 30px;
+  border-top: 1px solid hsl(0, 0%, 73%);
+  border-bottom: 1px solid hsl(0, 0%, 73%);
 }
 
-.gallery-editable__drop-overlay {
+.gallery-editable__drop-files-overlay {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -903,15 +917,16 @@ Duration of animation */
   color: hsl(0, 0%, 73%);
   transition: all 0.1s linear;
 }
-.gallery-editable__drop-overlay > svg {
+.gallery-editable__drop-files-overlay > svg {
   fill: hsl(0, 0%, 73%);
 }
-.gallery-editable__drop-overlay--show {
+.gallery-editable__drop-files-overlay--show {
   opacity: 1;
   visibility: visible;
 }
 
 .gallery-editable__images {
+  flex-wrap: wrap;
   gap: 20px;
   padding: 20px 20px;
   background: hsla(240, 3%, 18%, 0.05);
@@ -924,14 +939,26 @@ Duration of animation */
   border-radius: 4px;
   padding: 5px;
   transition: all linear 0.1s;
+  width: 300px;
+  height: 300px;
 }
 .gallery-editable__draggable-image > img {
-  max-height: 292px;
+  max-height: 300px;
+  max-width: 300px;
 }
 
 .gallery-editable__draggable-image:hover {
   border: 1px solid hsl(37, 59%, 54%);
   box-shadow: 1px 1px 10px hsl(37, 59%, 54%); /* Soft shadow */
+}
+
+.gallery-editable__image-priority {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  background-color: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
 }
 
 .gallery-editable__delete-button {
@@ -951,6 +978,7 @@ Duration of animation */
 
 .gallery-editable__delete-button:disabled {
   background-color: hsl(0, 0%, 73%);
+  color: hsl(240, 3%, 18%);
   cursor: not-allowed;
 }
 
