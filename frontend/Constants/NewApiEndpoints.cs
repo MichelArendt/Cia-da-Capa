@@ -227,6 +227,7 @@
         {
            return $"/api/manage/products/images/{imageId}";
         }
+        public string UpdateOrdering => "/api/manage/products/images/update-ordering";
     }
 
     #endregion

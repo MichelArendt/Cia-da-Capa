@@ -1,4 +1,5 @@
-﻿@using frontend.DTOs
+﻿@using frontend.Components.Shared.UI
+@using frontend.DTOs
 @using frontend.Components.Shared.UI.SVG
 @using frontend.Services.API
 @using frontend.ViewModels
@@ -11,17 +12,17 @@
         <label for="file" class="gallery-editable__header-info">
             Clique aqui e escolha os arquivos, ou os arraste aqui!
         </label>
-        
+
         <InputFile class="gallery-editable__input-file"
-            id="file" 
-            name="file"
-            multiple
-            accept=".jpeg,.jpg,.png,.webp"
-            OnChange="HandleFiles"
-            @ondragenter="HandleFilesDragEnter"
-            @ondragleave="HandleFilesDragEnd"
-            maxAllowedSize
-            @ref="inputFileRef" 
+        id="file" 
+        name="file"
+        multiple
+        accept=".jpeg,.jpg,.png,.webp"
+        OnChange="HandleFiles"
+        @ondragenter="HandleFilesDragEnter"
+        @ondragleave="HandleFilesDragEnd"
+        maxAllowedSize
+        @ref="inputFileRef" 
         />
 
         <div class="gallery-editable__drop-files-overlay @(isDragging ? "gallery-editable__drop-files-overlay--show" : "")">
@@ -30,6 +31,15 @@
         </div>
 
         <span class ="gallery-editable__header-info">O número no canto superior direito da foto é a prioridade da foto. Quanto menor, antes aparece para os clientes. Arraste as fotos para reordená-las. </span>
+
+        <div class="gallery-editable__reorder-save-overlay @(orderingChanged ? "gallery-editable__reorder-save-overlay--visible" : "")">
+            <button @onclick="@(() => SaveReordering())">SALVAR NOVA ORDEM DAS FOTOS</button>
+        </div>
+
+        <ContentLoader ExtraClass="@_contentLoaderExtraClass">
+            <div>Progresso @_fileUploadCounter/@_totalFilesToUpload</div>
+            <div>Uploading @_currentFile</div>
+        </ContentLoader>
     </div>
 
     <div class="gallery-editable__images">
@@ -81,6 +91,11 @@
     private int _dragDepth = 0;
     private bool isDragging = false; // Prevents continuous event firing
     private int? draggedProductId = null; // Stores the ID of the dragged item
+    private bool orderingChanged = false;
+    private int _totalFilesToUpload;
+    private int _fileUploadCounter;
+    private string _currentFile = "";
+    private string _contentLoaderExtraClass = "gallery-editable__content-loader";
 
     private void HandleReorderStart(int productId)
     {
@@ -112,6 +127,8 @@
             // Reorder to reflect changes
             Product.Images.Reorder(im => im.Priority);
 
+            orderingChanged = true;
+
             StateHasChanged(); // 🔹 Force UI to re-render
         }
     }
@@ -132,6 +149,36 @@
                 isDragging = true;
                 StateHasChanged();
             }
+        }
+    }
+
+    private async Task SaveReordering(){
+        if (Product != null && Product.Images != null)
+        {
+            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
+
+            foreach (var image in Product.Images.Items){
+                productImagePriorityDtoList.Add(new ProductImagePriorityDto{
+                        Id = image.Id,
+                        Priority = image.Priority
+                });
+            }
+
+            var response = await ProductImagesService.UpdateOrdering(productImagePriorityDtoList);
+
+            if (response == null)
+            {
+                throw new Exception($"Image reordering failed");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"[{response.StatusCode}] {errorMessage}");
+            }
+
+            orderingChanged = false;
+            Console.WriteLine($"Successfully reordered images");
         }
     }
 
@@ -158,17 +205,24 @@
             {
                 isDragging = false;
                 isUploading = true;
-                StateHasChanged();
+                _contentLoaderExtraClass = "gallery-editable__content-loader gallery-editable__content-loader--visible";
+                _totalFilesToUpload = e.GetMultipleFiles().Count();
+
                 foreach (var file in e.GetMultipleFiles())
                 {
+                    _fileUploadCounter++;
+                    _currentFile = file.Name;
+                    StateHasChanged();
                     Console.WriteLine($"File Selected: {file.Name}");
+                    await Task.Delay(2000);
                     await ConvertAndUploadImage(file);
                 }
 
                 await Product.LoadImagesAsync();
                 isUploading = false;
                 inputFileRef = null;
-                StateHasChanged();
+                _contentLoaderExtraClass = "gallery-editable__content-loader";
+                @* StateHasChanged(); *@
             }
         }
     }
@@ -228,7 +282,21 @@
 
                 if (image != null)
                 {
+                    // Save the priority of the image we're about to remove.
+                    int removedPriority = image.Priority;
+
+                    // Remove the image from the local list.
                     Product.Images.Items.Remove(image);
+
+                    // Reorder the remaining images:
+                    // For each image with a priority higher than the removed image, decrement its priority.
+                    foreach (var img in Product.Images.Items)
+                    {
+                        if (img.Priority > removedPriority)
+                        {
+                            img.Priority--;
+                        }
+                    }
                 }
                 else
                 {

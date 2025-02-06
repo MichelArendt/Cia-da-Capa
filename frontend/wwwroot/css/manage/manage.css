@@ -326,7 +326,7 @@ button {
   flex-direction: column;
   justify-content: center;
 }
-.flex--column--center {
+.flex--column--center, .gallery-editable__reorder-save-overlay {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -878,6 +878,7 @@ Duration of animation */
   position: relative;
   background: hsl(240, 3%, 18%);
   color: hsl(0, 0%, 73%);
+  padding: 20px;
 }
 
 .gallery-editable__header-info {
@@ -897,6 +898,39 @@ Duration of animation */
   padding: 30px;
   border-top: 1px solid hsl(0, 0%, 73%);
   border-bottom: 1px solid hsl(0, 0%, 73%);
+}
+
+.gallery-editable__reorder-save-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  display: none;
+  z-index: 100;
+  border-top: 1px solid hsl(0, 0%, 73%);
+  border-bottom: 1px solid hsl(0, 0%, 73%);
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 3%, 18%);
+  transition: all linear 0.2s;
+}
+.gallery-editable__reorder-save-overlay > button {
+  transition: all linear 0.2s;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-editable__reorder-save-overlay:hover {
+  background: hsl(24, 70%, 50%);
+}
+.gallery-editable__reorder-save-overlay:hover > button {
+  color: white;
+}
+
+.gallery-editable__reorder-save-overlay--visible {
+  opacity: 1;
+  display: block;
 }
 
 .gallery-editable__drop-files-overlay {
@@ -985,4 +1019,17 @@ Duration of animation */
 .gallery-editable__drag-cursor {
   border-top: 1px solid black;
   margin-top: 5px;
+}
+
+.gallery-editable__content-loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  display: none;
+  transition: all linear 0.1s;
+}
+.gallery-editable__content-loader--visible {
+  opacity: 1;
+  display: block;
 }

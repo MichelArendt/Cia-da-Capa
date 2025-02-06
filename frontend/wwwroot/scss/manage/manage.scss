@@ -81,7 +81,7 @@
     position: relative;
     background: $color-primary--dark;
     color: $color-secondary--light;
-    padding: 20px;
+    padding: 40px;
 }
 
 .gallery-editable__header-info {
@@ -101,6 +101,42 @@
     padding: 30px;
     border-top: 1px solid $color-secondary--light;
     border-bottom: 1px solid $color-secondary--light;
+}
+
+.gallery-editable__reorder-save-overlay {
+    @extend .flex--column--center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: none;
+    z-index: 100;
+    border-top: 1px solid $color-secondary--light;
+    border-bottom: 1px solid $color-secondary--light;
+    background: $color-primary--main;
+    color: $color-primary--dark;
+    transition: all linear 0.2s;
+
+    > button {
+        transition: all linear 0.2s;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.gallery-editable__reorder-save-overlay:hover {
+    background: $color-secondary--main;
+
+    > button {
+        color: white;
+    }
+}
+
+.gallery-editable__reorder-save-overlay--visible {
+    opacity: 1;
+    display: block;
 }
 
 .gallery-editable__drop-files-overlay {
@@ -195,4 +231,20 @@
 .gallery-editable__drag-cursor {
     border-top: 1px solid black;
     margin-top: 5px;
+}
+
+.gallery-editable__content-loader {
+    background-color: $color-primary--dark;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    z-index: 100;
+    display: none;
+    transition: all linear 0.1s;
+
+    &--visible {
+        opacity: 1;
+        display: block;
+    }
 }

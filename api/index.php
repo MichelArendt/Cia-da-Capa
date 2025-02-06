@@ -173,7 +173,8 @@ Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSi
 
 // Product Images
 Flight::route('POST /manage/products/@id/images/upload', 'Controllers\Manage\ProductImageController->uploadImage');
-Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteImage');
+Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteByIdAndReorderPriorities');
+Flight::route('POST /manage/products/images/update-ordering', 'Controllers\Manage\ProductImageController->updateOrdering');
 
 // Product Variants
 Flight::route('POST /manage/products/@id/variant/@variantId/images/upload', 'Controllers\Manage\ProductImageController->uploadVariantImage');

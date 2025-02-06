@@ -31,13 +31,10 @@ namespace frontend.DTOs
         [Display(Name = "Atualizado em")]
         public DateTime UpdatedAt { get; set; }
     }
-    //public record NewProductImageDto
-    //{
-    //    public int ProductId { get; set; }
+    public record ProductImagePriorityDto
+    {
+        public int Id { get; set; }
 
-    //    public int? ProductVariantId { get; set; }
-
-    //    public string FilePath { get; set; } = string.Empty;
-    //    public int Priority { get; set; } = 0;
-    //}
+        public int Priority { get; set; }
+    }
 }

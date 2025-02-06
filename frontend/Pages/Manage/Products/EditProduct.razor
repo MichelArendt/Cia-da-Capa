@@ -62,6 +62,10 @@ else
                 Console.WriteLine(2.2);
                 product = new ProductViewModel(productDto, ProductService, ProductVariantService, ProductImageService);
                 await product.LoadDetailsAsync();
+                if (product?.Images != null)
+                {
+                    product.Images.Reorder(im => im.Priority);
+                }
             }
         }
         Console.WriteLine(3);

@@ -4,6 +4,7 @@ using frontend.Helpers;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace frontend.Services.API
 {
@@ -72,6 +73,28 @@ namespace frontend.Services.API
             Console.WriteLine(await response.Content.ReadAsStringAsync());
             return response;
             //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
+        }
+
+        public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImagePriorityDto> productImagePriorityDtoList)
+        {
+            Console.WriteLine(JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
+            //return null;
+
+
+            var response = await _httpClient.PostAsJsonAsync(
+                NewApiEndpoints.Manage.Product.Image.UpdateOrdering, 
+                JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("ProductImageService->UpdateOrdering 1");
+                // Return null to indicate an error or DB problem
+                return null;
+            }
+
+            Console.WriteLine("ProductImageService->UpdateOrdering 2");
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            return response;
         }
     }
 }

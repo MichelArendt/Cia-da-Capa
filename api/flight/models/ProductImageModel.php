@@ -38,7 +38,7 @@ class ProductImageModel {
 
       $this->db->exec($query);
 
-      // 🔹 Create Trigger (Separate Execution)
+        // Create BEFORE INSERT Trigger (Auto-Increment Priority)
       $triggerQuery = "
           CREATE TRIGGER before_insert_product_images
           BEFORE INSERT ON product_images
@@ -59,8 +59,10 @@ class ProductImageModel {
 
       // 🔹 Execute trigger creation separately
       try {
-          $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images"); // Ensure no duplicate trigger
-          $this->db->exec($triggerQuery);
+            $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images"); // Ensure no duplicate trigger
+            $this->db->exec($triggerQuery);
+
+            $this->db->exec("DROP TRIGGER IF EXISTS after_delete_product_images"); // Ensure no duplicate trigger
       } catch (\PDOException $e) {
             error_log("Trigger creation failed ProductImageModel->createTableIfNotExists(): " . $e->getMessage());
       }
@@ -105,14 +107,98 @@ class ProductImageModel {
       }
   }
 
-  public function deleteById($image_id) {
-      try {
-          $stmt = $this->db->prepare("DELETE FROM product_images WHERE id = :id");
-          return $stmt->execute([':id' => $image_id]);
-      } catch (Exception $e) {
-          error_log("Database Error in ProductImageModel->deleteById(): " . $e->getMessage());
-          return false;
-      }
+  public function deleteByIdAndReorderPriorities($image_id) {
+    try {
+        // Start a transaction to ensure both deletion and reordering happen together.
+        $this->db->beginTransaction();
+
+        // 1. Retrieve the image record so we know which product/variant and the current priority.
+        $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
+        $stmt->execute([':id' => $image_id]);
+        $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$image) {
+            throw new Exception("Image not found.");
+        }
+
+        // 2. Delete the image record.
+        $stmt = $this->db->prepare("DELETE FROM product_images WHERE id = :id");
+        $stmt->execute([':id' => $image_id]);
+
+        // 3. Determine the condition for reordering.
+        // If this image is linked to a product:
+        if (!empty($image['product_id'])) {
+            $sql = "UPDATE product_images
+                    SET priority = priority - 1
+                    WHERE product_id = :product_id AND priority > :deleted_priority";
+            $params = [
+                ':product_id' => $image['product_id'],
+                ':deleted_priority' => $image['priority']
+            ];
+        }
+        // Else, if linked to a product variant:
+        elseif (!empty($image['product_variant_id'])) {
+            $sql = "UPDATE product_images
+                    SET priority = priority - 1
+                    WHERE product_variant_id = :product_variant_id AND priority > :deleted_priority";
+            $params = [
+                ':product_variant_id' => $image['product_variant_id'],
+                ':deleted_priority' => $image['priority']
+            ];
+        } else {
+            // In case neither field is set, commit deletion and return.
+            $this->db->commit();
+            return true;
+        }
+
+        // 4. Update the remaining images' priorities.
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        // Commit the transaction.
+        $this->db->commit();
+        return true;
+    } catch (Exception $e) {
+        // Rollback if something went wrong.
+        $this->db->rollBack();
+        error_log("Database Error in ProductImageModel->deleteImageAndReorder(): " . $e->getMessage());
+        return false;
+    }
   }
+
+  public function updateOrdering(array $orderData) {
+    try {
+        if (empty($orderData)) {
+            throw new Exception("No ordering data provided");
+        }
+
+        $ids = [];
+        $caseSql = "";
+
+        // Build the CASE expression and collect the IDs.
+        foreach ($orderData as $item) {
+            if (!isset($item['id']) || !isset($item['priority'])) {
+                throw new Exception("Missing id or priority in one or more items");
+            }
+            $id = (int)$item['id'];
+            $priority = (int)$item['priority'];
+            $ids[] = $id;
+            $caseSql .= " WHEN {$id} THEN {$priority} ";
+        }
+
+        // Create a comma-separated list of IDs for the WHERE clause.
+        $idsList = implode(', ', $ids);
+
+        // Build the final SQL statement.
+        $sql = "UPDATE product_images SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
+
+        // Prepare and execute the SQL statement.
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute();
+    } catch (Exception $e) {
+        error_log("Database Error in ProductImageModel->updateOrdering(): " . $e->getMessage());
+        return false;
+    }
+}
 }
 ?>

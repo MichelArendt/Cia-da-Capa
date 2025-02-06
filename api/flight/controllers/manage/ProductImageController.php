@@ -289,7 +289,7 @@ class ProductImageController {
     /**
      * Delete an image by its ID.
      */
-    public function deleteImage($image_id)
+    public function deleteByIdAndReorderPriorities($image_id)
     {
         try {
             // Fetch image details before deletion
@@ -317,11 +317,68 @@ class ProductImageController {
             }
 
             // Remove the image record from the database
-            $this->imageModel->deleteById($image_id);
+            $this->imageModel->deleteByIdAndReorderPriorities($image_id);
             Flight::json(['success' => true, 'message' => 'Image deleted successfully']);
         } catch (Exception $e) {
             error_log("Delete Error: " . $e->getMessage());
             Flight::json(['error' => 'Server error'], 500);
         }
     }
+
+    /**
+     * Update the ordering (priority) of multiple images.
+     *
+     * Expects a JSON payload like:
+     * [
+     *     {"id":54,"priority":1},
+     *     {"id":50,"priority":2},
+     *     {"id":51,"priority":3},
+     *     {"id":52,"priority":4},
+     *     {"id":49,"priority":5},
+     *     {"id":53,"priority":6}
+     * ]
+     */
+    public function updateOrdering() {
+        try {
+            // Decode incoming JSON request
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            // Detect if the data is double-encoded as a string
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+            }
+
+            // ErrorHandler::logError("Invalid data provided 1: " . json_encode($data), __METHOD__, 400);
+
+            // Convert to an array (in case it's an object)
+            // $dataArray = $data->getData();
+            // ErrorHandler::logError("Invalid data provided 2: " . json_encode($dataArray), __METHOD__, 400);
+
+            // Validate that we received a non-empty array of items
+            if (!is_array($data) || empty($data)) {
+                ErrorHandler::logError("Invalid data provided: " . json_encode($data), __METHOD__, 400);
+                return;
+            }
+
+            // Validate that each item has both 'id' and 'priority'
+            foreach ($data as $item) {
+                if (!isset($item['id']) || !isset($item['priority'])) {
+                    ErrorHandler::logError("Missing id or priority in one or more items", __METHOD__, 400);
+                    return;
+                }
+            }
+
+            // Call the model method to update ordering
+            $result = $this->imageModel->updateOrdering($data);
+
+            if ($result) {
+                Flight::json(['success' => true, 'message' => 'Ordering updated successfully']);
+            } else {
+                ErrorHandler::logError("Database error when updating ordering", __METHOD__, 500);
+            }
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__);
+        }
+    }
+
 }
