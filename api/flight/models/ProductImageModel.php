@@ -37,18 +37,45 @@ class ProductImageModel {
             );";
 
       $this->db->exec($query);
+
+      // 🔹 Create Trigger (Separate Execution)
+      $triggerQuery = "
+          CREATE TRIGGER before_insert_product_images
+          BEFORE INSERT ON product_images
+          FOR EACH ROW
+          BEGIN
+              DECLARE max_priority INT;
+
+              -- Get the highest priority for the same product_id OR product_variant_id
+              SELECT COALESCE(MAX(priority), 0) + 1 INTO max_priority
+              FROM product_images
+              WHERE (NEW.product_id IS NOT NULL AND product_id = NEW.product_id)
+                 OR (NEW.product_variant_id IS NOT NULL AND product_variant_id = NEW.product_variant_id);
+
+              -- Assign the next priority number
+              SET NEW.priority = max_priority;
+          END;
+      ";
+
+      // 🔹 Execute trigger creation separately
+      try {
+          $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images"); // Ensure no duplicate trigger
+          $this->db->exec($triggerQuery);
+      } catch (\PDOException $e) {
+            error_log("Trigger creation failed ProductImageModel->createTableIfNotExists(): " . $e->getMessage());
+      }
   }
 
   public function addImage($data) {
       try {
-          $query = "INSERT INTO product_images (product_id, file_path, thumbnail_file_path, medium_file_path, priority) VALUES (:product_id, :file_path, :thumbnail_file_path, :medium_file_path, :priority)";
+          $query = "INSERT INTO product_images (product_id, file_path, thumbnail_file_path, medium_file_path) VALUES (:product_id, :file_path, :thumbnail_file_path, :medium_file_path)";
           $stmt = $this->db->prepare($query);
+
           return $stmt->execute([
               ':product_id' => $data['product_id'],
               ':file_path' => $data['file_path'],
               ':thumbnail_file_path' => $data['thumbnail_file_path'],
               ':medium_file_path' => $data['medium_file_path'],
-              ':priority' => $data['priority']
           ]);
       } catch (Exception $e) {
           error_log("Database Error in ProductImageModel->addImage(): " . $e->getMessage());
