@@ -41,7 +41,20 @@
 
             StateChanged?.Invoke();
         }
-         
+
+        public void Reorder(Func<T, object> keySelector, bool descending = false)
+        {
+            if (descending)
+            {
+                Items = Items.OrderByDescending(keySelector).ToList();
+            }
+            else
+            {
+                Items = Items.OrderBy(keySelector).ToList();
+            }
+            StateChanged?.Invoke();
+        }
+
         public bool IsFetching()
         {
             return State == FetchState.Fetching;
