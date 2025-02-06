@@ -7,12 +7,11 @@ use PDO;
 
 class AuthMiddleware {
     public static function checkAuth() {
-
         // First, check if ANY cookies exist
         if (empty($_COOKIE)) {
             $message = "Unauthorized: No cookies found.";
             error_log($message . ": " . json_encode($_COOKIE)); // Log all cookies for debugging
-            Flight::json(["message" => $message], 401);
+            Flight::halt(401, json_encode(["message" => $message]));
             exit;
         }
 
@@ -20,7 +19,7 @@ class AuthMiddleware {
         if (!isset($_COOKIE['session_token'])) {
             $message = "Unauthorized: Session token is missing.";
             error_log($message . ": " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
-            Flight::json(["message" => $message], 401);
+            Flight::halt(401, json_encode(["message" => $message]));
             exit;
         }
 
@@ -37,7 +36,7 @@ class AuthMiddleware {
 
         if (!$user) {
             $message = "Unauthorized: Session is invalid.";
-            Flight::json(["message" => $message], 401);
+            Flight::halt(401, json_encode(["message" => $message]));
             exit;
         }
 
