@@ -88,6 +88,9 @@
                 // If not valid, push them to /manage/login
                 if (!response)
                 {
+                    // Store the attempted path before redirect
+                    AppState.AttemptedPath = context.Path;
+
                     AppState.IsAuthenticated = false;
                     Navigation.NavigateTo("manage/login");
                 }
@@ -98,17 +101,5 @@
                 }
             }
         }
-        // // If path starts with "manage" and user is not authenticated
-        // // But skip if they are navigating to "manage/login" already
-        // if (args.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
-        //     && !args.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase)
-        //     && !AppState.IsAuthenticated)
-        // {
-        //     Navigation.NavigateTo("manage/login", forceLoad: false);
-        // }
-
-        // // Because we are not awaiting anything, just return a completed task
-        // // to satisfy the OnNavigateAsync signature
-        // return Task.CompletedTask;
     }
 }

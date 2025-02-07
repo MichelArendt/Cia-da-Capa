@@ -14,6 +14,7 @@ namespace frontend.Services
             Product = productStateService;
         }
 
+        public string? AttemptedPath { get; set; } // Store the attempted route
 
         public int BreakpointDesktop { get; } = 800;
 

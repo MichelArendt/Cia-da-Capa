@@ -95,7 +95,14 @@ else
         {
             // The server sets the cookie if credentials are valid
             AppState.IsAuthenticated = true;
-            NavManager.NavigateTo("manage/");
+            if (AppState.AttemptedPath != null)
+            {
+                NavManager.NavigateTo(AppState.AttemptedPath);
+            }
+            else
+            {
+                NavManager.NavigateTo("manage/");
+            }
         }
         else
         {
