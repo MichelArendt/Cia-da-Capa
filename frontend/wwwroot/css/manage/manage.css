@@ -298,7 +298,7 @@ button {
   flex-direction: row;
   justify-content: center;
 }
-.flex--row--center-vertical, .header__logo, .nav__button {
+.flex--row--center-vertical, .header__logo, .nav__button, .notification {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -309,7 +309,7 @@ button {
   justify-content: center;
   align-items: center;
 }
-.flex--column, .login-form > label {
+.flex--column, .notifications, .login-form > label {
   display: flex;
   flex-direction: column;
   /* Horizontal centering in column */
@@ -610,6 +610,155 @@ button {
   fill: hsl(24, 70%, 50%);
 }
 
+/**
+ * ----------------------------------------
+ * Blink
+ * ----------------------------------------
+ */
+@-webkit-keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+/**
+ * ----------------------------------------
+ * Bounce
+ * ----------------------------------------
+ */
+@keyframes bounce {
+  from, 20%, 53%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -10px, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -5px, 0) scaleY(1.05);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+.bounce {
+  animation-name: bounce;
+  transform-origin: center bottom;
+}
+
+/**
+ * ----------------------------------------
+ * Rubber Band
+ * ----------------------------------------
+ */
+@keyframes rubberBand {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.rubberBand {
+  animation-name: rubberBand;
+}
+
+/**
+ * ----------------------------------------
+ * Heat Beat
+ * ----------------------------------------
+ */
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+.heartBeat {
+  animation-name: heartBeat;
+  animation-duration: calc(var(--animate-duration) * 1.3);
+  animation-timing-function: ease-in-out;
+}
+
+/**
+ * ----------------------------------------
+ * Fade in UP
+ * ----------------------------------------
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.fadeInUp {
+  animation-name: fadeInUp;
+}
+
+/**
+ * ----------------------------------------
+ * Fade out DOWN
+ * ----------------------------------------
+ */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.fadeOutDown {
+  animation-name: fadeOutDown;
+}
+
 .website__header {
   background-color: hsl(240, 3%, 18%);
   color: hsl(0, 0%, 73%);
@@ -812,6 +961,98 @@ Duration of animation */
 .page__500 > ul {
   padding: 20px;
   list-style: disc;
+}
+
+.notifications {
+  position: absolute;
+  gap: 10px;
+  width: calc(100vw - 40px);
+  bottom: 10px;
+  margin: 0 20px;
+  background: red;
+}
+
+.notification {
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 0px 0px 5px;
+}
+.notification > :nth-child(2) {
+  flex-grow: 1;
+}
+
+.notification--adding {
+  animation: fadeInUp 0.5s;
+}
+
+.notification--removing {
+  animation: fadeOutDown 0.5s;
+}
+
+.notification:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 1px solid;
+  border-right: 2px solid;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  left: 0px;
+  height: 20px;
+}
+
+.notification--success {
+  background: hsl(120, 61%, 93%);
+  color: hsl(120, 61%, 45%);
+  box-shadow: hsl(120, 61%, 45%);
+  border-color: hsl(120, 61%, 45%);
+}
+.notification--success > svg {
+  fill: hsl(120, 61%, 45%);
+}
+.notification--success > :first-child {
+  animation: bounce 1.5s infinite both;
+}
+
+.notification--warning {
+  background: hsl(39, 100%, 93%);
+  color: hsl(39, 100%, 45%);
+  box-shadow: hsl(39, 100%, 45%);
+  border-color: hsl(39, 100%, 45%);
+}
+.notification--warning > svg {
+  fill: hsl(39, 100%, 45%);
+}
+.notification--warning > :first-child {
+  animation: blink 2s infinite both;
+}
+
+.notification--info {
+  background: hsl(208, 90%, 93%);
+  color: hsl(208, 90%, 50%);
+  box-shadow: hsl(208, 90%, 50%);
+  border-color: hsl(208, 90%, 50%);
+}
+.notification--info > svg {
+  fill: hsl(208, 90%, 50%);
+}
+.notification--info > :first-child {
+  animation: rubberBand 1.5s infinite both;
+}
+
+.notification--error {
+  background: hsl(0, 68%, 93%);
+  color: hsl(0, 68%, 46%);
+  box-shadow: hsl(0, 68%, 46%);
+  border-color: hsl(0, 68%, 46%);
+}
+.notification--error > svg {
+  fill: hsl(0, 68%, 46%);
+}
+.notification--error > :first-child {
+  animation: heartBeat 1s infinite both;
 }
 
 .login-form {

@@ -6,6 +6,7 @@
 
 @inject HttpClient Http
 @inject ProductImageService ProductImagesService
+@inject NotificationService NotificationService
 
 <div class="gallery-editable">
     <div class="gallery-editable__header">
@@ -49,7 +50,7 @@
             {
                 <div 
                 class="gallery-editable__draggable-image"
-                     draggable="@(!_deletingImages.Any() ? "true" : "false")"
+                draggable="@(!_deletingImages.Any() ? "true" : "false")"
                 @ondragstart="@(() => HandleReorderStart(productImage.Id))"
                 @ondragover="@((e) => HandleReorderOver(e, productImage.Id))"
                 @ondrop="@(() => HandleReorderEnd(productImage.Id))"
@@ -59,11 +60,11 @@
                     </div>
 
                     <button 
-                        class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
-                        @onclick="@(() => DeleteImage(productImage.Id))"
-                        draggable="false"
-                        disabled="@(isUploading || orderingChanged)"
-                            title="@((isUploading || orderingChanged) ? "Não é permitido remover as imagens agora!" : "Remover image" )">
+                    class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
+                    @onclick="@(() => DeleteImage(productImage.Id))"
+                    draggable="false"
+                    disabled="@(isUploading || orderingChanged)"
+                    title="@((isUploading || orderingChanged) ? "Não é permitido remover as imagens agora!" : "Remover image" )">
                         Remover
                     </button>
 
@@ -102,12 +103,47 @@
     private string _currentFile = "";
     private string _contentLoaderExtraClass = "gallery-editable__content-loader";
     private HashSet<int> _deletingImages = new();
+    private NotificationModel orderingChangedNotification = new NotificationModel
+        {
+            Content =@<span>Ordem das fotos modificada! Não esqueça de salvar as alterações.</span>  ,
+            Sticky = true,
+            Type = NotificationType.Warning
+        };
+
+    @* protected override void OnInitialized()
+    {
+        // Let this component know if IsCheckingAuth or IsAuthenticated changes, re-render
+        NotificationService.OnNotificationAdded += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppState.IsCheckingAuthChanged -= StateHasChanged;
+        AppState.IsAuthenticatedChanged -= StateHasChanged;
+    } *@
 
     private void HandleReorderStart(int productId)
     {
         if (!_deletingImages.Any())
         {
             draggedProductId = productId;
+        }
+    }
+
+    private void SetOrderingChanged(bool isChanged)
+    {
+        if (orderingChanged != isChanged)
+        {
+            orderingChanged = isChanged;
+
+            if (isChanged)
+            {
+                NotificationService.DisplayNotification(orderingChangedNotification);
+            }
+            else
+            {
+                NotificationService.RemoveNotification(orderingChangedNotification);
+            }
         }
     }
 
@@ -136,7 +172,8 @@
             // Reorder to reflect changes
             Product.Images.Reorder(im => im.Priority);
 
-            orderingChanged = true;
+            SetOrderingChanged(true);
+            @* orderingChanged = true; *@
 
             StateHasChanged(); // 🔹 Force UI to re-render
         }
@@ -164,16 +201,7 @@
     private async Task SaveReordering(){
         if (Product != null && Product.Images != null)
         {
-            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
-
-            foreach (var image in Product.Images.Items){
-                productImagePriorityDtoList.Add(new ProductImagePriorityDto{
-                        Id = image.Id,
-                        Priority = image.Priority
-                });
-            }
-
-            var response = await ProductImagesService.UpdateOrdering(productImagePriorityDtoList);
+            var response = await ProductImagesService.UpdateOrdering(Product.Images.Items);
 
             if (response == null)
             {
@@ -186,7 +214,11 @@
                 throw new Exception($"[{response.StatusCode}] {errorMessage}");
             }
 
-            orderingChanged = false;
+            SetOrderingChanged(false);
+            NotificationService.DisplayNotification(new NotificationModel{
+                Content =@<span>Nova ordem das fotos foram salvas com sucesso!</span>,
+                Type = NotificationType.Success
+            });
             Console.WriteLine($"Successfully reordered images");
         }
     }

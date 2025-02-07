@@ -1,0 +1,76 @@
+﻿@inject NotificationService notificationService
+
+<div class="notifications">
+    @foreach (var notification in notificationService.Notifications){
+        <div class="notification 
+            @GetNotificationClass(notification.Type)
+            @(notification.IsMarkedForRemoval ? "notification--removing" : "")
+            @(notification.IsBeingAdded ? "notification--adding" : "")"
+        >
+            <Svg Path="@GetSvgPath(notification.Type)" />  
+            @notification.Content
+            <Svg Path="@Svg.Paths.Close" />
+        </div>
+    }
+</div>
+
+@code {
+    private bool _show = true;
+    private bool _removingNotification = false;
+
+    protected override void OnInitialized()
+    {
+        notificationService.OnNotificationAdded += StateHasChanged;
+        notificationService.OnNotificationIsBeingAdded += StateHasChanged;
+        notificationService.OnNotificationIsBeingRemoved += StateHasChanged;
+        notificationService.OnNotificationRemoved += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        notificationService.OnNotificationAdded -= StateHasChanged;
+        notificationService.OnNotificationIsBeingAdded -= StateHasChanged;
+        notificationService.OnNotificationIsBeingRemoved -= StateHasChanged;
+        notificationService.OnNotificationRemoved -= StateHasChanged;
+    }
+
+    private string GetNotificationClass(NotificationType type){
+        switch(type)
+        {
+            case NotificationType.Warning:
+                return "notification--warning";
+
+            case NotificationType.Info:
+                return "notification--info";
+
+            case NotificationType.Error:
+                return "notification--error";
+
+            default:
+                return "notification--success";
+        }
+    }
+
+    private string GetSvgPath(NotificationType type)
+    {
+        switch (type)
+        {
+            case NotificationType.Warning:
+                return Svg.Paths.Warning;
+
+            case NotificationType.Info:
+                return Svg.Paths.Info;
+
+            case NotificationType.Error:
+                return Svg.Paths.Error;
+
+            default:
+                return Svg.Paths.Success;
+        }
+    }
+
+    // private void NotificationIsBeingRemoved(){
+    //     _removingNotification = true;
+    //     StateHasChanged();
+    // }
+}

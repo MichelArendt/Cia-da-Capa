@@ -75,11 +75,18 @@ namespace frontend.Services.API
             //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
         }
 
-        public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImagePriorityDto> productImagePriorityDtoList)
+        public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImageDto> productImageDtoList)
         {
-            Console.WriteLine(JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
-            //return null;
+            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
 
+            foreach (var image in productImageDtoList)
+            {
+                productImagePriorityDtoList.Add(new ProductImagePriorityDto
+                {
+                    Id = image.Id,
+                    Priority = image.Priority
+                });
+            }
 
             var response = await _httpClient.PostAsJsonAsync(
                 NewApiEndpoints.Manage.Product.Image.UpdateOrdering, 

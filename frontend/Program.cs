@@ -28,9 +28,7 @@ namespace frontend
             builder.Services.AddScoped<ProductSizeLabelService>();
             builder.Services.AddScoped<UserService>();
 
-            // Register the AppStateService as Singleton (shared across app lifetime)
-            //builder.Services.AddSingleton<ProductSizeLabelStateService>();
-            //builder.Services.AddSingleton<ProductCategoryStateService>();
+            builder.Services.AddSingleton<NotificationService>();
             builder.Services.AddSingleton<ProductStateService>();
             builder.Services.AddSingleton<AppStateService>();
 

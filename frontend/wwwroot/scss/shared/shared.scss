@@ -5,6 +5,7 @@
 @forward '_colors';
 @forward '_typography';
 @forward '_interactive_elements';
+@forward '_animations';
 
 @use '_globals' as *;
 @use '_colors' as *;
@@ -239,4 +240,115 @@ a:hover {
         padding: 20px;
         list-style: disc;
     }
+}
+
+// ---------------------------
+// NOTIFICATIONS
+// ---------------------------
+.notifications {
+  position: absolute;
+  @extend .flex--column;
+  gap: 10px;
+  width: calc(100vw - 40px);
+  bottom: 0;
+  padding-bottom: 10px;
+  margin: 0 20px;
+  overflow: hidden;
+}
+
+.notification {
+  @extend .flex--row--center-vertical;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 0px 0px 5px;
+
+  > :nth-child(2){
+    flex-grow: 1;
+  }
+}
+
+.notification--adding {
+  animation: fadeInUp 0.5s;
+}
+
+.notification--removing {
+  animation: fadeOutDown 0.5s;
+}
+
+.notification:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  // height: calc(100% - 44px);
+  border-left: 1px solid;
+  border-right: 2px solid;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  left: 0px;
+  // top: 50%;
+  // transform: translate(0,-100%);
+    height: 20px;
+    // height: 10%;
+}
+
+.notification--success {
+  background: $color-feedback--success-bg;
+  color: $color-feedback--success;
+  box-shadow: $color-feedback--success;
+  border-color: $color-feedback--success;
+
+  > svg {
+    fill: $color-feedback--success;
+  }
+
+  > :first-child {
+    animation: bounce 1.5s infinite both;
+  }
+}
+
+.notification--warning {
+  background: $color-feedback--warning-bg;
+  color: $color-feedback--warning;
+  box-shadow: $color-feedback--warning;
+  border-color: $color-feedback--warning;
+
+  > svg {
+    fill: $color-feedback--warning;
+  }
+
+  > :first-child {
+    animation: blink 2s infinite both;
+  }
+}
+
+.notification--info {
+  background: $color-feedback--info-bg;
+  color: $color-feedback--info;
+  box-shadow: $color-feedback--info;
+  border-color: $color-feedback--info;
+
+  > svg {
+    fill: $color-feedback--info;
+  }
+
+  > :first-child {
+    animation: rubberBand 1.5s infinite both;
+  }
+}
+
+.notification--error {
+  background: $color-feedback--error-bg;
+  color: $color-feedback--error;
+  box-shadow: $color-feedback--error;
+  border-color: $color-feedback--error;
+
+  > svg {
+    fill: $color-feedback--error;
+  }
+
+  > :first-child {
+    animation: heartBeat 1s infinite both;
+  }
 }

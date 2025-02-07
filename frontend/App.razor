@@ -1,12 +1,9 @@
 ﻿@using frontend.Components.Shared.Utilities
-@using frontend.Components.Shared.UI
-@using frontend.Services
-@using frontend.Services.API
-@using frontend.Pages
 
 @inject NavigationManager Navigation
 @inject AppStateService AppState
 @inject UserService UserService
+@inject NotificationService NotificationService
 
 <Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="HandleNavigationAsync">
     <Found Context="routeData">
@@ -34,6 +31,8 @@
 </Router>
 
 <ResizeListener />
+<Notification />
+
 
 @if (AppState.IsCheckingAuth)
 {
@@ -52,6 +51,12 @@
         // Let this component know if IsCheckingAuth or IsAuthenticated changes, re-render
         AppState.IsCheckingAuthChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
+    }
+
+    protected override void OnAfterRender(bool firstRender) {
+        if(firstRender){
+
+        }
     }
 
     public void Dispose()
