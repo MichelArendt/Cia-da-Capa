@@ -10,7 +10,6 @@ class AuthMiddleware {
         // First, check if ANY cookies exist
         if (empty($_COOKIE)) {
             $message = "Unauthorized: No cookies found.";
-            error_log($message . ": " . json_encode($_COOKIE)); // Log all cookies for debugging
             Flight::halt(401, json_encode(["message" => $message]));
             exit;
         }
@@ -18,7 +17,6 @@ class AuthMiddleware {
         // Second, check if the 'session_token' key exists
         if (!isset($_COOKIE['session_token'])) {
             $message = "Unauthorized: Session token is missing.";
-            error_log($message . ": " . json_encode($_COOKIE['session_token'])); // Log all cookies for debugging
             Flight::halt(401, json_encode(["message" => $message]));
             exit;
         }
