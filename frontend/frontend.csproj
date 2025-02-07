@@ -35,6 +35,17 @@
 		<MakeDir Directories="$(PublishDir)" />
 		<Message Text="Folder $(PublishDir) has been cleaned and recreated." Importance="high" />
 	</Target>
+	
+	<Target Name="RemoveServiceWorkerOnDebug" AfterTargets="FlattenOutput" Condition="'$(Configuration)'=='Debug'">
+		<!-- Remove service-worker.js from the publish output -->
+		<Exec Command="del &quot;$(PublishDir)service-worker.js&quot;" />
+		<!-- Optionally, remove the assets manifest if you don't want any service worker files -->
+		<Exec Command="del &quot;$(PublishDir)service-worker-assets.js&quot;" />
+	</Target>
+
+	<Target Name="RemoveSRIIfDebug" AfterTargets="FlattenOutput">
+		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
+	</Target>
 
 	<!-- Flatten output of all files in wwwroot into ../build/ -->
 	<Target Name="FlattenOutput" AfterTargets="Publish">
@@ -52,10 +63,6 @@
 
 	<Target Name="CompileSCSS" BeforeTargets="Build">
 		<Exec Command="sass wwwroot/scss/manage/manage.scss:wwwroot/css/manage/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css --no-source-map" />
-	</Target>
-	
-	<Target Name="RemoveSRIIfDebug" AfterTargets="Publish">
-		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
 	</Target>
 	
 	<ItemGroup>

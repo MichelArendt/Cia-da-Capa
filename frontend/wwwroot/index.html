@@ -46,7 +46,31 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                fetch('service-worker.js', { method: 'HEAD' })
+                    .then(response => {
+                        // Check that the Content-Type indicates JavaScript
+                        const contentType = response.headers.get('Content-Type') || '';
+                        if (response.ok && (contentType.includes('javascript') || contentType.includes('js'))) {
+                            navigator.serviceWorker.register('service-worker.js')
+                                .then(registration => {
+                                    console.log('Service worker registered:', registration);
+                                })
+                                .catch(error => {
+                                    console.error('Service worker registration failed:', error);
+                                });
+                        } else {
+                            console.log('Service worker file not found or incorrect MIME type; skipping registration.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking for service worker file:', error);
+                    });
+            });
+        }
+    </script>
     <script src="js/resizeListener.js"></script>
     <script src="js/svgHelper.js"></script>
     <script src="js/getBoundingClientRect.js"></script>
