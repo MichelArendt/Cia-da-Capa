@@ -18,29 +18,35 @@ namespace frontend.ViewModels
 
         public string? ErrorMessage { get; set; }
         private ProductService _productService;
+        private ProductSizeService _productSizeService;
         private ProductVariantService _productVariantService;
         private ProductImageService _productImageService;
 
         public ProductViewModel(
             ProductDto productDto, 
             ProductService productService,
+            ProductSizeService productSizeService,
             ProductVariantService productVariantService,
             ProductImageService productImageService) 
         {
             Details = productDto;
             _productService = productService;
+            _productSizeService = productSizeService;
             _productVariantService = productVariantService;
             _productImageService = productImageService;
         }
 
         public async Task LoadDetailsAsync()
         {
+            Sizes = new ApiStateHandler<ProductSizeDto>(
+                async () => await _productSizeService.GetSizesForProductId(this.Details.Id));
             Variants = new ApiStateHandler<ProductVariantDto>(
                 async () => await _productVariantService.GetVariantForProductId(this.Details.Id));
             Images = new ApiStateHandler<ProductImageDto>(
                 async () => await _productImageService.GetImagesForProductId(this.Details.Id));
 
             await Task.WhenAll(
+                Sizes.FetchItems(),
                 Variants.FetchItems(),
                 Images.FetchItems()
             );

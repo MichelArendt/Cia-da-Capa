@@ -23,9 +23,10 @@ namespace frontend
             builder.Services.AddScoped<BannerService>();
             builder.Services.AddScoped<ProductService>();
             builder.Services.AddScoped<ProductCategoryService>();
+            builder.Services.AddScoped<ProductSizeLabelService>();
+            builder.Services.AddScoped<ProductSizeService>();
             builder.Services.AddScoped<ProductVariantService>();
             builder.Services.AddScoped<ProductImageService>();
-            builder.Services.AddScoped<ProductSizeLabelService>();
             builder.Services.AddScoped<UserService>();
 
             builder.Services.AddSingleton<NotificationService>();

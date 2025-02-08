@@ -1,4 +1,6 @@
-﻿namespace frontend.Constants
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace frontend.Constants
 {
     public static class NewApiEndpoints
     {
@@ -90,6 +92,13 @@
         public string GetUrl => $"/api/public/products/{_productId}";
 
         /// <summary>
+        /// Fluent endpoint access for the product's sizes.
+        /// </summary>
+        /// 
+        public string Sizes => $"/api/public/products/{_productId}/sizes";
+        //public ProductSizesEndpoints Sizes => new ProductSizesEndpoints(_productId);
+
+        /// <summary>
         /// Fluent endpoint access for the product's images.
         /// </summary>
         public ProductImageEndpoints Images => new ProductImageEndpoints(_productId);
@@ -154,6 +163,17 @@
         /// </summary>
         public string ForVariantId(int variantId) =>
             $"/api/public/products/{_productId}/variants/{variantId}/images";
+    }
+    public class ProductSizesEndpoints
+    {
+        private readonly int _productId;
+
+        public ProductSizesEndpoints(int productId)
+        {
+            _productId = productId;
+        }
+
+        public string Sizes => $"/api/public/products/{_productId}/sizes";
     }
 
     #endregion
