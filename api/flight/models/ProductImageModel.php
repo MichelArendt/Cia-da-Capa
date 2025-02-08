@@ -1,20 +1,25 @@
 <?php
+
 namespace Models;
 
 use PDO;
 use Exception;
+use Helpers\ErrorHandler;
 
-class ProductImageModel {
-  private $db;
+class ProductImageModel
+{
+    private $db;
 
-  public function __construct(PDO $db) {
-      $this->db = $db;
-      $this->createTableIfNotExists();
-  }
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
+        $this->createTableIfNotExists();
+    }
 
-  // Check if the table exists and create it if necessary
-  private function createTableIfNotExists() {
-      $query = "
+    // Check if the table exists and create it if necessary
+    private function createTableIfNotExists()
+    {
+        $query = "
           CREATE TABLE IF NOT EXISTS product_images (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NULL,
@@ -36,10 +41,10 @@ class ProductImageModel {
                 )
             );";
 
-      $this->db->exec($query);
+        $this->db->exec($query);
 
         // Create BEFORE INSERT Trigger (Auto-Increment Priority)
-      $triggerQuery = "
+        $triggerQuery = "
           CREATE TRIGGER before_insert_product_images
           BEFORE INSERT ON product_images
           FOR EACH ROW
@@ -57,148 +62,147 @@ class ProductImageModel {
           END;
       ";
 
-      // 🔹 Execute trigger creation separately
-      try {
+        // 🔹 Execute trigger creation separately
+        try {
             $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images"); // Ensure no duplicate trigger
             $this->db->exec($triggerQuery);
 
             $this->db->exec("DROP TRIGGER IF EXISTS after_delete_product_images"); // Ensure no duplicate trigger
-      } catch (\PDOException $e) {
-            error_log("Trigger creation failed ProductImageModel->createTableIfNotExists(): " . $e->getMessage());
-      }
-  }
-
-  public function addImage($data) {
-      try {
-          $query = "INSERT INTO product_images (product_id, file_path, thumbnail_file_path, medium_file_path) VALUES (:product_id, :file_path, :thumbnail_file_path, :medium_file_path)";
-          $stmt = $this->db->prepare($query);
-
-          return $stmt->execute([
-              ':product_id' => $data['product_id'],
-              ':file_path' => $data['file_path'],
-              ':thumbnail_file_path' => $data['thumbnail_file_path'],
-              ':medium_file_path' => $data['medium_file_path'],
-          ]);
-      } catch (Exception $e) {
-          error_log("Database Error in ProductImageModel->addImage(): " . $e->getMessage());
-          return false;
-      }
-  }
-
-  public function getByProductId($product_id) {
-      try {
-          $stmt = $this->db->prepare("SELECT * FROM product_images WHERE product_id = :product_id");
-          $stmt->execute([':product_id' => $product_id]);
-          return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-      } catch (Exception $e) {
-          error_log("Database Error in ProductImageModel->getByProductId(): " . $e->getMessage());
-          return [];
-      }
-  }
-
-  public function getById($image_id) {
-      try {
-          $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
-          $stmt->execute([':id' => $image_id]);
-          return $stmt->fetch(PDO::FETCH_ASSOC);
-      } catch (Exception $e) {
-          error_log("Database Error in ProductImageModel->getById(): " . $e->getMessage());
-          return null;
-      }
-  }
-
-  public function deleteByIdAndReorderPriorities($image_id) {
-    try {
-        // Start a transaction to ensure both deletion and reordering happen together.
-        $this->db->beginTransaction();
-
-        // 1. Retrieve the image record so we know which product/variant and the current priority.
-        $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
-        $stmt->execute([':id' => $image_id]);
-        $image = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$image) {
-            throw new Exception("Image not found.");
+        } catch (\PDOException $e) {
+            ErrorHandler::handlePdoException($e, __METHOD__, "Trigger creation failed in ProductImageModel->createTableIfNotExists()");
         }
+    }
 
-        // 2. Delete the image record.
-        $stmt = $this->db->prepare("DELETE FROM product_images WHERE id = :id");
-        $stmt->execute([':id' => $image_id]);
+    public function addImage($data)
+    {
+        try {
+            $query = "INSERT INTO product_images (product_id, file_path, thumbnail_file_path, medium_file_path) VALUES (:product_id, :file_path, :thumbnail_file_path, :medium_file_path)";
+            $stmt = $this->db->prepare($query);
 
-        // 3. Determine the condition for reordering.
-        // If this image is linked to a product:
-        if (!empty($image['product_id'])) {
-            $sql = "UPDATE product_images
+            return $stmt->execute([
+                ':product_id' => $data['product_id'],
+                ':file_path' => $data['file_path'],
+                ':thumbnail_file_path' => $data['thumbnail_file_path'],
+                ':medium_file_path' => $data['medium_file_path'],
+            ]);
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->addImage()");
+        }
+    }
+
+    public function getByProductId($product_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE product_id = :product_id");
+            $stmt->execute([':product_id' => $product_id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getByProductId()");
+        }
+    }
+
+    public function getById($image_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
+            $stmt->execute([':id' => $image_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getById()");
+        }
+    }
+
+    public function deleteByIdAndReorderPriorities($image_id)
+    {
+        try {
+            // Start a transaction to ensure both deletion and reordering happen together.
+            $this->db->beginTransaction();
+
+            // 1. Retrieve the image record so we know which product/variant and the current priority.
+            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
+            $stmt->execute([':id' => $image_id]);
+            $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$image) {
+                throw new Exception("Image not found.");
+            }
+
+            // 2. Delete the image record.
+            $stmt = $this->db->prepare("DELETE FROM product_images WHERE id = :id");
+            $stmt->execute([':id' => $image_id]);
+
+            // 3. Determine the condition for reordering.
+            // If this image is linked to a product:
+            if (!empty($image['product_id'])) {
+                $sql = "UPDATE product_images
                     SET priority = priority - 1
                     WHERE product_id = :product_id AND priority > :deleted_priority";
-            $params = [
-                ':product_id' => $image['product_id'],
-                ':deleted_priority' => $image['priority']
-            ];
-        }
-        // Else, if linked to a product variant:
-        elseif (!empty($image['product_variant_id'])) {
-            $sql = "UPDATE product_images
+                $params = [
+                    ':product_id' => $image['product_id'],
+                    ':deleted_priority' => $image['priority']
+                ];
+            }
+            // Else, if linked to a product variant:
+            elseif (!empty($image['product_variant_id'])) {
+                $sql = "UPDATE product_images
                     SET priority = priority - 1
                     WHERE product_variant_id = :product_variant_id AND priority > :deleted_priority";
-            $params = [
-                ':product_variant_id' => $image['product_variant_id'],
-                ':deleted_priority' => $image['priority']
-            ];
-        } else {
-            // In case neither field is set, commit deletion and return.
+                $params = [
+                    ':product_variant_id' => $image['product_variant_id'],
+                    ':deleted_priority' => $image['priority']
+                ];
+            } else {
+                // In case neither field is set, commit deletion and return.
+                $this->db->commit();
+                return true;
+            }
+
+            // 4. Update the remaining images' priorities.
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+
+            // Commit the transaction.
             $this->db->commit();
             return true;
+        } catch (Exception $e) {
+            // Rollback if something went wrong.
+            $this->db->rollBack();
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->deleteImageAndReorder()");
         }
-
-        // 4. Update the remaining images' priorities.
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-
-        // Commit the transaction.
-        $this->db->commit();
-        return true;
-    } catch (Exception $e) {
-        // Rollback if something went wrong.
-        $this->db->rollBack();
-        error_log("Database Error in ProductImageModel->deleteImageAndReorder(): " . $e->getMessage());
-        return false;
     }
-  }
 
-  public function updateOrdering(array $orderData) {
-    try {
-        if (empty($orderData)) {
-            throw new Exception("No ordering data provided");
-        }
-
-        $ids = [];
-        $caseSql = "";
-
-        // Build the CASE expression and collect the IDs.
-        foreach ($orderData as $item) {
-            if (!isset($item['id']) || !isset($item['priority'])) {
-                throw new Exception("Missing id or priority in one or more items");
+    public function updateOrdering(array $orderData)
+    {
+        try {
+            if (empty($orderData)) {
+                throw new Exception("No ordering data provided");
             }
-            $id = (int)$item['id'];
-            $priority = (int)$item['priority'];
-            $ids[] = $id;
-            $caseSql .= " WHEN {$id} THEN {$priority} ";
+
+            $ids = [];
+            $caseSql = "";
+
+            // Build the CASE expression and collect the IDs.
+            foreach ($orderData as $item) {
+                if (!isset($item['id']) || !isset($item['priority'])) {
+                    throw new Exception("Missing id or priority in one or more items");
+                }
+                $id = (int)$item['id'];
+                $priority = (int)$item['priority'];
+                $ids[] = $id;
+                $caseSql .= " WHEN {$id} THEN {$priority} ";
+            }
+
+            // Create a comma-separated list of IDs for the WHERE clause.
+            $idsList = implode(', ', $ids);
+
+            // Build the final SQL statement.
+            $sql = "UPDATE product_images SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
+
+            // Prepare and execute the SQL statement.
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute();
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->updateOrdering()");
         }
-
-        // Create a comma-separated list of IDs for the WHERE clause.
-        $idsList = implode(', ', $ids);
-
-        // Build the final SQL statement.
-        $sql = "UPDATE product_images SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
-
-        // Prepare and execute the SQL statement.
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute();
-    } catch (Exception $e) {
-        error_log("Database Error in ProductImageModel->updateOrdering(): " . $e->getMessage());
-        return false;
     }
 }
-}
-?>

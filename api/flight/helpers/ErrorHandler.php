@@ -25,6 +25,11 @@ class ErrorHandler
 
     public static function handleException(\Exception $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
     {
-        ErrorHandler::triggerError($e->getMessage(), $methodName, $message, $code);
+        ErrorHandler::triggerError($e->getMessage(), $methodName, "Desculpe, houve um erro no servidor: $message", $code);
+    }
+
+    public static function handlePdoException(\PDOException $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
+    {
+        ErrorHandler::triggerError($e->getMessage(), $methodName, "Desculpe, houve um erro no servidor: $message", $code);
     }
 }

@@ -1,20 +1,25 @@
 <?php
+
 namespace Models;
 
 use PDO;
 use Exception;
+use Helpers\ErrorHandler;
 
-class ProductSizeModel {
-  private $db;
+class ProductSizeModel
+{
+    private $db;
 
-  public function __construct(PDO $db) {
-      $this->db = $db;
-      $this->createTableIfNotExists();
-  }
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
+        $this->createTableIfNotExists();
+    }
 
-  // ✅ Check if the table exists and create it if necessary
-  private function createTableIfNotExists() {
-      $query = "
+    // ✅ Check if the table exists and create it if necessary
+    private function createTableIfNotExists()
+    {
+        $query = "
           CREATE TABLE IF NOT EXISTS product_sizes (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NOT NULL,
@@ -28,19 +33,18 @@ class ProductSizeModel {
             FOREIGN KEY (size_label_id) REFERENCES product_size_labels(id) ON DELETE CASCADE
           )";
 
-      $this->db->exec($query);
-  }
+        $this->db->exec($query);
+    }
 
-  // Fetch all products
-  public function getAll(): array {
-      try {
-          $stmt = $this->db->prepare("SELECT * FROM product_sizes");
-          $stmt->execute();
-          return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
-      } catch (Exception $e) {
-          error_log("Database Error in ProductSizeModel->getAll(): " . $e->getMessage());
-          return null;
-      }
-  }
+    // Fetch all products
+    public function getAll(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_sizes");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
+        }
+    }
 }
-?>
