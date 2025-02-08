@@ -2,6 +2,7 @@
 
 require 'flight/Flight.php';
 require 'flight/helpers/ErrorHandler.php';
+use Helpers\ErrorHandler;
 
 // --------------------------------
 // FILE UPLOAD
@@ -80,8 +81,9 @@ try {
     Flight::set('productSizeModel', new ProductSizeModel($pdo));
     Flight::set('productImageModel', new ProductImageModel($pdo));
 } catch (Exception $e) {
-  error_log($e->getMessage());
-    die("Database connection failed: " . $e->getMessage());
+  ErrorHandler::handleException($e, 'index.php');
+  // error_log($e->getMessage());
+  //   die("Database connection failed: " . $e->getMessage());
 }
 
 // --------------------------------
@@ -184,10 +186,15 @@ Flight::route('POST /manage/products/@id/variant/@variantId/images/upload', 'Con
 // ROUTES - 404
 // --------------------------------
 Flight::map('notFound', function () {
-  Flight::json([
-      'status' => 404,
-      'error' => 'Route not found'
-  ], 404);
+  $request = Flight::request();
+  $attemptedRoute = $request->url;
+
+  ErrorHandler::triggerError(
+    "Route not found: $attemptedRoute",
+    'index.php',
+    "Rota não encontrada: $attemptedRoute",
+    404
+  );
 });
 
 // --------------------------------
@@ -196,22 +203,14 @@ Flight::map('notFound', function () {
 Flight::route('GET /debug/routes', function () {
   $routes = Flight::router()->getRoutes();
 
-  header('Content-Type: application/json');
-  echo json_encode($routes, JSON_PRETTY_PRINT);
+  Flight::json($routes, 200);
 });
 
 // --------------------------------
 // Global error handler
 // --------------------------------
-Flight::map('error', function (Throwable $ex) {
-  error_log("Flight Error: " . $ex->getMessage()); // Log the error
-
-  // Set HTTP 500
-  Flight::halt(500, json_encode([
-    'success' => false,
-    'error'   => 'Internal Server Error',
-    'message' => $ex->getMessage()
-  ]));
+Flight::map('error', function (Throwable $e) {
+  ErrorHandler::handleException($e, 'index.php');
 });
 
 // --------------------------------

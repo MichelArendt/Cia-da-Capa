@@ -22,7 +22,6 @@ class AuthMiddleware {
         }
 
         $token = $_COOKIE['session_token'];
-        // error_log("AuthMiddleware: Received token (" . $token . ")");
 
         // Get PDO instance from Flight
         $db = Flight::get('db');

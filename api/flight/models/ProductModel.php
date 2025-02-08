@@ -49,7 +49,7 @@ class ProductModel {
       try {
           $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
           $stmt->execute([$id]);
-          return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure an empty array if no results
+          return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure null if no results
       } catch (Exception $e) {
           error_log("Database Error in ProductModel->getById(): " . $e->getMessage());
           return null;
