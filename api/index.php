@@ -170,6 +170,7 @@ Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\Prod
 
 // Product Size Label
 Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSizeLabelController->create');
+Flight::route('DELETE /manage/products/size-labels/@id', 'Controllers\Manage\ProductSizeLabelController->delete');
 
 // Product Images
 Flight::route('POST /manage/products/@id/images/upload', 'Controllers\Manage\ProductImageController->uploadImage');
