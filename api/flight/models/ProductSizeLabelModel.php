@@ -85,10 +85,12 @@ class ProductSizeLabelModel {
 
           http_response_code(200);
           echo json_encode(["message" => "Product size label deleted successfully."]);
+          return true;
       } catch (Exception $e) {
           error_log("Error deleting ProductSizeLabelModel->delete: " . $e->getMessage());
           http_response_code(400);
           echo json_encode(["error" => $e->getMessage()]);
+          return false;
       }
   }
 }

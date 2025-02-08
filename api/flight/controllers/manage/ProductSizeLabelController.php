@@ -4,6 +4,7 @@ namespace Controllers\Manage;
 
 use Flight;
 use Exception;
+use Helpers\ErrorHandler;
 
 class ProductSizeLabelController {
   public function create() {
@@ -39,26 +40,26 @@ class ProductSizeLabelController {
   }
 
   public function delete($id) {
-    try {
-        $productSizeLabelModel = Flight::get('productSizeLabelModel');
+        try {
+            $productSizeLabelModel = Flight::get('productSizeLabelModel');
 
-        // Validate that the ID is a positive integer
-        if (!filter_var($id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]])) {
-            throw new Exception("Invalid size label ID.");
+            // Validate that the ID is a positive integer
+            if (!filter_var($id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]])) {
+                throw new Exception("Invalid size label ID.");
+            }
+
+            // Call the model function to handle deletion logic
+            $result = $productSizeLabelModel->delete($id);
+
+            // If the model method returns false, assume failure
+            if (!$result) {
+                throw new Exception("Failed to delete product size label.");
+            }
+
+            // Return success response
+            Flight::json(["message" => "Product size label deleted ssucessfully."], 200);
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__);
         }
-
-        // Call the model function to handle deletion logic
-        $result = $productSizeLabelModel->delete($id);
-
-        // If the model method returns false, assume failure
-        if (!$result) {
-            throw new Exception("Failed to delete product size label.");
-        }
-
-        // Return success response
-        Flight::json(["message" => "Product size label deletedssfully."], 200);
-    } catch (Exception $e) {
-        Flight::json(["message" => "Error in ProductSizeLabelController::delete(): " . $e->getMessage()], 500);
     }
-}
 }
