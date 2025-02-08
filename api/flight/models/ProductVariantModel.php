@@ -19,6 +19,7 @@ class ProductVariantModel {
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NOT NULL,
             variant_name VARCHAR(255) NOT NULL,
+            variant_title VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
