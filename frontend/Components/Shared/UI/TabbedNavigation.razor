@@ -1,0 +1,28 @@
+﻿@using frontend.ViewModels.TabbedNavigation
+
+<div class="tabbed-navigation_tabs">
+    @foreach (var tab in Tabs)
+    {
+        <button class="tabbed-navigation_tab-button" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
+            @tab.Title
+        </button>
+    }
+</div>
+@foreach (var tab in Tabs)
+{
+    <div class="tabbed-navigation_tab-content @(tab.Visible ? "tabbed-navigation_tab-content--visible" : "")">
+        @tab.Content
+    </div>
+}
+
+@code {
+    [Parameter]
+    public required List<TabViewModel> Tabs { get; set; }
+
+    public void SwitchToTab(int id)
+    {
+        Tabs.ForEach(t => t.Visible = false);
+        Tabs.ElementAt(id).Visible = true;
+        StateHasChanged();
+    }
+}

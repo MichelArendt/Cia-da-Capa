@@ -352,3 +352,23 @@ a:hover {
     animation: heartBeat 1s infinite both;
   }
 }
+
+// ---------------------------
+// NOTIFICATIONS
+// ---------------------------
+.tabbed-navigation_tabs {
+  display: flex;
+  gap: 10px;
+  background: red;
+}
+.tabbed-navigation_tab-button {
+  background: yellow;
+}
+
+.tabbed-navigation_tab-content {
+  display: none;
+}
+
+.tabbed-navigation_tab-content--visible {
+  display: block;
+}
