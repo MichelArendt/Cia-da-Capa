@@ -5,39 +5,61 @@
 @inject UserService UserService
 @inject NotificationService NotificationService
 
-<Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="HandleNavigationAsync">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        @{
-            var uri = Navigation.Uri;
-            if (uri.Contains("/manage/"))
-            {
-                // Manually show "Manage" style content
-                <LayoutView Layout="@typeof(ManageLayout)">
-                    <_404 PageTitle="404 (Gerenciamento)" />
-                </LayoutView>
-            }
-            else
-            {
-                <LayoutView Layout="@typeof(MainLayout)">
-                    <_404 PageTitle="404 - Cia da Capa" />
-                </LayoutView>
-            }
-        }
-    </NotFound>
-</Router>
-
-<ResizeListener />
-<Notification />
-
-
-@if (AppState.IsCheckingAuth)
+@if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching())
+{
+    <!-- Show a loader if the essential data hasn't loaded yet -->
+    <ContentLoader DisplayMessage="Carregando dados essenciais..." />
+}
+else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed())
+{
+    <!-- If either fetch has failed, show a 500 page or custom error -->
+    <PageTitle>500 - Cia da Capa</PageTitle>
+    <_500 />
+    @NotificationService.DisplayError(
+                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+                "Problema ao conectar com o bando de dados.")
+    ;
+}
+else if (AppState.IsCheckingAuth)
 {
     <ContentLoader DisplayMessage="Verificando sessão..." />
 }
+else
+{
+    <Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="HandleNavigationAsync">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            @{
+                var uri = Navigation.Uri;
+                if (uri.Contains("/manage/"))
+                {
+                    // Manually show "Manage" style content
+                    <LayoutView Layout="@typeof(ManageLayout)">
+                        <_404 PageTitle="404 (Gerenciamento)" />
+                    </LayoutView>
+                }
+                else
+                {
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <_404 PageTitle="404 - Cia da Capa" />
+                    </LayoutView>
+                }
+            }
+        </NotFound>
+    </Router>
+
+    <ResizeListener />
+}
+
+<Notification />
+
+@* @if (AppState.IsCheckingAuth) *@
+@* { *@
+@*     <ContentLoader DisplayMessage="Verificando sessão..." /> *@
+@* } *@
 
 @code {
     // [Inject]
@@ -48,21 +70,33 @@
 
     protected override void OnInitialized()
     {
-        // Let this component know if IsCheckingAuth or IsAuthenticated changes, re-render
+        // AppState.IsAuthenticatedChanged += StateHasChanged;
+        AppState.IsMobileChanged += StateHasChanged;
         AppState.IsCheckingAuthChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
+        AppState.Product.Categories.StateChanged += StateHasChanged;
+        AppState.Product.SizeLabels.StateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppState.IsMobileChanged -= StateHasChanged;
+        AppState.IsCheckingAuthChanged -= StateHasChanged;
+        AppState.IsAuthenticatedChanged -= StateHasChanged;
+        AppState.Product.Categories.StateChanged -= StateHasChanged;
+        AppState.Product.SizeLabels.StateChanged -= StateHasChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AppState.Product.Categories.FetchItems();
+        await AppState.Product.SizeLabels.FetchItems();
     }
 
     protected override void OnAfterRender(bool firstRender) {
         if(firstRender){
 
         }
-    }
-
-    public void Dispose()
-    {
-        AppState.IsCheckingAuthChanged -= StateHasChanged;
-        AppState.IsAuthenticatedChanged -= StateHasChanged;
     }
 
     private async Task HandleNavigationAsync(NavigationContext context)

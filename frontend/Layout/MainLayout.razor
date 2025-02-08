@@ -7,10 +7,6 @@
 
 @inject AppStateService AppState
 
-@* <HeadContent> *@
-@* 	<link rel="stylesheet" href="css/main.css" /> *@
-@* </HeadContent> *@
-
 <Header>
 	<NavResponsiveMenuOptions>
 		<div>
@@ -100,17 +96,17 @@
 
 	protected override void OnInitialized() {
 		// Subscribe to IsMobileChanged
-		AppState.IsMobileChanged += HandleIsMobileChanged;
+		@* AppState.IsMobileChanged += HandleIsMobileChanged; *@
 	}
 
 	private void HandleIsMobileChanged()
 	{
-		InvokeAsync(StateHasChanged); // Trigger re-render
+		@* InvokeAsync(StateHasChanged); // Trigger re-render *@
 	}
 
 	public void Dispose()
 	{
 		// Unsubscribe to avoid memory leaks
-		AppState.IsMobileChanged -= HandleIsMobileChanged;
+		@* AppState.IsMobileChanged -= HandleIsMobileChanged; *@
 	}
 }

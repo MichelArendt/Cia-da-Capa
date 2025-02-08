@@ -10,7 +10,7 @@ namespace frontend.Helpers
         public static async Task<T> DeserializeResponse<T>(HttpResponseMessage response) where T : new()
         {
             if (!response.IsSuccessStatusCode)
-                return new T(); // ✅ Return a new instance instead of null
+                return new T(); // Return a new instance instead of null
 
             var json = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new T();

@@ -1,7 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
 @using frontend.Handlers
-@using frontend.Pages
 @using frontend.Services
 @using frontend.Services.API
 @using frontend.Components.Shared
@@ -14,134 +13,131 @@
 @inject NavigationManager Navigation
 @inject ProductCategoryService ProductCategoryService
 @inject UserService UserService
+<PageTitle>Gerenciamento - Cia da Capa</PageTitle>
 
-@* <HeadContent> *@
-@*     <link rel="stylesheet" href="css/manage/manage.css" /> *@
-@* </HeadContent> *@
-
-@if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching())
-{
-    Console.WriteLine("Manage Layout: ContentLoader");
-    <ContentLoader />
-}
-else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed())
-{
-    Console.WriteLine("Manage Layout: AppState.Product.Categories.HasFailed()");
-    <PageTitle>500 - Cia da Capa</PageTitle>
-    <_500 />
-}
-else
-{
-    <PageTitle>Gerenciamento - Cia da Capa</PageTitle>
-
-    <Header>
-        <NavResponsiveMenuOptions>
-            @* <div> *@
-            @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
-            @*         Página Inicial *@
-            @*     </NavLink> *@
-            @* </div> *@
-            @if (AppState.IsMobile)
-            {
-                <List>
-                    <HeaderContent>
-                        <button class="nav__button nav--interactive"
-                        @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
-                            Produtos
-                        </button>
-                    </HeaderContent>
-                    <BodyContent>
-                        @if (!AppState.Product.Categories.Items.Any())
-                        {
-                            <li>Não há categorias cadastradas!</li>
-                        }
-                        else
-                        {
-                            @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
-                            {
-                                <li>@category.Name</li>
-                            }
-                        }
-                    </BodyContent>
-                </List>
-            }
-            else
-            {
-                <Dropdown ClassName="nav--interactive"
-                HeaderClassName="nav__button nav--interactive"
-                OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
-                    <HeaderContent>
-                        <span>Produtos</span>
-                    </HeaderContent>
-                    <BodyContent>
-                        <li>
-                            <NavLink href="manage/produtos/adicionar">
-                                Adicionar produto
-                            </NavLink>
-                        </li>
-
-                        @if (!AppState.Product.Categories.Items.Any())
-                        {
-                            <li>Não há categorias cadastradas!</li>
-                        }
-                        else
-                        {
-                            @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
-                            {
-                                <li>@category.Name</li>
-                            }
-                        }
-                    </BodyContent>
-                </Dropdown>
-            }
-            <div>
-                <NavLink href="manage/banners" class="nav__button nav--interactive">
-                    Banners
-                </NavLink>
-            </div>
-            <div>
-                <NavLink href="manage/categorias" class="nav__button nav--interactive">
-                    Categorias
-                </NavLink>
-            </div>
-            <div>
-                <NavLink href="manage/rotulos" class="nav__button nav--interactive">
-                    Rótulos
-                </NavLink>
-            </div>
-        </NavResponsiveMenuOptions>
-
-        <NavPermanentButtons>
-            <Dropdown ClassName="nav--interactive"
-            HeaderClassName="nav__button nav--interactive"
-            HideArrow="true">
+<Header>
+    <NavResponsiveMenuOptions>
+        @* <div> *@
+        @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
+        @*         Página Inicial *@
+        @*     </NavLink> *@
+        @* </div> *@
+        @if (AppState.IsMobile)
+        {
+            <List>
                 <HeaderContent>
-                    <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
+                    <button class="nav__button nav--interactive"
+                            @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
+                        Produtos
+                    </button>
                 </HeaderContent>
-
-                <BodyMobileContentTitle>
-                    <div>Digite seu termo de busca:</div>
-                </BodyMobileContentTitle>
-
                 <BodyContent>
-                    <input type='text' />
+                    @if (!AppState.Product.Categories.Items.Any())
+                    {
+                        <li>Não há categorias cadastradas!</li>
+                    }
+                    else
+                    {
+                        @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                        {
+                            <li>@category.Name</li>
+                        }
+                    }
+                </BodyContent>
+            </List>
+        }
+        else
+        {
+            <Dropdown ClassName="nav--interactive"
+                      HeaderClassName="nav__button nav--interactive"
+                      OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
+                <HeaderContent>
+                    <span>Produtos</span>
+                </HeaderContent>
+                <BodyContent>
+                    <li>
+                        <NavLink href="manage/produtos/adicionar">
+                            Adicionar produto
+                        </NavLink>
+                    </li>
+
+                    @if (!AppState.Product.Categories.Items.Any())
+                    {
+                        <li>Não há categorias cadastradas!</li>
+                    }
+                    else
+                    {
+                        @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                        {
+                            <li>@category.Name</li>
+                        }
+                    }
                 </BodyContent>
             </Dropdown>
-
-            <button class="nav__button nav--interactive"
-            @onclick="@UserLogout"
-            alt="Logout">
-                <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
-            </button>
-        </NavPermanentButtons>
-    </Header>
-
-    <main class='website__main'>
-        <div class='website__main-wrapper'>
-            @Body
+        }
+        <div>
+            <NavLink href="manage/banners" class="nav__button nav--interactive">
+                Banners
+            </NavLink>
         </div>
-    </main>
-}
+        <div>
+            <NavLink href="manage/categorias" class="nav__button nav--interactive">
+                Categorias
+            </NavLink>
+        </div>
+        <div>
+            <NavLink href="manage/rotulos" class="nav__button nav--interactive">
+                Rótulos
+            </NavLink>
+        </div>
+    </NavResponsiveMenuOptions>
+
+    <NavPermanentButtons>
+        <Dropdown ClassName="nav--interactive"
+                  HeaderClassName="nav__button nav--interactive"
+                  HideArrow="true">
+            <HeaderContent>
+                <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
+            </HeaderContent>
+
+            <BodyMobileContentTitle>
+                <div>Digite seu termo de busca:</div>
+            </BodyMobileContentTitle>
+
+            <BodyContent>
+                <input type='text' />
+            </BodyContent>
+        </Dropdown>
+
+        <button class="nav__button nav--interactive"
+                @onclick="@UserLogout"
+                alt="Logout">
+            <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
+        </button>
+    </NavPermanentButtons>
+</Header>
+
+<main class='website__main'>
+    <div class='website__main-wrapper'>
+        @Body
+    </div>
+</main>
+
+@* @if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching()) *@
+@* { *@
+@*     Console.WriteLine("Manage Layout: ContentLoader"); *@
+@*     <ContentLoader /> *@
+@* } *@
+@* else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed()) *@
+@* { *@
+@*     Console.WriteLine("Manage Layout: AppState.Product.Categories.HasFailed()"); *@
+@*     <PageTitle>500 - Cia da Capa</PageTitle> *@
+@*     <_500 /> *@
+@* } *@
+@* else *@
+@* { *@
+
+@* } *@
 
 @code {
     @* private bool IsAuthenticating = false; *@
@@ -152,24 +148,24 @@ else
         base.OnInitialized();
 
         AppState.IsManageRoute = true;
-        AppState.IsMobileChanged += StateHasChanged;
-        AppState.IsAuthenticatedChanged += StateHasChanged;
-        AppState.Product.Categories.StateChanged += StateHasChanged;
-        AppState.Product.SizeLabels.StateChanged += StateHasChanged;
+        @* AppState.IsMobileChanged += StateHasChanged; *@
+        @* AppState.IsAuthenticatedChanged += StateHasChanged; *@
+        @* AppState.Product.Categories.StateChanged += StateHasChanged; *@
+        @* AppState.Product.SizeLabels.StateChanged += StateHasChanged; *@
     }
 
     public void Dispose()
     {
-        AppState.IsMobileChanged -= StateHasChanged;
-        AppState.IsAuthenticatedChanged -= StateHasChanged;
-        AppState.Product.Categories.StateChanged -= StateHasChanged;
-        AppState.Product.SizeLabels.StateChanged -= StateHasChanged;
+        @* AppState.IsMobileChanged -= StateHasChanged; *@
+        @* AppState.IsAuthenticatedChanged -= StateHasChanged; *@
+        @* AppState.Product.Categories.StateChanged -= StateHasChanged; *@
+        @* AppState.Product.SizeLabels.StateChanged -= StateHasChanged; *@
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await AppState.Product.Categories.FetchItems();
-        await AppState.Product.SizeLabels.FetchItems();
+        @* await AppState.Product.Categories.FetchItems(); *@
+        @* await AppState.Product.SizeLabels.FetchItems(); *@
     }
 
     // protected override async Task OnInitializedAsync()
