@@ -60,6 +60,7 @@ namespace frontend.Helpers
         static JsonHelper()
         {
             _options.Converters.Add(new CustomDateTimeConverter());
+            _options.Converters.Add(new ZeroOneToBooleanConverter());
         }
 
         /// <summary>
