@@ -18,10 +18,10 @@ class ProductImageController {
     /**
      * Fetch all images associated with a given product ID.
      */
-    public function getImagesByProductId($product_id)
+    public function getImagesForProductId($product_id)
     {
         try {
-            $images = $this->imageModel->getByProductId($product_id);
+            $images = $this->imageModel->getForProductId($product_id);
             Flight::json($images, 200);
         } catch (Exception $e) {
             ErrorHandler::handleException($e, __METHOD__);

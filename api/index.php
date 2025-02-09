@@ -51,19 +51,12 @@ use Models\ProductImageModel;
 // Load Config
 $config = require 'flight/config/database.php';
 
+// --------------------------------
+// Database
+// --------------------------------
+
 // Set Up Database Connection Using Config
 $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
-// R::setup($dsn, $config['username'], $config['password']);
-
-// Prevent RedBean from modifying schema in production
-// R::freeze(true);
-
-// Store RedBean instance in Flight (for easy access later)
-// Flight::set('rb', R::getRedBean());
-
-// // Register UserModel in Flight
-// require 'flight/models/UserModel.php';
-// Flight::set('userModel', new UserModel());
 
 try {
     $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
@@ -82,8 +75,6 @@ try {
     Flight::set('productImageModel', new ProductImageModel($pdo));
 } catch (Exception $e) {
   ErrorHandler::handleException($e, 'index.php');
-  // error_log($e->getMessage());
-  //   die("Database connection failed: " . $e->getMessage());
 }
 
 // --------------------------------
@@ -107,8 +98,8 @@ Flight::before('start', function () {
 require 'flight/controllers/public/UserController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
-require 'flight/controllers/public/ProductImageController.php';
 require 'flight/controllers/public/ProductVariantController.php';
+require 'flight/controllers/public/ProductImageController.php';
 require 'flight/controllers/public/ProductSizeLabelController.php';
 
 // --------------------------------
@@ -117,15 +108,13 @@ require 'flight/controllers/public/ProductSizeLabelController.php';
 require 'flight/controllers/manage/UserController.php';
 require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
+require 'flight/controllers/manage/ProductVariantController.php';
 require 'flight/controllers/manage/ProductImageController.php';
 require 'flight/controllers/manage/ProductSizeLabelController.php';
 
 // --------------------------------
 // ROUTES - public
 // --------------------------------
-Flight::route('GET /', function () {
-  echo 'hello world!';
-});
 
 // User
 Flight::route('POST /public/user/login', 'Controllers\Public\UserController->login');
@@ -137,15 +126,15 @@ Flight::route('GET /public/products/categories', 'Controllers\Public\ProductCate
 Flight::route('GET /public/products/size-labels', 'Controllers\Public\ProductSizeLabelController->getAll');
 
 // Product Images
-Flight::route('GET /public/products/@id/images', 'Controllers\Public\ProductImageController->getImagesByProductId');
-// Flight::route('GET /public/products/@id/images/', 'Controllers\Public\ProductController->getById');
+Flight::route('GET /public/products/@id/images', 'Controllers\Public\ProductImageController->getImagesForProductId');
 
 // Product Variants
-Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVariantController->getVariantsForProductWithId');
+Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVariantController->getVariantsForProductId');
 
 // Product
 Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
-Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getById');
+Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
+Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
 
 // --------------------------------
 // ROUTES - manage
@@ -176,11 +165,12 @@ Flight::route('DELETE /manage/products/size-labels/@id', 'Controllers\Manage\Pro
 
 // Product Images
 Flight::route('POST /manage/products/@id/images/upload', 'Controllers\Manage\ProductImageController->uploadImage');
-Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteByIdAndReorderPriorities');
+Flight::route('DELETE /manage/products/images/@image_id', 'Controllers\Manage\ProductImageController->deleteForIdAndReorderPriorities');
 Flight::route('POST /manage/products/images/update-ordering', 'Controllers\Manage\ProductImageController->updateOrdering');
 
 // Product Variants
 Flight::route('POST /manage/products/@id/variant/@variantId/images/upload', 'Controllers\Manage\ProductImageController->uploadVariantImage');
+Flight::route('POST /manage/products/@id/variants', 'Controllers\Manage\ProductVariantController->create');
 
 // --------------------------------
 // ROUTES - 404
@@ -210,7 +200,7 @@ Flight::route('GET /debug/routes', function () {
 // Global error handler
 // --------------------------------
 Flight::map('error', function (Throwable $e) {
-  ErrorHandler::handleException($e, 'index.php');
+  ErrorHandler::handleThrowable($e, 'index.php');
 });
 
 // --------------------------------

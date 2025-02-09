@@ -3,43 +3,76 @@
 namespace Controllers\Public;
 
 use Flight;
-use PDO;
-use R;
 use Exception;
+use Helpers\ErrorHandler;
 
-class ProductController {
-  public function getAll(){
-    try {
-      $productModel = Flight::get('productModel');
-      $products = $productModel->getAll();
+class ProductController
+{
+    public function getAll()
+    {
+        try {
+            $productModel = Flight::get('productModel');
+            $products = $productModel->getAll();
 
-      if($products === null) {
-        throw new Exception("Failed to retrieve products.");
-      }
+            if ($products === null) {
+                throw new Exception("Failed to retrieve products.");
+            }
 
-      Flight::json($products, 200);
-    } catch (Exception $e) {
-      $message = "Error in ProductController::getAll(): " . $e->getMessage();
-      error_log($message);
-      Flight::json(["message" => $message], 500);
+            Flight::json($products, 200);
+        } catch (Exception $e) {
+            $message = "Error in ProductController::getAll(): " . $e->getMessage();
+            error_log($message);
+            Flight::json(["message" => $message], 500);
+        }
     }
-  }
 
-  public function getById($id){
-    try {
-      $productModel = Flight::get('productModel');
-      $product = $productModel->getById($id);
+    public function getForId($id)
+    {
+        try {
+            $productModel = Flight::get('productModel');
+            $product = $productModel->getForId($id);
 
-      if($product === null) {
-            Flight::json(["error" => "Product with ID $id not found"], 404);
-            return;
-      }
+            if ($product === null) {
+                ErrorHandler::returnValidationError("Produto não encontrado.");
+            }
 
-      Flight::json($product, 200);
-    } catch (Exception $e) {
-      $message = "Error in ProductController::getById(): " . $e->getMessage();
-      error_log($message);
-      Flight::json(["message" => $message], 500);
+            Flight::json($product, 200);
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductController->getForId()");
+        }
     }
-  }
+
+    public function getForIdFull($id)
+    {
+        try {
+            // Fetch the basic product data
+            $productModel = Flight::get('productModel');
+            $product = $productModel->getForId($id);
+
+            if ($product === null) {
+                ErrorHandler::returnValidationError("Produto não encontrado.");
+            }
+
+            // Fetch product images
+            $productImageModel = Flight::get('productImageModel');
+            $product['images'] = $productImageModel->getForProductId($id);
+
+            // Fetch product sizes
+            $productSizeModel = Flight::get('productSizeModel');
+            $product['sizes'] = $productSizeModel->getSizesForProductId($id);
+
+            // Fetch product variants
+            $productVariantModel = Flight::get('productVariantModel');
+            $product['variants'] = $productVariantModel->getVariantsForProductId($id);
+
+            // Fetch product variants' images
+            foreach ($product['variants'] as &$variant) { // Pass For reference to modify directly
+                $variant['images'] = $productImageModel->getForVariantId($variant['id']);
+            }
+
+            Flight::json($product, 200);
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductController->getForIdFull()");
+        }
+    }
 }

@@ -36,7 +36,7 @@ class ProductSizeModel
         $this->db->exec($query);
     }
 
-    // Fetch all products
+    // Fetch all product sizes
     public function getAll(): array
     {
         try {
@@ -45,6 +45,18 @@ class ProductSizeModel
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
             ErrorHandler::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
+        }
+    }
+
+    // Fetch by ID
+    public function getSizesForProductId($product_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
+            $stmt->execute([$product_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure null if no results
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductSizeModel->getSizesForProductId()");
         }
     }
 }

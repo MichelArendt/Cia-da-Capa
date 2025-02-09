@@ -66,8 +66,6 @@ class ProductImageModel
         try {
             $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images"); // Ensure no duplicate trigger
             $this->db->exec($triggerQuery);
-
-            $this->db->exec("DROP TRIGGER IF EXISTS after_delete_product_images"); // Ensure no duplicate trigger
         } catch (\PDOException $e) {
             ErrorHandler::handlePdoException($e, __METHOD__, "Trigger creation failed in ProductImageModel->createTableIfNotExists()");
         }
@@ -90,29 +88,40 @@ class ProductImageModel
         }
     }
 
-    public function getByProductId($product_id)
+    public function getForProductId($product_id)
     {
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_images WHERE product_id = :product_id");
             $stmt->execute([':product_id' => $product_id]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getByProductId()");
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getForProductId()");
         }
     }
 
-    public function getById($image_id)
+    public function getForVariantId($product_variant_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE product_variant_id = :product_variant_id");
+            $stmt->execute([':product_variant_id' => $product_variant_id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getForVariantId()");
+        }
+    }
+
+    public function getForId($image_id)
     {
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
             $stmt->execute([':id' => $image_id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getById()");
+            ErrorHandler::handleException($e, __METHOD__, "ProductImageModel->getForId()");
         }
     }
 
-    public function deleteByIdAndReorderPriorities($image_id)
+    public function deleteForIdAndReorderPriorities($image_id)
     {
         try {
             // Start a transaction to ensure both deletion and reordering happen together.

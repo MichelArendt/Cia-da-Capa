@@ -275,10 +275,10 @@ class ProductImageController {
     /**
      * Fetch all images associated with a given product ID.
      */
-    public function getImagesByProductId($product_id)
+    public function getImagesForProductId($product_id)
     {
         try {
-            $images = $this->imageModel->getByProductId($product_id);
+            $images = $this->imageModel->getForProductId($product_id);
             Flight::json(['success' => true, 'images' => $images]);
         } catch (Exception $e) {
             error_log("Error fetching images: " . $e->getMessage());
@@ -289,11 +289,11 @@ class ProductImageController {
     /**
      * Delete an image by its ID.
      */
-    public function deleteByIdAndReorderPriorities($image_id)
+    public function deleteForIdAndReorderPriorities($image_id)
     {
         try {
             // Fetch image details before deletion
-            $image = $this->imageModel->getById($image_id);
+            $image = $this->imageModel->getForId($image_id);
             if (!$image) {
                 Flight::json(['error' => 'Image not found'], 404);
                 return;
@@ -317,7 +317,7 @@ class ProductImageController {
             }
 
             // Remove the image record from the database
-            $this->imageModel->deleteByIdAndReorderPriorities($image_id);
+            $this->imageModel->deleteForIdAndReorderPriorities($image_id);
             Flight::json(['success' => true, 'message' => 'Image deleted successfully']);
         } catch (Exception $e) {
             error_log("Delete Error: " . $e->getMessage());

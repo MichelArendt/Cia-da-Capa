@@ -31,19 +31,7 @@ class ProductCategoryModel
         $this->db->exec($query);
     }
 
-    // Fetch all product categories
-    public function getAll(): array
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT * FROM product_categories");
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
-        } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->getAll()");
-        }
-    }
-
-    // create product category
+    // Create product category
     public function create(string $name, string $reference, bool $isActive = true): ?int
     {
         try {
@@ -64,6 +52,18 @@ class ProductCategoryModel
             return (int) $this->db->lastInsertId();
         } catch (Exception $e) {
             ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->create()");
+        }
+    }
+
+    // Fetch all product categories
+    public function getAll(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_categories");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->getAll()");
         }
     }
 

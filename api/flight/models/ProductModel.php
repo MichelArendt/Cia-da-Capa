@@ -50,16 +50,49 @@ class ProductModel
     }
 
     // Fetch by ID
-    public function getById($id)
+    public function getForId($id)
     {
         try {
             $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure null if no results
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductModel->getById()");
+            ErrorHandler::handleException($e, __METHOD__, "ProductModel->getForId()");
         }
     }
+
+    // // Fetch by ID - full details (images, variants and sizes)
+    // public function getForIdFull($id)
+    // {
+    //     try {
+    //         // Fetch the basic product data
+    //         $product = $this->getForId($id);
+
+    //         if ($product == null) {
+    //             ErrorHandler::returnValidationError("Produto não encontrado.");
+    //         }
+
+    //         // Fetch product images from the product_images table
+    //         $stmtImages = $this->db->prepare("SELECT * FROM product_images WHERE product_id = ?");
+    //         $stmtImages->execute([$id]);
+    //         // Use a lower-case key ("images") so that your JSON matches the expected naming (snake_case -> PascalCase)
+    //         $product['images'] = $stmtImages->fetchAll(PDO::FETCH_ASSOC);
+
+    //         // Fetch product sizes from the product_sizes table
+    //         $stmtSizes = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
+    //         $stmtSizes->execute([$id]);
+    //         $product['sizes'] = $stmtSizes->fetchAll(PDO::FETCH_ASSOC);
+
+    //         // Fetch product variants from the product_variants table
+    //         $stmtVariants = $this->db->prepare("SELECT * FROM product_variants WHERE product_id = ?");
+    //         $stmtVariants->execute([$id]);
+    //         $product['variants'] = $stmtVariants->fetchAll(PDO::FETCH_ASSOC);
+
+    //         return $product;  // Returns an associative array with keys for product fields, and arrays for images, sizes, and variants.
+    //     } catch (Exception $e) {
+    //         ErrorHandler::handleException($e, __METHOD__, "ProductModel->getForId()");
+    //     }
+    // }
 
     // Create a new product
     public function create(string $title, string $reference, ?string $description, int $categoryId, bool $isActive, bool $isHighlighted, int $priority): ?int

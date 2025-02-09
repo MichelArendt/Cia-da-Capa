@@ -35,8 +35,32 @@ class ProductVariantModel
         $this->db->exec($query);
     }
 
+    // Create product variant
+    public function create(int $product_id, string $name, string $title, string $description): ?int
+    {
+        try {
+            $stmt = $this->db->prepare("
+                INSERT INTO product_variants (product_id, name, title, description, created_at, updated_at)
+                VALUES (:product_id, :name, :title, :description, NOW(), NOW())"
+            );
+
+            $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':description', $description, PDO::PARAM_STR);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to insert product variant.");
+            }
+
+            return (int) $this->db->lastInsertId();
+        } catch (Exception $e) {
+            ErrorHandler::handleException($e, __METHOD__, "ProductVariantModel->create()");
+        }
+    }
+
     // Fetch all products
-    public function getVariantsForProductWithId($id): array
+    public function getVariantsForProductId($id): array
     {
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_variants WHERE product_id = :product_id");
