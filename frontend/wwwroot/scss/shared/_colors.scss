@@ -14,32 +14,39 @@
 }
 
 // Primary Colors
-$color-primary--main: hsla(37, 59%, 54%, 1.0);         // Primary main color
-$color-primary--dark: hsla(240, 3%, 18%, 1.0);         // Primary dark color
+$color-primary--main: hsla(37, 59%, 54%, 1.0);
+$color-primary--dark: hsla(240, 3%, 18%, 1.0);
 
 // Secondary Colors
-$color-secondary--main: hsla(24, 70%, 50%, 1.0);       // Secondary light color
-$color-secondary--light: hsla(0, 0%, 73%, 1.0);        // Secondary light color
+$color-secondary--main: hsla(24, 70%, 50%, 1.0);
+$color-secondary--light: hsla(0, 0%, 73%, 1.0);
 
+// ------------------------------
 // Feedback Colors
-$color-feedback--success: hsla(120, 61%, 45%, 1.0);    // Success text
-$color-feedback--success-bg: hsla(120, 61%, 93%, 1.0); // Success background
+// ------------------------------
+// Success
+$color-feedback--success: hsla(120, 50%, 40%, 1.0);
+$color-feedback--success-bg: hsla(120, 50%, 92%, 1.0);
 
-// Error Colors
-$color-feedback--error: hsla(0, 68%, 46%, 1.0);        // Error text
-$color-feedback--error-bg: hsla(0, 68%, 93%, 1.0);     // Error background
+// Info
+$color-feedback--info: hsla(208, 90%, 50%, 1.0);
+$color-feedback--info-bg: hsla(208, 90%, 93%, 1.0);
 
-// Info Colors
-$color-feedback--info: hsla(208, 90%, 50%, 1.0);       // Info text
-$color-feedback--info-bg: hsla(208, 90%, 93%, 1.0);    // Info background
+// Validation Error
+$color-feedback--highlight: hsla(45, 90%, 40%, 1.0);
+$color-feedback--highlight-bg: hsla(45, 90%, 92%, 1.0);
 
-// Warning Colors
-$color-feedback--warning: hsla(39, 100%, 45%, 1.0);    // Warning text
-$color-feedback--warning-bg: hsla(39, 100%, 93%, 1.0); // Warning background
+// Validation Error
+$color-feedback--warning: hsla(39, 100%, 45%, 1.0);
+$color-feedback--warning-bg: hsla(39, 100%, 93%, 1.0);
 
-// Neutral Colors
-$color-neutral--main: hsla(0, 0%, 20%, 1.0);           // Neutral main color
-$color-neutral--bg: hsla(0, 0%, 96%, 1.0);             // Neutral background color
+// Error
+$color-feedback--error: hsla(0, 68%, 46%, 1.0);
+$color-feedback--error-bg: hsla(0, 68%, 93%, 1.0);
+
+// Neutral
+$color-neutral--main: hsla(0, 0%, 20%, 1.0);
+$color-neutral--bg: hsla(0, 0%, 96%, 1.0);
 
 
 .mouse-disabled {

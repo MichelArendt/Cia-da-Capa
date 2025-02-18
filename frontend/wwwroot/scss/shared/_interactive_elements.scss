@@ -29,9 +29,10 @@
 button {
     @extend .roboto-light;
 }
-.overlay__button {
 
+.overlay__button {
 }
+
 .overlay__button--close {
   position: absolute;
   top: 0;
@@ -40,6 +41,7 @@ button {
   line-height: 0.6em;
   padding: 20px;
   color: $color-secondary--light;
+  background: opacity-set($color-primary--dark, 90%);
 }
 
 // -----------------------
@@ -68,6 +70,7 @@ button {
     visibility: hidden;
     z-index: 1000;
     transition: all linear 0.2s;
+    background: opacity-set($color-primary--dark, 90%);
 }
 
 /* For fullscreen mobile */

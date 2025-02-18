@@ -53,6 +53,20 @@ a:hover {
   }
 }
 
+button {
+  background: $color-primary--dark;
+  color: $color-primary--main;
+  padding: 10px;
+
+  transition: all linear 0.2s;
+}
+
+button:hover {
+  background: $color-primary--main;
+  color: $color-primary--dark;
+  padding: 10px;
+}
+
 // ---------------------------
 // FORM
 // ---------------------------
@@ -70,6 +84,7 @@ a:hover {
     border-radius: 4px;
     font-size: 1rem;
     margin: 0.5rem;
+    list-style: disc;
 
     &--success {
         background-color: $color-feedback--success-bg;
@@ -304,7 +319,7 @@ a:hover {
   }
 
   > :first-child {
-    animation: bounce 1.5s infinite both;
+    animation: tada 1.5s infinite both;
   }
 }
 
@@ -319,7 +334,7 @@ a:hover {
   }
 
   > :first-child {
-    animation: blink 2s infinite both;
+    animation: flash 2s infinite both;
   }
 }
 
@@ -335,6 +350,21 @@ a:hover {
 
   > :first-child {
     animation: rubberBand 1.5s infinite both;
+  }
+}
+
+.notification--highlight {
+  background: $color-feedback--highlight-bg;
+  color: $color-feedback--highlight;
+  box-shadow: $color-feedback--highlight;
+  border-color: $color-feedback--highlight;
+
+  > svg {
+    fill: $color-feedback--highlight;
+  }
+
+  > :first-child {
+    animation: bounce 1s infinite both;
   }
 }
 
@@ -358,14 +388,12 @@ a:hover {
 // ---------------------------
 .tabbed-navigation_tabs {
   display: flex;
-  gap: 10px;
-  background: red;
 }
 .tabbed-navigation_tab-button {
-  background: yellow;
 }
 
 .tabbed-navigation_tab-content {
+  background: $color-secondary--light;
   display: none;
 }
 

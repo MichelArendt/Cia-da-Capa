@@ -375,6 +375,7 @@ button {
   line-height: 0.6em;
   padding: 20px;
   color: hsl(0, 0%, 73%);
+  background: hsla(240, 3%, 18%, 0.9);
 }
 
 .dropdown {
@@ -402,6 +403,7 @@ button {
   visibility: hidden;
   z-index: 1000;
   transition: all linear 0.2s;
+  background: hsla(240, 3%, 18%, 0.9);
 }
 
 /* For fullscreen mobile */
@@ -621,25 +623,47 @@ button {
  */
 /**
  * ----------------------------------------
- * Blink
+ * Tada
  * ----------------------------------------
  */
-@-webkit-keyframes blink {
-  0%, 50%, 100% {
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  10%, 20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+  30%, 50%, 70%, 90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+  40%, 60%, 80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.tada {
+  animation-name: tada;
+}
+
+/**
+ * ----------------------------------------
+ * Flash
+ * ----------------------------------------
+ */
+@keyframes flash {
+  from, 50%, to {
     opacity: 1;
   }
   25%, 75% {
     opacity: 0;
   }
 }
-@keyframes blink {
-  0%, 50%, 100% {
-    opacity: 1;
-  }
-  25%, 75% {
-    opacity: 0;
-  }
+.flash {
+  animation-name: flash;
 }
+
 /**
  * ----------------------------------------
  * Bounce
@@ -847,6 +871,19 @@ a:hover {
   padding: 0 10px;
 }
 
+button {
+  background: hsl(240, 3%, 18%);
+  color: hsl(37, 59%, 54%);
+  padding: 10px;
+  transition: all linear 0.2s;
+}
+
+button:hover {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 3%, 18%);
+  padding: 10px;
+}
+
 .form__title {
   color: hsl(37, 59%, 54%);
   text-align: center;
@@ -858,10 +895,11 @@ a:hover {
   border-radius: 4px;
   font-size: 1rem;
   margin: 0.5rem;
+  list-style: disc;
 }
 .feedback--success {
-  background-color: hsl(120, 61%, 93%);
-  color: hsl(120, 61%, 45%);
+  background-color: hsl(120, 50%, 92%);
+  color: hsl(120, 50%, 40%);
 }
 .feedback--error {
   background-color: hsl(0, 68%, 93%);
@@ -1014,16 +1052,16 @@ Duration of animation */
 }
 
 .notification--success {
-  background: hsl(120, 61%, 93%);
-  color: hsl(120, 61%, 45%);
-  box-shadow: hsl(120, 61%, 45%);
-  border-color: hsl(120, 61%, 45%);
+  background: hsl(120, 50%, 92%);
+  color: hsl(120, 50%, 40%);
+  box-shadow: hsl(120, 50%, 40%);
+  border-color: hsl(120, 50%, 40%);
 }
 .notification--success > svg {
-  fill: hsl(120, 61%, 45%);
+  fill: hsl(120, 50%, 40%);
 }
 .notification--success > :first-child {
-  animation: bounce 1.5s infinite both;
+  animation: tada 1.5s infinite both;
 }
 
 .notification--warning {
@@ -1036,7 +1074,7 @@ Duration of animation */
   fill: hsl(39, 100%, 45%);
 }
 .notification--warning > :first-child {
-  animation: blink 2s infinite both;
+  animation: flash 2s infinite both;
 }
 
 .notification--info {
@@ -1050,6 +1088,19 @@ Duration of animation */
 }
 .notification--info > :first-child {
   animation: rubberBand 1.5s infinite both;
+}
+
+.notification--highlight {
+  background: hsl(45, 90%, 92%);
+  color: hsl(45, 90%, 40%);
+  box-shadow: hsl(45, 90%, 40%);
+  border-color: hsl(45, 90%, 40%);
+}
+.notification--highlight > svg {
+  fill: hsl(45, 90%, 40%);
+}
+.notification--highlight > :first-child {
+  animation: bounce 1s infinite both;
 }
 
 .notification--error {
@@ -1067,15 +1118,10 @@ Duration of animation */
 
 .tabbed-navigation_tabs {
   display: flex;
-  gap: 10px;
-  background: red;
-}
-
-.tabbed-navigation_tab-button {
-  background: yellow;
 }
 
 .tabbed-navigation_tab-content {
+  background: hsl(0, 0%, 73%);
   display: none;
 }
 

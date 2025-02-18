@@ -5,9 +5,9 @@
 @using frontend.Services.Interop
 
 @inject IJSRuntime JSRuntime
-@inject AppStateService AppState
+@* @inject AppStateService AppState *@
 
-<div class="dropdown @ClassName" @onclick="Toggle">
+<div class="dropdown @ClassName" @onclick="ToggleOnlyOnMobile">
     <button class="dropdown__button @HeaderClassName" @onclick="OnClick">
         @HeaderContent
         @if (!HideArrow)
@@ -23,14 +23,17 @@
         <div class="dropdown__content-wrapper"
         @onclick:stopPropagation>
             @if (AppState.IsMobile) {
-                Console.WriteLine(AppState.IsMobile);
+                Console.WriteLine("Dropdown: " + AppState.IsMobile);
                 <div class="dropdown__content-title">@BodyMobileContentTitle</div>
             }
             @BodyContent
         </div>
         @if (AppState.IsMobile)
         {
-            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
+            <button class="overlay__button overlay__button--close" @onclick="Close"
+            @onclick:stopPropagation>
+                &times;
+            </button>
         }
     </div>
 </div>
@@ -71,7 +74,13 @@
         base.OnInitialized();
 
         AppState.WindowResized += UpdateDynamicPosition;
-        // Console.WriteLine("dropdown initialized");
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        AppState.WindowResized -= UpdateDynamicPosition;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -116,10 +125,5 @@
         // }
         // DynamicStyle = $"top: {elementBoundingRect.Top}px; left: {elementBoundingRect.Left}px;";
         // Console.WriteLine(DynamicStyle);
-    }
-    public void Dispose()
-    {
-        // e.g.
-        AppState.WindowResized -= UpdateDynamicPosition;
     }
 }

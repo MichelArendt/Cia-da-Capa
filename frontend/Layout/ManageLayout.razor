@@ -10,6 +10,7 @@
 @using frontend.DTOs
 
 @inject AppStateService AppState
+@inject ProductStateService ProductStateService
 @inject NavigationManager Navigation
 @inject ProductCategoryService ProductCategoryService
 @inject UserService UserService
@@ -17,30 +18,25 @@
 
 <Header>
     <NavResponsiveMenuOptions>
-        @* <div> *@
-        @*     <NavLink href="manage" class="nav__button nav--interactive"> *@
-        @*         Página Inicial *@
-        @*     </NavLink> *@
-        @* </div> *@
         @if (AppState.IsMobile)
         {
             <List>
                 <HeaderContent>
                     <button class="nav__button nav--interactive"
-                            @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
+                    @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
                         Produtos
                     </button>
                 </HeaderContent>
                 <BodyContent>
-                    @if (!AppState.Product.Categories.Items.Any())
+                    @if (!ProductStateService.Categories.Any())
                     {
                         <li>Não há categorias cadastradas!</li>
                     }
                     else
                     {
-                        @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                    @foreach (var (index, category) in ProductStateService.Categories)
                         {
-                            <li>@category.Name</li>
+                            <li>@category.Title</li>
                         }
                     }
                 </BodyContent>
@@ -61,15 +57,15 @@
                         </NavLink>
                     </li>
 
-                    @if (!AppState.Product.Categories.Items.Any())
+                    @if (!ProductStateService.Categories.Any())
                     {
                         <li>Não há categorias cadastradas!</li>
                     }
                     else
                     {
-                        @foreach (ProductCategoryDto category in AppState.Product.Categories.Items)
+                        @foreach (var (index, category) in ProductStateService.Categories)
                         {
-                            <li>@category.Name</li>
+                            <li>@category.Title</li>
                         }
                     }
                 </BodyContent>
@@ -123,76 +119,17 @@
     </div>
 </main>
 
-@* @if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching()) *@
-@* { *@
-@*     Console.WriteLine("Manage Layout: ContentLoader"); *@
-@*     <ContentLoader /> *@
-@* } *@
-@* else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed()) *@
-@* { *@
-@*     Console.WriteLine("Manage Layout: AppState.Product.Categories.HasFailed()"); *@
-@*     <PageTitle>500 - Cia da Capa</PageTitle> *@
-@*     <_500 /> *@
-@* } *@
-@* else *@
-@* { *@
-
-@* } *@
-
 @code {
-    @* private bool IsAuthenticating = false; *@
-    @* private List<ProductCategoryDto> productCategories = new(); *@
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         AppState.IsManageRoute = true;
-        @* AppState.IsMobileChanged += StateHasChanged; *@
-        @* AppState.IsAuthenticatedChanged += StateHasChanged; *@
-        @* AppState.Product.Categories.StateChanged += StateHasChanged; *@
-        @* AppState.Product.SizeLabels.StateChanged += StateHasChanged; *@
     }
 
     public void Dispose()
     {
-        @* AppState.IsMobileChanged -= StateHasChanged; *@
-        @* AppState.IsAuthenticatedChanged -= StateHasChanged; *@
-        @* AppState.Product.Categories.StateChanged -= StateHasChanged; *@
-        @* AppState.Product.SizeLabels.StateChanged -= StateHasChanged; *@
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        @* await AppState.Product.Categories.FetchItems(); *@
-        @* await AppState.Product.SizeLabels.FetchItems(); *@
-    }
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     var currentUri = Navigation.Uri;
-
-    //     if (!AppState.IsAuthenticated && !currentUri.Contains("manage/login"))
-    //     {
-    //         // Attempt to validate the session cookie with the server
-    //         Console.WriteLine("validating");
-    //         var response = await UserService.ValidateSessionAsync();
-    //         Console.WriteLine(response);
-    //         if (response)
-    //         {
-    //             Console.WriteLine("ManageLayout - Authenticated: " + true);
-    //             AppState.IsAuthenticated = true;
-    //         }
-    //         else
-    //         {
-    //             Console.WriteLine("ManageLayout - Authenticated: " + false);
-    //             AppState.IsAuthenticated = false;
-    //             Navigation.NavigateTo("manage/login");
-    //         }
-    //     }
-
-    //     IsAuthenticating = false;
-    // }
 
     private async Task UserLogout()
     {
