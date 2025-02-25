@@ -141,7 +141,7 @@ class ProductImageModel
             $stmt->execute([':id' => $image_id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            HttpResponse::handleException($e, __METHOD__, "ProductImageModel->getForId()");
+            HttpResponse::handleException($e, __METHOD__, "ProductImageModel->getById()");
         }
     }
 

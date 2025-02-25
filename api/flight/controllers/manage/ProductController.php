@@ -62,7 +62,6 @@ class ProductController
                 HttpResponse::returnValidationError("Título, Referência e Categoria são obrigatórios.");
             }
 
-
             // Extract data and apply defaults
             $title = trim($data['title']);
             $reference = trim($data['reference']);

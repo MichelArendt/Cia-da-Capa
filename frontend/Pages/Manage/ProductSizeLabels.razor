@@ -18,7 +18,12 @@
 
 <PageTitle>Etiquetas de Tamanho (Gerenciamento)</PageTitle>
 
-<h2>Adicionar nova etiqueta de tamanho de produto</h2>
+@if (!isUpdating)
+{
+    <h2>Adicionar nova etiqueta de tamanho de produto</h2>
+} else {
+    <h2>Atualizando etiqueta</h2>
+}
 
 <EditForm Model="@productSizeLabelFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
@@ -34,7 +39,7 @@
         autocomplete="on"
         placeholder="Pequeno"
         @bind-Value="productSizeLabelFormModel.Title"
-        disabled="@IsSubmitting" />
+        disabled="@isSubmitting" />
         <ValidationMessage For="@(() => productSizeLabelFormModel.Title)" />
     </div>
 
@@ -48,12 +53,20 @@
         autocomplete="on"
         placeholder="P"
         @bind-Value="productSizeLabelFormModel.Label"
-        disabled="@IsSubmitting" />
+        disabled="@isSubmitting" />
         <ValidationMessage For="@(() => productSizeLabelFormModel.Label)" />
     </div>
 
     <div>
-        <button type="submit" disabled="@IsSubmitting">Adicionar etiqueta</button>
+        @if (!isUpdating)
+        {
+            <button type="submit" disabled="@isSubmitting">Adicionar etiqueta</button>
+        }
+        else
+        {
+            <button type="submit" disabled="@isSubmitting">Atualizar</button>
+            <button type="reset" disabled="@isSubmitting" @onclick="ResetForm">Cancelar</button>
+        }
     </div>
 </EditForm>
 
@@ -97,7 +110,7 @@
                             <td>@sizeLabel.Title</td>
                             <td>@sizeLabel.Priority</td>
                             <td>
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
+                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(sizeLabel.Id))" />
                                 <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
                             </td>
                         </tr>
@@ -117,13 +130,15 @@
     // private NewProductSizeLabelDto newProductSizeLabelModel = new();
     private ProductSizeLabelFormModel productSizeLabelFormModel = new();
     private string? errorMessage;
-    private bool IsSubmitting { get; set; } = false;
-    private HashSet<int> deletingSizeLabels = new();
     private int? draggedSizeLabelId = null; // Stores the ID of the dragged item
+    private bool isSubmitting { get; set; } = false;
+    private bool isUpdating { get; set; } = false;
     private bool orderingChanged = false;
+    private HashSet<int> deletingSizeLabels = new();
     private ApiStateHandler<object> createSizeLabelApiHandler = new();
-    private ApiStateHandler<object> updateSizeLabelOrderingApiHandler = default!;
+    private ApiStateHandler<object> updateSizeLabelApiHandler = new();
     private ApiStateHandler<object> deleteSizeLabelApiHandler = new();
+    private ApiStateHandler<object> updateSizeLabelOrderingApiHandler = default!;
     private NotificationModel orderingChangedNotification = new NotificationModel
     {
         Content =@<span>Ordem dos rótulos modificada! Não esqueça de salvar as alterações.</span>  ,
@@ -148,63 +163,58 @@
 
     private async Task HandleValidSubmit()
     {
-        IsSubmitting = true;
+        isSubmitting = true;
         errorMessage = null;
 
-        var newProductSizeLabelDto = new NewProductSizeLabelDto
-        {
+        if(!isUpdating){
+
+            // creating new size label
+            var newProductSizeLabelDto = new NewProductSizeLabelDto
+                {
+                    Title = productSizeLabelFormModel.Title,
+                    Label = productSizeLabelFormModel.Label,
+                };
+
+            await createSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.CreateNewProductSizeLabelFunc(newProductSizeLabelDto));
+        } else {
+            // updating size label
+            var updateProductSizeLabelDto = new UpdateProductSizeLabelDto
+            {
+                Id = productSizeLabelFormModel.Id,
                 Title = productSizeLabelFormModel.Title,
                 Label = productSizeLabelFormModel.Label,
-        };
+            };
 
-        Console.WriteLine("ProductSizeLabels->HandleValidSubmit 1");
-        await createSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.CreateNewProductSizeLabelFunc(newProductSizeLabelDto));
+            await updateSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.UpdateProductSizeLabelFunc(updateProductSizeLabelDto));
+        }
 
-        if (createSizeLabelApiHandler.IsSuccess())
+        if (!isUpdating ? createSizeLabelApiHandler.IsSuccess() : updateSizeLabelApiHandler.IsSuccess())
         {
-            Console.WriteLine("ProductSizeLabels->HandleValidSubmit 2");
             // Reset form fields
-            productSizeLabelFormModel = new();
+            ResetForm();
 
             // Re-fetch categories to update the list
             await ProductStateService.RefetchSizeLabels();
+            NotificationService.DisplaySuccess("Etiqueta atualizada com sucesso!");
         }
         else
         {
-            Console.WriteLine("ProductSizeLabels->HandleValidSubmit 3");
-            errorMessage = createSizeLabelApiHandler.GetErrorString();
-            Console.WriteLine("ProductSizeLabels->HandleValidSubmit 4 " + errorMessage);
-            NotificationService.Display(createSizeLabelApiHandler.GetErrorNotificationModel("Erro ao adicionar etiqueta."));
+            errorMessage = !isUpdating ? createSizeLabelApiHandler.GetErrorString() : updateSizeLabelApiHandler.GetErrorString();
+            NotificationService.Display(
+                !isUpdating ? 
+                    createSizeLabelApiHandler.GetErrorNotificationModel("Erro ao adicionar etiqueta.") : 
+                    updateSizeLabelApiHandler.GetErrorNotificationModel("Erro ao atualizar etiqueta.")
+            );
             StateHasChanged();
         }
 
-        IsSubmitting = false;
+        isSubmitting = false;
     }
 
     private void HandleInvalidSubmit()
     {
         errorMessage = "Por favor corrija os erros abaixo.";
     }
-
-    private async Task DeleteSizeLabel(int sizeLabeId)
-    {
-        await deleteSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.DeleteProductSizeLabelFunc(sizeLabeId));
-
-        if (deleteSizeLabelApiHandler.IsSuccess())
-        {
-            await ProductStateService.RefetchSizeLabels();
-
-            NotificationService.DisplaySuccess(
-                "Ordem dos rótulos de tamanho salva com sucesso.",
-                deleteSizeLabelApiHandler.ServerMessage
-            );
-        }
-        else
-        {
-            NotificationService.Display(deleteSizeLabelApiHandler.GetErrorNotificationModel("Erro ao salvar a remover rótulo de tamanho."));
-        }
-    }
-
 
     private void HandleReorderStart(int sizeLabelId)
     {
@@ -294,5 +304,37 @@
                 NotificationService.Display(updateSizeLabelOrderingApiHandler.GetErrorNotificationModel("Erro ao salvar a ordem dos rótulos de tamanho."));
             }
         }
+    }
+
+    private async Task DeleteSizeLabel(int sizeLabeId)
+    {
+        await deleteSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.DeleteProductSizeLabelFunc(sizeLabeId));
+
+        if (deleteSizeLabelApiHandler.IsSuccess())
+        {
+            await ProductStateService.RefetchSizeLabels();
+
+            NotificationService.DisplaySuccess(
+                "Ordem dos rótulos de tamanho salva com sucesso.",
+                deleteSizeLabelApiHandler.ServerMessage
+            );
+        }
+        else
+        {
+            NotificationService.Display(deleteSizeLabelApiHandler.GetErrorNotificationModel("Erro ao salvar a remover rótulo de tamanho."));
+        }
+    }
+
+    private void SetUpdating(int sizeLabelId)
+    {
+        isUpdating = true;
+        productSizeLabelFormModel.FromDto(productSizeLabelDtos.FirstOrDefault(p => p.Id == sizeLabelId)!);
+        StateHasChanged();
+    }
+
+    private void ResetForm(){
+        productSizeLabelFormModel = new();
+        isUpdating = false;
+        StateHasChanged();
     }
 }

@@ -43,6 +43,14 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
+        public Func<Task<HttpResponseMessage>> UpdateProductSizeLabelFunc(UpdateProductSizeLabelDto dto)
+        {
+            return () => _httpClient.PutAsJsonAsync(
+                ApiRoutes.Manage.ProductSizeLabels.Update(dto.Id),
+                dto,
+                JsonHelper._options);
+        }
+
         public async Task<HttpResponseMessage> DeleteProductSizeLabelAsync(int id)
         {
             return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductSizeLabel.Delete}/{id}");

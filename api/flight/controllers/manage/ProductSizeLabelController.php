@@ -52,6 +52,46 @@ class ProductSizeLabelController
         }
     }
 
+    public function update($id)
+    {
+        try {
+            $id = (int)$id;
+
+            // Decode incoming JSON request
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            // Validate required fields
+            if (empty($data['title']) || empty($data['label'])) {
+                HttpResponse::returnValidationError("Título e rótulo são obrigatórios.");
+            }
+
+            // Extract and trim values
+            $title = trim($data['title']);
+            $label = trim($data['label']);
+
+            // Check if the product size label exists
+            // (Assumes a getForId method is implemented in the model, similar to the product model)
+            $existingLabel = $this->productSizeLabelModel->getById($id);
+            if (!$existingLabel) {
+                HttpResponse::returnValidationError("Rótulo de tamanho do produto não encontrado.");
+            }
+
+            // Call the model update method
+            $updateSuccess = $this->productSizeLabelModel->update($id, $title, $label);
+
+            // Check if update was successful
+            if (!$updateSuccess) {
+                throw new Exception("Falha ao atualizar o rótulo de tamanho do produto.");
+            }
+
+            // Respond with success message
+            HttpResponse::responseUpdateSuccess("Rótulo de tamanho de produto atualizado com sucesso.", $id);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelController->update()");
+        }
+    }
+
+
     public function deleteForIdAndReorderPriorities($id)
     {
         try {

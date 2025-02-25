@@ -107,6 +107,7 @@
             public static class ProductSizeLabels
             {
                 public const string Create = $"{API}/manage/products/size-labels";
+                public static string Update(int id) => $"{API}/manage/products/size-labels/{id}";
                 public static string Delete(int id) => $"{API}/manage/products/size-labels/{id}";
                 public const string UpdateOrdering = $"{API}/manage/products/size-labels/update-ordering";
             }

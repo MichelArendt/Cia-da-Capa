@@ -80,6 +80,17 @@ class ProductSizeLabelModel
         }
     }
 
+    public function getById($image_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_size_labels WHERE id = :id");
+            $stmt->execute([':id' => $image_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelModel->getById()");
+        }
+    }
+
     // create product size label
     public function create(string $title, string $label): ?int
     {
@@ -102,6 +113,33 @@ class ProductSizeLabelModel
             HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelModel->create()");
         }
     }
+
+    public function update($id, string $title, string $label): bool
+    {
+        try {
+            $id = (int)$id;
+
+            $sql = "UPDATE product_size_labels
+                    SET title = :title,
+                        label = :label,
+                        updated_at = NOW()
+                    WHERE id = :id";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':label', $label, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Falha na tentativa de atualizar rótulo de tamanho.");
+            }
+
+            return true;
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelModel->update()");
+        }
+    }
+
 
     // Delete product size label by ID
     public function deleteForIdAndReorderPriorities($id)
