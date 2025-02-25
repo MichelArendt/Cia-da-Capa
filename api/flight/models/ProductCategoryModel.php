@@ -3,45 +3,45 @@
 namespace Models;
 
 use PDO;
+use Flight;
 use Exception;
-use Helpers\ErrorHandler;
+use Helpers\HttpResponse;
 
 class ProductCategoryModel
 {
     private $db;
 
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->createTableIfNotExists();
+        $this->db = Flight::get('db');
     }
 
     // Check if the table exists and create it if necessary
-    private function createTableIfNotExists()
+    public function createTableIfNotExists()
     {
         $query = "CREATE TABLE IF NOT EXISTS product_categories (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) UNIQUE NOT NULL,
-      reference VARCHAR(255) UNIQUE NOT NULL,
-      is_active TINYINT(1) DEFAULT 1,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) UNIQUE NOT NULL,
+            reference VARCHAR(255) UNIQUE NOT NULL,
+            is_active TINYINT(1) DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )";
 
         $this->db->exec($query);
     }
 
     // Create product category
-    public function create(string $name, string $reference, bool $isActive = true): ?int
+    public function create(string $title, string $reference, bool $isActive = true): ?int
     {
         try {
             $stmt = $this->db->prepare(
                 "
-            INSERT INTO product_categories (name, reference, is_active, created_at, updated_at)
-            VALUES (:name, :reference, :is_active, NOW(), NOW())"
+            INSERT INTO product_categories (title, reference, is_active, created_at, updated_at)
+            VALUES (:title, :reference, :is_active, NOW(), NOW())"
             );
 
-            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':reference', $reference, PDO::PARAM_STR);
             $stmt->bindParam(':is_active', $isActive, PDO::PARAM_BOOL);
 
@@ -51,7 +51,7 @@ class ProductCategoryModel
 
             return (int) $this->db->lastInsertId();
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->create()");
+            HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->create()");
         }
     }
 
@@ -63,7 +63,7 @@ class ProductCategoryModel
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->getAll()");
+            HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->getAll()");
         }
     }
 
@@ -95,7 +95,7 @@ class ProductCategoryModel
             http_response_code(200);
             echo json_encode(["message" => "Category deleted successfully."]);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductCategoryModel->delete()");
+            HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->delete()");
         }
     }
 }

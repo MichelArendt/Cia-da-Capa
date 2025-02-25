@@ -1,116 +1,65 @@
 ﻿@page "/manage/produtos/editar/{id:int}"
+@page "/manage/produtos/editar/{id:int}/variante/{variantId:int}"
+
 @layout ManageLayout
 
 @using frontend.Components.Manage.UI
 @using frontend.Components.Shared.UI
 @using frontend.DTOs
 @using frontend.Services.API
-@using frontend.ViewModels
 
 @inject AppStateService AppStateService
+@inject ProductStateService ProductStateService
+@inject NotificationService NotificationService
 @inject ProductService ProductService
 @inject ProductSizeService ProductSizeService
 @inject ProductVariantService ProductVariantService
 @inject ProductImageService ProductImageService
 
-@if (isFetching)
+<PageTitle>Editando Produto (Gerenciamento)</PageTitle>
+@if (productApiHandler.IsExecuting())
 {
     <ContentLoader DisplayMessage="Carregando informações do produto..." />
 }
-else if (product == null)
+else if (productApiHandler.IsSuccess() && productApiHandler.Content != null)
 {
-    <h3>Produto não encontrado.</h3>
+    <ProductForm ProductDto="productApiHandler.Content" />
+
+    <ProductSizesEditable ProductDto="productApiHandler.Content" />
+
+    <ProductVariantsEditable Product="productApiHandler" />
 }
 else
 {
-    <h3>Editando</h3>
-
-    <div>
-        @product?.Details.Title
-    </div>
-
-    <div>
-        @product?.Details.Reference
-    </div>
-
-    <div>
-        @product?.Details.Description
-    </div>
-
-    <div class="product-edit_sizes">
-        <h3>Ttamanho desse produto (P, M, G, etc)</h3>
-
-        @if (!AppStateService.Product.SizeLabels.Items.Any())
-        {
-            <span>Você deve adicionar um rótulo de tamanho primeiro!</span>
-        } else if (product!.Sizes == null)
-        {
-            <span>Erro ao carregar produtos.</span>
-        } else if (product!.Sizes.IsFetching())
-        {
-            <ContentLoader DisplayMessage="Carregando tamanhos do produto..." />
-        }
-        else
-        {
-            @foreach (var sizeLabel in sizeLabels)
-            {
-                <label>
-                    <InputCheckbox @bind-Value="@sizeLabel.IsSelected" />
-                    @sizeLabel.Label
-                </label>
-            }
-        }
-    </div>
-
-    <h3>Fotos</h3>
-    <GalleryEditable ProductId="Id" Product="product" />
+    <h3>Houve um erro ao tentar carregar as informações do produto.</h3>
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
+    [Parameter] public int? VariantId { get; set; }
 
-    private bool isFetching = true;
-    private ProductDto? productDto;
-    private ProductViewModel? product;
-    private List<SizeLabelViewModel> sizeLabels = new();
+    private ApiStateHandler<ProductDto> productApiHandler = default!;
+    [Inject] HttpClient Http { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        // Convert original list into ViewModels
-        sizeLabels = AppStateService.Product.SizeLabels.Items
-            .Select(s => new SizeLabelViewModel
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Label = s.Label,
-                    IsSelected = false // Default unchecked
-                })
-            .ToList();
+        productApiHandler = new (() => Http.GetAsync(ApiRoutes.Public.Products.GetByIdFull(Id)));
+
+        productApiHandler.StateHasChanged += () => NotificationService.HandleApiStateChanged(productApiHandler);
+    }
+
+    public void Dispose()
+    {
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(product);
+        // Console.WriteLine(productDto);
         if (Id > 0)
         {
-            Console.WriteLine(1);
-            productDto = await ProductService.GetProductByIdAsync(Id);
-
-            Console.WriteLine(2);
-            if (productDto != null)
-            {
-                Console.WriteLine(2.2);
-                product = new ProductViewModel(productDto, ProductService, ProductSizeService, ProductVariantService, ProductImageService);
-                await product.LoadDetailsAsync();
-                if (product?.Images != null)
-                {
-                    product.Images.Reorder(im => im.Priority);
-                }
-            }
+            await productApiHandler.ExecuteAsync();
+            StateHasChanged();
         }
-        Console.WriteLine(3);
-
-        isFetching = false;
     }
+
 }

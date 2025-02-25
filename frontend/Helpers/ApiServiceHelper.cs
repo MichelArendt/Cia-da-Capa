@@ -15,6 +15,5 @@ namespace frontend.Helpers
             var json = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new T();
         }
-
     }
 }

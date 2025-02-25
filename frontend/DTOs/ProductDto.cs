@@ -1,29 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using frontend.Models.Forms;
 
 namespace frontend.DTOs
 {
     public class ProductDto
     {
         public int Id { get; set; } // Primary Key
-
-        [Display(Name = "Título")]
         public string Title { get; set; } = string.Empty; // Product title
-
-        [Display(Name = "Referência")]
         public string Reference { get; set; } = string.Empty; // Unique Reference
-
-        [Display(Name = "Descrição")]
         public string? Description { get; set; } // Product description (optional)
 
         public int CategoryId { get; set; } // Foreign Key (Category)
-
-        [Display(Name = "Ativo")]
         public bool IsActive { get; set; } = true; // Active status
-
-        [Display(Name = "Destacado")]
         public bool IsHighlighted { get; set; } = false; // Highlighted status
-
-        [Display(Name = "Prioridade")]
         public int? Priority { get; set; } = 0; // Sorting priority
 
         public DateTime CreatedAt { get; set; } // Creation timestamp
@@ -34,8 +22,9 @@ namespace frontend.DTOs
         public List<ProductVariantDto> Variants { get; set; } = [];
     }
 
-    public class NewProductDto
+    public class ProductFormDto
     {
+
         public string Title { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
         public string? Description { get; set; }
@@ -43,5 +32,29 @@ namespace frontend.DTOs
         public bool IsActive { get; set; } = true;
         public bool IsHighlighted { get; set; } = false;
         public int? Priority { get; set; } = 0;
+
+        public ProductFormDto() { }
+
+        public ProductFormDto(ProductFormModel productFormModel)
+        {
+            Title = productFormModel.Title;
+            Reference = productFormModel.Reference;
+            Description = productFormModel.Description;
+            CategoryId = productFormModel.CategoryId;
+            IsActive = productFormModel.IsActive;
+            IsHighlighted = productFormModel.IsHighlighted;
+            Priority = productFormModel.Priority;
+        }
+
+        public void FromProductFormModel(ProductFormModel productFormModel)
+        {
+            Title = productFormModel.Title;
+            Reference = productFormModel.Reference;
+            Description = productFormModel.Description;
+            CategoryId = productFormModel.CategoryId;
+            IsActive = productFormModel.IsActive;
+            IsHighlighted = productFormModel.IsHighlighted;
+            Priority = productFormModel.Priority;
+        }
     }
 }

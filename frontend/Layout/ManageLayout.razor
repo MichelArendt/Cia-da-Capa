@@ -28,13 +28,13 @@
                     </button>
                 </HeaderContent>
                 <BodyContent>
-                    @if (!ProductStateService.Categories.Any())
+                    @if (!ProductStateService.CategoriesDict.Any())
                     {
                         <li>Não há categorias cadastradas!</li>
                     }
                     else
                     {
-                    @foreach (var (index, category) in ProductStateService.Categories)
+                    @foreach (var (index, category) in ProductStateService.CategoriesDict)
                         {
                             <li>@category.Title</li>
                         }
@@ -57,13 +57,13 @@
                         </NavLink>
                     </li>
 
-                    @if (!ProductStateService.Categories.Any())
+                    @if (!ProductStateService.CategoriesDict.Any())
                     {
                         <li>Não há categorias cadastradas!</li>
                     }
                     else
                     {
-                        @foreach (var (index, category) in ProductStateService.Categories)
+                        @foreach (var (index, category) in ProductStateService.CategoriesDict)
                         {
                             <li>@category.Title</li>
                         }

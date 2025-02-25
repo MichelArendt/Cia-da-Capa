@@ -4,7 +4,7 @@ namespace Controllers\Public;
 
 use Flight;
 use Exception;
-use Helpers\ErrorHandler;
+use Helpers\HttpResponse;
 
 class ProductController
 {
@@ -33,12 +33,12 @@ class ProductController
             $product = $productModel->getForId($id);
 
             if ($product === null) {
-                ErrorHandler::returnValidationError("Produto não encontrado.");
+                HttpResponse::returnValidationError("Produto não encontrado.");
             }
 
             Flight::json($product, 200);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductController->getForId()");
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getForId()");
         }
     }
 
@@ -50,7 +50,7 @@ class ProductController
             $product = $productModel->getForId($id);
 
             if ($product === null) {
-                ErrorHandler::returnValidationError("Produto não encontrado.");
+                HttpResponse::returnValidationError("Produto não encontrado.");
             }
 
             // Fetch product images
@@ -70,9 +70,15 @@ class ProductController
                 $variant['images'] = $productImageModel->getForVariantId($variant['id']);
             }
 
-            Flight::json($product, 200);
+            HttpResponse::response(
+                200,
+                null,
+                null,
+                $product
+            );
+            // Flight::json($product, 200);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductController->getForIdFull()");
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getForIdFull()");
         }
     }
 }

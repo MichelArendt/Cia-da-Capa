@@ -1,8 +1,8 @@
 ﻿namespace frontend.Handlers
 {
-    public enum FetchState
+    public enum ExecuteState
     {
-        Fetching,
+        Executing,
         Failed,
         Success
     }

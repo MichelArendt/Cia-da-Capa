@@ -1,0 +1,116 @@
+﻿@using System.Runtime.CompilerServices
+@using frontend.ViewModels.TabbedNavigation
+
+@inject AppStateService AppStateService
+@inject ProductStateService ProductStateService
+@inject ProductVariantService ProductVariantService
+
+<h3>Variantes e Fotos</h3>
+<TabbedNavigation Tabs="Tabs" />
+
+@code {
+    [Parameter]
+    public required ApiStateHandler<ProductDto> Product { get; set; }
+
+    private List<TabViewModel> Tabs { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        BuildTabs();
+
+        ProductVariantService.ProductVariantAddedOrDeleted += BuildTabs;
+        ProductVariantService.ProductVariantsUpdated += RefreshVariantTabs;
+    }
+
+    public void Dispose()
+    {
+        ProductVariantService.ProductVariantAddedOrDeleted -= BuildTabs;
+        ProductVariantService.ProductVariantsUpdated -= RefreshVariantTabs;
+    }
+
+    public void BuildTabs(){
+        Tabs.Clear();
+        StateHasChanged(); // IMPORTANT! This is necessary to update the UI
+
+        Tabs.Add(new TabViewModel
+        {
+            Title = "Normal",
+            Content = (
+                @<text>
+                    <div>
+                        @ProductStateService.CategoriesDict[Product.Content!.CategoryId].Reference-@Product.Content.Reference
+                    </div>
+
+                    <h3>Fotos</h3>
+                    <GalleryEditable Product="Product"/>
+                </text>
+            ),
+            Visible = true
+        });
+
+        if (Product.Content!.Variants != null && Product.Content.Variants.Any())
+        {
+            foreach (var currentVariant in Product.Content.Variants)
+            {
+                var variant = new ProductVariantDto
+                        {
+                            Id = currentVariant.Id,
+                            Title = currentVariant.Title,
+                            Reference = currentVariant.Reference,
+                            Description = currentVariant.Description
+                        }; 
+
+                Tabs.Add(new TabViewModel
+                {
+                    Id = variant.Id,
+                    Title = variant.Title,
+                    Content = (
+                        @<text>
+                            <ProductVariantForm Product="Product" VariantId="variant.Id" />
+
+                            <h3>Fotos</h3>
+                            <GalleryEditable Product="Product" VariantId="variant.Id" />
+                        </text>
+                    )
+                });
+            }
+        }
+
+        Tabs.Add(new TabViewModel
+        {
+            Title = "+",
+            Content = (
+                @<text>
+                    <ProductVariantForm Product="Product" />
+                </text>
+    )
+        });
+
+        StateHasChanged();
+    }
+
+    public Task RefreshVariantTabs()
+    {
+        // Loops through the tabs that are of variants (where ID is set)
+        foreach (var tab in Tabs.FindAll(t => t.Id != null))
+        {
+            // Check if product still has this variant
+            var variant = Product.Content!.Variants.Find(v => v.Id == tab.Id);
+
+            if (variant == null)
+            {
+                // Tab deleted
+                BuildTabs();
+            }
+            else
+            {
+                // Tab updated
+                tab.Title = variant.Title;
+            }
+        }
+
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+}

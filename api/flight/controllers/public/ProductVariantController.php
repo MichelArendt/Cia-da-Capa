@@ -5,23 +5,23 @@ namespace Controllers\Public;
 use PDOException;
 use Flight;
 use Exception;
-use Helpers\ErrorHandler;
+use Helpers\HttpResponse;
 
 class ProductVariantController
 {
-    public function getVariantsForProductWithId($id)
+    public function getVariantsForProductId($id)
     {
         try {
             $productVariantModel = Flight::get('productVariantModel');
-            $productVariants = $productVariantModel->getVariantsForProductWithId($id);
+            $productVariants = $productVariantModel->getVariantsForProductId($id);
 
             if ($productVariants === null) {
                 throw new Exception("Failed to retrieve product categories.");
             }
 
-            Flight::json($productVariants, 200);
+            HttpResponse::responseFetchSuccess($productVariants);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__);
+            HttpResponse::handleException($e, __METHOD__);
         }
     }
 }

@@ -19,10 +19,21 @@
     [Parameter]
     public required List<TabViewModel> Tabs { get; set; }
 
+    [Parameter]
+    public int CurrentTab { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        SwitchToTab(0);
+    }
+
     public void SwitchToTab(int id)
     {
         Tabs.ForEach(t => t.Visible = false);
         Tabs.ElementAt(id).Visible = true;
+        CurrentTab = id;
         StateHasChanged();
     }
 }

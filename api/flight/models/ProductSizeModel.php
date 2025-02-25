@@ -4,20 +4,20 @@ namespace Models;
 
 use PDO;
 use Exception;
-use Helpers\ErrorHandler;
+use Flight;
+use Helpers\HttpResponse;
 
 class ProductSizeModel
 {
     private $db;
 
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->createTableIfNotExists();
+        $this->db = Flight::get('db');
     }
 
-    // ✅ Check if the table exists and create it if necessary
-    private function createTableIfNotExists()
+    // Check if the table exists and create it if necessary
+    public function createTableIfNotExists()
     {
         $query = "
           CREATE TABLE IF NOT EXISTS product_sizes (
@@ -42,9 +42,9 @@ class ProductSizeModel
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_sizes");
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
         }
     }
 
@@ -54,9 +54,9 @@ class ProductSizeModel
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
             $stmt->execute([$product_id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure null if no results
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "ProductSizeModel->getSizesForProductId()");
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getSizesForProductId()");
         }
     }
 }

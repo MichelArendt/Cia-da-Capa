@@ -42,10 +42,10 @@ namespace frontend.Helpers
         {
             // Decide how you want to write booleans:
             // - numeric 0/1:
-            // writer.WriteNumberValue(value ? 1 : 0);
+            writer.WriteNumberValue(value ? 1 : 0);
 
             // OR actual JSON true/false:
-            writer.WriteBooleanValue(value);
+            //writer.WriteBooleanValue(value);
         }
     }
 }

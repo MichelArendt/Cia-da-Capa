@@ -64,12 +64,34 @@ button {
 button:hover {
   background: $color-primary--main;
   color: $color-primary--dark;
-  padding: 10px;
+}
+
+button:disabled {
+  background: $color-secondary--light;
+  color: $color-primary--dark;
+  cursor: not-allowed;
 }
 
 // ---------------------------
 // FORM
 // ---------------------------
+form {
+  @extend .poppins-regular;
+  padding: 20px;
+  font-size: 20px;
+
+  > div {
+    @extend .flex--column;
+    padding: 10px;
+  }
+}
+
+form input {
+  @extend .roboto-regular;
+  font-size: 20px;
+  padding: 10px;
+}
+
 .form__title {
     color: $color-primary--main;
     text-align: center;
@@ -107,6 +129,25 @@ button:hover {
     }
 }
 
+.validation-errors {
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin: 0.5rem;
+    list-style: disc;
+    background-color: $color-feedback--error-bg;
+    color: $color-feedback--error;
+
+    > li {
+      margin-left: 30px;
+    }
+}
+
+.validation-message {
+    padding: 5px;
+}
+
+
 
 // ---------------------------
 // CONTENT LOADER
@@ -138,40 +179,6 @@ button:hover {
 @keyframes l13{
   100%{transform: rotate(1turn)}
 }
-
-// // DROPDOWN
-// .dropdown {
-//   position: relative;
-//   display: inline-block;
-
-// }
-
-// .dropdown .submenu  {
-//   position: absolute;
-//   max-height: 0; // for smooth hover animation
-//   overflow: hidden;
-//   white-space: nowrap;
-
-//   a {
-//     padding: 5px 10px;
-//   }
-// }
-
-// .dropdown .submenu, .dropdown .option  {
-//   min-width: 100%;
-// }
-
-// .dropdown:hover {
-//   .header {
-//     svg {
-//       transform: rotate(180deg);
-//     }
-//   }
-
-//   .submenu {
-//     max-height: 1000px; // for smooth hover animation
-//   }
-// }
 
 // ---------------------------
 // DROPDOWN ANIMATION

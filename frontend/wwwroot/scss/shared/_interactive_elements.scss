@@ -272,7 +272,7 @@ button {
 // -----------------------
 // Table
 // -----------------------
-.table {
+table {
     border-collapse: collapse;
     //margin: 25px 0;
     font-size: 0.9em;
@@ -280,33 +280,33 @@ button {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.table thead tr {
+table thead tr {
     background-color: $color-primary--dark;
     color: #ffffff;
     text-align: left;
 }
-.table__sorting-arrow {
+table__sorting-arrow {
     fill: #ffffff;
 }
 
-.table th,
-.table td {
+table th,
+table td {
     padding: 12px 15px;
 }
 
-.table tbody tr {
+table tbody tr {
     border-bottom: 1px solid opacity-set($color-primary--dark, 25%);
 }
 
-.table tbody tr:nth-of-type(even) {
+table tbody tr:nth-of-type(even) {
     background-color: opacity-set($color-primary--dark, 10%);
 }
 
-.table tbody tr:last-of-type {
+table tbody tr:last-of-type {
     border-bottom: 2px solid $color-primary--dark;
 }
 
-.table tbody tr.active-row {
+table tbody tr.active-row {
     background-color: opacity-set($color-primary--main, 50%);
 }
 

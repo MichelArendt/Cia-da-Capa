@@ -3,24 +3,23 @@
 namespace Models;
 
 use PDO;
+use Flight;
 use Exception;
-use Helpers\ErrorHandler;
+use Helpers\HttpResponse;
 
 class UserModel
 {
     private $db;
 
-    public function __construct(PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->createTableIfNotExists();
-        $this->createAdminUserIfNotExists();
+        $this->db = Flight::get('db');
     }
 
     /**
      * Create the `users` table if it doesn't exist
      */
-    private function createTableIfNotExists()
+    public function createTableIfNotExists()
     {
         try {
             $query = "CREATE TABLE IF NOT EXISTS users (
@@ -33,14 +32,14 @@ class UserModel
 
             $this->db->exec($query);
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "UserModel->createTableIfNotExists()");
+            HttpResponse::handleException($e, __METHOD__, "UserModel->createTableIfNotExists()");
         }
     }
 
     /**
      * If no admin user exists, create one with username 'admin' and password 'admin'.
      */
-    private function createAdminUserIfNotExists()
+    public function createAdminUserIfNotExists()
     {
         try {
             $stmt = $this->db->prepare("SELECT id FROM users WHERE username = ?");
@@ -61,7 +60,7 @@ class UserModel
                 error_log("Admin user created by createAdminUserIfNotExists()");
             }
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "UserModel->createAdminUserIfNotExists()");
+            HttpResponse::handleException($e, __METHOD__, "UserModel->createAdminUserIfNotExists()");
         }
     }
 
@@ -91,7 +90,7 @@ class UserModel
             // Return the token
             return $token;
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "UserModel->login()");
+            HttpResponse::handleException($e, __METHOD__, "UserModel->login()");
         }
     }
 
@@ -115,7 +114,7 @@ class UserModel
                 error_log("UserModel->logout: No user found with token={$token}.");
             }
         } catch (Exception $e) {
-            ErrorHandler::handleException($e, __METHOD__, "UserModel->logout()");
+            HttpResponse::handleException($e, __METHOD__, "UserModel->logout()");
         }
     }
 }

@@ -3,9 +3,9 @@
 namespace Controllers\Public;
 
 use Flight;
-use PDO;
-use R;
 use Exception;
+use Helpers\HttpResponse;
+
 
 class ProductSizeLabelController {
   public function getAll(){
@@ -14,15 +14,12 @@ class ProductSizeLabelController {
       $productSizeLabels = $productSizeLabelModel->getAll();
 
       if($productSizeLabels === null) {
-        throw new Exception("Failed to retrieve product size labels.");
+        throw new Exception("Falha ao carregar os rótulos de tamanho dos produtos.");
       }
 
-      http_response_code(200);
-      echo json_encode($productSizeLabels);
+      HttpResponse::responseFetchSuccess($productSizeLabels);
     } catch (Exception $e) {
-      error_log("Error in ProductSizeLabelController::getAll(): " . $e->getMessage());
-      http_response_code(500);
-      echo json_encode(["error" => "An internal server error occurred."]);
+      HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelController->getAll()");
     }
   }
 }

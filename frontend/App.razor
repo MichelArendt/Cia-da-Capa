@@ -2,23 +2,32 @@
 
 @inject NavigationManager Navigation
 @inject AppStateService AppState
+@inject ProductStateService ProductStateService
 @inject UserService UserService
 @inject NotificationService NotificationService
 
-@if (AppState.Product.Categories.IsFetching() || AppState.Product.SizeLabels.IsFetching())
+@if (ProductStateService.CategoriesApiHandler.IsExecuting() || ProductStateService.SizeLabelsApiHandler.IsExecuting())
 {
     <!-- Show a loader if the essential data hasn't loaded yet -->
     <ContentLoader DisplayMessage="Carregando dados essenciais..." />
 }
-else if (AppState.Product.Categories.HasFailed() || AppState.Product.SizeLabels.HasFailed())
+else if (
+    ProductStateService.CategoriesApiHandler.HasFailed || 
+    ProductStateService.SizeLabelsApiHandler.HasFailed @* ||
+    !ProductStateService.Categories.Any() || 
+    !ProductStateService.SizeLabels.Any() *@
+)
 {
     <!-- If either fetch has failed, show a 500 page or custom error -->
     <PageTitle>500 - Cia da Capa</PageTitle>
     <_500 />
+    string errorMessage = ProductStateService.CategoriesApiHandler.ErrorMessage ?? "";
+    errorMessage += ProductStateService.SizeLabelsApiHandler.ErrorMessage ?? "";
+
     @NotificationService.DisplayError(
-                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
-                "Problema ao conectar com o bando de dados.")
-    ;
+        "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+        errorMessage
+    );
 }
 else if (AppState.IsCheckingAuth)
 {
@@ -56,26 +65,18 @@ else
 
 <Notification />
 
-@* @if (AppState.IsCheckingAuth) *@
-@* { *@
-@*     <ContentLoader DisplayMessage="Verificando sessão..." /> *@
-@* } *@
-
 @code {
-    // [Inject]
-    // private NavigationManager Navigation { get; set; } = default!;
-
-    // [Inject]
-    // private AppStateService AppState { get; set; } = default!;
-
     protected override void OnInitialized()
     {
         // AppState.IsAuthenticatedChanged += StateHasChanged;
         AppState.IsMobileChanged += StateHasChanged;
         AppState.IsCheckingAuthChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
-        AppState.Product.Categories.StateChanged += StateHasChanged;
-        AppState.Product.SizeLabels.StateChanged += StateHasChanged;
+
+        ProductStateService.CategoriesApiHandler.StateHasChanged += StateHasChanged;
+        ProductStateService.SizeLabelsApiHandler.StateHasChanged += StateHasChanged;
+        ProductStateService.CategoriesChanged += StateHasChanged;
+        ProductStateService.SizeLabelsChanged += StateHasChanged;
     }
 
     public void Dispose()
@@ -83,24 +84,26 @@ else
         AppState.IsMobileChanged -= StateHasChanged;
         AppState.IsCheckingAuthChanged -= StateHasChanged;
         AppState.IsAuthenticatedChanged -= StateHasChanged;
-        AppState.Product.Categories.StateChanged -= StateHasChanged;
-        AppState.Product.SizeLabels.StateChanged -= StateHasChanged;
+
+        ProductStateService.CategoriesApiHandler.StateHasChanged -= StateHasChanged;
+        ProductStateService.SizeLabelsApiHandler.StateHasChanged -= StateHasChanged;
+        ProductStateService.CategoriesChanged -= StateHasChanged;
+        ProductStateService.SizeLabelsChanged -= StateHasChanged;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await AppState.Product.Categories.FetchItems();
-        await AppState.Product.SizeLabels.FetchItems();
-    }
-
-    protected override void OnAfterRender(bool firstRender) {
-        if(firstRender){
-
-        }
+        // Initial fetch of categories and sizelabels
+        await Task.WhenAll(
+            ProductStateService.CategoriesApiHandler.ExecuteAsync(),
+            ProductStateService.SizeLabelsApiHandler.ExecuteAsync()
+        );
     }
 
     private async Task HandleNavigationAsync(NavigationContext context)
     {
+        AppState.TriggerNavigationChanged();
+
         // If path starts with "manage" and user not going to manage/login,
         // but we do not know or suspect they are not authenticated:
         // e.g.: /manage/somepage requires user to be authenticated

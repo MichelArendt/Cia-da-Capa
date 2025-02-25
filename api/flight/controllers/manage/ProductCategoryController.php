@@ -14,13 +14,13 @@ class ProductCategoryController {
           $data = json_decode(file_get_contents("php://input"), true);
 
           // Validate required fields
-          if (empty($data['name']) || empty($data['reference'])) {
+          if (empty($data['title']) || empty($data['reference'])) {
               throw new Exception("Name and reference are required.");
           }
 
           // Create product category via the model
           $newCategoryId = $productCategoryModel->create(
-              $data['name'],
+              $data['title'],
               $data['reference'],
               $data['is_active'] ?? true
           );

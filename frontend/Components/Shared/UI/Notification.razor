@@ -43,7 +43,10 @@
             case NotificationType.Info:
                 return "notification--info";
 
-            case NotificationType.Error:
+            case NotificationType.ValidationError:
+                return "notification--highlight";
+
+            case NotificationType.ServerError:
                 return "notification--error";
 
             default:
@@ -61,7 +64,10 @@
             case NotificationType.Info:
                 return Svg.Paths.Info;
 
-            case NotificationType.Error:
+            case NotificationType.ValidationError:
+                return Svg.Paths.Rule;
+
+            case NotificationType.ServerError:
                 return Svg.Paths.Error;
 
             default:

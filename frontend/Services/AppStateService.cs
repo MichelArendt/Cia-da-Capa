@@ -1,18 +1,14 @@
-﻿using frontend.DTOs;
-using frontend.Services.API;
-using System.Net.NetworkInformation;
-
-namespace frontend.Services
+﻿namespace frontend.Services
 {
     public class AppStateService
     {
         //protected readonly IServiceProvider _serviceProvider;
-        public ProductStateService Product { get; }
+        //public ProductStateService Product { get; }
 
-        public AppStateService(ProductStateService productStateService)
-        {
-            Product = productStateService;
-        }
+        //public AppStateService(ProductStateService productStateService)
+        //{
+        //    Product = productStateService;
+        //}
 
         public string? AttemptedPath { get; set; } // Store the attempted route
 
@@ -78,8 +74,14 @@ namespace frontend.Services
 
         //public bool IsCheckingAuth { get; set; } = true;
 
-        public event Action? IsMobileChanged;
         public event Func<Task>? WindowResized;
+        public event Action? NavigationChanged;
+        //public void TriggerNavigationChanged() => NavigationChanged?.Invoke();
+        public void TriggerNavigationChanged()
+        {
+            NavigationChanged?.Invoke();
+        }
+        public event Action? IsMobileChanged;
         public event Action? IsAuthenticatedChanged;
         public event Action? IsCheckingAuthChanged;
 

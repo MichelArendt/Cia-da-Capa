@@ -1,0 +1,238 @@
+﻿@using frontend.Helpers
+@using frontend.Models.Http
+@inject NavigationManager Navigation
+
+@inject AppStateService AppStateService
+@inject NotificationService NotificationService
+@inject ProductStateService ProductStateService
+@inject ProductSizeService ProductSizeService
+
+<h3>@(SizeId == null ? "Adicionar novo" : "Atualizando") tamanho de produto</h3>
+
+    <EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="feedback feedback--error" />
+
+
+        <div>
+            <label for="size_label_id">Categoria:</label>
+            <InputSelect id="size_label_id" @bind-Value="productSizeFormModel.SizeLabelId" disabled="@isSubmitting">
+                TODO: exclude labels the product already has
+                <option value="0">Selecione um rótulo...</option>
+                @foreach (var pair in ProductStateService.SizeLabelsDict)
+                {
+                    <option value="@pair.Value.Id">@pair.Value.Label</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => productSizeFormModel.SizeLabelId)" />
+        </div>
+
+        <div>
+            <label for="width">Largura (cm):</label>
+            <InputNumber id="width" name="width" @bind-Value="productSizeFormModel.Width" placeholder="40" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Width)" />
+        </div>
+
+        <div>
+            <label for="height">Altura (cm):</label>
+            <InputNumber id="height" name="height" @bind-Value="productSizeFormModel.Height" placeholder="30" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Height)" />
+        </div>
+
+        <div>
+            <label for="depth">Profundidade (cm):</label>
+            <InputNumber id="depth" name="depth" @bind-Value="productSizeFormModel.Depth" placeholder="1.4" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Depth)" />
+        </div>
+
+        <div>
+            @if (SizeId == null)
+            {
+                <button type="submit" disabled="@isSubmitting">Adicionar tamanho</button>
+            }
+            else
+            {
+                <div>[@SizeId]</div>
+                <button type="submit" disabled="@isSubmitting">Atualizar tamanho</button>
+            <button disabled="@isSubmitting" @onclick="DeleteSize">Remover tamanho</button>
+            }
+        </div>
+    </EditForm>
+
+@code {
+    [Parameter]
+    public required ProductDto ProductDto { get; set; }
+
+    [Parameter]
+    public int? SizeId { get; set; }
+
+    // DTOs & Form Models
+    private ProductSizeDto? productSizeDto = new();
+    private NewProductSizeDto newProductSizeDto = new();
+    private ProductSizeFormModel productSizeFormModel = new();
+
+    // Form & Feedback
+    private const string errorMessage = "Houve um erro neste formulário. Entre em contato com o administrador!";
+    private string? validationError;
+    private bool isSubmitting { get; set; } = false;
+    private bool isUpdating = true;
+
+    // API handlers
+    private ApiStateHandler<int?> createProductSizeApiHandler = default!;
+    private ApiStateHandler<object> updateProductSizeApiHandler = default!;
+    private ApiStateHandler<object> deleteProductVariantApiHandler = default!;
+    private ApiStateHandler<List<ProductSizeDto>> fetchProductSizesApiHandler = default!;
+    [Inject] HttpClient Http { get; set; } = default!;
+
+
+    protected override void OnInitialized()
+    {
+        if (SizeId == null)
+        {
+            // Creating a new variant
+            isUpdating = false;
+
+            newProductSizeDto.ProductId = ProductDto.Id;
+
+            // HANDLER - create and fetch
+            createProductSizeApiHandler = 
+                new(ProductSizeService.CreateProductSizeFunc(newProductSizeDto));
+            fetchProductSizesApiHandler = 
+                new(ProductSizeService.GetSizesForProductId(ProductDto.Id));
+        }
+        else
+        {
+            // We're updating a variant, attempt to fetch it from Product's Content
+            productSizeDto = ProductDto!.Sizes.Find(s => s.Id == SizeId);
+
+            // Create handlers using DTO's reference
+            if (productSizeDto != null)
+            {
+                // Fill the form's view model
+                productSizeFormModel.Width = productSizeDto.Width;
+                productSizeDto.Height = productSizeDto.Height;
+                productSizeDto.Depth = productSizeDto.Depth;
+
+                // HANDLER - update
+                updateProductSizeApiHandler = 
+                    new(ProductSizeService.UpdateProductSizeFunc(productSizeDto));
+
+                // HANDLER - delete
+                deleteProductVariantApiHandler = 
+                    new(ProductSizeService.DeleteProductSizeFunc(productSizeDto.Id));
+            }
+            else
+            {
+                NotificationService.DisplayError(errorMessage, "ProductSizeForm->OnInitialized");
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+
+        if (productSizeDto != null)
+        {
+            if (isUpdating)
+            {
+                productSizeDto.Width = productSizeFormModel.Width;
+                productSizeDto.Height = productSizeFormModel.Height;
+                productSizeDto.Depth = productSizeFormModel.Depth;
+
+                // UPDATING SIZE
+                await updateProductSizeApiHandler.ExecuteAsync();
+
+                // Check if update succeeded
+                if (updateProductSizeApiHandler.IsSuccess())
+                {
+                    // Display success
+                    NotificationService.DisplaySuccess(updateProductSizeApiHandler.ServerMessage);
+
+                    ProductSizeService?.InvokeProductSizesUpdated();
+                }
+                else
+                {
+                    // Error
+                    NotificationService.Display(updateProductSizeApiHandler.GetErrorNotificationModel("Erro ao tentar atualizar tamanho do produto!"));
+                }
+            }
+            else
+            {
+                // CREATING SIZE
+                newProductSizeDto.ProductId = ProductDto.Id;
+                newProductSizeDto.Width = productSizeFormModel.Width;
+                newProductSizeDto.Height = productSizeFormModel.Height;
+                newProductSizeDto.Depth = productSizeFormModel.Depth;
+
+                await createProductSizeApiHandler.ExecuteAsync();
+
+                // Check if create succeeded
+                if (createProductSizeApiHandler.IsSuccess())
+                {
+                    // Retch product sizes
+                    await fetchProductSizesApiHandler.ExecuteAsync();
+
+                    if (fetchProductSizesApiHandler.IsSuccess() && fetchProductSizesApiHandler.Content != null)
+                    {
+                        // Replace the product's sizes and trigger event to refresh UI
+                        ProductDto.Sizes = fetchProductSizesApiHandler.Content;
+
+                        NotificationService.DisplaySuccess(createProductSizeApiHandler.ServerMessage);
+                        ProductSizeService?.InvokeProductSizeAddedOrDeleted();
+                    }
+                    else
+                    {
+                        // Error
+                        NotificationService.Display(fetchProductSizesApiHandler.GetErrorNotificationModel("O tamanho foi criado, mas houve um erro local na página ao tentar tentar recuperar os tamanhos atualizados do produto. Aperte CTRL + F5!"));
+                    }
+                }
+                else
+                {
+                    // Error
+                    NotificationService.Display(createProductSizeApiHandler.GetErrorNotificationModel("Erro ao tentar criar o tamanho do produto!"));
+                }
+            }
+        }
+        else
+        {
+            NotificationService.DisplayError(errorMessage, "ProductSizeForm->HandleValidSubmit");
+        }
+
+
+        StateHasChanged();
+        isSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        validationError = "Por favor, corrija os erros acima.";
+    }
+
+    private async Task DeleteSize(){
+        if (productSizeDto != null)
+        {
+            isSubmitting = true;
+
+            // DELETE VARIANT
+            await deleteProductVariantApiHandler.ExecuteAsync();
+
+            // Check if delete succeeded
+            if (deleteProductVariantApiHandler.IsSuccess())
+            {
+                // Display success and remove variant from list
+                ProductDto.Sizes.Remove(productSizeDto);
+
+                NotificationService.DisplaySuccess(deleteProductVariantApiHandler.ServerMessage);
+                ProductSizeService?.InvokeProductSizeAddedOrDeleted();
+            }
+            else
+            {
+                // Error
+                NotificationService.Display(deleteProductVariantApiHandler.GetErrorNotificationModel("Erro ao tentar deletar o tamanho do produto!"));
+            }
+
+            isSubmitting = false;
+        }
+    }
+}

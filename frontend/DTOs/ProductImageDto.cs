@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace frontend.DTOs
 {
@@ -8,7 +7,7 @@ namespace frontend.DTOs
         public int Id { get; set; }
 
         [Display(Name = "ID do Produto")]
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
 
         [Display(Name = "ID da Variante do Produto")]
         public int? ProductVariantId { get; set; }

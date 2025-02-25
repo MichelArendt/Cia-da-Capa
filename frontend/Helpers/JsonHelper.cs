@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using frontend.Models.Http;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -50,7 +51,7 @@ namespace frontend.Helpers
         /// 2) CustomDateTimeConverter,
         /// 3) Case-insensitivity.
         /// </summary>
-        private static readonly JsonSerializerOptions _options = new()
+        public static readonly JsonSerializerOptions _options = new()
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
@@ -69,7 +70,6 @@ namespace frontend.Helpers
         /// </summary>
         public static T? Deserialize<T>(string json)
         {
-            Console.WriteLine("JsonHelper Deserialize");
             return JsonSerializer.Deserialize<T>(json, _options);
         }
 
@@ -86,7 +86,21 @@ namespace frontend.Helpers
             // Optionally, we could check:
             // if (!response.IsSuccessStatusCode) throw ...
             var json = await response.Content.ReadAsStringAsync();
+
             return Deserialize<T>(json);
+        }
+
+        /// <summary>
+        /// Deserializes JSON and attaches the HTTP status code to the model.
+        /// </summary>
+        public static async Task<T> DeserializeAndAttachStatusCode<T>(HttpResponseMessage response) where T : new()
+        {
+            var deserializedObj = await Deserialize<T>(response) ?? new();
+            if (deserializedObj is HttpResponseModel<T> httpResponse)
+            {
+                httpResponse.StatusCode = (int)response.StatusCode;
+            }
+            return deserializedObj;
         }
 
         /// <summary>

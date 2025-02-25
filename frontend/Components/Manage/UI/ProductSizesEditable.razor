@@ -1,0 +1,98 @@
+﻿@using System.Runtime.CompilerServices
+@using frontend.ViewModels.TabbedNavigation
+
+@inject AppStateService AppStateService
+@inject ProductStateService ProductStateService
+@inject ProductSizeService ProductSizeService
+
+<h3>Tamanhos</h3>
+
+<TabbedNavigation Tabs="Tabs" />
+
+@code {
+    [Parameter]
+    public required ProductDto ProductDto { get; set; }
+
+    private List<TabViewModel> Tabs { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        BuildTabs();
+
+        ProductSizeService.ProductSizeAddedOrDeleted += BuildTabs;
+        ProductSizeService.ProductSizesUpdated += RefreshVariantTabs;
+    }
+
+    public void Dispose()
+    {
+        ProductSizeService.ProductSizeAddedOrDeleted -= BuildTabs;
+        ProductSizeService.ProductSizesUpdated -= RefreshVariantTabs;
+    }
+
+    public void BuildTabs(){
+        Tabs.Clear();
+        StateHasChanged(); // IMPORTANT! This is necessary to update the UI
+
+        if (ProductDto.Sizes.Any())
+        {
+            foreach (var currentSize in ProductDto.Sizes)
+            {
+                var size = new ProductSizeDto
+                        {
+                            Id = currentSize.Id,
+                            Width = currentSize.Width,
+                            Height = currentSize.Height,
+                            Depth = currentSize.Depth
+                        }; 
+
+                Tabs.Add(new TabViewModel
+                {
+                    Id = size.Id,
+                    Title = ProductStateService.SizeLabelsDict[size.SizeLabelId].Label,
+                    Content = (
+                        @<text>
+                            <ProductSizeForm ProductDto="ProductDto" SizeId="size.Id" />
+                        </text>
+                    )
+                });
+            }
+        }
+
+        Tabs.Add(new TabViewModel
+        {
+            Title = "+",
+            Content = (
+                @<text>
+                    <ProductSizeForm ProductDto="ProductDto"/>
+                </text>
+            )
+        });
+
+        StateHasChanged();
+    }
+
+    public Task RefreshVariantTabs()
+    {
+        // Loops through the tabs that are of variants (where ID is set)
+        foreach (var tab in Tabs.FindAll(t => t.Id != null))
+        {
+            // Check if product still has this variant
+            var size = ProductDto.Sizes.Find(s => s.Id == tab.Id);
+
+            if (size == null)
+            {
+                // Tab deleted
+                BuildTabs();
+            }
+            else
+            {
+                // Tab updated
+                tab.Title = ProductStateService.SizeLabelsDict[size.SizeLabelId].Label;
+            }
+        }
+
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+}

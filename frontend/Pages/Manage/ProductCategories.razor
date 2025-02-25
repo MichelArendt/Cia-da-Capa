@@ -11,6 +11,7 @@
 @using frontend.Components.Shared.UI.SVG
 
 @inject AppStateService AppState
+@inject ProductStateService ProductStateService
 @inject ProductCategoryService ProductCategoryService
 
 <PageTitle>Categorias (Gerenciamento)</PageTitle>
@@ -81,10 +82,10 @@
         }
         else
         {
-            <Table>
-                <Thead>
-                    <Tr>
-                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
+            <table>
+                <thead>
+                    <tr>
+                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
                             Ativo
                             @if (currentSortField.Equals(ProductCategoryDto.SortBy.IsActive))
                             {
@@ -97,10 +98,10 @@
                                     <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
                                 }
                             }
-                        </Th>
-                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))">
+                        </th>
+                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Title))">
                             Nome
-                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Name))
+                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Title))
                             {
                                 @if (isDescending)
                                 {
@@ -111,11 +112,11 @@
                                     <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
                                 }
                             }
-                        </Th>
+                        </th>
                         @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))"> *@
                         @*     Nome *@
                         @* </Th> *@
-                        <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
+                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
                             Referência
                             @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
                             {
@@ -128,20 +129,20 @@
                                     <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
                                 }
                             }
-                        </Th>
+                        </th>
                         @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th> *@
-                        <Th>Produtos</Th>
-                        <Th>Ações</Th>
-                    </Tr>
-                </Thead>
+                        <th>Produtos</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
 
 
 
-                <Tbody>
+                <tbody>
                     @foreach (ProductCategoryDto category in productCategories)
                     {
-                        <Tr ClassName="table__item">
-                            <Td>
+                        <tr ClassName="table__item">
+                            <td>
                                 @if (category.IsActive)
                                 {
                                     <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOn" Width="30" Height="30" />
@@ -150,27 +151,21 @@
                                 {
                                     <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOff" Width="30" Height="30" />
                                 }
-                            </Td>
-                            <Td>@category.Name</Td>
-                            <Td>@category.Reference</Td>
-                            <Td>0</Td>
-                            <Td>
+                            </td>
+                            <td>@category.Title</td>
+                            <td>@category.Reference</td>
+                            <td>0</td>
+                            <td>
                                 <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
                                 <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
-                            </Td>
-                        </Tr>
+                            </td>
+                        </tr>
                     }
-                </Tbody>
-            </Table>
+                </tbody>
+            </table>
         }
     </BodyContent>
 </List>
-
-
-@* <NewTable
-        Data="productCategories"
-        DisplayColumns="@(new Expression<Func<ProductCategoryDto, object>>[]{ c => c.IsActive, c => c.Name, c => c.Reference})"
-        CustomRenderers="CustomColumnRenderers"  /> *@
 
 @code {
     private List<ProductCategoryDto> productCategories = new();
@@ -178,47 +173,28 @@
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
 
-    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Name;
+    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Title;
     private bool isDescending = false;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        AppState.Product.Categories.StateChanged += StateHasChanged;
-        SyncProductCategories();
+        ProductStateService.CategoriesChanged += StateHasChanged;
+        productCategories = ProductStateService.CategoriesDict.Values.ToList();
+        // SyncProductCategories();
     }
 
     public void Dispose()
     {
-        AppState.Product.Categories.StateChanged -= StateHasChanged;
+        ProductStateService.CategoriesChanged -= StateHasChanged;
     }
 
-    private void SyncProductCategories()
-    {
-        productCategories = AppState.Product.Categories.Items;
-        StateHasChanged();
-    }
-
-    // protected override async Task OnInitializedAsync()
+    // private void SyncProductCategories()
     // {
-    //     productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).ToList();
-    //     productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
+    //     productCategories = ProductStateService.CategoriesDict.Items;
+    //     StateHasChanged();
     // }
-
-    // private Dictionary<Expression<Func<ProductCategoryDto, object>>, RenderFragment<ProductCategoryDto>> CustomColumnRenderers = new()
-    // {
-    //     { c => c.IsActive, category => (builder) =>
-    //         {
-    //             builder.OpenElement(0, "span");
-    //             builder.AddAttribute(1, "class", category.IsActive ? "status-active" : "status-inactive");
-    //             builder.AddMarkupContent(2, category.IsActive
-    //                 ? "<svg width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='green'/></svg>"
-    //                 : "<svg width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='10' fill='red'/></svg>");
-    //             builder.CloseElement();
-    //         }
-    //     }
-    // };
 
     private async Task HandleValidSubmit()
     {
@@ -227,15 +203,13 @@
 
         var dto = new NewProductCategoryDto
         {
-                Name = newProductCategoryModel.Name,
+                Title = newProductCategoryModel.Name,
                 Reference = newProductCategoryModel.Reference,
                 IsActive = newProductCategoryModel.IsActive,
         };
 
         var response = await ProductCategoryService.CreateNewProductCategoryAsync(dto);
 
-        // Console.WriteLine(response);
-        // Console.WriteLine(await response.Content.ReadAsStringAsync());
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine(1);
@@ -243,11 +217,7 @@
             newProductCategoryModel = new NewProductCategoryModel();
 
             // Re-fetch categories to update the list
-            await AppState.Product.Categories.FetchItems();
-            // AppState.CategoriesList = (await ProductCategoryService.GetProductCategoriesAsync()).OrderBy(c => c.Name).ToList();
-
-            // Re-render UI (forces Blazor to recognize the changes)
-            // StateHasChanged();
+            await ProductStateService.CategoriesApiHandler.ExecuteAsync();
         }
         else
         {
@@ -269,7 +239,7 @@
         [Required(ErrorMessage = "Nome é obrigatório.")]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Referência é obrigatória")]
+        [Required(ErrorMessage = "Reference é obrigatória")]
         public string Reference { get; set; } = string.Empty;
 
         public bool IsActive { get; set; } = true;

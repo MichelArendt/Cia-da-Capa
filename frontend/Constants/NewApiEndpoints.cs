@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace frontend.Constants
+﻿namespace frontend.Constants
 {
     public static class NewApiEndpoints
     {
@@ -69,113 +67,126 @@ namespace frontend.Constants
         public string GetAll => "/api/public/products";
 
         /// <summary>
-        /// Returns an endpoint object for a specific product.
+        /// Basic product details of product table only.
         /// </summary>
-        public ProductEndpoint ForId(int productId)
+        public ProductEndpoint ById(int productId)
         {
             return new ProductEndpoint(productId);
         }
-    }
 
-    public class ProductEndpoint
-    {
-        private readonly int _productId;
-
-        public ProductEndpoint(int productId)
+        public class ProductEndpoint
         {
-            _productId = productId;
+            private readonly int _productId;
+
+            public ProductEndpoint(int productId)
+            {
+                _productId = productId;
+            }
+
+            /// <summary>
+            /// Implicit conversion to string allows the instance to be used directly as its URL.
+            /// </summary>
+            /// <param name="endpoint">The ProductEndpoint instance.</param>
+            public static implicit operator string(ProductEndpoint endpoint)
+            {
+                return endpoint.Url;
+            }
+
+            /// <summary>
+            /// Gets the URL for the specific product.
+            /// </summary>
+            public string Url => $"/api/public/products/{_productId}";
+
+            /// <summary>
+            /// Full product associative details (images, variants and sizes).
+            /// </summary>
+            public string Full => $"/api/public/products/{_productId}/full";
+
+            /// <summary>
+            /// Fluent endpoint access for the product's sizes.
+            /// </summary>
+            /// 
+            public string Sizes => $"/api/public/products/{_productId}/sizes";
+            //public ProductSizesEndpoints Sizes => new ProductSizesEndpoints(_productId);
+
+            /// <summary>
+            /// Fluent endpoint access for the product's images.
+            /// </summary>
+            public ProductImageEndpoints Images => new ProductImageEndpoints(_productId);
+
+            /// <summary>
+            /// Fluent endpoint access for the product's variants.
+            /// </summary>
+            public ProductVariantEndpoints Variants => new ProductVariantEndpoints(_productId);
         }
 
-        /// <summary>
-        /// Gets the URL for the specific product.
-        /// </summary>
-        public string GetUrl => $"/api/public/products/{_productId}";
-
-        /// <summary>
-        /// Fluent endpoint access for the product's sizes.
-        /// </summary>
-        /// 
-        public string Sizes => $"/api/public/products/{_productId}/sizes";
-        //public ProductSizesEndpoints Sizes => new ProductSizesEndpoints(_productId);
-
-        /// <summary>
-        /// Fluent endpoint access for the product's images.
-        /// </summary>
-        public ProductImageEndpoints Images => new ProductImageEndpoints(_productId);
-
-        /// <summary>
-        /// Fluent endpoint access for the product's variants.
-        /// </summary>
-        public ProductVariantEndpoints Variants => new ProductVariantEndpoints(_productId);
-    }
-
-    public class ProductImageEndpoints
-    {
-        private readonly int _productId;
-
-        public ProductImageEndpoints(int productId)
+        public class ProductImageEndpoints
         {
-            _productId = productId;
+            private readonly int _productId;
+
+            public ProductImageEndpoints(int productId)
+            {
+                _productId = productId;
+            }
+
+            /// <summary>
+            /// Gets the URL for all images of the product.
+            /// </summary>
+            public string GetAll => $"/api/public/products/{_productId}/images";
         }
 
-        /// <summary>
-        /// Gets the URL for all images of the product.
-        /// </summary>
-        public string GetAll => $"/api/public/products/{_productId}/images";
-    }
-
-    public class ProductVariantEndpoints
-    {
-        private readonly int _productId;
-
-        public ProductVariantEndpoints(int productId)
+        public class ProductVariantEndpoints
         {
-            _productId = productId;
+            private readonly int _productId;
+
+            public ProductVariantEndpoints(int productId)
+            {
+                _productId = productId;
+            }
+
+            /// <summary>
+            /// Gets the URL for all variants of the product.
+            /// </summary>
+            public string GetAll => $"/api/public/products/{_productId}/variants";
+
+            /// <summary>
+            /// Returns the URL for a specific variant.
+            /// </summary>
+            public string ForId(int variantId) => $"/api/public/products/{_productId}/variants/{variantId}";
+
+            /// <summary>
+            /// Fluent endpoint access for images of a specific variant.
+            /// </summary>
+            public ProductVariantImageEndpoints Images => new ProductVariantImageEndpoints(_productId);
         }
 
-        /// <summary>
-        /// Gets the URL for all variants of the product.
-        /// </summary>
-        public string GetAll => $"/api/public/products/{_productId}/variants";
-
-        /// <summary>
-        /// Returns the URL for a specific variant.
-        /// </summary>
-        public string ForId(int variantId) => $"/api/public/products/{_productId}/variants/{variantId}";
-
-        /// <summary>
-        /// Fluent endpoint access for images of a specific variant.
-        /// </summary>
-        public ProductVariantImageEndpoints Images => new ProductVariantImageEndpoints(_productId);
-    }
-
-    public class ProductVariantImageEndpoints
-    {
-        private readonly int _productId;
-
-        public ProductVariantImageEndpoints(int productId)
+        public class ProductVariantImageEndpoints
         {
-            _productId = productId;
+            private readonly int _productId;
+
+            public ProductVariantImageEndpoints(int productId)
+            {
+                _productId = productId;
+            }
+
+            /// <summary>
+            /// Returns the URL for images of a specific variant.
+            /// </summary>
+            public string ForVariantId(int variantId) =>
+                $"/api/public/products/{_productId}/variants/{variantId}/images";
         }
-
-        /// <summary>
-        /// Returns the URL for images of a specific variant.
-        /// </summary>
-        public string ForVariantId(int variantId) =>
-            $"/api/public/products/{_productId}/variants/{variantId}/images";
-    }
-    public class ProductSizesEndpoints
-    {
-        private readonly int _productId;
-
-        public ProductSizesEndpoints(int productId)
+        public class ProductSizesEndpoints
         {
-            _productId = productId;
+            private readonly int _productId;
+
+            public ProductSizesEndpoints(int productId)
+            {
+                _productId = productId;
+            }
+
+            public string Sizes => $"/api/public/products/{_productId}/sizes";
         }
-
-        public string Sizes => $"/api/public/products/{_productId}/sizes";
     }
-
     #endregion
 
     #region Manage Endpoints Fluent Classes
@@ -215,9 +226,34 @@ namespace frontend.Constants
         public string GetUrl => $"/api/manage/products/{_productId}";
 
         /// <summary>
+        /// Fluent endpoint access for the product's variants management.
+        /// </summary>
+        public ProductManageVariants Variants => new ProductManageVariants(_productId);
+
+        /// <summary>
         /// Fluent endpoint access for the product's images management.
         /// </summary>
         public ProductManageImage Images => new ProductManageImage(_productId);
+    }
+    public class ProductManageVariants
+    {
+        private readonly int _productId;
+
+        public ProductManageVariants(int productId)
+        {
+            _productId = productId;
+        }
+
+        /// <summary>
+        /// Gets the URL for uploading images to the product.
+        /// </summary>
+        public string Create =>
+            $"/api/manage/products/{_productId}/variants";
+
+        /// <summary>
+        /// Gets the URL for deleting a variant.
+        /// </summary>
+        public string Delete(int variantId) => $"/api/manage/products/variants/{variantId}";
     }
 
     public class ProductManageImage
@@ -232,20 +268,24 @@ namespace frontend.Constants
         /// <summary>
         /// Gets the URL for uploading images to the product.
         /// </summary>
-        public string Upload =>
+        public string UploadProductImage =>
             $"/api/manage/products/{_productId}/images/upload";
+
+        public string UploadVariantImage(int variantId) => $"/api/manage/products/variants/{variantId}/images/upload";
+        //public string UploadVariantImage =>
+        //    $"/api/manage/products/variants/{_productId}/images/upload";
 
         /// <summary>
         /// Gets the URL for deleting an image.
         /// </summary>
-        public string DeleteImage => "/api/manage/products/images/";
+        public string Delete(int imageId) => $"/api/manage/products/images/{imageId}";
     }
 
     public class ProductImage
     {
         public string Delete(int imageId)
         {
-           return $"/api/manage/products/images/{imageId}";
+            return $"/api/manage/products/images/{imageId}";
         }
         public string UpdateOrdering => "/api/manage/products/images/update-ordering";
     }

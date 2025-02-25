@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using frontend.DTOs.Contracts;
 
 namespace frontend.DTOs
 {
@@ -7,10 +6,10 @@ namespace frontend.DTOs
     {
         public int Id { get; set; } // Primary Key
 
-        [Display(Name = "Nome")]
-        public string Name { get; set; } = string.Empty; // ProductCategory Name
+        [Display(Name = "Título")]
+        public string Title { get; set; } = string.Empty; // ProductCategory Title
 
-        [Display(Name = "Referência")]
+        [Display(Name = "Reference")]
         public string Reference { get; set; } = string.Empty; // Unique Reference
 
         [Display(Name = "Ativo")]
@@ -20,7 +19,7 @@ namespace frontend.DTOs
 
         public static class SortBy
         {
-            public static readonly SortField Name = new("Name", c => c.Name);
+            public static readonly SortField Title = new("Title", c => c.Title);
             public static readonly SortField Reference = new("Reference", c => c.Reference);
             public static readonly SortField IsActive = new("IsActive", c => c.IsActive);
 
@@ -40,7 +39,7 @@ namespace frontend.DTOs
         //public IReadOnlyList<SortField> SortFields { get; } =
         //    new List<SortField>
         //    {
-        //        new("Name", dto => ((ProductCategoryDto)dto).Name),
+        //        new("Title", dto => ((ProductCategoryDto)dto).Title),
         //        new("Reference", dto => ((ProductCategoryDto)dto).Reference),
         //        new("IsActive", dto => ((ProductCategoryDto)dto).IsActive)
         //    };
@@ -48,7 +47,7 @@ namespace frontend.DTOs
 
     public record NewProductCategoryDto
     {
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
     }

@@ -39,6 +39,6 @@ class AuthMiddleware {
 
         // Token is valid → Allow access
         Flight::set('current_token', $token);
-        error_log("Allowed access (" . $token . ")");
+        // error_log("Allowed access (" . $token . ")");
     }
 }

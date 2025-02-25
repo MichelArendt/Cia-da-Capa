@@ -1,0 +1,237 @@
+﻿@using frontend.Helpers
+@using frontend.Models.Http
+@inject NavigationManager Navigation
+
+@inject AppStateService AppStateService
+@inject NotificationService NotificationService
+@inject ProductVariantService ProductVariantService
+
+<h3>@(VariantId == null ? "Adicionar nova" : "Atualizando") Variante de produto</h3>
+
+@if (Product.Content == null)
+{
+    <div class="feedback feedback--error">
+        @errorMessage
+    </div>
+}
+else
+{
+    <EditForm Model="@productVariantFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="feedback feedback--error" />
+
+        <div>
+            <label for="reference">Referência:</label>
+            <InputText id="reference" name="reference" @bind-Value="productVariantFormModel.Reference" placeholder="rodinhas" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => productVariantFormModel.Reference)" />
+        </div>
+
+        <div>
+            <label for="title">Título (como o cliente vê):</label>
+            <InputText id="title" name="title" @bind-Value="productVariantFormModel.Title" placeholder="com rodinhas" disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => productVariantFormModel.Title)" />
+        </div>
+
+        <div>
+            <label for="description">Descrição:</label>
+            <InputTextArea id="description" name="description" @bind-Value="productVariantFormModel.Description" placeholder="Conta com 4 pés, sendo 2 rodinhas para facilitar o transporte e 2 pés de apoio para manter a mochila estável quando em repouso." disabled="@IsSubmitting" />
+            <ValidationMessage For="@(() => productVariantFormModel.Description)" />
+        </div>
+
+        <div>
+            @if (VariantId == null)
+            {
+                <button type="submit" disabled="@IsSubmitting">Adicionar variante</button>
+            }
+            else
+            {
+                <div>[@VariantId]</div>
+                <button type="submit" disabled="@IsSubmitting">Atualizar variante</button>
+                <button disabled="@IsSubmitting" @onclick="DeleteVariant">Remover variante</button>
+            }
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public required ApiStateHandler<ProductDto> Product { get; set; }
+
+    [Parameter]
+    public int? VariantId { get; set; }
+
+    // DTOs & Form Models
+    private ProductVariantDto? productVariantDto = new();
+    private NewProductVariantDto newProductVariantDto = new();
+    private ProductVariantFormModel productVariantFormModel = new();
+
+    // Form & Feedback
+    private const string errorMessage = "Houve um erro neste formulário. Entre em contato com o administrador!";
+    private string? validationError;
+    private bool IsSubmitting { get; set; } = false;
+    private bool isUpdatingVariant = true;
+
+    // API handlers
+    private ApiStateHandler<int?> createProductVariantApiHandler = default!;
+    private ApiStateHandler<object> updateProductVariantApiHandler = default!;
+    private ApiStateHandler<object> deleteProductVariantApiHandler = default!;
+    private ApiStateHandler<List<ProductVariantDto>> fetchProductVariantsApiHandler = default!;
+    [Inject] HttpClient Http { get; set; } = default!;
+
+
+    protected override void OnInitialized()
+    {
+        if (Product.Content != null)
+        {
+            if (VariantId == null)
+            {
+                // Creating a new variant
+                isUpdatingVariant = false;
+
+                newProductVariantDto.ProductId = Product.Content.Id;
+
+                // HANDLER - create
+                createProductVariantApiHandler = 
+                    new(ProductVariantService.CreateNewProductVariantFunc(newProductVariantDto!));
+                fetchProductVariantsApiHandler = 
+                    new(ProductVariantService.GetVariantsForProductIdFunc(Product.Content.Id));
+            }
+            else
+            {
+                // We're updating a variant, attempt to fetch it from Product's Content
+                productVariantDto = Product.Content!.Variants.Find(v => v.Id == VariantId);
+
+                // Create handlers using DTO's reference
+                if (productVariantDto != null)
+                {
+                    // Fill the form's view model
+                    productVariantFormModel.Reference = productVariantDto.Reference;
+                    productVariantFormModel.Title = productVariantDto.Title;
+                    productVariantFormModel.Description = productVariantDto.Description;
+
+                    // HANDLER - update
+                    updateProductVariantApiHandler = 
+                        new(ProductVariantService.UpdateProductVariantFunc(productVariantDto));
+
+                    // HANDLER - delete
+                    deleteProductVariantApiHandler = 
+                        new(ProductVariantService.DeleteProductVariantFunc(productVariantDto.Id));
+                }
+                else
+                {
+                    NotificationService.DisplayError(errorMessage, "ProductVariantForm->OnInitialized");
+                }
+            }
+        } else {
+            NotificationService.DisplayError("Erro ao inicializar formulário!");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsSubmitting = true;
+
+        if (productVariantDto != null)
+        {
+            if (isUpdatingVariant)
+            {
+                productVariantDto.Reference = productVariantFormModel.Reference;
+                productVariantDto.Title = productVariantFormModel.Title;
+                productVariantDto.Description = productVariantFormModel.Description;
+
+                // UPDATING VARIANT
+                await updateProductVariantApiHandler.ExecuteAsync();
+
+                // Check if update succeeded
+                if (updateProductVariantApiHandler.IsSuccess())
+                {
+                    // Display success
+                    NotificationService.DisplaySuccess(updateProductVariantApiHandler.ServerMessage);
+
+                    ProductVariantService?.InvokeProductVariantsUpdated();
+                }
+                else
+                {
+                    // Error
+                    NotificationService.Display(updateProductVariantApiHandler.GetErrorNotificationModel("Erro ao tentar atualizar a variante de produto!"));
+                }
+            }
+            else
+            {
+                // CREATING VARIANT
+                newProductVariantDto.ProductId = Product.Content!.Id;
+                newProductVariantDto.Reference = productVariantFormModel.Reference;
+                newProductVariantDto.Title = productVariantFormModel.Title;
+                newProductVariantDto.Description = productVariantFormModel.Description;
+
+                await createProductVariantApiHandler.ExecuteAsync();
+
+                // Check if create succeeded
+                if (createProductVariantApiHandler.IsSuccess())
+                {
+                    // Retch product variants
+                    await fetchProductVariantsApiHandler.ExecuteAsync();
+
+                    if (fetchProductVariantsApiHandler.IsSuccess() && fetchProductVariantsApiHandler.Content != null)
+                    {
+                        // Replace the product's variants and trigger event to refresh UI
+                        Product.Content.Variants = fetchProductVariantsApiHandler.Content;
+
+                        NotificationService.DisplaySuccess(createProductVariantApiHandler.ServerMessage);
+                        ProductVariantService?.InvokeProductVariantAddedOrDeleted();
+                    }
+                    else
+                    {
+                        // Error
+                        NotificationService.Display(fetchProductVariantsApiHandler.GetErrorNotificationModel("A variante foi criada, mas houve um erro local na página ao tentar tentar recuperar as variantes atualizadas do produto. Aperte CTRL + F5!"));
+                    }
+                }
+                else
+                {
+                    // Error
+                    NotificationService.Display(createProductVariantApiHandler.GetErrorNotificationModel("Erro ao tentar criar a variante de produto!"));
+                }
+            }
+        }
+        else
+        {
+            NotificationService.DisplayError(errorMessage, "ProductVariantForm->HandleValidSubmit");
+        }
+
+
+        StateHasChanged();
+        IsSubmitting = false;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        validationError = "Por favor, corrija os erros acima.";
+    }
+
+    private async Task DeleteVariant(){
+        if (productVariantDto != null)
+        {
+            IsSubmitting = true;
+
+            // DELETE VARIANT
+            await deleteProductVariantApiHandler.ExecuteAsync();
+
+            // Check if delete succeeded
+            if (deleteProductVariantApiHandler.IsSuccess())
+            {
+                // Display success and remove variant from list
+                Product.Content!.Variants.Remove(productVariantDto);
+
+                NotificationService.DisplaySuccess(deleteProductVariantApiHandler.ServerMessage);
+                ProductVariantService?.InvokeProductVariantAddedOrDeleted();
+            }
+            else
+            {
+                // Error
+                NotificationService.Display(deleteProductVariantApiHandler.GetErrorNotificationModel("Erro ao tentar deletar a variante de produto!"));
+            }
+
+            IsSubmitting = false;
+        }
+    }
+}

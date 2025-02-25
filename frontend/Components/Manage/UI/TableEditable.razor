@@ -1,0 +1,15 @@
+﻿<table>
+    <thead>
+        @TableHeader
+    </thead>
+
+    <tbody>
+        @TableBody
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public required RenderFragment TableHeader { get; set; }
+    [Parameter] public required RenderFragment TableBody { get; set; }
+    [Parameter] public bool Draggable { get; set; } = false;
+}

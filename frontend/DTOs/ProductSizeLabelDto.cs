@@ -1,27 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace frontend.DTOs
+﻿namespace frontend.DTOs
 {
     public record ProductSizeLabelDto
     {
         public int Id { get; set; }
 
-        [Display(Name = "Nome")]
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
 
-        [Display(Name = "Etiqueta")]
         public string Label { get; set; } = string.Empty;
+        public int Priority { get; set; } = 0;
 
-        [Display(Name = "Criado em")]
         public DateTime CreatedAt { get; set; }
 
-        [Display(Name = "Atualizado em")]
         public DateTime UpdatedAt { get; set; }
     }
 
     public record NewProductSizeLabelDto
     {
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
         public string Label { get; set; } = string.Empty;
+    }
+
+    public record UpdateProductSizeLabelOrderingDto
+    {
+        public int Id { get; set; }
+        public int Priority { get; set; }
     }
 }

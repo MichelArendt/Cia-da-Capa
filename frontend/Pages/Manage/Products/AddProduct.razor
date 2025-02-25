@@ -9,178 +9,20 @@
 
 @inject NavigationManager NavigationManager
 @inject AppStateService AppState
+@inject ProductStateService ProductStateService
 @inject ProductCategoryService ProductCategoryService
 @inject ProductService ProductService
 
 <PageTitle>Adicionar Produto (Gerenciamento)</PageTitle>
 
-<h3>Adicionar Novo Produto</h3>
-
-@if (!AppState.Product.Categories.Items.Any())
+@if (ProductStateService.CategoriesDict.Any())
 {
-    <div class="feedback feedback--error">
-        Antes de adicionar um produto você deve adicionar uma categoria!
-    </div>
-}
-else if (!AppState.Product.SizeLabels.Items.Any())
-{
-    <div class="feedback feedback--error">
-        Antes de adicionar um produto você deve adicionar um rótulo de tamanho!
-    </div>
-}
-else
-{
-    <EditForm Model="@newProductModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <div>
-            <label for="title">Título:</label>
-            <InputText id="title" name="title" @bind-Value="newProductModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => newProductModel.Title)" />
-        </div>
-
-        <div>
-            <label for="reference">Referência:</label>
-            <InputText id="reference" name="reference" @bind-Value="newProductModel.Reference" placeholder="001" autocomplete="on" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => newProductModel.Reference)" />
-        </div>
-
-        <div>
-            <label for="description">Descrição:</label>
-            <InputTextArea id="description" name="description" @bind-Value="newProductModel.Description" placeholder="Descrição do produto" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => newProductModel.Description)" />
-        </div>
-
-        <div>
-            <label for="category_id">Categoria:</label>
-            <InputSelect id="category_id" @bind-Value="newProductModel.CategoryId" disabled="@IsSubmitting">
-                <option value="0">Selecione uma categoria...</option>
-                @foreach (var category in AppState.Product.Categories.Items)
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => newProductModel.CategoryId)" />
-        </div>
-
-        <div>
-            <label for="isActive">Ativo:</label>
-            <InputCheckbox id="isActive" @bind-Value="newProductModel.IsActive" disabled="@IsSubmitting" />
-        </div>
-
-        <div>
-            <label for="isHighlighted">Destacado:</label>
-            <InputCheckbox id="isHighlighted" @bind-Value="newProductModel.IsHighlighted" disabled="@IsSubmitting" />
-        </div>
-
-        <div>
-            <label for="priority">Prioridade:</label>
-            <InputNumber id="priority" @bind-Value="newProductModel.Priority" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => newProductModel.Priority)" />
-        </div>
-
-        <div>
-            <button type="submit" disabled="@IsSubmitting">Adicionar @AppState.Product.Categories.Items.Find(c => c.Id == newProductModel.CategoryId)?.Reference-@newProductModel.Reference e continuar para próximo passo</button>
-        </div>
-    </EditForm>
-}
-
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="error-message">@errorMessage</div>
+    <ProductForm />
+} else {
+    <Feedback Type="Feedback.FeedbackType.error">
+        <span>Você deve adicionar alguma categoria primeiro!</span>
+    </Feedback>
 }
 
 @code {
-    private NewProductModel newProductModel = new();
-    private string? errorMessage;
-    private bool IsSubmitting { get; set; } = false;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        // AppState.CategoriesListChanged += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        // AppState.CategoriesListChanged -= StateHasChanged;
-    }
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     AppState.ProductCategories = await ProductCategoryService.GetProductCategoriesAsync();
-    //     StateHasChanged();
-    // }
-
-    private async Task HandleValidSubmit()
-    {
-        IsSubmitting = true;
-        errorMessage = null;
-
-        // Convert NewProductModel to NewProductDto
-        var newProductDto = new NewProductDto
-            {
-                Title = newProductModel.Title,
-                Reference = newProductModel.Reference,
-                Description = newProductModel.Description,
-                CategoryId = newProductModel.CategoryId,
-                IsActive = newProductModel.IsActive,
-                IsHighlighted = newProductModel.IsHighlighted,
-                Priority = newProductModel.Priority
-            };
-
-        var response = await ProductService.CreateNewProductAsync(newProductDto);
-
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonResponse = await response.Content.ReadFromJsonAsync<JsonElement>();
-
-            if (jsonResponse.TryGetProperty("id", out var idProperty) && idProperty.TryGetInt32(out int newProductId))
-            {
-                // Redirect to edit page with the new product ID
-                NavigationManager.NavigateTo($"manage/produtos/editar/{newProductId}");
-                errorMessage = null;
-            }
-            else
-            {
-                errorMessage = "Produto criado, mas ID não retornado.";
-            }
-
-            newProductModel = new NewProductModel(); // Reset form after successful submission
-            StateHasChanged();
-        }
-        else
-        {
-            errorMessage = $"Erro ao adicionar produto: {await response.Content.ReadAsStringAsync()}";
-            StateHasChanged();
-        }
-
-        IsSubmitting = false;
-    }
-
-    private void HandleInvalidSubmit()
-    {
-        errorMessage = "Por favor, corrija os erros acima.";
-    }
-
-    public class NewProductModel
-    {
-        [Required(ErrorMessage = "Título é obrigatório.")]
-        public string Title { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Referência é obrigatória.")]
-        public string Reference { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Categoria é obrigatória.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Selecione uma categoria válida.")]
-        public int CategoryId { get; set; }
-
-        public string? Description { get; set; }
-
-        public bool IsActive { get; set; } = true;
-        public bool IsHighlighted { get; set; } = false;
-
-        public int? Priority { get; set; } = 0;
-    }
 }
