@@ -100,7 +100,7 @@ class HttpResponse
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
     }
 
-    private static function checkIfDuplicateEntryException(\Exception $e)
+    private static function checkIfDuplicateEntryException(\Throwable $e)
     {
         // Check if it's a duplicate entry error (SQLSTATE 23000, MySQL error code 1062)
         if ($e instanceof \PDOException && $e->getCode() == 23000 && strpos($e->getMessage(), '1062 Duplicate entry') !== false) {
