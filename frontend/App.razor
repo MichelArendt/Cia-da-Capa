@@ -25,9 +25,9 @@ else if (
     errorMessage += ProductStateService.SizeLabelsApiHandler.ErrorMessage ?? "";
 
     @NotificationService.DisplayError(
-        "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
-        errorMessage
-    );
+                                        "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+                                        errorMessage
+                                    );
 }
 else if (AppState.IsCheckingAuth)
 {
@@ -66,9 +66,12 @@ else
 <Notification />
 
 @code {
+    private ApiStateHandler<object> validateSessionApiHandler = new();
+
     protected override void OnInitialized()
     {
-        // AppState.IsAuthenticatedChanged += StateHasChanged;
+        validateSessionApiHandler = new(UserService.ValidateSessionFunc());
+
         AppState.IsMobileChanged += StateHasChanged;
         AppState.IsCheckingAuthChanged += StateHasChanged;
         AppState.IsAuthenticatedChanged += StateHasChanged;
@@ -117,24 +120,23 @@ else
                 AppState.IsCheckingAuth = true;
 
                 // Actually call the server
-                var response = await UserService.ValidateSessionAsync();
+                await validateSessionApiHandler.ExecuteAsync();
 
                 // Done checking
                 AppState.IsCheckingAuth = false;
 
-                // If not valid, push them to /manage/login
-                if (!response)
+                if (validateSessionApiHandler.IsSuccess())
+                {
+                    // Let them continue to the route
+                    AppState.IsAuthenticated = true;
+                }
+                else
                 {
                     // Store the attempted path before redirect
                     AppState.AttemptedPath = context.Path;
 
                     AppState.IsAuthenticated = false;
                     Navigation.NavigateTo("manage/login");
-                }
-                else
-                {
-                    AppState.IsAuthenticated = true;
-                    // Let them continue to the route
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using frontend.Constants;
 using frontend.DTOs;
+using frontend.Helpers;
 using System.Net.Http.Json;
 
 namespace frontend.Services.API
@@ -13,43 +14,22 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        /// <summary>
-        /// Logs in by sending username/password to the server (HTTPS).
-        /// If successful, the server sets an HTTP-only cookie in the response.
-        /// </summary>
-        public async Task<bool> LoginAsync(UserLoginRequest dto)
+        public Func<Task<HttpResponseMessage>> LoginFunc(UserLoginRequestDto userLoginRequestDto)
         {
-            //var loginModel = new
-            //{
-            //    Username = username,
-            //    Password = password
-            //};
-
-            // Over HTTPS, password is encrypted in transit, no extra encryption needed
-            var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Public.User.Login, dto);
-
-            // If success, the server's response includes "Set-Cookie: session_token=..."
-            // The browser automatically stores it, no client-side code needed.
-            return response.IsSuccessStatusCode;
+            return () => _httpClient.PostAsJsonAsync(
+                ApiRoutes.Public.User.Login,
+                userLoginRequestDto,
+                JsonHelper._options);
         }
 
-        /// <summary>
-        /// Checks if the current user session is still valid by sending a request that includes the cookie.
-        /// If the server returns 200, we consider the session valid.
-        /// </summary>
-        public async Task<bool> ValidateSessionAsync()
+        public Func<Task<HttpResponseMessage>> ValidateSessionFunc()
         {
-            var response = await _httpClient.PostAsync(ApiEndpoints.Manage.User.Validate, null);
-            return response.IsSuccessStatusCode;
+            return () => _httpClient.PostAsync(ApiRoutes.Public.User.Login, null);
         }
 
-        /// <summary>
-        /// Logs out by instructing the server to clear the session token and expire the cookie.
-        /// </summary>
-        public async Task<bool> LogoutAsync()
+        public Func<Task<HttpResponseMessage>> LogoutFunc()
         {
-            var response = await _httpClient.PostAsync(ApiEndpoints.Manage.User.Logout, null);
-            return response.IsSuccessStatusCode;
+            return () => _httpClient.PostAsync(ApiRoutes.Manage.User.Logout, null);
         }
     }
 }

@@ -10,8 +10,9 @@
 @using frontend.DTOs
 
 @inject AppStateService AppState
-@inject ProductStateService ProductStateService
 @inject NavigationManager Navigation
+@inject NotificationService NotificationService
+@inject ProductStateService ProductStateService
 @inject ProductCategoryService ProductCategoryService
 @inject UserService UserService
 <PageTitle>Gerenciamento - Cia da Capa</PageTitle>
@@ -34,7 +35,7 @@
                     }
                     else
                     {
-                    @foreach (var (index, category) in ProductStateService.CategoriesDict)
+                        @foreach (var (index, category) in ProductStateService.CategoriesDict)
                         {
                             <li>@category.Title</li>
                         }
@@ -45,8 +46,8 @@
         else
         {
             <Dropdown ClassName="nav--interactive"
-                      HeaderClassName="nav__button nav--interactive"
-                      OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
+            HeaderClassName="nav__button nav--interactive"
+            OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
                 <HeaderContent>
                     <span>Produtos</span>
                 </HeaderContent>
@@ -90,8 +91,8 @@
 
     <NavPermanentButtons>
         <Dropdown ClassName="nav--interactive"
-                  HeaderClassName="nav__button nav--interactive"
-                  HideArrow="true">
+        HeaderClassName="nav__button nav--interactive"
+        HideArrow="true">
             <HeaderContent>
                 <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
             </HeaderContent>
@@ -106,8 +107,8 @@
         </Dropdown>
 
         <button class="nav__button nav--interactive"
-                @onclick="@UserLogout"
-                alt="Logout">
+        @onclick="@UserLogout"
+        alt="Logout">
             <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
         </button>
     </NavPermanentButtons>
@@ -120,6 +121,8 @@
 </main>
 
 @code {
+    private ApiStateHandler<object> logoutApiHandler = new();
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -135,11 +138,14 @@
     {
         if (AppState.IsAuthenticated)
         {
-            var response = await UserService.LogoutAsync();
-            if (response)
+            await logoutApiHandler.ExecuteAsync();
+
+            if (logoutApiHandler.IsSuccess())
             {
                 AppState.IsAuthenticated = false;
                 Navigation.NavigateTo("manage/login");
+            } else {
+                NotificationService.Display(logoutApiHandler.GetErrorNotificationModel("Erro ao tentar deslogar."));
             }
         }
     }

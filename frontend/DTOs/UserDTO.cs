@@ -10,7 +10,7 @@
     }
 
     // For login requests:
-    public record UserLoginRequest
+    public record UserLoginRequestDto
     {
         public string Username { get; init; } = default!;
         public string Password { get; init; } = default!;

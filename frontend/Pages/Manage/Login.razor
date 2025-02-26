@@ -9,6 +9,7 @@
 
 @inject UserService UserService
 @inject NavigationManager NavManager
+@inject NotificationService NotificationService
 @inject AppStateService AppState
 
 <PageTitle>Login (Gerenciamento)</PageTitle>
@@ -20,16 +21,14 @@
 }
 else
 {
-    <EditForm class='login-form' Model="@loginModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <EditForm class='login-form' Model="@loginFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="login-form__wrapper">
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <Feedback Type="Feedback.FeedbackType.error">
-                    @errorMessage
-                </Feedback>
+                @loginApiHandler.GetErrorNotificationModel(errorMessage)
             }
 
             <div>
@@ -42,9 +41,9 @@ else
                 id="username"
                 autocomplete="username"
                 placeholder="Usuário"
-                @bind-Value="loginModel.Username"
+                @bind-Value="loginFormModel.Username"
                 disabled="@IsSubmitting" />
-                <ValidationMessage For="@(() => loginModel.Username)" />
+                <ValidationMessage For="@(() => loginFormModel.Username)" />
             </div>
 
             <div>
@@ -57,9 +56,9 @@ else
                 id="password"
                 autocomplete="current-password"
                 placeholder="Senha"
-                @bind-Value="loginModel.Password"
+                @bind-Value="loginFormModel.Password"
                 disabled="@IsSubmitting"/>
-                <ValidationMessage For="@(() => loginModel.Password)" />
+                <ValidationMessage For="@(() => loginFormModel.Password)" />
             </div>
 
             <div>
@@ -71,9 +70,10 @@ else
 }
 
 @code {
-    private LoginModel loginModel = new();
+    private LoginFormModel loginFormModel = new();
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
+    private ApiStateHandler<object> loginApiHandler = new();
 
     protected override void OnInitialized()
     {
@@ -83,18 +83,21 @@ else
     private async Task HandleValidSubmit()
     {
         IsSubmitting = true;
+        errorMessage = null;
 
-        var dto = new UserLoginRequest
+        var userLoginRequestDto = new UserLoginRequestDto
         {
-            Username = loginModel.Username,
-            Password = loginModel.Password
+            Username = loginFormModel.Username,
+            Password = loginFormModel.Password
         };
 
-        var success = await UserService.LoginAsync(dto);
-        if (success)
+        await loginApiHandler.ExecuteAsync(UserService.LoginFunc(userLoginRequestDto));
+
+        if (loginApiHandler.IsSuccess())
         {
             // The server sets the cookie if credentials are valid
             AppState.IsAuthenticated = true;
+
             if (AppState.AttemptedPath != null)
             {
                 NavManager.NavigateTo(AppState.AttemptedPath);
@@ -103,10 +106,9 @@ else
             {
                 NavManager.NavigateTo("manage/");
             }
-        }
-        else
-        {
+        } else {
             errorMessage = "Credenciais inválidas.";
+            NotificationService.Display(loginApiHandler.GetErrorNotificationModel(errorMessage));
         }
 
         IsSubmitting = false;
@@ -115,14 +117,5 @@ else
     private void HandleInvalidSubmit()
     {
         errorMessage = "Por favor corrija os erros abaixo.";
-    }
-
-    public class LoginModel
-    {
-        [Required(ErrorMessage = "Usuário é obrigatório.")]
-        public string Username { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Senha é obrigatória.")]
-        public string Password { get; set; } = string.Empty;
     }
 }
