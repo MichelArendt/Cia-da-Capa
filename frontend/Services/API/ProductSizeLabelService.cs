@@ -5,6 +5,9 @@ using System.Net.Http.Json;
 
 namespace frontend.Services.API
 {
+    /// <summary>
+    /// Service for managing product size labels via API calls.
+    /// </summary>
     public class ProductSizeLabelService
     {
         private readonly HttpClient _httpClient;
@@ -14,27 +17,11 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        //public async Task<List<ProductSizeLabelDto>?> GetProductSizeLabelsAsync()
-        //{
-        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.ProductSizeLabel.GetAll);
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-
-        //    return await ApiServiceHelper.DeserializeResponse<List<ProductSizeLabelDto>>(response);
-        //}
-
-        //public async Task<HttpResponseMessage> CreateNewProductSizeLabelAsync(NewProductSizeLabelDto dto)
-        //{
-        //    var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.ProductSizeLabel.Create, dto);
-
-        //    return response;
-        //}
-
+        /// <summary>
+        /// Creates a new product size label.
+        /// </summary>
+        /// <param name="dto">The data transfer object containing the new product size label details.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation.</returns>
         public Func<Task<HttpResponseMessage>> CreateProductSizeLabelFunc(NewProductSizeLabelDto dto)
         {
             return () => _httpClient.PostAsJsonAsync(
@@ -43,6 +30,11 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
+        /// <summary>
+        /// Updates an existing product size label.
+        /// </summary>
+        /// <param name="dto">The data transfer object containing the updated product size label details.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation.</returns>
         public Func<Task<HttpResponseMessage>> UpdateProductSizeLabelFunc(UpdateProductSizeLabelDto dto)
         {
             return () => _httpClient.PutAsJsonAsync(
@@ -51,16 +43,21 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
-        //public async Task<HttpResponseMessage> DeleteProductSizeLabelAsync(int id)
-        //{
-        //    return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductSizeLabel.Delete}/{id}");
-        //}
-
+        /// <summary>
+        /// Deletes a product size label by ID.
+        /// </summary>
+        /// <param name="id">The ID of the product size label to delete.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation.</returns>
         public Func<Task<HttpResponseMessage>> DeleteProductSizeLabelFunc(int id)
         {
             return () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductSizeLabels.Delete(id));
         }
 
+        /// <summary>
+        /// Updates the ordering of product size labels.
+        /// </summary>
+        /// <param name="updateProductSizeLabelOrderingDtos">The list of data transfer objects containing the updated ordering details.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation.</returns>
         public Func<Task<HttpResponseMessage>> UpdateOrderingFunc(List<UpdateProductSizeLabelOrderingDto> updateProductSizeLabelOrderingDtos)
         {
             return () => _httpClient.PutAsJsonAsync(
@@ -68,34 +65,5 @@ namespace frontend.Services.API
                 updateProductSizeLabelOrderingDtos,
                 JsonHelper._options);
         }
-
-        //public async Task<HttpResponseMessage?> UpdateOrderingFunc(List<ProductImageDto> productImageDtoList)
-        //{
-        //    List<ProductImagePriorityDto> productImagePriorityDtoList = [];
-
-        //    foreach (var image in productImageDtoList)
-        //    {
-        //        productImagePriorityDtoList.Add(new ProductImagePriorityDto
-        //        {
-        //            Id = image.Id,
-        //            Priority = image.Priority
-        //        });
-        //    }
-
-        //    var response = await _httpClient.PostAsJsonAsync(
-        //        ApiRoutes.Manage.ProductImages.UpdateOrdering,
-        //        JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        Console.WriteLine("ProductImageService->UpdateOrdering 1");
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-        //    Console.WriteLine("ProductImageService->UpdateOrdering 2");
-        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
-        //    return response;
-        //}
     }
 }

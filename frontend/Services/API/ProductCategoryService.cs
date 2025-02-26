@@ -5,6 +5,9 @@ using System.Net.Http.Json;
 
 namespace frontend.Services.API
 {
+    /// <summary>
+    /// Provides methods to interact with the product category API.
+    /// </summary>
     public class ProductCategoryService
     {
         private readonly HttpClient _httpClient;
@@ -14,20 +17,11 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        //public async Task<List<ProductCategoryDto>?> GetProductCategoriesAsync()
-        //{
-        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.ProductCategory.GetAll);
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-
-        //    return await ApiServiceHelper.DeserializeResponse<List<ProductCategoryDto>>(response);
-        //}
-
+        /// <summary>
+        /// Creates a new product category.
+        /// </summary>
+        /// <param name="dto">The data transfer object containing the details of the new product category.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation, containing the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> CreateProductCategoryFunc(NewProductCategoryDto dto)
         {
             return () => _httpClient.PostAsJsonAsync(
@@ -36,21 +30,14 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
+        /// <summary>
+        /// Deletes a product category by its ID.
+        /// </summary>
+        /// <param name="categoryId">The ID of the product category to delete.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation, containing the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> DeleteProductCategoryByIdFunc(int categoryId)
         {
             return () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductCategories.Delete(categoryId));
         }
-
-        //public async Task<HttpResponseMessage> CreateNewProductCategoryAsync(NewProductCategoryDto dto)
-        //{
-        //    var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.ProductCategory.Create, dto);
-
-        //    return response;
-        //}
-
-        //public async Task<HttpResponseMessage> DeleteProductCategoryAsync(int id)
-        //{
-        //    return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductCategory.Delete}/{id}");
-        //}
     }
 }

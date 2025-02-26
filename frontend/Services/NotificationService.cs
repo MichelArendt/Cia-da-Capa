@@ -5,29 +5,55 @@ using Microsoft.AspNetCore.Components;
 
 namespace frontend.Services
 {
+    /// <summary>
+    /// Service to manage and display notifications.
+    /// </summary>
     public class NotificationService
     {
         private readonly ILogger<NotificationService> _logger;
 
+        /// <summary>
+        /// List of current notifications.
+        /// </summary>
         public List<NotificationModel> Notifications { get; private set; } = [];
+
+        /// <summary>
+        /// Action triggered when a notification is added.
+        /// </summary>
         public Action? OnNotificationAdded { get; set; }
+
+        /// <summary>
+        /// Event triggered when a notification is removed.
+        /// </summary>
         public event Action? OnNotificationRemoved;
+
+        /// <summary>
+        /// Event triggered when a notification is being added.
+        /// </summary>
         public event Action? OnNotificationIsBeingAdded;
+
+        /// <summary>
+        /// Event triggered when a notification is being removed.
+        /// </summary>
         public event Action? OnNotificationIsBeingRemoved;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NotificationService"/> class.
+        /// </summary>
+        /// <param name="logger">The logger instance.</param>
         public NotificationService(ILogger<NotificationService> logger)
         {
             _logger = logger;
         }
 
         /// <summary>
-        /// Adds a notification to the list and returns a reference to it.
+        /// Displays a notification with the specified content and type.
         /// </summary>
-        /// <param name="content">The RenderFragment to display.</param>
-        /// <param name="type">Notification type (default is Success).</param>
-        /// <param name="sticky">If true, the notification is sticky and must be removed manually.</param>
-        /// <returns>A reference to the created NotificationModel.</returns>
+        /// <param name="content">The content to display.</param>
+        /// <param name="type">The type of the notification.</param>
+        /// <param name="sticky">Indicates if the notification is sticky.</param>
+        /// <param name="errorMessage">The error message, if any.</param>
+        /// <returns>The displayed notification model.</returns>
         public NotificationModel Display(RenderFragment content, NotificationType type = NotificationType.Success, bool sticky = false, string? errorMessage = null)
         {
             var notification = new NotificationModel
@@ -44,6 +70,10 @@ namespace frontend.Services
             return notification;
         }
 
+        /// <summary>
+        /// Displays the specified notification model.
+        /// </summary>
+        /// <param name="notificationModel">The notification model to display.</param>
         public void Display(NotificationModel notificationModel)
         {
             Notifications.Add(notificationModel);
@@ -72,6 +102,11 @@ namespace frontend.Services
             });
         }
 
+        /// <summary>
+        /// Displays a success notification with the specified message.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="serverResponse">The server response, if any.</param>
         public void DisplaySuccess(string? message, string? serverResponse = null)
         {
             Display(
@@ -83,6 +118,13 @@ namespace frontend.Services
             );
         }
 
+        /// <summary>
+        /// Displays an error notification with the specified message and status code.
+        /// </summary>
+        /// <param name="message">The error message to display.</param>
+        /// <param name="errorMessage">The detailed error message.</param>
+        /// <param name="statusCode">The status code of the error.</param>
+        /// <returns>The displayed notification model.</returns>
         public NotificationModel DisplayError(string message = "Erro no servidor", string errorMessage = "Erro no servidor", int statusCode = 500)
         {
             var notification = new NotificationModel
@@ -98,38 +140,12 @@ namespace frontend.Services
             return notification;
         }
 
-        //public async void DisplayError(HttpResponseMessage? response)
-        //{
-        //    if (response == null)
-        //    {
-        //        DisplayError();
-        //    }
-        //    else
-        //    {
-        //        string json = await response.Content.ReadAsStringAsync();
-
-        //        if (!String.IsNullOrWhiteSpace(json))
-        //        {
-        //            try
-        //            {
-        //                HttpResponseErrorModel? error = JsonHelper.Deserialize<HttpResponseErrorModel>(json);
-
-        //                if (error == null)
-        //                {
-        //                    throw new Exception($"Failed to deserialize ERROR: {json}");
-        //                }
-
-        //                DisplayError(error.Message, error.Message, error.StatusCode);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                //Console.WriteLine($"Exception while processing error response: {ex.Message}");
-        //                throw new Exception($"ServerError processing response: {json}", ex);
-        //            }
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// Displays a validation error notification with the specified message and status code.
+        /// </summary>
+        /// <param name="message">The validation error message to display.</param>
+        /// <param name="statusCode">The status code of the validation error.</param>
+        /// <returns>The displayed notification model.</returns>
         public NotificationModel DisplayValidationError(string message = "Erro de validação dos campos.", int statusCode = 400)
         {
             var notification = new NotificationModel
@@ -144,32 +160,11 @@ namespace frontend.Services
             return notification;
         }
 
-        //public async void DisplayValidationError(HttpResponseMessage response)
-        //{
-        //    string json = await response.Content.ReadAsStringAsync();
-
-        //    if (!String.IsNullOrWhiteSpace(json))
-        //    {
-        //        try
-        //        {
-        //            HttpResponseModel? responseModel = JsonHelper.Deserialize<HttpResponseModel>(json);
-
-        //            if (responseModel == null)
-        //            {
-        //                throw new Exception($"Failed to deserialize ERROR: {json}");
-        //            }
-
-        //            DisplayValidationError(responseModel.Message, responseModel.StatusCode);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            //Console.WriteLine($"Exception while processing error response: {ex.Message}");
-        //            throw new Exception($"ServerError processing response: {json}", ex);
-        //        }
-        //    }
-        //}
-
-
+        /// <summary>
+        /// Handles the state change of an API call.
+        /// </summary>
+        /// <typeparam name="T">The type of the API response content.</typeparam>
+        /// <param name="apiState">The API state handler.</param>
         public void HandleApiStateChanged<T>(ApiStateHandler<T> apiState)
         {
             if (apiState.HasFailed)
@@ -178,10 +173,10 @@ namespace frontend.Services
             }
         }
 
-
         /// <summary>
-        /// Removes the given notification from the list.
+        /// Removes the specified notification.
         /// </summary>
+        /// <param name="notification">The notification to remove.</param>
         public void RemoveNotification(NotificationModel notification)
         {
             notification.IsMarkedForRemoval = true;

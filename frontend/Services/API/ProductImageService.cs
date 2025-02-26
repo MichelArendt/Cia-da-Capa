@@ -8,6 +8,9 @@ using System.Net.Http.Json;
 
 namespace frontend.Services.API
 {
+    /// <summary>
+    /// Service to manage product images, including fetching, uploading, and deleting images.
+    /// </summary>
     public class ProductImageService
     {
         public int? ProductId { get; private set; }
@@ -23,17 +26,24 @@ namespace frontend.Services.API
         private readonly HttpClient _httpClient;
         private readonly NotificationService _notificationService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductImageService"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client instance.</param>
+        /// <param name="notificationService">The notification service instance.</param>
         public ProductImageService(HttpClient httpClient, NotificationService notificationService)
         {
             _httpClient = httpClient;
             _notificationService = notificationService;
         }
 
+        /// <summary>
+        /// Fetches images for a given product ID.
+        /// </summary>
+        /// <param name="productId">The product ID.</param>
+        /// <returns>A list of product images or null if the fetch fails.</returns>
         public async Task<List<ProductImageDto>?> GetImagesForProductId(int productId)
         {
-            //FetchProductImages = new ApiStateHandler<List<ProductImageDto>>(
-            //    () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(productId)));
-
             await FetchProductImages.ExecuteAsync(GetImagesForProductIdFunc(productId));
 
             if (FetchProductImages.IsSuccess() && FetchProductImages.Content != null)
@@ -44,63 +54,22 @@ namespace frontend.Services.API
             return null;
         }
 
+        /// <summary>
+        /// Returns a function to fetch images for a given product ID.
+        /// </summary>
+        /// <param name="productId">The product ID.</param>
+        /// <returns>A function that fetches images for the product ID.</returns>
         public Func<Task<HttpResponseMessage>> GetImagesForProductIdFunc(int productId)
         {
             return () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(productId));
         }
 
-        //public async Task<List<ProductImageDto>?> UploadFileToServer(IBrowserFile file, int productId, int? variantId = null)
-        //{
-        //    UploadProductImage = new ApiStateHandler<object>(
-        //        async () =>
-        //        {
-        //            using var content = new MultipartFormDataContent();
-        //            using var fileStream = file.OpenReadStream(maxAllowedSize: MaxFileSize);
-        //            using var streamContent = new StreamContent(fileStream);
-        //            streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-
-        //            // The second parameter "file" is the form field name on the server side
-        //            content.Add(streamContent, "file", file.Name);
-        //            HttpResponseMessage response;
-
-        //            if (variantId == null)
-        //            {
-        //                response = await _httpClient.PostAsync(ApiRoutes.Manage.Products.Images.UploadImageForProductId(productId), content);
-        //            }
-        //            else
-        //            {
-        //                response = await _httpClient.PostAsync(ApiRoutes.Manage.Products.Variants.Images.UploadImageForVariantId(productId, variantId ?? 0), content);
-        //            }
-        //            return response;
-        //        });
-
-        //    await UploadProductImage.ExecuteAsync();
-
-        //    if (UploadProductImage.IsSuccess())
-        //    {
-        //        return await GetImagesForProductId(productId);
-        //    }
-
-        //    return null;
-        //}
-
-        //public async Task UploadFilesToServerAsync(IReadOnlyList<IBrowserFile> files, int productId, int? variantId = null)
-        //{
-
-
-        //    foreach (var file in files)
-        //    {
-        //        // Check MIME type against allowed types
-        //        if (!IsValidImageType(file))
-        //        {
-        //            _notificationService.DisplayError($"Ignorado aquivo inválido: {file.Name}");
-        //            continue; // Skip invalid files
-        //        }
-
-        //        await UploadFileToServer(file, productId, variantId);
-        //    }
-        //}
-
+        /// <summary>
+        /// Uploads files to the server for a given product and optional variant ID.
+        /// </summary>
+        /// <param name="files">The files to upload.</param>
+        /// <param name="productId">The product ID.</param>
+        /// <param name="variantId">The optional variant ID.</param>
         public async Task UploadFilesToServerAsync(IReadOnlyList<IBrowserFile> files, int productId, int? variantId = null)
         {
             using var content = new MultipartFormDataContent();
@@ -147,6 +116,12 @@ namespace frontend.Services.API
             }
         }
 
+        /// <summary>
+        /// Uploads files to the server for a given product and optional variant ID.
+        /// </summary>
+        /// <param name="productId">The product ID.</param>
+        /// <param name="variantId">The optional variant ID.</param>
+        /// <param name="content">The multipart form data content.</param>
         private async Task UploadFilesToServer(int productId, int? variantId, MultipartFormDataContent content)
         {
             UploadProductImage = new ApiStateHandler<object>(async () =>
@@ -161,19 +136,28 @@ namespace frontend.Services.API
             await UploadProductImage.ExecuteAsync();
         }
 
-        // Helper method to check file type
+        /// <summary>
+        /// Checks if the file type is a valid image type.
+        /// </summary>
+        /// <param name="file">The file to check.</param>
+        /// <returns>True if the file type is valid, otherwise false.</returns>
         private bool IsValidImageType(IBrowserFile file)
         {
             var allowedTypes = new HashSet<string>
-            {
-                "image/jpeg",
-                "image/png",
-                "image/webp"
-            };
+                {
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp"
+                };
 
             return allowedTypes.Contains(file.ContentType);
         }
 
+        /// <summary>
+        /// Returns a function to update the ordering of product images.
+        /// </summary>
+        /// <param name="productImagePriorityDtoList">The list of product image priorities.</param>
+        /// <returns>A function that updates the ordering of product images.</returns>
         public Func<Task<HttpResponseMessage>> UpdateOrderingFunc(List<ProductImagePriorityDto> productImagePriorityDtoList)
         {
             return () => _httpClient.PostAsJsonAsync(
@@ -182,148 +166,14 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
-
+        /// <summary>
+        /// Returns a function to delete an image by its ID.
+        /// </summary>
+        /// <param name="imageId">The image ID.</param>
+        /// <returns>A function that deletes the image.</returns>
         public Func<Task<HttpResponseMessage>> DeleteImageFunc(int imageId)
         {
             return () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductImages.Delete(imageId));
         }
-
-
-
-        /// <summary>
-        /// Uploads the provided file to the server, where it will be converted to WebP.
-        /// </summary>
-        /// <param name="productId">The product ID to associate the image with.</param>
-        /// <param name="file">The image file selected by the user.</param>
-        /// <returns>True if the upload succeeded, false otherwise.</returns>
-        //public async Task<HttpResponseMessage?> UploadFileToServer(IBrowserFile file, int productId, int? variantId = null)
-        //{
-        //    using var content = new MultipartFormDataContent();
-        //    using var fileStream = file.OpenReadStream(maxAllowedSize: MaxFileSize);
-        //    using var streamContent = new StreamContent(fileStream);
-        //    streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-
-        //    // The second parameter "file" is the form field name on the server side
-        //    content.Add(streamContent, "file", file.Name);
-
-        //    HttpResponseMessage response;
-
-        //    if (variantId == null)
-        //    {
-        //        response = await _httpClient.PostAsync(ApiRoutes.Manage.Products.Images.UploadImageForProductId(productId), content);
-        //    }
-        //    else
-        //    {
-        //        response = await _httpClient.PostAsync(ApiRoutes.Manage.Products.Variants.Images.UploadImageForVariantId(productId, variantId ?? 0), content);
-        //    }
-
-        //    return response;
-        //}
-
-        //public async Task<List<ProductImageDto>?> GetImagesForProductId(int id)
-        //{
-        //    var response = await _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(id));
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-
-        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
-        //    return await JsonHelper.Deserialize<List<ProductImageDto>>(response);
-        //    //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
-        //}
-
-        //public async Task<List<ProductImageDto>?> GetImagesForProductVariantId(int variantId)
-        //{
-        //    var response = await _httpClient.GetAsync(
-        //        ApiRoutes.Public.Products.Variants.Images.GetImagesForProductVariantId(variantId));
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-
-        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
-        //    return await JsonHelper.Deserialize<List<ProductImageDto>>(response);
-        //    //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
-        //}
-
-        //public async Task DeleteImage(int imageId)
-        //{
-        //    DeleteProductImage = new(
-        //        () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductImages.Delete(imageId)));
-
-        //    await DeleteProductImage.ExecuteAsync();
-
-        //    if (DeleteProductImage.HasFailed)
-        //    {
-        //        _notificationService.Display(DeleteProductImage.GetErrorNotificationModel("Falha na tentativa de deletar a imagem."));
-        //        return;
-        //    }
-
-        //    _notificationService.DisplaySuccess("Imagem removida com sucesso!");
-
-
-
-        //    //var response = await _httpClient.DeleteAsync(NewApiEndpoints.Manage.Product.Image.Delete(imageId));
-        //    ////var response = await _httpClient.GetAsync(NewApiEndpoints.Manage.Product.);
-        //    //Console.WriteLine("ProductImageService->Delete " + NewApiEndpoints.Manage.Product.Image.Delete(imageId));
-
-        //    //if (!response.IsSuccessStatusCode)
-        //    //{
-        //    //    Console.WriteLine("ProductImageService->Delete 1");
-        //    //    // Return null to indicate an error or DB problem
-        //    //    return null;
-        //    //}
-
-        //    //Console.WriteLine("ProductImageService->Delete 2");
-        //    //Console.WriteLine(await response.Content.ReadAsStringAsync());
-        //    //return response;
-        //    ////return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
-        //}
-
-        //public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImageDto> productImageDtoList)
-        //{
-        //    List<ProductImagePriorityDto> productImagePriorityDtoList = [];
-
-        //    foreach (var image in productImageDtoList)
-        //    {
-        //        productImagePriorityDtoList.Add(new ProductImagePriorityDto
-        //        {
-        //            Id = image.Id, 
-        //            Priority = image.Priority
-        //        });
-        //    }
-
-        //    var response = await _httpClient.PostAsJsonAsync(
-        //        NewApiEndpoints.Manage.Product.Image.UpdateOrdering,
-        //        JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
-
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        Console.WriteLine("ProductImageService->UpdateOrdering 1");
-        //        // Return null to indicate an error or DB problem
-        //        return null;
-        //    }
-
-        //    Console.WriteLine("ProductImageService->UpdateOrdering 2");
-        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
-        //    return response;
-        //}
-
-        //public void NotifyProductImagesChanged()
-        //{
-        //    ProductImagesChanged?.Invoke();
-        //}
-
-        //public void NotifyProductVariantImagesChanged(int variantId)
-        //{
-        //    ProductVariantImagesChanged?.Invoke(variantId);
-        //}
     }
 }

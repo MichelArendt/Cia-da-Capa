@@ -5,9 +5,11 @@ using System.Net.Http.Json;
 
 namespace frontend.Services.API
 {
+    /// <summary>
+    /// Service to handle API calls related to products.
+    /// </summary>
     public class ProductService
     {
-
         private readonly HttpClient _httpClient;
 
         public ProductService(HttpClient httpClient)
@@ -15,52 +17,51 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        //public async Task<HttpResponseMessage> CreateProductAsync(ProductFormDto product)
-        //{
-        //    return await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.Product.Create, product, JsonHelper._options);
-        //}
-
+        /// <summary>
+        /// Gets the list of products.
+        /// </summary>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> GetProductsListFunc()
         {
             return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetAll);
         }
 
+        /// <summary>
+        /// Creates a new product.
+        /// </summary>
+        /// <param name="product">The product to create.</param>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> CreateProductFunc(ProductFormDto product)
         {
             return () => _httpClient.PostAsJsonAsync(ApiRoutes.Manage.Products.Create, product, JsonHelper._options);
         }
 
+        /// <summary>
+        /// Updates an existing product.
+        /// </summary>
+        /// <param name="product">The product to update.</param>
+        /// <param name="productId">The ID of the product to update.</param>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> UpdateProductFunc(ProductFormDto product, int productId)
         {
             return () => _httpClient.PutAsJsonAsync(ApiRoutes.Manage.Products.Update(productId), product, JsonHelper._options);
         }
 
-        //public async Task<List<ProductDto>> GetProductsAsync()
-        //{
-        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.GetAll);
-
-        //    return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
-        //}
-
-        //public async Task<ProductDto?> GetProductByIdAsync(int id)
-        //{
-        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.ById(id));
-
-        //    return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
-        //}
-
-        //public async Task<ProductDto?> GetFullProductByIdAsync(int id)
-        //{
-        //    var response = await _httpClient.GetAsync(NewApiEndpoints.Public.Product.ById(id).Full);
-
-        //    return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
-        //}
-
+        /// <summary>
+        /// Fetches images for a specific product.
+        /// </summary>
+        /// <param name="productId">The ID of the product.</param>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> FetchProductImagesFunc(int productId)
         {
             return () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(productId));
         }
 
+        /// <summary>
+        /// Fetches images for a specific product variant.
+        /// </summary>
+        /// <param name="VariantId">The ID of the product variant.</param>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
         public Func<Task<HttpResponseMessage>> FetchProductVariantImagesFunc(int VariantId)
         {
             return () => _httpClient.GetAsync(ApiRoutes.Public.Products.Variants.Images.GetImagesForProductVariantId(VariantId));
