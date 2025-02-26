@@ -2,6 +2,7 @@
 namespace Controllers\Manage;
 
 use Flight;
+use Helpers\HttpResponse;
 use PDO;
 
 class UserController {
@@ -20,14 +21,11 @@ class UserController {
         'path' => '/'
     ]);
 
-    $message = "Logged out successfully";
-    Flight::json(["message" => $message], 200);
+    HttpResponse::responseNoContent();
   }
 
   public function validateSession() {
-    // If token is valid, return 200 OK
-    $message = "Session is valid";
-    Flight::json(["message" => $message], 200);
+    HttpResponse::responseNoContent();
   }
 }
 ?>

@@ -135,10 +135,12 @@
     private bool isUpdating { get; set; } = false;
     private bool orderingChanged = false;
     private HashSet<int> deletingSizeLabels = new();
+
     private ApiStateHandler<object> createSizeLabelApiHandler = new();
     private ApiStateHandler<object> updateSizeLabelApiHandler = new();
     private ApiStateHandler<object> deleteSizeLabelApiHandler = new();
     private ApiStateHandler<object> updateSizeLabelOrderingApiHandler = default!;
+
     private NotificationModel orderingChangedNotification = new NotificationModel
     {
         Content =@<span>Ordem dos rótulos modificada! Não esqueça de salvar as alterações.</span>  ,
@@ -175,7 +177,7 @@
                     Label = productSizeLabelFormModel.Label,
                 };
 
-            await createSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.CreateNewProductSizeLabelFunc(newProductSizeLabelDto));
+            await createSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.CreateProductSizeLabelFunc(newProductSizeLabelDto));
         } else {
             // updating size label
             var updateProductSizeLabelDto = new UpdateProductSizeLabelDto

@@ -25,7 +25,7 @@ namespace frontend.Services.API
             return () => _httpClient.GetAsync(ApiRoutes.Public.Products.Variants.GetForProductId(id));
         }
 
-        public Func<Task<HttpResponseMessage>> CreateNewProductVariantFunc(NewProductVariantDto newProductVariantDto)
+        public Func<Task<HttpResponseMessage>> CreateProductVariantFunc(NewProductVariantDto newProductVariantDto)
         {
             return () => _httpClient.PostAsJsonAsync(
                 ApiRoutes.Manage.Products.Variants.CreateForProductId(newProductVariantDto.ProductId),

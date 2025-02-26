@@ -3,6 +3,7 @@
 namespace Controllers\Public;
 
 use Flight;
+use Helpers\HttpResponse;
 
 class UserController {
   public function login() {
@@ -10,9 +11,7 @@ class UserController {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['username']) || !isset($data['password'])) {
-      http_response_code(400);
-      echo json_encode(['error' => 'Missing username or password']);
-      return;
+      HttpResponse::returnValidationError("Usuário e senha são obrigatórios.");
     }
 
     $userModel = Flight::get('userModel');
@@ -22,9 +21,7 @@ class UserController {
 
     if (!$token) {
       // null means invalid credentials
-      http_response_code(401);
-      echo json_encode(['error' => 'Invalid credentials']);
-      return;
+      HttpResponse::returnValidationError("Credenciais inválidas.", 401);
     }
 
     // If we got a token, set the cookie here in the controller
@@ -36,7 +33,7 @@ class UserController {
         'secure' => isset($_SERVER['HTTPS'])
     ]);
 
-    echo json_encode(['message' => 'Login successful']);
+    HttpResponse::responseNoContent();
   }
 }
 ?>

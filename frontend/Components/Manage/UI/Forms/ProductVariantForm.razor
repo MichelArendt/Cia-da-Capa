@@ -92,7 +92,7 @@ else
 
                 // HANDLER - create
                 createProductVariantApiHandler = 
-                    new(ProductVariantService.CreateNewProductVariantFunc(newProductVariantDto!));
+                    new(ProductVariantService.CreateProductVariantFunc(newProductVariantDto!));
                 fetchProductVariantsApiHandler = 
                     new(ProductVariantService.GetVariantsForProductIdFunc(Product.Content.Id));
             }

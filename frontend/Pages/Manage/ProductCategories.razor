@@ -11,6 +11,7 @@
 @using frontend.Components.Shared.UI.SVG
 
 @inject AppStateService AppState
+@inject NotificationService NotificationService
 @inject ProductStateService ProductStateService
 @inject ProductCategoryService ProductCategoryService
 
@@ -18,7 +19,7 @@
 
 <h2>Adicionar nova categoria de produto</h2>
 
-<EditForm Model="@newProductCategoryModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+<EditForm Model="@productCategoryFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
     @if (!string.IsNullOrEmpty(errorMessage))
     {
@@ -27,17 +28,17 @@
     <ValidationSummary />
 
     <div>
-        <label for="name">
-            Nome:
+        <label for="title">
+            Título:
         </label>
 
-        <InputText name="name"
-        id="name"
+        <InputText name="title"
+        id="title"
         autocomplete="on"
         placeholder="Mochila"
-        @bind-Value="newProductCategoryModel.Name"
+        @bind-Value="productCategoryFormModel.Title"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductCategoryModel.Name)" />
+        <ValidationMessage For="@(() => productCategoryFormModel.Title)" />
     </div>
 
     <div>
@@ -49,9 +50,9 @@
         id="reference"
         autocomplete="on"
         placeholder="MO"
-        @bind-Value="newProductCategoryModel.Reference"
+        @bind-Value="productCategoryFormModel.Reference"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductCategoryModel.Reference)" />
+        <ValidationMessage For="@(() => productCategoryFormModel.Reference)" />
     </div>
 
     <div>
@@ -60,9 +61,9 @@
         </label>
 
         <InputCheckbox id="isActive"
-        @bind-Value="newProductCategoryModel.IsActive"
+        @bind-Value="productCategoryFormModel.IsActive"
         disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => newProductCategoryModel.IsActive)" />
+        <ValidationMessage For="@(() => productCategoryFormModel.IsActive)" />
     </div>
 
     <div>
@@ -169,12 +170,14 @@
 
 @code {
     private List<ProductCategoryDto> productCategories = new();
-    private NewProductCategoryModel newProductCategoryModel = new();
+    private ProductCategoryFormModel productCategoryFormModel = new();
     private string? errorMessage;
     private bool IsSubmitting { get; set; } = false;
-
-    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Title;
     private bool isDescending = false;
+    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Title;
+
+    private ApiStateHandler<object> createCategoryApiHandler = new();
+    private ApiStateHandler<object> deleteCategoryApiHandler = new();
 
     protected override void OnInitialized()
     {
@@ -182,7 +185,6 @@
 
         ProductStateService.CategoriesChanged += StateHasChanged;
         productCategories = ProductStateService.CategoriesDict.Values.ToList();
-        // SyncProductCategories();
     }
 
     public void Dispose()
@@ -190,40 +192,30 @@
         ProductStateService.CategoriesChanged -= StateHasChanged;
     }
 
-    // private void SyncProductCategories()
-    // {
-    //     productCategories = ProductStateService.CategoriesDict.Items;
-    //     StateHasChanged();
-    // }
-
     private async Task HandleValidSubmit()
     {
         IsSubmitting = true;
         errorMessage = null;
 
-        var dto = new NewProductCategoryDto
+        var newProductCategoryDto = new NewProductCategoryDto
         {
-                Title = newProductCategoryModel.Name,
-                Reference = newProductCategoryModel.Reference,
-                IsActive = newProductCategoryModel.IsActive,
+                Title = productCategoryFormModel.Title,
+                Reference = productCategoryFormModel.Reference,
+                IsActive = productCategoryFormModel.IsActive,
         };
 
-        var response = await ProductCategoryService.CreateNewProductCategoryAsync(dto);
+        await createCategoryApiHandler.ExecuteAsync(ProductCategoryService.CreateProductCategoryFunc(newProductCategoryDto));
 
-        if (response.IsSuccessStatusCode)
+        if (createCategoryApiHandler.IsSuccess())
         {
-            Console.WriteLine(1);
             // Reset form fields
-            newProductCategoryModel = new NewProductCategoryModel();
+            productCategoryFormModel = new();
 
             // Re-fetch categories to update the list
             await ProductStateService.CategoriesApiHandler.ExecuteAsync();
-        }
-        else
-        {
-            Console.WriteLine(2);
-            errorMessage = $"Erro ao adicionar categoria: {await response.Content.ReadAsStringAsync()}";
-            StateHasChanged();
+        } else {
+            errorMessage = "Erro ao criar categoria.";
+            NotificationService.Display(createCategoryApiHandler.GetErrorNotificationModel(errorMessage));
         }
 
         IsSubmitting = false;
@@ -234,17 +226,6 @@
         errorMessage = "Por favor corrija os erros abaixo.";
     }
 
-    public class NewProductCategoryModel
-    {
-        [Required(ErrorMessage = "Nome é obrigatório.")]
-        public string Name { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Reference é obrigatória")]
-        public string Reference { get; set; } = string.Empty;
-
-        public bool IsActive { get; set; } = true;
-    }
-  
     private void SortCategoriesBy(ProductCategoryDto.SortBy.SortField sortField)
     {
         if (currentSortField.ColumnName == sortField.ColumnName)
@@ -261,18 +242,15 @@
             ? productCategories.OrderByDescending(sortField.Selector).ToList()
             : productCategories.OrderBy(sortField.Selector).ToList();
 
-        Console.WriteLine($"Sorting by: {currentSortField.ColumnName}, Order: {(isDescending ? "Descending" : "Ascending")}");
         StateHasChanged();
     }
 
     private async Task DeleteCategory(int categoryId)
     {
-        var response = await ProductCategoryService.DeleteProductCategoryAsync(categoryId);
+        await deleteCategoryApiHandler.ExecuteAsync(ProductCategoryService.DeleteProductCategoryByIdFunc(categoryId));
 
-        if (response.IsSuccessStatusCode)
+        if (deleteCategoryApiHandler.IsSuccess())
         {
-            Console.WriteLine($"Category {categoryId} deleted successfully.");
-
             // Remove item manually
             productCategories = productCategories.Where(c => c.Id != categoryId).ToList();
 
@@ -280,8 +258,8 @@
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Failed to delete category {categoryId}: {errorMessage}");
+            errorMessage = "Erro ao deletar categoria.";
+            NotificationService.Display(deleteCategoryApiHandler.GetErrorNotificationModel(errorMessage));
         }
     }
 }

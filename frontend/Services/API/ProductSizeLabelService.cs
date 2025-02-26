@@ -35,7 +35,7 @@ namespace frontend.Services.API
         //    return response;
         //}
 
-        public Func<Task<HttpResponseMessage>> CreateNewProductSizeLabelFunc(NewProductSizeLabelDto dto)
+        public Func<Task<HttpResponseMessage>> CreateProductSizeLabelFunc(NewProductSizeLabelDto dto)
         {
             return () => _httpClient.PostAsJsonAsync(
                 ApiRoutes.Manage.ProductSizeLabels.Create,

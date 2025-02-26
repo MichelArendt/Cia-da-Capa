@@ -4,7 +4,7 @@ namespace frontend.Models.Forms
 {
     public class ProductVariantFormModel
     {
-        [Required(ErrorMessage = "Referência  é obrigatório.")]
+        [Required(ErrorMessage = "Referência é obrigatória.")]
         public string Reference { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Título é obrigatório.")]
