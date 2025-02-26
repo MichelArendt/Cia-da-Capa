@@ -1,5 +1,8 @@
 ﻿namespace frontend.Services.Interop
 {
+    /// <summary>
+    /// Represents a rectangle with properties for position and dimensions.
+    /// </summary>
     public class DOMRect
     {
         public double X { get; set; }

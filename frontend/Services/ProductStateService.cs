@@ -6,6 +6,9 @@ using System.Collections.Frozen;
 
 namespace frontend.Services
 {
+    /// <summary>
+    /// Service to manage the state of product categories and size labels.
+    /// </summary>
     public class ProductStateService : IDisposable
     {
         // Dictionaries for fast lookup
@@ -13,9 +16,8 @@ namespace frontend.Services
         public FrozenDictionary<int, ProductSizeLabelDto> SizeLabelsDict { get; private set; } = FrozenDictionary<int, ProductSizeLabelDto>.Empty;
 
         // Lists ordered by priority or title for UI display
-        public List<ProductCategoryDto> CategoriesListOrderedByTitle = new();
-        public List<ProductSizeLabelDto> SizeLabelsListOrderedByPriority = new();
-
+        public List<ProductCategoryDto> CategoriesListOrderedByTitle { get; private set; } = new();
+        public List<ProductSizeLabelDto> SizeLabelsListOrderedByPriority { get; private set; } = new();
 
         public ApiStateHandler<List<ProductCategoryDto>> CategoriesApiHandler { get; }
         public ApiStateHandler<List<ProductSizeLabelDto>> SizeLabelsApiHandler { get; }
@@ -23,9 +25,15 @@ namespace frontend.Services
         public Action? CategoriesChanged { get; set; }
         public Action? SizeLabelsChanged { get; set; }
 
-        //private readonly HttpClient _httpClient;
         private readonly NotificationService notificationService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductStateService"/> class.
+        /// </summary>
+        /// <param name="categoryService">The product category service.</param>
+        /// <param name="sizeLabelService">The product size label service.</param>
+        /// <param name="notificationService">The notification service.</param>
+        /// <param name="httpClient">The HTTP client.</param>
         public ProductStateService(ProductCategoryService categoryService, ProductSizeLabelService sizeLabelService, NotificationService notificationService, HttpClient httpClient)
         {
             this.notificationService = notificationService;
@@ -39,6 +47,9 @@ namespace frontend.Services
             SizeLabelsApiHandler.StateHasChanged += UpdateSizeLabels;
         }
 
+        /// <summary>
+        /// Updates the categories state.
+        /// </summary>
         public void UpdateCategories()
         {
             if (CategoriesApiHandler.IsSuccess() && CategoriesApiHandler.Content != null)
@@ -49,6 +60,9 @@ namespace frontend.Services
             }
         }
 
+        /// <summary>
+        /// Updates the size labels state.
+        /// </summary>
         public void UpdateSizeLabels()
         {
             if (SizeLabelsApiHandler.IsSuccess() && SizeLabelsApiHandler.Content != null)
@@ -59,6 +73,9 @@ namespace frontend.Services
             }
         }
 
+        /// <summary>
+        /// Refetches the categories from the API.
+        /// </summary>
         public async Task RefetchCategories()
         {
             await CategoriesApiHandler.ExecuteAsync();
@@ -73,6 +90,9 @@ namespace frontend.Services
             }
         }
 
+        /// <summary>
+        /// Refetches the size labels from the API.
+        /// </summary>
         public async Task RefetchSizeLabels()
         {
             await SizeLabelsApiHandler.ExecuteAsync();
@@ -87,6 +107,9 @@ namespace frontend.Services
             }
         }
 
+        /// <summary>
+        /// Disposes the service and unsubscribes from events.
+        /// </summary>
         public void Dispose()
         {
             CategoriesApiHandler.StateHasChanged -= UpdateCategories;
