@@ -19,6 +19,12 @@ namespace frontend.Services.API
         //{
         //    return await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.Product.Create, product, JsonHelper._options);
         //}
+
+        public Func<Task<HttpResponseMessage>> GetProductsListFunc()
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetAll);
+        }
+
         public Func<Task<HttpResponseMessage>> CreateProductFunc(ProductFormDto product)
         {
             return () => _httpClient.PostAsJsonAsync(ApiRoutes.Manage.Products.Create, product, JsonHelper._options);
@@ -29,12 +35,12 @@ namespace frontend.Services.API
             return () => _httpClient.PutAsJsonAsync(ApiRoutes.Manage.Products.Update(productId), product, JsonHelper._options);
         }
 
-        public async Task<List<ProductDto>> GetProductsAsync()
-        {
-            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.GetAll);
+        //public async Task<List<ProductDto>> GetProductsAsync()
+        //{
+        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.GetAll);
 
-            return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
-        }
+        //    return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
+        //}
 
         //public async Task<ProductDto?> GetProductByIdAsync(int id)
         //{

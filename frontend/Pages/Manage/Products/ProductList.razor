@@ -5,22 +5,38 @@
 @using frontend.Services.API
 
 @inject ProductService ProductService
+@inject NotificationService NotificationService
 
 <PageTitle>Produtos (Gerenciamento)</PageTitle>
 
 <h3>Produtos</h3>
 
-@foreach (ProductDto product in products)
+@if (productsApiHandler.IsSuccess() && productsApiHandler.Content != null)
 {
-    <div><NavLink href="@($"manage/produtos/editar/{product.Id}")">Editar</NavLink> @product.Title @product.Reference @product.Description</div>
+    if (productsApiHandler.Content.Any())
+    {
+        @foreach (var product in productsApiHandler.Content)
+        {
+            <div><NavLink href="@($"manage/produtos/editar/{product.Id}")">Editar</NavLink> @product.Title @product.Reference @product.Description</div>
+        }
+    } else {
+        <span>Nenhum produto encontrado!</span>
+    }
+} else {
+    @productsApiHandler.GetErrorFeedbackComponent(defaultErrorMessage)
 }
 
 @code {
-    private List<ProductDto> products = new();
+    private ApiStateHandler<List<ProductDto>> productsApiHandler = new();
+    private string defaultErrorMessage = "Erro ao tentar recuperar a lista de produtos.";
 
     protected override async Task OnInitializedAsync()
     {
-        products = (await ProductService.GetProductsAsync()).ToList();
-        // productCategories = (await ProductCategoryService.GetProductCategoriesAsync()).Cast<ISortableDto>().ToList();
+        await productsApiHandler.ExecuteAsync(ProductService.GetProductsListFunc());
+
+        if (!productsApiHandler.IsSuccess())
+        {
+            NotificationService.Display(productsApiHandler.GetErrorNotificationModel(defaultErrorMessage));
+        }
     }
 }

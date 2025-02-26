@@ -18,11 +18,9 @@ class ProductController
                 throw new Exception("Failed to retrieve products.");
             }
 
-            Flight::json($products, 200);
+            HttpResponse::responseFetchSuccess($products);
         } catch (Exception $e) {
-            $message = "Error in ProductController::getAll(): " . $e->getMessage();
-            error_log($message);
-            Flight::json(["message" => $message], 500);
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getAll()");
         }
     }
 
