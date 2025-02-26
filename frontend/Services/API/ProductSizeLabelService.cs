@@ -14,26 +14,26 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        public async Task<List<ProductSizeLabelDto>?> GetProductSizeLabelsAsync()
-        {
-            var response = await _httpClient.GetAsync(ApiEndpoints.Public.ProductSizeLabel.GetAll);
+        //public async Task<List<ProductSizeLabelDto>?> GetProductSizeLabelsAsync()
+        //{
+        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.ProductSizeLabel.GetAll);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                // Return null to indicate an error or DB problem
-                return null;
-            }
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        // Return null to indicate an error or DB problem
+        //        return null;
+        //    }
 
 
-            return await ApiServiceHelper.DeserializeResponse<List<ProductSizeLabelDto>>(response);
-        }
+        //    return await ApiServiceHelper.DeserializeResponse<List<ProductSizeLabelDto>>(response);
+        //}
 
-        public async Task<HttpResponseMessage> CreateNewProductSizeLabelAsync(NewProductSizeLabelDto dto)
-        {
-            var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.ProductSizeLabel.Create, dto);
+        //public async Task<HttpResponseMessage> CreateNewProductSizeLabelAsync(NewProductSizeLabelDto dto)
+        //{
+        //    var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.ProductSizeLabel.Create, dto);
 
-            return response;
-        }
+        //    return response;
+        //}
 
         public Func<Task<HttpResponseMessage>> CreateNewProductSizeLabelFunc(NewProductSizeLabelDto dto)
         {
@@ -51,10 +51,10 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
-        public async Task<HttpResponseMessage> DeleteProductSizeLabelAsync(int id)
-        {
-            return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductSizeLabel.Delete}/{id}");
-        }
+        //public async Task<HttpResponseMessage> DeleteProductSizeLabelAsync(int id)
+        //{
+        //    return await _httpClient.DeleteAsync($"{ApiEndpoints.Manage.ProductSizeLabel.Delete}/{id}");
+        //}
 
         public Func<Task<HttpResponseMessage>> DeleteProductSizeLabelFunc(int id)
         {
@@ -69,33 +69,33 @@ namespace frontend.Services.API
                 JsonHelper._options);
         }
 
-        public async Task<HttpResponseMessage?> UpdateOrderingFunc(List<ProductImageDto> productImageDtoList)
-        {
-            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
+        //public async Task<HttpResponseMessage?> UpdateOrderingFunc(List<ProductImageDto> productImageDtoList)
+        //{
+        //    List<ProductImagePriorityDto> productImagePriorityDtoList = [];
 
-            foreach (var image in productImageDtoList)
-            {
-                productImagePriorityDtoList.Add(new ProductImagePriorityDto
-                {
-                    Id = image.Id,
-                    Priority = image.Priority
-                });
-            }
+        //    foreach (var image in productImageDtoList)
+        //    {
+        //        productImagePriorityDtoList.Add(new ProductImagePriorityDto
+        //        {
+        //            Id = image.Id,
+        //            Priority = image.Priority
+        //        });
+        //    }
 
-            var response = await _httpClient.PostAsJsonAsync(
-                NewApiEndpoints.Manage.Product.Image.UpdateOrdering,
-                JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
+        //    var response = await _httpClient.PostAsJsonAsync(
+        //        ApiRoutes.Manage.ProductImages.UpdateOrdering,
+        //        JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
 
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("ProductImageService->UpdateOrdering 1");
-                // Return null to indicate an error or DB problem
-                return null;
-            }
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        Console.WriteLine("ProductImageService->UpdateOrdering 1");
+        //        // Return null to indicate an error or DB problem
+        //        return null;
+        //    }
 
-            Console.WriteLine("ProductImageService->UpdateOrdering 2");
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-            return response;
-        }
+        //    Console.WriteLine("ProductImageService->UpdateOrdering 2");
+        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
+        //    return response;
+        //}
     }
 }

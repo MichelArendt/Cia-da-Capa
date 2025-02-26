@@ -267,7 +267,6 @@
             productSizeLabelDtos = productSizeLabelDtos.OrderBy(im => im.Priority).ToList();
 
             SetOrderingChanged(true);
-            @* orderingChanged = true; *@
 
             StateHasChanged(); // 🔹 Force UI to re-render
         }

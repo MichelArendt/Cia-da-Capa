@@ -16,15 +16,15 @@
         </label>
 
         <InputFile class="gallery-editable__input-file"
-            id="file" 
-            name="file"
-            multiple
-            accept=".jpeg,.jpg,.png,.webp"
-            OnChange="HandleFiles"
-            @ondragenter="HandleFilesDragEnter"
-            @ondragleave="HandleFilesDragEnd"
-            maxAllowedSize
-            @ref="inputFileRef" 
+        id="file" 
+        name="file"
+        multiple
+        accept=".jpeg,.jpg,.png,.webp"
+        OnChange="HandleFiles"
+        @ondragenter="HandleFilesDragEnter"
+        @ondragleave="HandleFilesDragEnd"
+        maxAllowedSize
+        @ref="inputFileRef" 
         />
 
         <div class="gallery-editable__drop-files-overlay @(isDragging ? "gallery-editable__drop-files-overlay--show" : "")">
@@ -50,22 +50,22 @@
             @foreach (var productImage in images)
             {
                 <div 
-                    class="gallery-editable__draggable-image"
-                    draggable="@(!deletingImages.Any() ? "true" : "false")"
-                    @ondragstart="@(() => HandleReorderStart(productImage.Id))"
-                    @ondragover="@((e) => HandleReorderOver(e, productImage.Id))"
-                    @ondrop="@(() => HandleReorderEnd(productImage.Id))"
+                class="gallery-editable__draggable-image"
+                draggable="@(!deletingImages.Any() ? "true" : "false")"
+                @ondragstart="@(() => HandleReorderStart(productImage.Id))"
+                @ondragover="@((e) => HandleReorderOver(e, productImage.Id))"
+                @ondrop="@(() => HandleReorderEnd(productImage.Id))"
                 >
                     <div class="gallery-editable__image-priority">
                         @productImage.Priority
                     </div>
 
                     <button 
-                        class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
-                        @onclick="@(() => DeleteImage(productImage.Id))"
-                        draggable="false"
-                        disabled="@(isUploading || orderingChanged)"
-                        title="@((isUploading || orderingChanged) ? "Não é permitido remover as imagens agora!" : "Remover image" )"
+                    class="gallery-editable__delete-button  @(isUploading ? "disabled" : "")" 
+                    @onclick="@(() => DeleteImage(productImage.Id))"
+                    draggable="false"
+                    disabled="@(isUploading || orderingChanged)"
+                    title="@((isUploading || orderingChanged) ? "Não é permitido remover as imagens agora!" : "Remover image" )"
                     >
                         Remover
                     </button>
@@ -93,16 +93,11 @@
     [Parameter]
     public int? VariantId { get; set; }
 
-    @* [Parameter] *@
-    @* public int ProductId { get; set; } *@
-
-    @* [Parameter] *@
-    @* public ProductViewModel? Product { get; set; } *@
-
     private List<ProductImageDto> images { get; set; } = [];
-    private ApiStateHandler<List<ProductImageDto>> imagesApiHandler = default!;
+    private ApiStateHandler<List<ProductImageDto>> productImagesApiHandler = default!;
+    private ApiStateHandler<List<ProductImageDto>> updateProductImagesOrderingApiHandler = new();
+    private ApiStateHandler<List<ProductImageDto>> deleteProductImageApiHandler = new();
 
-    @* private List<ProductImageDto> uploadedFiles = new(); // List to store uploaded file details *@
     private InputFile? inputFileRef;
     private bool isUploading = false; // Tracks upload status
     private int _dragDepth = 0;
@@ -125,13 +120,13 @@
     {
         if (VariantId == null){
             images = Product.Content!.Images;
-            imagesApiHandler = new(ProductService.FetchProductImagesFunc(Product.Content.Id));
+            productImagesApiHandler = new(ProductService.FetchProductImagesFunc(Product.Content.Id));
         }
         else
         {
             // Variant's existence is already checked on parent
             images = Product.Content!.Variants.Find(v => v.Id == VariantId)!.Images;
-            imagesApiHandler = new(ProductService.FetchProductVariantImagesFunc((int)VariantId));
+            productImagesApiHandler = new(ProductService.FetchProductVariantImagesFunc((int)VariantId));
         }
     }
 
@@ -214,25 +209,31 @@
     private async Task SaveReordering(){
         if (images != null)
         {
-            var response = await ProductImageService.UpdateOrdering(images);
+            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
 
-            if (response == null)
+            foreach (var image in images)
             {
-                throw new Exception($"Image reordering failed");
+                productImagePriorityDtoList.Add(new ProductImagePriorityDto
+                    {
+                        Id = image.Id,
+                        Priority = image.Priority
+                    });
             }
 
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorMessage = await response.Content.ReadAsStringAsync();
-                throw new Exception($"[{response.StatusCode}] {errorMessage}");
-            }
+            await updateProductImagesOrderingApiHandler.ExecuteAsync(ProductImageService.UpdateOrderingFunc(productImagePriorityDtoList));
 
-            SetOrderingChanged(false);
-            NotificationService.Display(new NotificationModel{
-                Content =@<span>Nova ordem das fotos foram salvas com sucesso!</span>,
-                Type = NotificationType.Success
-            });
-            Console.WriteLine($"Successfully reordered images");
+            if (updateProductImagesOrderingApiHandler.IsSuccess())
+            {
+                SetOrderingChanged(false);
+                NotificationService.Display(new NotificationModel
+                {
+                    Content =@<span>Nova ordem das fotos foram salvas com sucesso!</span>,
+                    Type = NotificationType.Success
+                });
+            } else
+            {
+                NotificationService.Display(updateProductImagesOrderingApiHandler.GetErrorNotificationModel("Erro ao tentar salvar nova ordem das fotos."));
+            }
         }
     }
 
@@ -269,8 +270,6 @@
                 return;
             }
 
-            Console.WriteLine($"Uploading {files.Count} file(s)...");
-
             await ProductImageService.UploadFilesToServerAsync(files, Product.Content!.Id, VariantId);
 
             // Check success and update notifications
@@ -280,23 +279,12 @@
             }
             else
             {
-                NotificationService.Display(
-                    ProductImageService.UploadProductImage.GetErrorNotificationModel("Erro no upload das imagens ao servidor."));
+                NotificationService.Display(ProductImageService.UploadProductImage.GetErrorNotificationModel("Erro no upload das imagens ao servidor."));
             }
 
             isUploading = false;
             _contentLoaderExtraClass = "gallery-editable__content-loader";
             inputFileRef = null;
-
-            // Trigger image reload
-            @* if (VariantId == null) *@
-            @* { *@
-            @*     ProductImageService.NotifyProductImagesChanged(); *@
-            @* } *@
-            @* else *@
-            @* { *@
-            @*     ProductImageService.NotifyProductVariantImagesChanged(VariantId.Value); *@
-            @* } *@
 
             await RefetchImages();
         }
@@ -306,25 +294,23 @@
     {
         if (!isUploading)
         {
-            Console.WriteLine($"GalleryEditable->Delete ID: {imageId}");
             deletingImages.Add(imageId); // Track which image is being deleted
             StateHasChanged(); // Force UI update
-            await ProductImageService.DeleteImage(imageId);
 
-            if (ProductImageService.DeleteProductImage.IsSuccess())
+            await deleteProductImageApiHandler.ExecuteAsync(ProductImageService.DeleteImageFunc(imageId));
+
+            if (deleteProductImageApiHandler.IsSuccess())
             {
-                images.RemoveAll(im => im.Id == imageId);
+                NotificationService.Display(new NotificationModel
+                {
+                    Content =@<span>Imagem removida!</span>,
+                    Type = NotificationType.Success
+                });
             }
-            deletingImages.Remove(imageId); // Remove from tracking list
-
-            @* if (VariantId == null) *@
-            @* { *@
-            @*     ProductImageService.NotifyProductImagesChanged(); *@
-            @* } *@
-            @* else *@
-            @* { *@
-            @*     ProductImageService.NotifyProductVariantImagesChanged(VariantId ?? 0); *@
-            @* } *@
+            else
+            {
+                NotificationService.Display(deleteProductImageApiHandler.GetErrorNotificationModel("Erro ao deletar foto."));
+            }
 
             await RefetchImages();
 
@@ -333,18 +319,17 @@
     }
 
     private async Task RefetchImages(){
-        await imagesApiHandler.ExecuteAsync();
+        await productImagesApiHandler.ExecuteAsync();
 
-        if (imagesApiHandler.IsSuccess() && imagesApiHandler.Content != null)
+        if (productImagesApiHandler.IsSuccess() && productImagesApiHandler.Content != null)
         {
-            Product.Content!.Images = imagesApiHandler.Content;
-            images = imagesApiHandler.Content;
-            Console.WriteLine("GalleryEditable->RefetchProductImages: " + imagesApiHandler.Content.Count);
+            Product.Content!.Images = productImagesApiHandler.Content;
+            images = productImagesApiHandler.Content;
             StateHasChanged();
         }
         else
         {
-            NotificationService.Display(imagesApiHandler.GetErrorNotificationModel("Erro na tentativa de recuperar as imagens atualizadas do produto."));
+            NotificationService.Display(productImagesApiHandler.GetErrorNotificationModel("Erro na tentativa de recuperar as imagens atualizadas do produto."));
         }
     }
 }

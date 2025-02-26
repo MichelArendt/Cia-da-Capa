@@ -15,10 +15,10 @@ namespace frontend.Services.API
             _httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> CreateProductAsync(ProductFormDto product)
-        {
-            return await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.Product.Create, product, JsonHelper._options);
-        }
+        //public async Task<HttpResponseMessage> CreateProductAsync(ProductFormDto product)
+        //{
+        //    return await _httpClient.PostAsJsonAsync(ApiEndpoints.Manage.Product.Create, product, JsonHelper._options);
+        //}
         public Func<Task<HttpResponseMessage>> CreateProductFunc(ProductFormDto product)
         {
             return () => _httpClient.PostAsJsonAsync(ApiRoutes.Manage.Products.Create, product, JsonHelper._options);
@@ -36,19 +36,19 @@ namespace frontend.Services.API
             return await ApiServiceHelper.DeserializeResponse<List<ProductDto>>(response);
         }
 
-        public async Task<ProductDto?> GetProductByIdAsync(int id)
-        {
-            var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.ById(id));
+        //public async Task<ProductDto?> GetProductByIdAsync(int id)
+        //{
+        //    var response = await _httpClient.GetAsync(ApiEndpoints.Public.Product.ById(id));
 
-            return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
-        }
+        //    return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
+        //}
 
-        public async Task<ProductDto?> GetFullProductByIdAsync(int id)
-        {
-            var response = await _httpClient.GetAsync(NewApiEndpoints.Public.Product.ById(id).Full);
+        //public async Task<ProductDto?> GetFullProductByIdAsync(int id)
+        //{
+        //    var response = await _httpClient.GetAsync(NewApiEndpoints.Public.Product.ById(id).Full);
 
-            return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
-        }
+        //    return response.IsSuccessStatusCode ? await JsonHelper.Deserialize<ProductDto>(response) : null;
+        //}
 
         public Func<Task<HttpResponseMessage>> FetchProductImagesFunc(int productId)
         {

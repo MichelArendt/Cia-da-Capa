@@ -16,7 +16,7 @@ namespace frontend.Services.API
         public event Func<int, Task>? ProductVariantImagesChanged;
         public static readonly long MaxFileSize = 5 * 1024 * 1024;
 
-        public ApiStateHandler<List<ProductImageDto>> FetchProductImages { get; private set; } = default!;
+        public ApiStateHandler<List<ProductImageDto>> FetchProductImages { get; private set; } = new();
         public ApiStateHandler<object> UploadProductImage { get; private set; } = default!;
         public ApiStateHandler<object> DeleteProductImage { get; private set; } = default!;
 
@@ -29,12 +29,12 @@ namespace frontend.Services.API
             _notificationService = notificationService;
         }
 
-        public async Task<List<ProductImageDto>?> GetImagesForProductId(int id)
+        public async Task<List<ProductImageDto>?> GetImagesForProductId(int productId)
         {
-            FetchProductImages = new ApiStateHandler<List<ProductImageDto>>(
-                () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(id)));
+            //FetchProductImages = new ApiStateHandler<List<ProductImageDto>>(
+            //    () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(productId)));
 
-            await FetchProductImages.ExecuteAsync();
+            await FetchProductImages.ExecuteAsync(GetImagesForProductIdFunc(productId));
 
             if (FetchProductImages.IsSuccess() && FetchProductImages.Content != null)
             {
@@ -42,6 +42,11 @@ namespace frontend.Services.API
             }
 
             return null;
+        }
+
+        public Func<Task<HttpResponseMessage>> GetImagesForProductIdFunc(int productId)
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.Images.GetForProductId(productId));
         }
 
         //public async Task<List<ProductImageDto>?> UploadFileToServer(IBrowserFile file, int productId, int? variantId = null)
@@ -154,11 +159,6 @@ namespace frontend.Services.API
             });
 
             await UploadProductImage.ExecuteAsync();
-
-            if (UploadProductImage.IsSuccess())
-            {
-                await GetImagesForProductId(productId);
-            }
         }
 
         // Helper method to check file type
@@ -172,6 +172,20 @@ namespace frontend.Services.API
             };
 
             return allowedTypes.Contains(file.ContentType);
+        }
+
+        public Func<Task<HttpResponseMessage>> UpdateOrderingFunc(List<ProductImagePriorityDto> productImagePriorityDtoList)
+        {
+            return () => _httpClient.PostAsJsonAsync(
+                ApiRoutes.Manage.ProductImages.UpdateOrdering,
+                productImagePriorityDtoList,
+                JsonHelper._options);
+        }
+
+
+        public Func<Task<HttpResponseMessage>> DeleteImageFunc(int imageId)
+        {
+            return () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductImages.Delete(imageId));
         }
 
 
@@ -222,94 +236,94 @@ namespace frontend.Services.API
         //    //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
         //}
 
-        public async Task<List<ProductImageDto>?> GetImagesForProductVariantId(int variantId)
-        {
-            var response = await _httpClient.GetAsync(
-                ApiRoutes.Public.Products.Variants.Images.GetImagesForProductVariantId(variantId));
+        //public async Task<List<ProductImageDto>?> GetImagesForProductVariantId(int variantId)
+        //{
+        //    var response = await _httpClient.GetAsync(
+        //        ApiRoutes.Public.Products.Variants.Images.GetImagesForProductVariantId(variantId));
 
-            if (!response.IsSuccessStatusCode)
-            {
-                // Return null to indicate an error or DB problem
-                return null;
-            }
-
-
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-            return await JsonHelper.Deserialize<List<ProductImageDto>>(response);
-            //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
-        }
-
-        public async Task DeleteImage(int imageId)
-        {
-            DeleteProductImage = new(
-                () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductImages.Delete(imageId)));
-
-            await DeleteProductImage.ExecuteAsync();
-
-            if (DeleteProductImage.HasFailed)
-            {
-                _notificationService.Display(DeleteProductImage.GetErrorNotificationModel("Falha na tentativa de deletar a imagem."));
-                return;
-            }
-
-            _notificationService.DisplaySuccess("Imagem removida com sucesso!");
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        // Return null to indicate an error or DB problem
+        //        return null;
+        //    }
 
 
+        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
+        //    return await JsonHelper.Deserialize<List<ProductImageDto>>(response);
+        //    //return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
+        //}
 
-            //var response = await _httpClient.DeleteAsync(NewApiEndpoints.Manage.Product.Image.Delete(imageId));
-            ////var response = await _httpClient.GetAsync(NewApiEndpoints.Manage.Product.);
-            //Console.WriteLine("ProductImageService->Delete " + NewApiEndpoints.Manage.Product.Image.Delete(imageId));
+        //public async Task DeleteImage(int imageId)
+        //{
+        //    DeleteProductImage = new(
+        //        () => _httpClient.DeleteAsync(ApiRoutes.Manage.ProductImages.Delete(imageId)));
 
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    Console.WriteLine("ProductImageService->Delete 1");
-            //    // Return null to indicate an error or DB problem
-            //    return null;
-            //}
+        //    await DeleteProductImage.ExecuteAsync();
 
-            //Console.WriteLine("ProductImageService->Delete 2");
-            //Console.WriteLine(await response.Content.ReadAsStringAsync());
-            //return response;
-            ////return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
-        }
+        //    if (DeleteProductImage.HasFailed)
+        //    {
+        //        _notificationService.Display(DeleteProductImage.GetErrorNotificationModel("Falha na tentativa de deletar a imagem."));
+        //        return;
+        //    }
 
-        public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImageDto> productImageDtoList)
-        {
-            List<ProductImagePriorityDto> productImagePriorityDtoList = [];
+        //    _notificationService.DisplaySuccess("Imagem removida com sucesso!");
 
-            foreach (var image in productImageDtoList)
-            {
-                productImagePriorityDtoList.Add(new ProductImagePriorityDto
-                {
-                    Id = image.Id,
-                    Priority = image.Priority
-                });
-            }
 
-            var response = await _httpClient.PostAsJsonAsync(
-                NewApiEndpoints.Manage.Product.Image.UpdateOrdering,
-                JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
 
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("ProductImageService->UpdateOrdering 1");
-                // Return null to indicate an error or DB problem
-                return null;
-            }
+        //    //var response = await _httpClient.DeleteAsync(NewApiEndpoints.Manage.Product.Image.Delete(imageId));
+        //    ////var response = await _httpClient.GetAsync(NewApiEndpoints.Manage.Product.);
+        //    //Console.WriteLine("ProductImageService->Delete " + NewApiEndpoints.Manage.Product.Image.Delete(imageId));
 
-            Console.WriteLine("ProductImageService->UpdateOrdering 2");
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-            return response;
-        }
+        //    //if (!response.IsSuccessStatusCode)
+        //    //{
+        //    //    Console.WriteLine("ProductImageService->Delete 1");
+        //    //    // Return null to indicate an error or DB problem
+        //    //    return null;
+        //    //}
 
-        public void NotifyProductImagesChanged()
-        {
-            ProductImagesChanged?.Invoke();
-        }
+        //    //Console.WriteLine("ProductImageService->Delete 2");
+        //    //Console.WriteLine(await response.Content.ReadAsStringAsync());
+        //    //return response;
+        //    ////return await ApiServiceHelper.DeserializeResponse<List<ProductImageDto>>(response);
+        //}
 
-        public void NotifyProductVariantImagesChanged(int variantId)
-        {
-            ProductVariantImagesChanged?.Invoke(variantId);
-        }
+        //public async Task<HttpResponseMessage?> UpdateOrdering(List<ProductImageDto> productImageDtoList)
+        //{
+        //    List<ProductImagePriorityDto> productImagePriorityDtoList = [];
+
+        //    foreach (var image in productImageDtoList)
+        //    {
+        //        productImagePriorityDtoList.Add(new ProductImagePriorityDto
+        //        {
+        //            Id = image.Id, 
+        //            Priority = image.Priority
+        //        });
+        //    }
+
+        //    var response = await _httpClient.PostAsJsonAsync(
+        //        NewApiEndpoints.Manage.Product.Image.UpdateOrdering,
+        //        JsonHelper.Serialize<List<ProductImagePriorityDto>>(productImagePriorityDtoList));
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        Console.WriteLine("ProductImageService->UpdateOrdering 1");
+        //        // Return null to indicate an error or DB problem
+        //        return null;
+        //    }
+
+        //    Console.WriteLine("ProductImageService->UpdateOrdering 2");
+        //    Console.WriteLine(await response.Content.ReadAsStringAsync());
+        //    return response;
+        //}
+
+        //public void NotifyProductImagesChanged()
+        //{
+        //    ProductImagesChanged?.Invoke();
+        //}
+
+        //public void NotifyProductVariantImagesChanged(int variantId)
+        //{
+        //    ProductVariantImagesChanged?.Invoke(variantId);
+        //}
     }
 }
