@@ -83,87 +83,87 @@
         }
         else
         {
-            <table>
-                <thead>
-                    <tr>
-                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
-                            Ativo
-                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.IsActive))
-                            {
-                                @if (isDescending)
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
+                                Ativo
+                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.IsActive))
                                 {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                    @if (isDescending)
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                    }
+                                    else
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                    }
                                 }
-                                else
+                            </th>
+                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Title))">
+                                Nome
+                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.Title))
                                 {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                    @if (isDescending)
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                    }
+                                    else
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                    }
                                 }
-                            }
-                        </th>
-                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Title))">
-                            Nome
-                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Title))
-                            {
-                                @if (isDescending)
+                            </th>
+                            @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))"> *@
+                            @*     Nome *@
+                            @* </Th> *@
+                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
+                                Referência
+                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
                                 {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                    @if (isDescending)
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
+                                    }
+                                    else
+                                    {
+                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
+                                    }
                                 }
-                                else
-                                {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
-                                }
-                            }
-                        </th>
-                        @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))"> *@
-                        @*     Nome *@
-                        @* </Th> *@
-                        <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
-                            Referência
-                            @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
-                            {
-                                @if (isDescending)
-                                {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
-                                }
-                                else
-                                {
-                                    <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
-                                }
-                            }
-                        </th>
-                        @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th> *@
-                        <th>Produtos</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-
-
-
-                <tbody>
-                    @foreach (ProductCategoryDto category in productCategories)
-                    {
-                        <tr ClassName="table__item">
-                            <td>
-                                @if (category.IsActive)
-                                {
-                                    <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOn" Width="30" Height="30" />
-                                }
-                                else
-                                {
-                                    <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOff" Width="30" Height="30" />
-                                }
-                            </td>
-                            <td>@category.Title</td>
-                            <td>@category.Reference</td>
-                            <td>0</td>
-                            <td>
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
-                            </td>
+                            </th>
+                            @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th> *@
+                            <th>Produtos</th>
+                            <th>Ações</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        @foreach (ProductCategoryDto category in productCategories)
+                        {
+                            <tr ClassName="table__item">
+                                <td>
+                                    @if (category.IsActive)
+                                    {
+                                        <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOn" Width="30" Height="30" />
+                                    }
+                                    else
+                                    {
+                                        <Svg ClassName="table__actions" Path="@Svg.Paths.VisibilityOff" Width="30" Height="30" />
+                                    }
+                                </td>
+                                <td>@category.Title</td>
+                                <td>@category.Reference</td>
+                                <td>0</td>
+                                <td>
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
     </BodyContent>
 </List>

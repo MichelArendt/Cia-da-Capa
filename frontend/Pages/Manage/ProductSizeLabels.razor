@@ -87,36 +87,37 @@
         }
         else
         {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Etiqueta</th>
-                        <th>Título</th>
-                        <th>Prioridade <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" /></th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var sizeLabel in productSizeLabelDtos)
-                    {
-                        <tr
-                        class="table__item"
-                        draggable="@(!deletingSizeLabels.Any() ? "true" : "false")"
-                        @ondragstart="@(() => HandleReorderStart(sizeLabel.Id))"
-                        @ondragover="@((e) => HandleReorderOver(e, sizeLabel.Id))"
-                        @ondrop="@(() => HandleReorderEnd(sizeLabel.Id))">
-                            <td>@sizeLabel.Label</td>
-                            <td>@sizeLabel.Title</td>
-                            <td>@sizeLabel.Priority</td>
-                            <td>
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(sizeLabel.Id))" />
-                                <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
-                            </td>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Etiqueta</th>
+                            <th>Título</th>
+                            <th>Prioridade <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" /></th>
+                            <th>Ações</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var sizeLabel in productSizeLabelDtos)
+                        {
+                            <tr class="table__item"
+                                draggable="@(!deletingSizeLabels.Any() ? "true" : "false")"
+                                @ondragstart="@(() => HandleReorderStart(sizeLabel.Id))"
+                                @ondragover="@((e) => HandleReorderOver(e, sizeLabel.Id))"
+                                @ondrop="@(() => HandleReorderEnd(sizeLabel.Id))">
+                                <td>@sizeLabel.Label</td>
+                                <td>@sizeLabel.Title</td>
+                                <td>@sizeLabel.Priority</td>
+                                <td>
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(sizeLabel.Id))" />
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
             <button disabled="@(!orderingChanged)" @onclick="UpdateSizeLabelsOrdering">
                 Salvar alterações
             </button>

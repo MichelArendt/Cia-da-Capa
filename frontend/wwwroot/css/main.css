@@ -363,7 +363,8 @@ button {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1000;
+  /* Ensure it's above other content */
   background-color: red;
 }
 
@@ -570,6 +571,10 @@ button {
   list-style: none;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+}
+
 table {
   border-collapse: collapse;
   font-size: 0.9em;
@@ -589,7 +594,7 @@ table__sorting-arrow {
 
 table th,
 table td {
-  padding: 12px 15px;
+  padding: 10px 10px;
 }
 
 table tbody tr {
