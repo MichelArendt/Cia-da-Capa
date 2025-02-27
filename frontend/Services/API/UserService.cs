@@ -36,7 +36,7 @@ namespace frontend.Services.API
         /// <returns>A function that sends a session validation request to the API.</returns>
         public Func<Task<HttpResponseMessage>> ValidateSessionFunc()
         {
-            return () => _httpClient.PostAsync(ApiRoutes.Public.User.Login, null);
+            return () => _httpClient.PostAsync(ApiRoutes.Manage.User.Validate, null);
         }
 
         /// <summary>
