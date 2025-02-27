@@ -64,8 +64,19 @@ namespace frontend.Handlers
                 // 1) Make the HTTP call
                 var response = await _executeFunction();
 
-                // 2) Parse as HttpResponseModel<T>, i.e. {statusCode, data = T, ...}
+                // 2) Check if response has content before parsing JSON
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    State = ExecuteState.Success;
+                    ServerStatusCode = 204;
+                    Content = default;
+                    StateHasChanged?.Invoke();
+                    return; // Exit early for `204 No Content`
+                }
+
                 var json = await response.Content.ReadAsStringAsync();
+
+                // 3) Parse as HttpResponseModel<T>, i.e. {statusCode, data = T, ...}
                 HttpResponseModel<T>? serverResponse = null;
 
                 try
@@ -95,7 +106,7 @@ namespace frontend.Handlers
                 ServerMessage = serverResponse.Message;
                 ServerErrorMessage = serverResponse.ErrorMessage;
 
-                // 3) If server gave an error status, treat as fail
+                // 4) If server gave an error status, treat as fail
                 if (!serverResponse.IsSuccessStatusCode())
                 {
                     State = ExecuteState.Failed;
@@ -105,7 +116,7 @@ namespace frontend.Handlers
                     return;
                 }
 
-                // 4) If success, store serverResponse.Data in Content
+                // 5) If success, store serverResponse.Data in Content
                 Content = serverResponse.Data;
                 State = ExecuteState.Success;
             }
