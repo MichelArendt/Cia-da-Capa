@@ -25,9 +25,9 @@ else if (
     errorMessage += ProductStateService.SizeLabelsApiHandler.ErrorMessage ?? "";
 
     @NotificationService.DisplayError(
-                                        "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
-                                        errorMessage
-                                    );
+                                                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+                                                errorMessage
+                                            );
 }
 else if (AppState.IsCheckingAuth)
 {
@@ -67,6 +67,7 @@ else
 
 @code {
     private ApiStateHandler<object> validateSessionApiHandler = new();
+    private bool _authCheckInProgress = false;
 
     protected override void OnInitialized()
     {
@@ -107,38 +108,45 @@ else
     {
         AppState.TriggerNavigationChanged();
 
+        // If we are already checking auth, skip
+        if (_authCheckInProgress || AppState.IsCheckingAuth)
+            return;
+
+        // This local flag ensures no second re-entry
+        _authCheckInProgress = true;
+
         // If path starts with "manage" and user not going to manage/login,
         // but we do not know or suspect they are not authenticated:
         // e.g.: /manage/somepage requires user to be authenticated
-        if (context.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
-            && !context.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase))
+        try
         {
-            // If user not known to be authenticated, do a server check
-            if (!AppState.IsAuthenticated)
+            if (context.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
+                && !context.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase)
+                && !AppState.IsAuthenticated)
             {
-                // Show the loader
+                // Show loader
                 AppState.IsCheckingAuth = true;
+                StateHasChanged();
 
-                // Actually call the server
                 await validateSessionApiHandler.ExecuteAsync();
-
-                // Done checking
-                AppState.IsCheckingAuth = false;
 
                 if (validateSessionApiHandler.IsSuccess())
                 {
-                    // Let them continue to the route
                     AppState.IsAuthenticated = true;
                 }
                 else
                 {
-                    // Store the attempted path before redirect
+                    // Store attempted path and redirect to login
                     AppState.AttemptedPath = context.Path;
-
-                    AppState.IsAuthenticated = false;
                     Navigation.NavigateTo("manage/login");
                 }
             }
+        }
+        finally
+        {
+            // Done checking
+            AppState.IsCheckingAuth = false;
+            _authCheckInProgress = false;
         }
     }
 }
