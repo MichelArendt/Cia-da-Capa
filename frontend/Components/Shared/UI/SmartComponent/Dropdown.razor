@@ -5,7 +5,6 @@
 @using frontend.Services.Interop
 
 @inject IJSRuntime JSRuntime
-@* @inject AppStateService AppState *@
 
 <div class="dropdown @ClassName" @onclick="ToggleOnlyOnMobile">
     <button class="dropdown__button @HeaderClassName" @onclick="OnClick">
@@ -23,7 +22,6 @@
         <div class="dropdown__content-wrapper"
         @onclick:stopPropagation>
             @if (AppState.IsMobile) {
-                Console.WriteLine("Dropdown: " + AppState.IsMobile);
                 <div class="dropdown__content-title">@BodyMobileContentTitle</div>
             }
             @BodyContent
@@ -63,12 +61,6 @@
     private string? DynamicStyle { get; set; }
     private ElementReference DropdownRef; // Element reference for the dropdown
 
-    // private void ClickHandler(){
-    //     if (AppState.IsMobile) {
-    //         Toggle();
-    //     }
-    // }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -85,7 +77,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Console.WriteLine(firstRender + " " + AppState.IsMobile);
         if (firstRender)
         {
             await UpdateDynamicPosition();
@@ -94,36 +85,21 @@
 
     private async Task UpdateDynamicPosition()
     {
-        // Console.WriteLine("UpdateDynamicPosition");
-        // Console.WriteLine("1");
         if (DropdownRef.Id == default)
         {
-            // Console.WriteLine("DropdownRef is not yet valid");
             return;
         }
         DOMRect elementBoundingRect = await JSRuntime.InvokeAsync<DOMRect>("getBoundingClientRect", DropdownRef);
 
         if (elementBoundingRect == null)
         {
-            // Console.WriteLine("DropdownRef is NULL");
             return;
         }
 
-        // Console.WriteLine("2");
-        // Console.WriteLine(elementBoundingRect);
-        // Console.WriteLine("elementBoundingRect.Right [" + elementBoundingRect.Right + "] AppState.BrowserWidth[" + AppState.BrowserWidth + "]");
         if (elementBoundingRect.Right >= AppState.BrowserWidth)
         {
-            // Console.WriteLine("+++ BIGGER");
             DynamicStyle = $"right: 0; left: auto;";
             StateHasChanged();
         }
-        // else
-        // {
-        //     Console.WriteLine("--- smaller");
-        //     DynamicStyle = $"right: auto; left: 0;";
-        // }
-        // DynamicStyle = $"top: {elementBoundingRect.Top}px; left: {elementBoundingRect.Left}px;";
-        // Console.WriteLine(DynamicStyle);
     }
 }

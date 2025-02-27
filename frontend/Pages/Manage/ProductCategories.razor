@@ -115,9 +115,7 @@
                                     }
                                 }
                             </th>
-                            @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Name))"> *@
-                            @*     Nome *@
-                            @* </Th> *@
+
                             <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
                                 Referência
                                 @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
@@ -132,7 +130,7 @@
                                     }
                                 }
                             </th>
-                            @* <Th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">Referência</Th> *@
+
                             <th>Produtos</th>
                             <th>Ações</th>
                         </tr>
