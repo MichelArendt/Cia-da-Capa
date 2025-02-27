@@ -9,55 +9,54 @@
 
 <h3>@(SizeId == null ? "Adicionar novo" : "Atualizando") tamanho de produto</h3>
 
-    <EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="feedback feedback--error" />
+<EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="feedback feedback--error" />
 
-
-        <div>
-            <label for="size_label_id">Categoria:</label>
-            <InputSelect id="size_label_id" @bind-Value="productSizeFormModel.SizeLabelId" disabled="@isSubmitting">
-                TODO: exclude labels the product already has
-                <option value="0">Selecione um rótulo...</option>
-                @foreach (var pair in ProductStateService.SizeLabelsDict)
-                {
-                    <option value="@pair.Value.Id">@pair.Value.Label</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => productSizeFormModel.SizeLabelId)" />
-        </div>
-
-        <div>
-            <label for="width">Largura (cm):</label>
-            <InputNumber id="width" name="width" @bind-Value="productSizeFormModel.Width" placeholder="40" disabled="@isSubmitting" />
-            <ValidationMessage For="@(() => productSizeFormModel.Width)" />
-        </div>
-
-        <div>
-            <label for="height">Altura (cm):</label>
-            <InputNumber id="height" name="height" @bind-Value="productSizeFormModel.Height" placeholder="30" disabled="@isSubmitting" />
-            <ValidationMessage For="@(() => productSizeFormModel.Height)" />
-        </div>
-
-        <div>
-            <label for="depth">Profundidade (cm):</label>
-            <InputNumber id="depth" name="depth" @bind-Value="productSizeFormModel.Depth" placeholder="1.4" disabled="@isSubmitting" />
-            <ValidationMessage For="@(() => productSizeFormModel.Depth)" />
-        </div>
-
-        <div>
-            @if (SizeId == null)
+    <div>
+        <label for="size_label_id">Categoria:</label>
+        <InputSelect id="size_label_id" @bind-Value="productSizeFormModel.SizeLabelId" disabled="@isSubmitting">
+            TODO: exclude labels the product already has
+            <option value="0">Selecione um rótulo...</option>
+            @foreach (var sizeLabel in ProductStateService.SizeLabelsListOrderedByPriority)
             {
-                <button type="submit" disabled="@isSubmitting">Adicionar tamanho</button>
+                <option value="@sizeLabel.Id">@sizeLabel.Label</option>
             }
-            else
-            {
-                <div>[@SizeId]</div>
-                <button type="submit" disabled="@isSubmitting">Atualizar tamanho</button>
+        </InputSelect>
+        <ValidationMessage For="@(() => productSizeFormModel.SizeLabelId)" />
+    </div>
+
+    <div>
+        <label for="width">Largura (cm):</label>
+        <InputNumber id="width" name="width" @bind-Value="productSizeFormModel.Width" placeholder="40" disabled="@isSubmitting" />
+        <ValidationMessage For="@(() => productSizeFormModel.Width)" />
+    </div>
+
+    <div>
+        <label for="height">Altura (cm):</label>
+        <InputNumber id="height" name="height" @bind-Value="productSizeFormModel.Height" placeholder="30" disabled="@isSubmitting" />
+        <ValidationMessage For="@(() => productSizeFormModel.Height)" />
+    </div>
+
+    <div>
+        <label for="depth">Profundidade (cm):</label>
+        <InputNumber id="depth" name="depth" @bind-Value="productSizeFormModel.Depth" placeholder="1.4" disabled="@isSubmitting" />
+        <ValidationMessage For="@(() => productSizeFormModel.Depth)" />
+    </div>
+
+    <div>
+        @if (SizeId == null)
+        {
+            <button type="submit" disabled="@isSubmitting">Adicionar tamanho</button>
+        }
+        else
+        {
+            <div>[@SizeId]</div>
+            <button type="submit" disabled="@isSubmitting">Atualizar tamanho</button>
             <button disabled="@isSubmitting" @onclick="DeleteSize">Remover tamanho</button>
-            }
-        </div>
-    </EditForm>
+        }
+    </div>
+</EditForm>
 
 @code {
     [Parameter]
@@ -134,11 +133,20 @@
 
         if (productSizeDto != null)
         {
+            if (productSizeFormModel.Width == null ||
+                productSizeFormModel.Height == null ||
+                productSizeFormModel.Depth == null ||
+                productSizeFormModel.SizeLabelId == null)
+            {
+                HandleInvalidSubmit();
+                return;
+            }
+
             if (isUpdating)
             {
-                productSizeDto.Width = productSizeFormModel.Width;
-                productSizeDto.Height = productSizeFormModel.Height;
-                productSizeDto.Depth = productSizeFormModel.Depth;
+                productSizeDto.Width = (int)productSizeFormModel.Width;
+                productSizeDto.Height = (int)productSizeFormModel.Height;
+                productSizeDto.Depth = (int)productSizeFormModel.Depth;
 
                 // UPDATING SIZE
                 await updateProductSizeApiHandler.ExecuteAsync();
@@ -161,9 +169,9 @@
             {
                 // CREATING SIZE
                 newProductSizeDto.ProductId = ProductDto.Id;
-                newProductSizeDto.Width = productSizeFormModel.Width;
-                newProductSizeDto.Height = productSizeFormModel.Height;
-                newProductSizeDto.Depth = productSizeFormModel.Depth;
+                newProductSizeDto.Width = (int)productSizeFormModel.Width;
+                newProductSizeDto.Height = (int)productSizeFormModel.Height;
+                newProductSizeDto.Depth = (int)productSizeFormModel.Depth;
 
                 await createProductSizeApiHandler.ExecuteAsync();
 
@@ -207,6 +215,7 @@
     private void HandleInvalidSubmit()
     {
         validationError = "Por favor, corrija os erros acima.";
+        NotificationService.DisplayValidationError(validationError);
     }
 
     private async Task DeleteSize(){
