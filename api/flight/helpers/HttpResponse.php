@@ -24,31 +24,64 @@ class HttpResponse
         ], $code);
     }
 
+    /**
+     * Generates a success response for a create operation.
+     *
+     * @param string $message Success message
+     * @param mixed $data Response data
+     */
     public static function responseCreateSuccess($message, $data)
     {
         HttpResponse::response(201, $message, null, $data);
     }
 
+    /**
+     * Generates a success response for a delete operation.
+     *
+     * @param string $message Success message
+     */
     public static function responseDeleteSuccess($message)
     {
         HttpResponse::response(200, $message, null, null);
     }
 
+    /**
+     * Generates a success response for an update operation.
+     *
+     * @param string $message Success message
+     * @param mixed $data Response data (optional)
+     */
     public static function responseUpdateSuccess($message, $data = null)
     {
         HttpResponse::response(200, $message, null, $data);
     }
 
+    /**
+     * Generates a success response for a fetch operation.
+     *
+     * @param mixed $data Response data
+     */
     public static function responseFetchSuccess($data)
     {
         HttpResponse::response(200, null, null, $data);
     }
 
+    /**
+     * Generates a no content response.
+     */
     public static function responseNoContent()
     {
         HttpResponse::response(204);
     }
 
+    /**
+     * Halts the response with a given status code and message.
+     *
+     * @param int $code HTTP Status Code
+     * @param string|null $message General message
+     * @param string|null $errorMessage Detailed error message (if applicable)
+     * @param mixed $data Response data (default is empty array `[]`)
+     */
     private static function haltResponse(int $code = 500, string $message = null, string $errorMessage = null, $data = [])
     {
         Flight::halt($code, json_encode([
@@ -59,6 +92,12 @@ class HttpResponse
         ]));
     }
 
+    /**
+     * Returns a validation error response.
+     *
+     * @param string $message Error message
+     * @param int $code HTTP Status Code
+     */
     public static function returnValidationError(string $message = "Os campos preenchidos são inválidos.", int $code = 400)
     {
         HttpResponse::haltResponse(
@@ -67,6 +106,14 @@ class HttpResponse
         );
     }
 
+    /**
+     * Triggers an error response with logging.
+     *
+     * @param string $message General error message
+     * @param string $methodName Method name where the error occurred
+     * @param string $error Detailed error message
+     * @param int $code HTTP Status Code
+     */
     public static function triggerError(string $message = "Desculpe, ocorreu um erro no servidor. Se o problema persistir, tente novamente mais tarde!", string $methodName, string $error = "Erro no servidor.", int $code = 500)
     {
         // Format the error message
@@ -82,24 +129,53 @@ class HttpResponse
         );
     }
 
+    /**
+     * Handles a general exception and triggers an error response.
+     *
+     * @param \Exception $e Exception instance
+     * @param string $methodName Method name where the exception occurred
+     * @param string $message General error message
+     * @param int $code HTTP Status Code
+     */
     public static function handleException(\Exception $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
     }
 
+    /**
+     * Handles a PDO exception and triggers an error response.
+     *
+     * @param \PDOException $e PDOException instance
+     * @param string $methodName Method name where the exception occurred
+     * @param string $message General error message
+     * @param int $code HTTP Status Code
+     */
     public static function handlePdoException(\PDOException $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
     }
 
+    /**
+     * Handles a throwable error and triggers an error response.
+     *
+     * @param \Throwable $e Throwable instance
+     * @param string $methodName Method name where the error occurred
+     * @param string $message General error message
+     * @param int $code HTTP Status Code
+     */
     public static function handleThrowable(\Throwable $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
     }
 
+    /**
+     * Checks if the exception is a duplicate entry error and returns a validation error.
+     *
+     * @param \Throwable $e Throwable instance
+     */
     private static function checkIfDuplicateEntryException(\Throwable $e)
     {
         // Check if it's a duplicate entry error (SQLSTATE 23000, MySQL error code 1062)

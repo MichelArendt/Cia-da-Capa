@@ -10,7 +10,7 @@ use Helpers\HttpResponse;
 // FILE UPLOAD
 // --------------------------------
 define('API_ROOT', dirname(__FILE__)); // Current file's directory
-define('WEBSITE_ROOT', dirname(API_ROOT)); // One level above API_ROO
+define('WEBSITE_ROOT', dirname(API_ROOT)); // One level above API_ROOT
 Flight::set('api_root', API_ROOT);
 Flight::set('website_root', WEBSITE_ROOT);
 
@@ -30,31 +30,19 @@ Flight::set('upload-image__max-file-size', 5 * 1024 * 1024); // 5MB
 // BASE CONFIGURATION
 // --------------------------------
 require 'flight/models/UserModel.php';
-
-use Models\UserModel;
-
 require 'flight/models/ProductCategoryModel.php';
-
-use Models\ProductCategoryModel;
-
 require 'flight/models/ProductModel.php';
-
-use Models\ProductModel;
-
 require 'flight/models/ProductVariantModel.php';
-
-use Models\ProductVariantModel;
-
 require 'flight/models/ProductSizeLabelModel.php';
-
-use Models\ProductSizeLabelModel;
-
 require 'flight/models/ProductSizeModel.php';
-
-use Models\ProductSizeModel;
-
 require 'flight/models/ProductImageModel.php';
 
+use Models\UserModel;
+use Models\ProductCategoryModel;
+use Models\ProductModel;
+use Models\ProductVariantModel;
+use Models\ProductSizeLabelModel;
+use Models\ProductSizeModel;
 use Models\ProductImageModel;
 
 // Load Config
@@ -68,13 +56,13 @@ $config = require 'flight/config/database.php';
 $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
 
 try {
-    $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
     $pdo = new PDO($dsn, $config['username'], $config['password']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Store in Flight
     Flight::set('db', $pdo);
 
+    // Initialize models and create tables if they don't exist
     $userModel = new UserModel();
     $productCategoryModel = new ProductCategoryModel();
     $productModel = new ProductModel();
@@ -92,6 +80,7 @@ try {
     $productSizeModel->createTableIfNotExists();
     $productImageModel->createTableIfNotExists();
 
+    // Store models in Flight
     Flight::set('userModel', $userModel);
     Flight::set('productCategoryModel', $productCategoryModel);
     Flight::set('productModel', $productModel);
@@ -112,10 +101,13 @@ require 'flight/middleware/SecurityHeadersMiddleware.php';
 use flight\net\Router;
 use app\middleware\SecurityHeadersMiddleware;
 
+// Define routes with security middleware
 Flight::group('', function (Router $router) {
     $router->get('/users', ['UserController', 'getUsers']);
     // more routes
 }, [new SecurityHeadersMiddleware()]);
+
+// Set JSON content type before starting the framework
 Flight::before('start', function () {
     header('Content-Type: application/json');
 });
