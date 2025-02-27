@@ -34,7 +34,7 @@ class ProductController
                 HttpResponse::returnValidationError("Produto não encontrado.");
             }
 
-            Flight::json($product, 200);
+            HttpResponse::responseFetchSuccess($product);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductController->getForId()");
         }
@@ -68,13 +68,8 @@ class ProductController
                 $variant['images'] = $productImageModel->getForVariantId($variant['id']);
             }
 
-            HttpResponse::response(
-                200,
-                null,
-                null,
-                $product
-            );
-            // Flight::json($product, 200);
+
+            HttpResponse::responseFetchSuccess($product);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductController->getForIdFull()");
         }

@@ -234,7 +234,7 @@ Flight::map('notFound', function () {
 Flight::route('GET /debug/routes', function () {
     $routes = Flight::router()->getRoutes();
 
-    Flight::json($routes, 200);
+    HttpResponse::responseFetchSuccess($routes);
 });
 
 // --------------------------------

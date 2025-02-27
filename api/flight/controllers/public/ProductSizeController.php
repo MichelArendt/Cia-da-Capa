@@ -15,7 +15,7 @@ class ProductSizeController
             $productSizeModel = Flight::get('productSizeModel');
             $productSizes = $productSizeModel->getSizesForProductId($id);
 
-            Flight::json($productSizes, 200);
+            HttpResponse::responseFetchSuccess($productSizes);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__);
         }
