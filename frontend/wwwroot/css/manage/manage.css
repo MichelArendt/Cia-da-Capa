@@ -1046,7 +1046,7 @@ Duration of animation */
 }
 
 .notifications {
-  position: absolute;
+  position: fixed;
   gap: 10px;
   width: calc(100vw - 40px);
   bottom: 0;

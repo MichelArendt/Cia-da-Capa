@@ -268,7 +268,7 @@ form input {
 // NOTIFICATIONS
 // ---------------------------
 .notifications {
-  position: absolute;
+  position: fixed;
   @extend .flex--column;
   gap: 10px;
   width: calc(100vw - 40px);
