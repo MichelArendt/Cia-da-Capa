@@ -7,7 +7,7 @@
 @inject ProductStateService ProductStateService
 @inject ProductSizeService ProductSizeService
 
-<h3>@(SizeId == null ? "Adicionar novo" : "Atualizando") tamanho de produto</h3>
+<h1>@(SizeId == null ? "Adicionar novo" : "Atualizando") tamanho de produto</h1>
 
 <EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
