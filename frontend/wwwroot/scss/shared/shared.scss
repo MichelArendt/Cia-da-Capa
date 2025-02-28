@@ -53,10 +53,16 @@ a:hover {
   }
 }
 
+section {
+  margin: 50px 0;
+}
+
 button {
   background: $color-primary--dark;
   color: $color-primary--main;
-  padding: 10px;
+  padding: 20px;
+  width: 100%;
+  text-transform: uppercase;
 
   transition: all linear 0.2s;
 }
@@ -77,12 +83,11 @@ button:disabled {
 // ---------------------------
 form {
   @extend .poppins-regular;
-  padding: 20px;
   font-size: 20px;
 
   > div {
     @extend .flex--column;
-    padding: 10px;
+    padding: 10px 0;
   }
 }
 
@@ -91,7 +96,27 @@ form input {
   font-size: 20px;
   padding: 10px;
   border-radius: 20px;
+  border: 1px solid $color-secondary--light;
+  background-color: opacity-set($color-secondary--light, 15%);
 }
+
+form input::placeholder {
+  color: opacity-set($color-primary--dark, 30%);
+}
+
+// form input.modified.invalid {
+//   background-color: opacity-set($color-feedback--error, 10%);
+//   color: opacity-set($color-feedback--error, 50%);
+// }
+
+// form input.modified.invalid::placeholder {
+//   color: opacity-set($color-feedback--error, 25%);
+// }
+
+// form input.modified.valid {
+//   background-color: opacity-set($color-feedback--success, 10%) !important;
+//   color: $color-feedback--success !important;
+// }
 
 .form__title {
     color: $color-primary--main;
