@@ -18,112 +18,116 @@
 
 <PageTitle>Etiquetas de Tamanho (Gerenciamento)</PageTitle>
 
-@if (!isUpdating)
-{
-    <h2>Adicionar nova etiqueta de tamanho de produto</h2>
-} else {
-    <h2>Atualizando etiqueta</h2>
-}
+<CenterContent MinWidth="200px">
+    @if (!isUpdating)
+    {
+        <h2>Adicionar nova etiqueta de tamanho de produto</h2>
+    }
+    else
+    {
+        <h2>Atualizando etiqueta</h2>
+    }
 
-<EditForm Model="@productSizeLabelFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <EditForm Model="@productSizeLabelFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div>
-        <label for="title">
-            Título (Pequeno, Médio, ...):
-        </label>
+        <div>
+            <label for="title">
+                Título:
+            </label>
 
-        <InputText name="title"
-        id="title"
-        autocomplete="on"
-        placeholder="Pequeno"
-        @bind-Value="productSizeLabelFormModel.Title"
-        disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productSizeLabelFormModel.Title)" />
-    </div>
+            <InputText name="title"
+                       id="title"
+                       autocomplete="on"
+                       placeholder="Pequeno"
+                       @bind-Value="productSizeLabelFormModel.Title"
+                       disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeLabelFormModel.Title)" />
+        </div>
 
-    <div>
-        <label for="label">
-            Etiqueta (P, M, ...):
-        </label>
+        <div>
+            <label for="label">
+                Etiqueta:
+            </label>
 
-        <InputText name="label"
-        id="label"
-        autocomplete="on"
-        placeholder="P"
-        @bind-Value="productSizeLabelFormModel.Label"
-        disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productSizeLabelFormModel.Label)" />
-    </div>
+            <InputText name="label"
+                       id="label"
+                       autocomplete="on"
+                       placeholder="P"
+                       @bind-Value="productSizeLabelFormModel.Label"
+                       disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeLabelFormModel.Label)" />
+        </div>
 
-    <div>
-        @if (!isUpdating)
-        {
-            <button type="submit" disabled="@isSubmitting">Adicionar etiqueta</button>
-        }
-        else
-        {
-            <button type="submit" disabled="@isSubmitting">Atualizar</button>
-            <button type="reset" disabled="@isSubmitting" @onclick="ResetForm">Cancelar</button>
-        }
-    </div>
-</EditForm>
+        <div>
+            @if (!isUpdating)
+            {
+                <button type="submit" disabled="@isSubmitting">Adicionar etiqueta</button>
+            }
+            else
+            {
+                <button type="submit" disabled="@isSubmitting">Atualizar</button>
+                <button type="reset" disabled="@isSubmitting" @onclick="ResetForm">Cancelar</button>
+            }
+        </div>
+    </EditForm>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    @createSizeLabelApiHandler.GetErrorFeedbackComponent(errorMessage)
-}
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        @createSizeLabelApiHandler.GetErrorFeedbackComponent(errorMessage)
+    }
 
-<List>
-    <HeaderContent>
-        <h2>Etiquetas de Tamanho</h2>
-    </HeaderContent>
+    <List>
+        <HeaderContent>
+            <h2>Etiquetas de Tamanho</h2>
+        </HeaderContent>
 
-    <BodyContent>
-        @if (!ProductStateService.SizeLabelsDict.Any())
-        {
-            <span>Não há etiquetas cadastradas.</span>
-        }
-        else
-        {
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Etiqueta</th>
-                            <th>Título</th>
-                            <th>Prioridade <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" /></th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var sizeLabel in productSizeLabelDtos)
-                        {
-                            <tr class="table__item"
-                                draggable="@(!deletingSizeLabels.Any() ? "true" : "false")"
-                                @ondragstart="@(() => HandleReorderStart(sizeLabel.Id))"
-                                @ondragover="@((e) => HandleReorderOver(e, sizeLabel.Id))"
-                                @ondrop="@(() => HandleReorderEnd(sizeLabel.Id))">
-                                <td>@sizeLabel.Label</td>
-                                <td>@sizeLabel.Title</td>
-                                <td>@sizeLabel.Priority</td>
-                                <td>
-                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(sizeLabel.Id))" />
-                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
-                                </td>
+        <BodyContent>
+            @if (!ProductStateService.SizeLabelsDict.Any())
+            {
+                <span>Não há etiquetas cadastradas.</span>
+            }
+            else
+            {
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Etiqueta</th>
+                                <th>Título</th>
+                                <th>Prioridade <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" /></th>
+                                <th>Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <button disabled="@(!orderingChanged)" @onclick="UpdateSizeLabelsOrdering">
-                Salvar alterações
-            </button>
-        }
-    </BodyContent>
-</List>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var sizeLabel in productSizeLabelDtos)
+                            {
+                                <tr class="table__item"
+                                    draggable="@(!deletingSizeLabels.Any() ? "true" : "false")"
+                                    @ondragstart="@(() => HandleReorderStart(sizeLabel.Id))"
+                                    @ondragover="@((e) => HandleReorderOver(e, sizeLabel.Id))"
+                                    @ondrop="@(() => HandleReorderEnd(sizeLabel.Id))">
+                                    <td>@sizeLabel.Label</td>
+                                    <td>@sizeLabel.Title</td>
+                                    <td>@sizeLabel.Priority</td>
+                                    <td>
+                                        <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(sizeLabel.Id))" />
+                                        <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteSizeLabel(sizeLabel.Id))" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <button disabled="@(!orderingChanged)" @onclick="UpdateSizeLabelsOrdering">
+                    Salvar alterações
+                </button>
+            }
+        </BodyContent>
+    </List>
+</CenterContent>
 
 @code {
     private List<ProductSizeLabelDto> productSizeLabelDtos = new();

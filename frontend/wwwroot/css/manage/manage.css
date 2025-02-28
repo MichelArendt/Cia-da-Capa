@@ -281,6 +281,12 @@ button {
   max-width: 1920px;
 }
 
+.content-center {
+  display: grid;
+  grid-template-columns: 1fr minmax(var(--min-width, 100px), max-content) 1fr; /* min-width filled by component*/
+  width: 100%;
+}
+
 .flex, .website__header, .website__header-wrapper, .website__nav, .header__logo, .nav__button, .website__main, .login-form > label {
   display: flex;
   /* Row (Horizontal) direction */
@@ -577,8 +583,10 @@ button {
 
 table {
   border-collapse: collapse;
+  margin: 25px 0;
   font-size: 0.9em;
-  min-width: 400px;
+  min-width: 200px;
+  width: 100%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -588,7 +596,7 @@ table thead tr {
   text-align: left;
 }
 
-table__sorting-arrow {
+.table__sorting-arrow {
   fill: #ffffff;
 }
 
@@ -905,6 +913,7 @@ form > div {
 form input {
   font-size: 20px;
   padding: 10px;
+  border-radius: 20px;
 }
 
 .form__title {

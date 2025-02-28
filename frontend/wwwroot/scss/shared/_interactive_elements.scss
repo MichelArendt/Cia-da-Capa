@@ -286,9 +286,10 @@ button {
 }
 table {
     border-collapse: collapse;
-    //margin: 25px 0;
+    margin: 25px 0;
     font-size: 0.9em;
-    min-width: 400px;
+    min-width: 200px;
+    width: 100%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -298,7 +299,7 @@ table thead tr {
     text-align: left;
 }
 
-table__sorting-arrow {
+.table__sorting-arrow {
     fill: #ffffff;
 }
 

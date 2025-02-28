@@ -1,0 +1,15 @@
+﻿<div class="content-center" style="--min-width: @MinWidth;">
+    <div class="content-center_spacer"></div>
+    <div class="content-center_item">
+        @ChildContent
+    </div>
+    <div class="content-center_spacer"></div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = @<text></text>;
+
+    [Parameter]
+    public string MinWidth { get; set; } = "200px";
+}

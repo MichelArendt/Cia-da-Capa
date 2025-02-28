@@ -14,6 +14,21 @@
 }
 
 // ---------------------------
+// Content Alignment
+// ---------------------------
+.content-center {
+  display: grid;
+  grid-template-columns: 1fr minmax(var(--min-width, 100px), max-content) 1fr; /* min-width filled by component*/
+  width: 100%;
+}
+
+.content-center_spacer {
+}
+
+.content-center_item {
+}
+
+// ---------------------------
 // Base Flex class
 // ---------------------------
 .flex {
