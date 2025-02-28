@@ -2,15 +2,15 @@
 
 // Add light to a base color
 @function lightness-add($base-color, $percentage_to_add) {
-  @return color.adjust($base-color, $lightness: $percentage_to_add);
+    @return color.adjust($base-color, $lightness: $percentage_to_add);
 }
 
 // Set color with specific opacity
 @function opacity-set($color, $alpha) {
-  $hue: color.channel($color, "hue", $space: hsl);
-  $saturation: color.channel($color, "saturation", $space: hsl);
-  $lightness: color.channel($color, "lightness", $space: hsl);
-  @return hsla($hue, $saturation, $lightness, $alpha);
+    $hue: color.channel($color, "hue", $space: hsl);
+    $saturation: color.channel($color, "saturation", $space: hsl);
+    $lightness: color.channel($color, "lightness", $space: hsl);
+    @return hsla($hue, $saturation, $lightness, $alpha);
 }
 
 // Primary Colors
@@ -50,5 +50,5 @@ $color-neutral--bg: hsla(0, 0%, 96%, 1.0);
 
 
 .mouse-disabled {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
