@@ -3,6 +3,7 @@
 
 @using System.Linq.Expressions
 @using System.ComponentModel.DataAnnotations;
+@using frontend.Components.Shared.UI.Forms
 @using frontend.DTOs
 @using frontend.DTOs.Contracts
 @using frontend.Services
@@ -17,66 +18,72 @@
 
 <PageTitle>Categorias (Gerenciamento)</PageTitle>
 
-<h2>Adicionar nova categoria de produto</h2>
+<CenterContent MinWidth="200px">
+    <section>
+        <div class="one">
+            <h1>Adicionar categoria</h1>
+        </div>
 
-<EditForm Model="@productCategoryFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
-    <DataAnnotationsValidator />
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="error-message">@errorMessage</div>
-    }
-    <ValidationSummary />
+        <EditForm Model="@productCategoryFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+            <ValidationSummary />
 
-    <div>
-        <label for="title">
-            Título:
-        </label>
+            <div>
+                <label for="title">
+                    Título:
+                </label>
 
-        <InputText name="title"
-        id="title"
-        autocomplete="on"
-        placeholder="Mochila"
-        @bind-Value="productCategoryFormModel.Title"
-        disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => productCategoryFormModel.Title)" />
-    </div>
+                <InputText name="title"
+                           id="title"
+                           autocomplete="on"
+                           placeholder="Mochila"
+                           @bind-Value="productCategoryFormModel.Title"
+                           disabled="@IsSubmitting" />
+                <ValidationMessage For="@(() => productCategoryFormModel.Title)" />
+            </div>
 
-    <div>
-        <label for="reference">
-            Referência:
-        </label>
+            <div class="flex--row">
+                <div class="flex--column">
+                    <label for="reference">
+                        Referência:
+                    </label>
 
-        <InputText name="reference"
-        id="reference"
-        autocomplete="on"
-        placeholder="MO"
-        @bind-Value="productCategoryFormModel.Reference"
-        disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => productCategoryFormModel.Reference)" />
-    </div>
+                    <InputText name="reference"
+                               id="reference"
+                               autocomplete="on"
+                               placeholder="MO"
+                               @bind-Value="productCategoryFormModel.Reference"
+                               disabled="@IsSubmitting" />
+                    <ValidationMessage For="@(() => productCategoryFormModel.Reference)" />
+                </div>
 
-    <div>
-        <label for="isActive">
-            Ativo:
-        </label>
+                <div class="flex--row--center flex--grow--1">
+                    <Checkbox 
+                        Id="isActive"
+                        BindValue="@productCategoryFormModel.IsActive" 
+                        Disabled="@IsSubmitting" 
+                        Label="Ativo"/>
 
-        <InputCheckbox id="isActive"
-        @bind-Value="productCategoryFormModel.IsActive"
-        disabled="@IsSubmitting" />
-        <ValidationMessage For="@(() => productCategoryFormModel.IsActive)" />
-    </div>
+                    <ValidationMessage For="@(() => productCategoryFormModel.IsActive)" />
+                </div>
+            </div>
 
-    <div>
-        <button type="submit" disabled="@IsSubmitting">Adicionar categoria</button>
-    </div>
-</EditForm>
+            <div>
+                <button type="submit" disabled="@IsSubmitting">Adicionar categoria</button>
+            </div>
+        </EditForm>
+    </section>
 
-<List>
-    <HeaderContent>
-        <h2>Categorias</h2>
-    </HeaderContent>
+    <section>
+        <div class="one">
+            <h1>Categorias</h1>
+        </div>
 
-    <BodyContent>
+
         @if (productCategories.Count == 0)
         {
             <span>Não há categorias cadastradas.</span>
@@ -163,8 +170,8 @@
                 </table>
             </div>
         }
-    </BodyContent>
-</List>
+    </section>
+</CenterContent>
 
 @code {
     private List<ProductCategoryDto> productCategories = new();

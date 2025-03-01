@@ -722,6 +722,186 @@ h1:after {
   background-color: #c50000;
 }
 
+/*!
+ * Extracted from Animate.css - https://animate.style
+ * Original Repository: https://github.com/animate-css/animate.css
+ * License: Hippocratic License 3.0 (HL3) - https://firstdonoharm.dev/version/3/0/license
+ * Copyright (c) 2024 Animate.css Contributors
+ *
+ * This partial code is based on Animate.css. The full library is available
+ * at https://github.com/animate-css/animate.css under the HL3 license.
+ */
+/**
+ * ----------------------------------------
+ * Tada
+ * ----------------------------------------
+ */
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  10%, 20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+  30%, 50%, 70%, 90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+  40%, 60%, 80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.tada {
+  animation-name: tada;
+}
+
+/**
+ * ----------------------------------------
+ * Flash
+ * ----------------------------------------
+ */
+@keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+.flash {
+  animation-name: flash;
+}
+
+/**
+ * ----------------------------------------
+ * Bounce
+ * ----------------------------------------
+ */
+@keyframes bounce {
+  from, 20%, 53%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -10px, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -5px, 0) scaleY(1.05);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+.bounce {
+  animation-name: bounce;
+  transform-origin: center bottom;
+}
+
+/**
+ * ----------------------------------------
+ * Rubber Band
+ * ----------------------------------------
+ */
+@keyframes rubberBand {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.rubberBand {
+  animation-name: rubberBand;
+}
+
+/**
+ * ----------------------------------------
+ * Heat Beat
+ * ----------------------------------------
+ */
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+.heartBeat {
+  animation-name: heartBeat;
+  animation-duration: calc(var(--animate-duration) * 1.3);
+  animation-timing-function: ease-in-out;
+}
+
+/**
+ * ----------------------------------------
+ * Fade in UP
+ * ----------------------------------------
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.fadeInUp {
+  animation-name: fadeInUp;
+}
+
+/**
+ * ----------------------------------------
+ * Fade out DOWN
+ * ----------------------------------------
+ */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.fadeOutDown {
+  animation-name: fadeOutDown;
+}
+
 .section--full-width {
   width: 100%;
 }
@@ -742,7 +922,7 @@ h1:after {
   /* Row (Horizontal) direction */
   /* Column (Vertical) direction */
 }
-.flex--row {
+.flex--row, .checkbox-container {
   display: flex;
   flex-direction: row;
   /* Horizontal centering in row */
@@ -759,13 +939,13 @@ h1:after {
   flex-direction: row;
   align-items: center;
 }
-.flex--row--center {
+.flex--row--center, .checkmark {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
-.flex--column, form > div, .notifications {
+.flex--column, .notifications, form > div {
   display: flex;
   flex-direction: column;
   /* Horizontal centering in column */
@@ -787,6 +967,10 @@ h1:after {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.flex--grow--1 {
+  flex-grow: 1;
 }
 
 @media (min-width: 800px) {
@@ -1075,184 +1259,76 @@ table tbody tr.active-row {
   fill: hsl(24, 70%, 50%);
 }
 
-/*!
- * Extracted from Animate.css - https://animate.style
- * Original Repository: https://github.com/animate-css/animate.css
- * License: Hippocratic License 3.0 (HL3) - https://firstdonoharm.dev/version/3/0/license
- * Copyright (c) 2024 Animate.css Contributors
- *
- * This partial code is based on Animate.css. The full library is available
- * at https://github.com/animate-css/animate.css under the HL3 license.
- */
-/**
- * ----------------------------------------
- * Tada
- * ----------------------------------------
- */
-@keyframes tada {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-  10%, 20% {
-    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
-  }
-  30%, 50%, 70%, 90% {
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
-  }
-  40%, 60%, 80% {
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
-  }
-  to {
-    transform: scale3d(1, 1, 1);
-  }
+form {
+  font-size: 20px;
 }
-.tada {
-  animation-name: tada;
+form > div {
+  padding: 10px 0;
 }
 
-/**
- * ----------------------------------------
- * Flash
- * ----------------------------------------
- */
-@keyframes flash {
-  from, 50%, to {
-    opacity: 1;
-  }
-  25%, 75% {
-    opacity: 0;
-  }
-}
-.flash {
-  animation-name: flash;
+form input {
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid hsl(0, 0%, 73%);
+  background-color: hsla(0, 0%, 73%, 0.15);
 }
 
-/**
- * ----------------------------------------
- * Bounce
- * ----------------------------------------
- */
-@keyframes bounce {
-  from, 20%, 53%, to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, 0, 0);
-  }
-  40%, 43% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -10px, 0) scaleY(1.1);
-  }
-  70% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -5px, 0) scaleY(1.05);
-  }
-  80% {
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, 0, 0) scaleY(0.95);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0) scaleY(1.02);
-  }
-}
-.bounce {
-  animation-name: bounce;
-  transform-origin: center bottom;
+form input::placeholder {
+  color: hsla(240, 3%, 18%, 0.3);
 }
 
-/**
- * ----------------------------------------
- * Rubber Band
- * ----------------------------------------
- */
-@keyframes rubberBand {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-  30% {
-    transform: scale3d(1.25, 0.75, 1);
-  }
-  40% {
-    transform: scale3d(0.75, 1.25, 1);
-  }
-  50% {
-    transform: scale3d(1.15, 0.85, 1);
-  }
-  65% {
-    transform: scale3d(0.95, 1.05, 1);
-  }
-  75% {
-    transform: scale3d(1.05, 0.95, 1);
-  }
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-.rubberBand {
-  animation-name: rubberBand;
+.form__title {
+  color: hsl(37, 59%, 54%);
+  text-align: center;
+  padding: 20px;
 }
 
-/**
- * ----------------------------------------
- * Heat Beat
- * ----------------------------------------
- */
-@keyframes heartBeat {
-  0% {
-    transform: scale(1);
-  }
-  14% {
-    transform: scale(1.3);
-  }
-  28% {
-    transform: scale(1);
-  }
-  42% {
-    transform: scale(1.3);
-  }
-  70% {
-    transform: scale(1);
-  }
-}
-.heartBeat {
-  animation-name: heartBeat;
-  animation-duration: calc(var(--animate-duration) * 1.3);
-  animation-timing-function: ease-in-out;
+.checkbox-container {
+  gap: 5px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-/**
- * ----------------------------------------
- * Fade in UP
- * ----------------------------------------
- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-.fadeInUp {
-  animation-name: fadeInUp;
+.checkbox-container input {
+  display: none;
 }
 
-/**
- * ----------------------------------------
- * Fade out DOWN
- * ----------------------------------------
- */
-@keyframes fadeOutDown {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-  }
+.checkbox-container input:checked ~ .checkmark {
+  background: hsl(37, 59%, 54%);
 }
-.fadeOutDown {
-  animation-name: fadeOutDown;
+.checkbox-container input:checked ~ .checkmark svg {
+  display: block;
+}
+
+.checkbox-container label {
+  pointer-events: none;
+}
+
+.checkmark {
+  background: hsla(0, 0%, 73%, 0.15);
+  border: 1px solid hsl(0, 0%, 73%);
+  width: 30px;
+  height: 30px;
+  transition: all linear 0.2s;
+}
+
+.checkbox-container:hover .checkmark {
+  background: hsla(0, 0%, 73%, 0.5);
+  border: 1px solid hsl(240, 3%, 18%);
+}
+
+.checkbox-container:hover input:checked ~ .checkmark {
+  background: hsla(37, 59%, 54%, 0.75);
+  border: 1px solid hsl(240, 3%, 18%);
+}
+
+.checkmark svg {
+  fill: white;
+  display: none;
 }
 
 .website__header {
@@ -1356,31 +1432,6 @@ button:disabled {
   background: hsl(0, 0%, 73%);
   color: hsl(240, 3%, 18%);
   cursor: not-allowed;
-}
-
-form {
-  font-size: 20px;
-}
-form > div {
-  padding: 10px 0;
-}
-
-form input {
-  font-size: 20px;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid hsl(0, 0%, 73%);
-  background-color: hsla(0, 0%, 73%, 0.15);
-}
-
-form input::placeholder {
-  color: hsla(240, 3%, 18%, 0.3);
-}
-
-.form__title {
-  color: hsl(37, 59%, 54%);
-  text-align: center;
-  padding: 20px;
 }
 
 .feedback {
