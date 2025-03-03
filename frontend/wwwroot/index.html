@@ -46,7 +46,8 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>
+    <script src="service-worker.js"></script>
+    <!--<script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 fetch('service-worker.js', { method: 'HEAD' })
@@ -70,7 +71,7 @@
                     });
             });
         }
-    </script>
+    </script>-->
     <script src="js/resizeListener.js"></script>
     <script src="js/svgHelper.js"></script>
     <script src="js/getBoundingClientRect.js"></script>

@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-	<PublishDir>..\build\</PublishDir>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>-->
+		<PublishDir>..\build\</PublishDir>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.1" PrivateAssets="all" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.1" PrivateAssets="all" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-  </ItemGroup>
+	<ItemGroup>
+		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Shared\" />
-    <Folder Include="Utilties\" />
-    <Folder Include="wwwroot\images\banners\" />
-    <Folder Include="wwwroot\images\products\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Shared\" />
+		<Folder Include="Utilties\" />
+		<Folder Include="wwwroot\images\banners\" />
+		<Folder Include="wwwroot\images\products\" />
+	</ItemGroup>
 
 	<!-- <Target Name="LogPublishedFiles" AfterTargets="Publish">
 		<Message Text="Listing all files in $(PublishDir):" Importance="high" />
 		<Exec Command="dir $(PublishDir) /s" />
 	</Target> -->
-	
+
 	<!-- Clean the /build folder before publish -->
 	<Target Name="CleanBuildFolder" BeforeTargets="PrepareForPublish">
 		<Message Text="Cleaning folder: $(PublishDir)" Importance="high" />
@@ -35,13 +35,17 @@
 		<MakeDir Directories="$(PublishDir)" />
 		<Message Text="Folder $(PublishDir) has been cleaned and recreated." Importance="high" />
 	</Target>
-	
-	<Target Name="RemoveServiceWorkerOnDebug" AfterTargets="FlattenOutput" Condition="'$(Configuration)'=='Debug'">
-		<!-- Remove service-worker.js from the publish output -->
+
+	<!--<Target Name="RemoveServiceWorkerOnDebug" AfterTargets="FlattenOutput" Condition="'$(Configuration)'=='Debug'">
+		-->
+	<!-- Remove service-worker.js from the publish output -->
+	<!--
 		<Exec Command="del &quot;$(PublishDir)service-worker.js&quot;" />
-		<!-- Optionally, remove the assets manifest if you don't want any service worker files -->
+		-->
+	<!-- Optionally, remove the assets manifest if you don't want any service worker files -->
+	<!--
 		<Exec Command="del &quot;$(PublishDir)service-worker-assets.js&quot;" />
-	</Target>
+	</Target>-->
 
 	<Target Name="RemoveSRIIfDebug" AfterTargets="FlattenOutput">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
@@ -64,12 +68,12 @@
 	<Target Name="CompileSCSS" BeforeTargets="Build">
 		<Exec Command="sass wwwroot/scss/manage/manage.scss:wwwroot/css/manage/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css --no-source-map" />
 	</Target>
-	
+
 	<ItemGroup>
-	  <EditorConfigFiles Remove="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
+		<EditorConfigFiles Remove="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <None Include="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
+		<None Include="D:\work\sites\cia_da_capa\xampp_8.2.12\htdocs\frontend\.editorconfig" />
 	</ItemGroup>
 </Project>
