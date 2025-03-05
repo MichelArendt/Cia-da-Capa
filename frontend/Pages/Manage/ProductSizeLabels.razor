@@ -25,18 +25,7 @@
 
     <section>
         <div class="one">
-            @if (!isUpdating)
-            {
-                <h1>
-                    Adicionar rótulo
-                </h1>
-            }
-            else
-            {
-                <h1>
-                    Atualizando rótulo
-                </h1>
-            }
+            <h1>@(isUpdating ? "Editando" : "Adicionando") rótulo</h1>
         </div>
 
         <p><strong>"Rótulo"</strong> abaixo é o que aparece para os clientes na maior parte do site.</p>
