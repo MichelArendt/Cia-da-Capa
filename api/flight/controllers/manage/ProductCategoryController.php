@@ -97,7 +97,7 @@ class ProductCategoryController
 
             // If the model method returns false, assume failure
             if (!$result) {
-                throw new Exception("Falha ao deletar a categoria.")
+                throw new Exception("Falha ao deletar a categoria.");
             }
 
             // Return success response
