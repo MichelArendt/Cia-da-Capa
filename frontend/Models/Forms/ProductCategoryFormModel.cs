@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using frontend.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace frontend.Models.Forms
 {
     public class ProductCategoryFormModel
     {
+        public int Id { get; set; }
 
         [Display(Name = "Título")]
         [Required(ErrorMessage = "Título é obrigatório.")]
@@ -16,5 +18,13 @@ namespace frontend.Models.Forms
         [Display(Name = "Ativo")]
         [Required(ErrorMessage = "Ativo é obrigatório")]
         public bool IsActive { get; set; } = true;
+
+        public void FromDto(ProductCategoryDto dto)
+        {
+            Id = dto.Id;
+            Title = dto.Title;
+            Reference = dto.Reference;
+            IsActive = dto.IsActive;
+        }
     }
 }

@@ -23,8 +23,21 @@
 
     <section>
         <div class="one">
-            <h1>Adicionar categoria</h1>
+            @if (!isUpdating)
+            {
+                <h1>
+                    Adicionar categoria
+                </h1>
+            }
+            else
+            {
+                <h1>
+                    Atualizando categoria
+                </h1>
+            }
         </div>
+
+        <p><strong>"Referência"</strong> abaixo compõe a referência do produto. <i>Exemplo: MO-001</i></p>
 
         <EditForm Model="@productCategoryFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
             <DataAnnotationsValidator />
@@ -44,7 +57,7 @@
                            autocomplete="on"
                            placeholder="Mochila"
                            @bind-Value="productCategoryFormModel.Title"
-                           disabled="@IsSubmitting" />
+                           disabled="@isSubmitting" />
                 <ValidationMessage For="@(() => productCategoryFormModel.Title)" />
             </div>
 
@@ -59,33 +72,41 @@
                                 autocomplete="on"
                                 placeholder="MO"
                                 @bind-Value="productCategoryFormModel.Reference"
-                                disabled="@IsSubmitting" />
+                                disabled="@isSubmitting" />
                     <ValidationMessage For="@(() => productCategoryFormModel.Reference)" />
                 </div>
 
                 <div class="form-group">
                     <Checkbox Id="isActive"
                                 BindValue="@productCategoryFormModel.IsActive"
-                                Disabled="@IsSubmitting"
+                                Disabled="@isSubmitting"
                                 Label="Ativo" />
 
                     <ValidationMessage For="@(() => productCategoryFormModel.IsActive)" />
                 </div>
             </div>
 
-            <div>
-                <button type="submit" disabled="@IsSubmitting">Adicionar categoria</button>
+            <div class="form_buttons">
+                @if (!isUpdating)
+                {
+                    <button type="submit" disabled="@isSubmitting">Adicionar categoria</button>
+                }
+                else
+                {
+                    <button type="submit" disabled="@isSubmitting">Atualizar</button>
+                    <button type="reset" disabled="@isSubmitting" @onclick="ResetForm">Cancelar</button>
+                }
             </div>
         </EditForm>
     </section>
 
     <section>
         <div class="one">
-            <h1>Categorias</h1>
+            <h1>Categorias cadastradas</h1>
         </div>
 
 
-        @if (productCategories.Count == 0)
+        @if (ProductStateService.CategoriesListOrderedByTitle.Count == 0)
         {
             <span>Não há categorias cadastradas.</span>
         }
@@ -95,57 +116,21 @@
                 <table>
                     <thead>
                         <tr>
-                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.IsActive))">
-                                Ativo
-                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.IsActive))
-                                {
-                                    @if (isDescending)
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
-                                    }
-                                    else
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
-                                    }
-                                }
-                            </th>
-                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Title))">
-                                Nome
-                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.Title))
-                                {
-                                    @if (isDescending)
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
-                                    }
-                                    else
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
-                                    }
-                                }
+                            <th>Ativo</th>
+
+                            <th>
+                                Título 
+                                <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
                             </th>
 
-                            <th OnClick="@(() => SortCategoriesBy(ProductCategoryDto.SortBy.Reference))">
-                                Referência
-                                @if (currentSortField.Equals(ProductCategoryDto.SortBy.Reference))
-                                {
-                                    @if (isDescending)
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropUp" />
-                                    }
-                                    else
-                                    {
-                                        <Svg Width="15" Height="15" ClassName="table__sorting-arrow" Path="@Svg.Paths.ArrowDropDown" />
-                                    }
-                                }
-                            </th>
-
+                            <th>Referência</th>
                             <th>Produtos</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @foreach (ProductCategoryDto category in productCategories)
+                        @foreach (ProductCategoryDto category in ProductStateService.CategoriesListOrderedByTitle)
                         {
                             <tr ClassName="table__item">
                                 <td>
@@ -162,7 +147,7 @@
                                 <td>@category.Reference</td>
                                 <td>0</td>
                                 <td>
-                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" />
+                                    <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(category.Id))" />
                                     <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
                                 </td>
                             </tr>
@@ -175,14 +160,16 @@
 </CenterContent>
 
 @code {
-    private List<ProductCategoryDto> productCategories = new();
+    // private List<ProductCategoryDto> productCategories = new();
     private ProductCategoryFormModel productCategoryFormModel = new();
     private string? errorMessage;
-    private bool IsSubmitting { get; set; } = false;
+    private bool isUpdating { get; set; } = false;
+    private bool isSubmitting { get; set; } = false;
     private bool isDescending = false;
-    private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Title;
+    // private ProductCategoryDto.SortBy.SortField currentSortField = ProductCategoryDto.SortBy.Title;
 
     private ApiStateHandler<object> createCategoryApiHandler = new();
+    private ApiStateHandler<object> updateCategoryApiHandler = new();
     private ApiStateHandler<object> deleteCategoryApiHandler = new();
 
     protected override void OnInitialized()
@@ -190,7 +177,7 @@
         base.OnInitialized();
 
         ProductStateService.CategoriesChanged += StateHasChanged;
-        productCategories = ProductStateService.CategoriesDict.Values.ToList();
+        // productCategories = ProductStateService.CategoriesDict.Values.ToList();
     }
 
     public void Dispose()
@@ -200,31 +187,55 @@
 
     private async Task HandleValidSubmit()
     {
-        IsSubmitting = true;
+        isSubmitting = true;
         errorMessage = null;
 
-        var newProductCategoryDto = new NewProductCategoryDto
+        if (!isUpdating)
         {
-                Title = productCategoryFormModel.Title,
-                Reference = productCategoryFormModel.Reference,
-                IsActive = productCategoryFormModel.IsActive,
-        };
+            // creating new category
+            var newProductCategoryDto = new NewProductCategoryDto
+                {
+                    Title = productCategoryFormModel.Title,
+                    Reference = productCategoryFormModel.Reference,
+                    IsActive = productCategoryFormModel.IsActive,
+                };
 
-        await createCategoryApiHandler.ExecuteAsync(ProductCategoryService.CreateProductCategoryFunc(newProductCategoryDto));
-
-        if (createCategoryApiHandler.IsSuccess())
-        {
-            // Reset form fields
-            productCategoryFormModel = new();
-
-            // Re-fetch categories to update the list
-            await ProductStateService.CategoriesApiHandler.ExecuteAsync();
+            await createCategoryApiHandler.ExecuteAsync(ProductCategoryService.CreateProductCategoryFunc(newProductCategoryDto));
         } else {
-            errorMessage = "Erro ao criar categoria.";
-            NotificationService.Display(createCategoryApiHandler.GetErrorNotificationModel(errorMessage));
+            // updating category
+            var updateProductCategoryDto = new UpdateProductCategoryDto
+                {
+                    Id = productCategoryFormModel.Id,
+                    Title = productCategoryFormModel.Title,
+                    Reference = productCategoryFormModel.Reference,
+                    IsActive = productCategoryFormModel.IsActive,
+                };
+
+            await updateCategoryApiHandler.ExecuteAsync(ProductCategoryService.UpdateProductCategoryFunc(updateProductCategoryDto));
         }
 
-        IsSubmitting = false;
+        if (!isUpdating ? createCategoryApiHandler.IsSuccess() : updateCategoryApiHandler.IsSuccess())
+        {
+            // Reset form fields
+            ResetForm();
+
+            // Re-fetch categories to update the list
+            await ProductStateService.RefetchCategories();
+            NotificationService.DisplaySuccess("Categoria atualizada com sucesso!");
+        }
+        else
+        {
+            // ERROR
+            errorMessage = !isUpdating ? createCategoryApiHandler.GetErrorString() : updateCategoryApiHandler.GetErrorString();
+            NotificationService.Display(
+                !isUpdating ?
+                    createCategoryApiHandler.GetErrorNotificationModel("Erro ao adicionar rótulo.") :
+                    updateCategoryApiHandler.GetErrorNotificationModel("Erro ao atualizar rótulo.")
+            );
+        }
+
+        isSubmitting = false;
+        StateHasChanged();
     }
 
     private void HandleInvalidSubmit()
@@ -232,22 +243,17 @@
         errorMessage = "Por favor corrija os erros abaixo.";
     }
 
-    private void SortCategoriesBy(ProductCategoryDto.SortBy.SortField sortField)
+    private void SetUpdating(int categoryId)
     {
-        if (currentSortField.ColumnName == sortField.ColumnName)
-        {
-            isDescending = !isDescending; // Toggle order if clicking the same column
-        }
-        else
-        {
-            currentSortField = sortField;
-            isDescending = false; // Default to ascending when switching columns
-        }
+        isUpdating = true;
+        productCategoryFormModel.FromDto(ProductStateService.CategoriesListOrderedByTitle.FirstOrDefault(c => c.Id == categoryId)!);
+        StateHasChanged();
+    }
 
-        productCategories = isDescending
-            ? productCategories.OrderByDescending(sortField.Selector).ToList()
-            : productCategories.OrderBy(sortField.Selector).ToList();
-
+    private void ResetForm()
+    {
+        productCategoryFormModel = new();
+        isUpdating = false;
         StateHasChanged();
     }
 
@@ -258,7 +264,7 @@
         if (deleteCategoryApiHandler.IsSuccess())
         {
             // Remove item manually
-            productCategories = productCategories.Where(c => c.Id != categoryId).ToList();
+            ProductStateService.CategoriesListOrderedByTitle.RemoveAll(c => c.Id == categoryId);
 
             StateHasChanged(); // Re-render UI
         }

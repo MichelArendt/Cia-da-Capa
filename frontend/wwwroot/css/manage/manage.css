@@ -1288,6 +1288,7 @@ form input::placeholder {
 
 .form-group {
   flex-grow: 1;
+  padding: 5px 0;
 }
 
 .form_buttons {

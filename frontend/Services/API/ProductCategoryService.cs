@@ -31,6 +31,19 @@ namespace frontend.Services.API
         }
 
         /// <summary>
+        /// Updates an existing product category.
+        /// </summary>
+        /// <param name="dto">The data transfer object containing the updated product category details.</param>
+        /// <returns>A function that returns a task representing the asynchronous operation.</returns>
+        public Func<Task<HttpResponseMessage>> UpdateProductCategoryFunc(UpdateProductCategoryDto dto)
+        {
+            return () => _httpClient.PutAsJsonAsync(
+                ApiRoutes.Manage.ProductCategories.Update(dto.Id),
+                dto,
+                JsonHelper._options);
+        }
+
+        /// <summary>
         /// Deletes a product category by its ID.
         /// </summary>
         /// <param name="categoryId">The ID of the product category to delete.</param>

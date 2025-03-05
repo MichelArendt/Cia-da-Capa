@@ -17,36 +17,36 @@ namespace frontend.DTOs
         public DateTime CreatedAt { get; set; } // Creation timestamp
         public DateTime UpdatedAt { get; set; } // Last updated timestamp
 
-        public static class SortBy
-        {
-            public static readonly SortField Title = new("Title", c => c.Title);
-            public static readonly SortField Reference = new("Reference", c => c.Reference);
-            public static readonly SortField IsActive = new("IsActive", c => c.IsActive);
+        //public static class SortBy
+        //{
+        //    public static readonly SortField Title = new("Title", c => c.Title);
+        //    public static readonly SortField Reference = new("Reference", c => c.Reference);
+        //    public static readonly SortField IsActive = new("IsActive", c => c.IsActive);
 
-            public struct SortField
-            {
-                public string ColumnName { get; }
-                public Func<ProductCategoryDto, object> Selector { get; }
-
-                public SortField(string columnName, Func<ProductCategoryDto, object> selector)
-                {
-                    ColumnName = columnName;
-                    Selector = selector;
-                }
-            }
-        }
-
-        //public IReadOnlyList<SortField> SortFields { get; } =
-        //    new List<SortField>
+        //    public struct SortField
         //    {
-        //        new("Title", dto => ((ProductCategoryDto)dto).Title),
-        //        new("Reference", dto => ((ProductCategoryDto)dto).Reference),
-        //        new("IsActive", dto => ((ProductCategoryDto)dto).IsActive)
-        //    };
+        //        public string ColumnName { get; }
+        //        public Func<ProductCategoryDto, object> Selector { get; }
+
+        //        public SortField(string columnName, Func<ProductCategoryDto, object> selector)
+        //        {
+        //            ColumnName = columnName;
+        //            Selector = selector;
+        //        }
+        //    }
+        //}
     }
 
     public record NewProductCategoryDto
     {
+        public string Title { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
+        public bool IsActive { get; set; } = true;
+    }
+
+    public record UpdateProductCategoryDto
+    {
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
