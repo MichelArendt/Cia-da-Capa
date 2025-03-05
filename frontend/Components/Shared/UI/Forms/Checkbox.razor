@@ -3,7 +3,7 @@
         @bind-Value="BindValue"
         disabled="@Disabled" />
     <span class="checkmark">
-        <Svg Path="@Svg.Paths.Check"  />
+        <Svg Path="@Svg.Paths.Check" />
     </span>
     <label for="@Id">
         @Label
@@ -20,6 +20,7 @@
     private void ToggleCheckbox()
     {
         BindValue = !BindValue;
+
         BindValueChanged.InvokeAsync(BindValue);
         StateHasChanged();
     }
