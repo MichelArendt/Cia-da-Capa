@@ -46,7 +46,7 @@ class ProductCategoryModel
             $stmt->bindParam(':is_active', $isActive, PDO::PARAM_BOOL);
 
             if (!$stmt->execute()) {
-                throw new Exception("Failed to insert product category.");
+                throw new Exception("Falha ao inserir categoria de produto.");
             }
 
             return (int) $this->db->lastInsertId();
@@ -67,6 +67,43 @@ class ProductCategoryModel
         }
     }
 
+    public function getById($categoryId)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_categories WHERE id = :id");
+            $stmt->execute([':id' => $categoryId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->getById()");
+        }
+    }
+
+    public function update($id, string $title, string $reference, bool $isActive = true): bool
+    {
+        try {
+            $id = (int)$id;
+            $sql = "UPDATE product_categories
+                SET title = :title,
+                    reference = :reference,
+                    is_active = :is_active,
+                    updated_at = NOW()
+                WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':reference', $reference, PDO::PARAM_STR);
+            $stmt->bindParam(':is_active', $isActive, PDO::PARAM_BOOL);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Falha ao atualizar categoria de produto.");
+            }
+
+            return true;
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->update()");
+        }
+    }
+
     // Delete product category by ID
     public function delete($id)
     {
@@ -76,7 +113,7 @@ class ProductCategoryModel
             $stmt->execute([$id]);
 
             if (!$stmt->fetch()) {
-                throw new Exception("Category not found.");
+                throw new Exception("Categoria não encontrada.");
             }
 
             // Check if there are any products associated with this category
@@ -85,15 +122,14 @@ class ProductCategoryModel
             $productCount = $stmt->fetch(PDO::FETCH_ASSOC)['product_count'] ?? 0;
 
             if ($productCount > 0) {
-                throw new Exception("Cannot delete category. There are $productCount products linked to this category.");
+                throw new Exception("Não é possível deletar a categoria. Existem {$productCount} produtos vinculados a esta categoria.");
             }
 
             // Delete the category
             $stmt = $this->db->prepare("DELETE FROM product_categories WHERE id = ?");
             $stmt->execute([$id]);
 
-            http_response_code(200);
-            echo json_encode(["message" => "Category deleted successfully."]);
+            HttpResponse::responseDeleteSuccess("Categoria deletada com sucesso.");
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductCategoryModel->delete()");
         }
