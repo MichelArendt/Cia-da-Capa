@@ -62,7 +62,7 @@ p {
 }
 
 section {
-    margin: 50px;
+    margin: 50px 0;
 }
 
 button {
@@ -90,21 +90,13 @@ button:disabled {
 // RESPONSIVE PRESENTATION
 // ---------------------------
 .display--row--above-breakpoint {
-    // display: grid;
-    // grid-template-columns: 1fr;  // single column by default
-    gap: 10px;
-
-    // > * {
-    //     flex-grow: 1;
-    // }
+    display: flex;
+    gap: 20px;
 }
 
 @media (min-width: $breakpoint--desktop) {
     .display--row--above-breakpoint {
         flex-direction: row;
-
-        > * {
-        }
     }
 }
 
