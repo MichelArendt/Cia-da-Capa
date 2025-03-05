@@ -114,7 +114,7 @@ class HttpResponse
      * @param string $error Detailed error message
      * @param int $code HTTP Status Code
      */
-    public static function triggerError(string $message = "Desculpe, ocorreu um erro no servidor. Se o problema persistir, tente novamente mais tarde!", string $methodName, string $error = "Erro no servidor.", int $code = 500)
+    public static function triggerError(string $message = "Desculpe, ocorreu um erro no servidor. Se o problema persistir, tente novamente mais tarde!", string $methodName, string $error = "desconhecido", int $code = 500)
     {
         // Format the error message
         $formattedError = "Error in {$methodName}: " . $error;
@@ -137,7 +137,7 @@ class HttpResponse
      * @param string $message General error message
      * @param int $code HTTP Status Code
      */
-    public static function handleException(\Exception $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
+    public static function handleException(\Exception $e, string $methodName, string $message = "desconhecido", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
@@ -151,7 +151,7 @@ class HttpResponse
      * @param string $message General error message
      * @param int $code HTTP Status Code
      */
-    public static function handlePdoException(\PDOException $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
+    public static function handlePdoException(\PDOException $e, string $methodName, string $message = "desconhecido", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
@@ -165,7 +165,7 @@ class HttpResponse
      * @param string $message General error message
      * @param int $code HTTP Status Code
      */
-    public static function handleThrowable(\Throwable $e, string $methodName, string $message = "Erro no servidor.", int $code = 500)
+    public static function handleThrowable(\Throwable $e, string $methodName, string $message = "desconhecido", int $code = 500)
     {
         self::checkIfDuplicateEntryException($e);
         HttpResponse::triggerError("Desculpe, houve um erro no servidor: $message", $methodName, $e->getMessage(), $code);
