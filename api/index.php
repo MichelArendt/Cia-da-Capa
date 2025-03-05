@@ -182,6 +182,7 @@ Flight::route('POST /manage/user/validate', 'Controllers\Manage\UserController->
 
 // Product Category
 Flight::route('POST /manage/products', 'Controllers\Manage\ProductController->create');
+Flight::route('PUT /manage/products/categories/@id', 'Controllers\Manage\ProductCategoryController->Update');
 Flight::route('POST /manage/products/categories', 'Controllers\Manage\ProductCategoryController->create');
 Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\ProductCategoryController->delete');
 
