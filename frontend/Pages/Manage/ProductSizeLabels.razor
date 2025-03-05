@@ -156,7 +156,6 @@
 @code {
     private List<ProductSizeLabelDto> productSizeLabelDtos = new();
     private List<UpdateProductSizeLabelOrderingDto> updatedProductSizeLabelOrderingDtos = new();
-    // private NewProductSizeLabelDto newProductSizeLabelModel = new();
     private ProductSizeLabelFormModel productSizeLabelFormModel = new();
     private string? errorMessage;
     private int? draggedSizeLabelId = null; // Stores the ID of the dragged item
@@ -230,16 +229,17 @@
         }
         else
         {
+            // ERROR
             errorMessage = !isUpdating ? createSizeLabelApiHandler.GetErrorString() : updateSizeLabelApiHandler.GetErrorString();
             NotificationService.Display(
                 !isUpdating ? 
                     createSizeLabelApiHandler.GetErrorNotificationModel("Erro ao adicionar rótulo.") : 
                     updateSizeLabelApiHandler.GetErrorNotificationModel("Erro ao atualizar rótulo.")
             );
-            StateHasChanged();
         }
 
         isSubmitting = false;
+        StateHasChanged();
     }
 
     private void HandleInvalidSubmit()
@@ -336,6 +336,19 @@
         }
     }
 
+    private void SetUpdating(int sizeLabelId)
+    {
+        isUpdating = true;
+        productSizeLabelFormModel.FromDto(productSizeLabelDtos.FirstOrDefault(p => p.Id == sizeLabelId)!);
+        StateHasChanged();
+    }
+
+    private void ResetForm(){
+        productSizeLabelFormModel = new();
+        isUpdating = false;
+        StateHasChanged();
+    }
+
     private async Task DeleteSizeLabel(int sizeLabeId)
     {
         await deleteSizeLabelApiHandler.ExecuteAsync(ProductSizeLabelService.DeleteProductSizeLabelFunc(sizeLabeId));
@@ -353,18 +366,5 @@
         {
             NotificationService.Display(deleteSizeLabelApiHandler.GetErrorNotificationModel("Erro ao salvar a remover rótulo de tamanho."));
         }
-    }
-
-    private void SetUpdating(int sizeLabelId)
-    {
-        isUpdating = true;
-        productSizeLabelFormModel.FromDto(productSizeLabelDtos.FirstOrDefault(p => p.Id == sizeLabelId)!);
-        StateHasChanged();
-    }
-
-    private void ResetForm(){
-        productSizeLabelFormModel = new();
-        isUpdating = false;
-        StateHasChanged();
     }
 }
