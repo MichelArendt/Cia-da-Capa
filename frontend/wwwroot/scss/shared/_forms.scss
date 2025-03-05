@@ -18,9 +18,8 @@ form {
     }
 }
 
-form input {
+form input, form textarea, form select {
     @extend .roboto-regular;
-    width: 100%;
     font-size: 20px;
     padding: 10px;
     border-radius: 20px;
@@ -40,13 +39,14 @@ form input::placeholder {
 
 .form-group {
     @extend .flex--column--center-vertical;
-    flex-grow: 1;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 5px 0;
 }
 
 .form_buttons {
     @extend .flex--row;
-    gap: 10px;
+    gap: 20px;
 }
 
 // ---------------------------
@@ -72,7 +72,7 @@ form input::placeholder {
     background: $color-primary--main;
 
     svg {
-        display: block;
+        opacity: 1;
     }
 }
 
@@ -87,8 +87,12 @@ form input::placeholder {
     width: 30px;
     height: 30px;
     transition: all linear 0.2s;
-}
 
+    svg {
+        fill: white;
+        opacity: 0;
+    }
+}
 .checkbox-container:hover .checkmark {
     background: opacity-set($color-secondary--light, 50%);
     border: 1px solid $color-primary--dark;
@@ -97,9 +101,4 @@ form input::placeholder {
 .checkbox-container:hover input:checked ~ .checkmark {
     background: opacity-set($color-primary--main, 75%);
     border: 1px solid $color-primary--dark;
-}
-
-.checkmark svg {
-    fill: white;
-    display: none;
 }

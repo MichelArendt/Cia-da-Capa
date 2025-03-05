@@ -8,6 +8,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 /* Ensure 100% height */
@@ -50,7 +52,7 @@ button {
   font-style: normal;
 }
 
-.roboto-regular, form input {
+.roboto-regular, form input, form textarea, form select {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -1267,8 +1269,7 @@ form > div {
   padding: 10px 0;
 }
 
-form input {
-  width: 100%;
+form input, form textarea, form select {
   font-size: 20px;
   padding: 10px;
   border-radius: 20px;
@@ -1287,12 +1288,13 @@ form input::placeholder {
 }
 
 .form-group {
-  flex-grow: 1;
+  flex: 1 1 0;
+  min-width: 0;
   padding: 5px 0;
 }
 
 .form_buttons {
-  gap: 10px;
+  gap: 20px;
 }
 
 .checkbox-container {
@@ -1314,7 +1316,7 @@ form input::placeholder {
   background: hsl(37, 59%, 54%);
 }
 .checkbox-container input:checked ~ .checkmark svg {
-  display: block;
+  opacity: 1;
 }
 
 .checkbox-container label {
@@ -1328,6 +1330,17 @@ form input::placeholder {
   height: 30px;
   transition: all linear 0.2s;
 }
+.checkmark svg {
+  fill: white;
+  opacity: 0;
+}
+
+.checkmark.checked {
+  background: hsl(37, 59%, 54%);
+}
+.checkmark.checked svg {
+  opacity: 1;
+}
 
 .checkbox-container:hover .checkmark {
   background: hsla(0, 0%, 73%, 0.5);
@@ -1337,11 +1350,6 @@ form input::placeholder {
 .checkbox-container:hover input:checked ~ .checkmark {
   background: hsla(37, 59%, 54%, 0.75);
   border: 1px solid hsl(240, 3%, 18%);
-}
-
-.checkmark svg {
-  fill: white;
-  display: none;
 }
 
 .website__header {
@@ -1432,7 +1440,7 @@ p {
 }
 
 section {
-  margin: 50px;
+  margin: 50px 0;
 }
 
 button {
@@ -1456,7 +1464,8 @@ button:disabled {
 }
 
 .display--row--above-breakpoint {
-  gap: 10px;
+  display: flex;
+  gap: 20px;
 }
 
 @media (min-width: 800px) {
