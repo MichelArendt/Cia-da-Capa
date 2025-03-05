@@ -101,8 +101,7 @@ class ProductCategoryController
             }
 
             // Return success response
-            http_response_code(200);
-            echo json_encode(["message" => "Category deleted successfully."]);
+            HttpResponse::responseDeleteSuccess("Categoria deletada com sucesso.");
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductCategoryController->delete()");
         }

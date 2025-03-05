@@ -80,11 +80,11 @@ class ProductSizeLabelModel
         }
     }
 
-    public function getById($image_id)
+    public function getById($sizeLabelId)
     {
         try {
             $stmt = $this->db->prepare("SELECT * FROM product_size_labels WHERE id = :id");
-            $stmt->execute([':id' => $image_id]);
+            $stmt->execute([':id' => $sizeLabelId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelModel->getById()");
