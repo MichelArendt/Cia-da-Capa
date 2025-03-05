@@ -101,6 +101,7 @@
             public static class ProductCategories
             {
                 public const string Create = $"{API}/manage/products/categories";
+                public static string Update(int id) => $"{API}/manage/products/categories/{id}";
                 public static string Delete(int id) => $"{API}/manage/products/categories/{id}";
             }
 
