@@ -23,18 +23,7 @@
 
     <section>
         <div class="one">
-            @if (!isUpdating)
-            {
-                <h1>
-                    Adicionar categoria
-                </h1>
-            }
-            else
-            {
-                <h1>
-                    Atualizando categoria
-                </h1>
-            }
+            <h1>@(isUpdating ? "Editando" : "Adicionando") categoria</h1>
         </div>
 
         <p><strong>"Referência"</strong> abaixo compõe a referência do produto. <i>Exemplo: MO-001</i></p>
@@ -78,7 +67,8 @@
 
                 <div class="form-group">
                     <Checkbox Id="isActive"
-                                BindValue="@productCategoryFormModel.IsActive"
+                              BindValue="@productCategoryFormModel.IsActive"
+                              BindValueChanged="@((checkedVal) => productCategoryFormModel.IsActive = checkedVal)"
                                 Disabled="@isSubmitting"
                                 Label="Ativo" />
 
