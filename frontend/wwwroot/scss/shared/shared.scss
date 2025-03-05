@@ -16,7 +16,7 @@
 //   // transition: all 0.2s linear;
 // }
 :root {
-  --breakpoint-desktop: $breakpoint--desktop; // Desktop breakpoint variable
+    --breakpoint-desktop: $breakpoint--desktop; // Desktop breakpoint variable
 }
 
 // ---------------------------
@@ -28,11 +28,18 @@
 }
 
 a {
-  color: $color-primary--main;
+    color: $color-primary--main;
 }
 
 a:hover {
-  color: $color-secondary--main;
+    color: $color-secondary--main;
+}
+
+p {
+    padding: 20px;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 }
 
 .website__main {
@@ -45,38 +52,60 @@ a:hover {
 }
 
 .website__main-wrapper {
-  @extend .website--max-width;
+    @extend .website--max-width;
 }
 
 @media (min-width: $breakpoint--desktop) {
-  .website__main {
-    // padding-top: 100px;
-  }
+    .website__main {
+        // padding-top: 100px;
+    }
 }
 
 section {
-  margin: 50px 0;
+    margin: 50px;
 }
 
 button {
-  background: $color-primary--dark;
-  color: $color-primary--main;
-  padding: 20px;
-  width: 100%;
-  text-transform: uppercase;
+    background: $color-primary--dark;
+    color: $color-primary--main;
+    padding: 20px;
+    width: 100%;
+    text-transform: uppercase;
 
-  transition: all linear 0.2s;
+    transition: all linear 0.2s;
 }
 
 button:hover {
-  background: $color-primary--main;
-  color: $color-primary--dark;
+    background: $color-primary--main;
+    color: $color-primary--dark;
 }
 
 button:disabled {
-  background: $color-secondary--light;
-  color: $color-primary--dark;
-  cursor: not-allowed;
+    background: $color-secondary--light;
+    color: $color-primary--dark;
+    cursor: not-allowed;
+}
+
+// ---------------------------
+// RESPONSIVE PRESENTATION
+// ---------------------------
+.display--row--above-breakpoint {
+    // display: grid;
+    // grid-template-columns: 1fr;  // single column by default
+    gap: 10px;
+
+    // > * {
+    //     flex-grow: 1;
+    // }
+}
+
+@media (min-width: $breakpoint--desktop) {
+    .display--row--above-breakpoint {
+        flex-direction: row;
+
+        > * {
+        }
+    }
 }
 
 // ---------------------------
@@ -119,8 +148,8 @@ button:disabled {
     background-color: $color-feedback--error-bg;
     color: $color-feedback--error;
 
-    > li {
-      margin-left: 30px;
+    >li {
+        margin-left: 30px;
     }
 }
 
@@ -134,70 +163,79 @@ button:disabled {
 // CONTENT LOADER
 // ---------------------------
 .content-loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  width: 100%;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    width: 100%;
+    height: 100%;
 }
 
-.content-loader__spinner-container{
-  padding: 5px;
+.content-loader__spinner-container {
+    padding: 5px;
 }
 
 .content-loader__spinner-container .content-loader__spinner {
-  width: 50px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(farthest-side,$color-primary--main 100%,#0000) top/8px 8px no-repeat,
-    conic-gradient(#0000 30%, $color-primary--main);
-  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
-  animation: l13 1s infinite linear;
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        radial-gradient(farthest-side, $color-primary--main 100%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, $color-primary--main);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+    animation: l13 1s infinite linear;
 }
-@keyframes l13{
-  100%{transform: rotate(1turn)}
+
+@keyframes l13 {
+    100% {
+        transform: rotate(1turn)
+    }
 }
 
 // ---------------------------
 // DROPDOWN ANIMATION
 // ---------------------------
 @keyframes nudge {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(10px); /* Adjust distance */
-    color: $color-primary--main;
+    0% {
+        transform: translateX(0);
+    }
 
-  }
-  100% {
-    transform: translateX(0);
-  }
+    50% {
+        transform: translateX(10px);
+        /* Adjust distance */
+        color: $color-primary--main;
+
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
-.dropdown .submenu .option > * {
-  color: inherit; /* Ensure link inherits the color from .option so that the color property works on transition */
+.dropdown .submenu .option>* {
+    color: inherit;
+    /* Ensure link inherits the color from .option so that the color property works on transition */
 }
 
 .dropdown .submenu.show-list .option {
-  animation: nudge 0.3s forwards ease-in-out; /*
+    animation: nudge 0.3s forwards ease-in-out;
+    /*
   Duration of animation */
 }
 
 // ---------------------------
 // 404 & 500
 // ---------------------------
-.page__404, .page__500 {
+.page__404,
+.page__500 {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
 
-    > h1 {
+    >h1 {
         font-size: 80px;
         padding: 20px 0;
     }
@@ -208,38 +246,40 @@ button:disabled {
         font-style: normal;
     }
 }
+
 .page__404 {
-    > svg {
+    >svg {
         fill: #777777;
     }
 
-    > h1 {
+    >h1 {
         color: #777777;
     }
 
-    > h2 {
+    >h2 {
         color: #b5b9b8;
     }
 }
+
 .page__500 {
     padding: 20px;
     background: $color-primary--dark;
     color: $color-secondary--light;
 
-    > svg {
+    >svg {
         fill: #d9534f;
     }
 
-    > h1 {
+    >h1 {
         color: #d9534f;
     }
 
-    > h2 {
+    >h2 {
         color: #ff7675;
         padding-bottom: 20px;
     }
 
-    > ul {
+    >ul {
         padding: 20px;
         list-style: disc;
     }
@@ -249,142 +289,142 @@ button:disabled {
 // NOTIFICATIONS
 // ---------------------------
 .notifications {
-  position: fixed;
-  @extend .flex--column;
-  gap: 10px;
-  width: calc(100vw - 40px);
-  bottom: 0;
-  padding-bottom: 10px;
-  margin: 0 20px;
-  overflow: hidden;
+    position: fixed;
+    @extend .flex--column;
+    gap: 10px;
+    width: calc(100vw - 40px);
+    bottom: 0;
+    padding-bottom: 10px;
+    margin: 0 20px;
+    overflow: hidden;
 }
 
 .notification {
-  @extend .flex--row--center-vertical;
-  gap: 10px;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid;
-  box-shadow: 0px 0px 5px;
+    @extend .flex--row--center-vertical;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid;
+    box-shadow: 0px 0px 5px;
 
-  > :nth-child(2){
-    flex-grow: 1;
-  }
+    > :nth-child(2) {
+        flex-grow: 1;
+    }
 }
 
 .notification--adding {
-  animation: fadeInUp 0.5s;
+    animation: fadeInUp 0.5s;
 }
 
 .notification--removing {
-  animation: fadeOutDown 0.5s;
+    animation: fadeOutDown 0.5s;
 }
 
 .notification:before {
-  content: '';
-  position: absolute;
-  width: 0;
-  // height: calc(100% - 44px);
-  border-left: 1px solid;
-  border-right: 2px solid;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
-  left: 0px;
-  // top: 50%;
-  // transform: translate(0,-100%);
+    content: '';
+    position: absolute;
+    width: 0;
+    // height: calc(100% - 44px);
+    border-left: 1px solid;
+    border-right: 2px solid;
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    left: 0px;
+    // top: 50%;
+    // transform: translate(0,-100%);
     height: 20px;
     // height: 10%;
 }
 
 .notification--success {
-  background: $color-feedback--success-bg;
-  color: $color-feedback--success;
-  box-shadow: $color-feedback--success;
-  border-color: $color-feedback--success;
+    background: $color-feedback--success-bg;
+    color: $color-feedback--success;
+    box-shadow: $color-feedback--success;
+    border-color: $color-feedback--success;
 
-  > svg {
-    fill: $color-feedback--success;
-  }
+    >svg {
+        fill: $color-feedback--success;
+    }
 
-  > :first-child {
-    animation: tada 1.5s infinite both;
-  }
+    > :first-child {
+        animation: tada 1.5s infinite both;
+    }
 }
 
 .notification--warning {
-  background: $color-feedback--warning-bg;
-  color: $color-feedback--warning;
-  box-shadow: $color-feedback--warning;
-  border-color: $color-feedback--warning;
+    background: $color-feedback--warning-bg;
+    color: $color-feedback--warning;
+    box-shadow: $color-feedback--warning;
+    border-color: $color-feedback--warning;
 
-  > svg {
-    fill: $color-feedback--warning;
-  }
+    >svg {
+        fill: $color-feedback--warning;
+    }
 
-  > :first-child {
-    animation: flash 2s infinite both;
-  }
+    > :first-child {
+        animation: flash 2s infinite both;
+    }
 }
 
 .notification--info {
-  background: $color-feedback--info-bg;
-  color: $color-feedback--info;
-  box-shadow: $color-feedback--info;
-  border-color: $color-feedback--info;
+    background: $color-feedback--info-bg;
+    color: $color-feedback--info;
+    box-shadow: $color-feedback--info;
+    border-color: $color-feedback--info;
 
-  > svg {
-    fill: $color-feedback--info;
-  }
+    >svg {
+        fill: $color-feedback--info;
+    }
 
-  > :first-child {
-    animation: rubberBand 1.5s infinite both;
-  }
+    > :first-child {
+        animation: rubberBand 1.5s infinite both;
+    }
 }
 
 .notification--highlight {
-  background: $color-feedback--highlight-bg;
-  color: $color-feedback--highlight;
-  box-shadow: $color-feedback--highlight;
-  border-color: $color-feedback--highlight;
+    background: $color-feedback--highlight-bg;
+    color: $color-feedback--highlight;
+    box-shadow: $color-feedback--highlight;
+    border-color: $color-feedback--highlight;
 
-  > svg {
-    fill: $color-feedback--highlight;
-  }
+    >svg {
+        fill: $color-feedback--highlight;
+    }
 
-  > :first-child {
-    animation: bounce 1s infinite both;
-  }
+    > :first-child {
+        animation: bounce 1s infinite both;
+    }
 }
 
 .notification--error {
-  background: $color-feedback--error-bg;
-  color: $color-feedback--error;
-  box-shadow: $color-feedback--error;
-  border-color: $color-feedback--error;
+    background: $color-feedback--error-bg;
+    color: $color-feedback--error;
+    box-shadow: $color-feedback--error;
+    border-color: $color-feedback--error;
 
-  > svg {
-    fill: $color-feedback--error;
-  }
+    >svg {
+        fill: $color-feedback--error;
+    }
 
-  > :first-child {
-    animation: heartBeat 1s infinite both;
-  }
+    > :first-child {
+        animation: heartBeat 1s infinite both;
+    }
 }
 
 // ---------------------------
 // NOTIFICATIONS
 // ---------------------------
 .tabbed-navigation_tabs {
-  display: flex;
-}
-.tabbed-navigation_tab-button {
+    display: flex;
 }
 
+.tabbed-navigation_tab-button {}
+
 .tabbed-navigation_tab-content {
-  background: $color-secondary--light;
-  display: none;
+    background: $color-secondary--light;
+    display: none;
 }
 
 .tabbed-navigation_tab-content--visible {
-  display: block;
+    display: block;
 }

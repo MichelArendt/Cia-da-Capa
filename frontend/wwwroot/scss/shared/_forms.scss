@@ -20,6 +20,7 @@ form {
 
 form input {
     @extend .roboto-regular;
+    width: 100%;
     font-size: 20px;
     padding: 10px;
     border-radius: 20px;
@@ -37,11 +38,24 @@ form input::placeholder {
     padding: 20px;
 }
 
+.form-group {
+    @extend .flex--column--center-vertical;
+    flex-grow: 1;
+    padding: 5px 0;
+}
+
+.form_buttons {
+    @extend .flex--row;
+    gap: 10px;
+}
+
 // ---------------------------
 // CHECKBOX
 // ---------------------------
 .checkbox-container {
     @extend .flex--row;
+    justify-self: center;
+    align-self: center;
     gap: 5px;
     cursor: pointer;
     -webkit-user-select: none;

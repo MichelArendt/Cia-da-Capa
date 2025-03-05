@@ -19,6 +19,10 @@
 <PageTitle>Rótulos (Gerenciamento)</PageTitle>
 
 <CenterContent MinWidth="200px">
+    <p>
+        Gerencie os rótulos de tamanho dos produtos. Rótulos são usados para identificar tamanhos de produtos, como "P", "M", "G", etc.
+    </p>
+
     <section>
         <div class="one">
             @if (!isUpdating)
@@ -35,39 +39,43 @@
             }
         </div>
 
+        <p><strong>"Rótulo"</strong> abaixo é o que aparece para os clientes na maior parte do site.</p>
+
         <EditForm Model="@productSizeLabelFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-            <div>
-                <label for="title">
-                    Título:
-                </label>
+            <div class="display--row--above-breakpoint">
+                <div class="form-group">
+                    <label for="title">
+                        Título:
+                    </label>
 
-                <InputText name="title"
-                           id="title"
-                           autocomplete="on"
-                           placeholder="Pequeno"
-                           @bind-Value="productSizeLabelFormModel.Title"
-                           disabled="@isSubmitting" />
-                <ValidationMessage For="@(() => productSizeLabelFormModel.Title)" />
+                    <InputText name="title"
+                               id="title"
+                               autocomplete="on"
+                               placeholder="Pequeno"
+                               @bind-Value="productSizeLabelFormModel.Title"
+                               disabled="@isSubmitting" />
+                    <ValidationMessage For="@(() => productSizeLabelFormModel.Title)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="label">
+                        Rótulo:
+                    </label>
+
+                    <InputText name="label"
+                               id="label"
+                               autocomplete="on"
+                               placeholder="P"
+                               @bind-Value="productSizeLabelFormModel.Label"
+                               disabled="@isSubmitting" />
+                    <ValidationMessage For="@(() => productSizeLabelFormModel.Label)" />
+                </div>
             </div>
 
-            <div>
-                <label for="label">
-                    Rótulo:
-                </label>
-
-                <InputText name="label"
-                           id="label"
-                           autocomplete="on"
-                           placeholder="P"
-                           @bind-Value="productSizeLabelFormModel.Label"
-                           disabled="@isSubmitting" />
-                <ValidationMessage For="@(() => productSizeLabelFormModel.Label)" />
-            </div>
-
-            <div>
+            <div class="form_buttons">
                 @if (!isUpdating)
                 {
                     <button type="submit" disabled="@isSubmitting">Adicionar rótulo</button>
@@ -90,12 +98,12 @@
         <div class="one">
             <h1>
                 Rótulos cadastrados
-                <span>Clique e arraste para reordenar a prioridade dos rótulos:</span>
-                <span><strong>quanto menor o número, antes eles aparecem para os clientes</strong>.</span>
+                @* <span>Clique e arraste para reordenar a prioridade dos rótulos:</span>
+                <span><strong>quanto menor o número, antes eles aparecem para os clientes</strong>.</span> *@
             </h1>
         </div>
 
-        @* <span>Prioridade é a ordem como os rótulos aparecem para os clientes: <strong>quanto menor o número, antes eles aparecem</strong>.</span> *@
+        <p>Prioridade é a ordem como os rótulos aparecem para os clientes: <strong>quanto menor o número, antes eles aparecem</strong>.</p>
 
         <div class="table-wrapper">
             <table>

@@ -19,6 +19,8 @@
 <PageTitle>Categorias (Gerenciamento)</PageTitle>
 
 <CenterContent MinWidth="200px">
+    <p>Gerencie as categorias de produtos (Mochilas, pastas, etc).</p>
+
     <section>
         <div class="one">
             <h1>Adicionar categoria</h1>
@@ -32,7 +34,7 @@
             }
             <ValidationSummary />
 
-            <div>
+            <div class="form-group">
                 <label for="title">
                     Título:
                 </label>
@@ -46,27 +48,26 @@
                 <ValidationMessage For="@(() => productCategoryFormModel.Title)" />
             </div>
 
-            <div class="flex--row">
-                <div class="flex--column">
+            <div class="display--row--above-breakpoint">
+                <div class="form-group">
                     <label for="reference">
                         Referência:
                     </label>
 
                     <InputText name="reference"
-                               id="reference"
-                               autocomplete="on"
-                               placeholder="MO"
-                               @bind-Value="productCategoryFormModel.Reference"
-                               disabled="@IsSubmitting" />
+                                id="reference"
+                                autocomplete="on"
+                                placeholder="MO"
+                                @bind-Value="productCategoryFormModel.Reference"
+                                disabled="@IsSubmitting" />
                     <ValidationMessage For="@(() => productCategoryFormModel.Reference)" />
                 </div>
 
-                <div class="flex--row--center flex--grow--1">
-                    <Checkbox 
-                        Id="isActive"
-                        BindValue="@productCategoryFormModel.IsActive" 
-                        Disabled="@IsSubmitting" 
-                        Label="Ativo"/>
+                <div class="form-group">
+                    <Checkbox Id="isActive"
+                                BindValue="@productCategoryFormModel.IsActive"
+                                Disabled="@IsSubmitting"
+                                Label="Ativo" />
 
                     <ValidationMessage For="@(() => productCategoryFormModel.IsActive)" />
                 </div>
