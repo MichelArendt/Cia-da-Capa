@@ -44,7 +44,7 @@
             }
         }
 
-        private bool _isAuthenticated;
+        private bool _isAuthenticated = false;
         /// <summary>
         /// Gets or sets a value indicating whether the user is authenticated.
         /// </summary>

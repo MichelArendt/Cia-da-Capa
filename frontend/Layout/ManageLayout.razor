@@ -9,7 +9,7 @@
 @using frontend.Components.Shared.UI.SVG
 @using frontend.DTOs
 
-@inject AppStateService AppState
+@inject AppStateService AppStateService
 @inject NavigationManager Navigation
 @inject NotificationService NotificationService
 @inject ProductStateService ProductStateService
@@ -23,7 +23,7 @@
 
 <Header>
     <NavResponsiveMenuOptions>
-        @if (AppState.IsMobile)
+        @if (AppStateService.IsMobile)
         {
             <List>
                 <HeaderContent>
@@ -131,7 +131,7 @@
     {
         base.OnInitialized();
 
-        AppState.IsManageRoute = true;
+        AppStateService.IsManageRoute = true;
     }
 
     public void Dispose()
@@ -140,13 +140,13 @@
 
     private async Task UserLogout()
     {
-        if (AppState.IsAuthenticated)
+        if (AppStateService.IsAuthenticated)
         {
-            await logoutApiHandler.ExecuteAsync();
+            await logoutApiHandler.ExecuteAsync(UserService.LogoutFunc());
 
             if (logoutApiHandler.IsSuccess())
             {
-                AppState.IsAuthenticated = false;
+                AppStateService.IsAuthenticated = false;
                 Navigation.NavigateTo("manage/login");
             } else {
                 NotificationService.Display(logoutApiHandler.GetErrorNotificationModel("Erro ao tentar deslogar."));
