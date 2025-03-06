@@ -2,13 +2,15 @@
   "name": "frontend",
   "version": "1.0.0",
   "scripts": {
-    "build-manage": "sass wwwroot/scss/manage/manage.scss:../build/css/manage/manage.css --no-source-map",
+    "build-manage": "sass wwwroot/scss/manage.scss:../build/css/manage.css --no-source-map",
 
     "build-main": "sass wwwroot/scss/main.scss:../build/css/main.css --no-source-map",
 
-    "build": "npm run build-manage && npm run build-main",
+    "build-shared": "sass wwwroot/scss/shared.scss:../build/css/shared.css --no-source-map",
 
-    "watch-scss": "sass --watch wwwroot/scss/manage/manage.scss:../build/css/manage/manage.css wwwroot/scss/main.scss:../build/css/main.css --no-source-map",
+    "build": "npm run build-manage && npm run build-main && npm run build-shared",
+
+    "watch-scss": "sass --watch wwwroot/scss/manage.scss:../build/css/manage.css wwwroot/scss/main.scss:../build/css/main.css wwwroot/scss/shared.scss:../build/css/shared.css --no-source-map",
 
     "browser-sync": "browser-sync start --config bs-config.js",
 

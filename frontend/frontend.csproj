@@ -66,7 +66,7 @@
 	</Target>
 
 	<Target Name="CompileSCSS" BeforeTargets="Build">
-		<Exec Command="sass wwwroot/scss/manage/manage.scss:wwwroot/css/manage/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css --no-source-map" />
+		<Exec Command="sass wwwroot/scss/manage.scss:wwwroot/css/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css wwwroot/scss/shared.scss:wwwroot/css/shared.css --no-source-map" />
 	</Target>
 
 	<ItemGroup>

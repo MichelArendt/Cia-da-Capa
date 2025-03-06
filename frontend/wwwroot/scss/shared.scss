@@ -1,16 +1,16 @@
 // Workaround due to VSCode extensions not supporting
 // correct Intellisense for variables imported though @use
-@forward '_globals';
-@forward '_normalize';
-@forward '_colors';
-@forward '_typography';
-@forward '_animations';
-@forward '_interactive_elements';
-@forward '_forms';
+@forward 'shared/_globals';
+@forward 'shared/_normalize';
+@forward 'shared/_colors';
+@forward 'shared/_typography';
+@forward 'shared/_animations';
+@forward 'shared/_interactive_elements';
+@forward 'shared/_forms';
 
-@use '_globals' as *;
-@use '_colors' as *;
-@use 'header';
+@use 'shared/_globals' as *;
+@use 'shared/_colors' as *;
+@use 'shared/_header';
 
 // * {
 //   // transition: all 0.2s linear;
