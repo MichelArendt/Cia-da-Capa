@@ -1,7 +1,7 @@
 ﻿@using frontend.Components.Shared.Utilities
 
 @inject NavigationManager Navigation
-@inject AppStateService AppState
+@inject AppStateService AppStateService
 @inject ProductStateService ProductStateService
 @inject UserService UserService
 @inject NotificationService NotificationService
@@ -25,11 +25,11 @@ else if (
     errorMessage += ProductStateService.SizeLabelsApiHandler.ErrorMessage ?? "";
 
     @NotificationService.DisplayError(
-                                                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
-                                                errorMessage
-                                            );
+                                                                                                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+                                                                                                errorMessage
+                                                                                            );
 }
-else if (AppState.IsCheckingAuth)
+else if (AppStateService.IsCheckingAuth)
 {
     <ContentLoader DisplayMessage="Verificando sessão..." />
 }
@@ -73,9 +73,9 @@ else
     {
         validateSessionApiHandler = new(UserService.ValidateSessionFunc());
 
-        AppState.IsMobileChanged += StateHasChanged;
-        AppState.IsCheckingAuthChanged += StateHasChanged;
-        AppState.IsAuthenticatedChanged += StateHasChanged;
+        AppStateService.IsMobileChanged += StateHasChanged;
+        AppStateService.IsCheckingAuthChanged += StateHasChanged;
+        AppStateService.IsAuthenticatedChanged += StateHasChanged;
 
         ProductStateService.CategoriesApiHandler.StateHasChanged += StateHasChanged;
         ProductStateService.SizeLabelsApiHandler.StateHasChanged += StateHasChanged;
@@ -85,9 +85,9 @@ else
 
     public void Dispose()
     {
-        AppState.IsMobileChanged -= StateHasChanged;
-        AppState.IsCheckingAuthChanged -= StateHasChanged;
-        AppState.IsAuthenticatedChanged -= StateHasChanged;
+        AppStateService.IsMobileChanged -= StateHasChanged;
+        AppStateService.IsCheckingAuthChanged -= StateHasChanged;
+        AppStateService.IsAuthenticatedChanged -= StateHasChanged;
 
         ProductStateService.CategoriesApiHandler.StateHasChanged -= StateHasChanged;
         ProductStateService.SizeLabelsApiHandler.StateHasChanged -= StateHasChanged;
@@ -106,46 +106,75 @@ else
 
     private async Task HandleNavigationAsync(NavigationContext context)
     {
-        AppState.TriggerNavigationChanged();
+        AppStateService.TriggerNavigationChanged();
 
         // If we are already checking auth, skip
-        if (_authCheckInProgress || AppState.IsCheckingAuth)
+        if (_authCheckInProgress || AppStateService.IsCheckingAuth)
             return;
 
         // This local flag ensures no second re-entry
         _authCheckInProgress = true;
 
-        // If path starts with "manage" and user not going to manage/login,
-        // but we do not know or suspect they are not authenticated:
-        // e.g.: /manage/somepage requires user to be authenticated
         try
         {
-            if (context.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase)
-                && !context.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase)
-                && !AppState.IsAuthenticated)
+            // check if the user is under manage route
+            if (context.Path.StartsWith("manage", StringComparison.OrdinalIgnoreCase))
             {
-                // Show loader
-                AppState.IsCheckingAuth = true;
-                StateHasChanged();
+                // Check if going to login
+                bool goingToLogin = context.Path.Contains("manage/login", StringComparison.OrdinalIgnoreCase);
 
-                await validateSessionApiHandler.ExecuteAsync();
-
-                if (validateSessionApiHandler.IsSuccess())
+                // If we are *not* going to /manage/login, we want to see if the user is authenticated
+                // or if the user might have an expired session.
+                // Show loader and call the server, unless we already know they're authenticated.
+                if (!goingToLogin || !AppStateService.IsAuthenticated)
                 {
-                    AppState.IsAuthenticated = true;
+                    AppStateService.IsCheckingAuth = true;
+                    StateHasChanged();
+
+                    await validateSessionApiHandler.ExecuteAsync();
+                    if (validateSessionApiHandler.IsSuccess())
+                    {
+                        AppStateService.IsAuthenticated = true;
+                    }
+                    else
+                    {
+                        AppStateService.IsAuthenticated = false; // Just to be explicit
+                    }
+                }
+
+                // If user is not authenticated after that, but also not going to login, redirect them
+                if (!AppStateService.IsAuthenticated)
+                {
+                    if (!goingToLogin)
+                    {
+                        // Store the attempted path
+                        AppStateService.AttemptedPath = context.Path;
+                        Navigation.NavigateTo("manage/login");
+                    }
                 }
                 else
                 {
-                    // Store attempted path and redirect to login
-                    AppState.AttemptedPath = context.Path;
-                    Navigation.NavigateTo("manage/login");
+                    // The user is now authenticated:
+                    // If they're heading to /manage/login, we can redirect them away
+                    if (goingToLogin)
+                    {
+                        // If we have an AttemptedPath, go there; otherwise /manage
+                        if (!string.IsNullOrEmpty(AppStateService.AttemptedPath))
+                        {
+                            Navigation.NavigateTo(AppStateService.AttemptedPath);
+                        }
+                        else
+                        {
+                            Navigation.NavigateTo("manage");
+                        }
+                    }
                 }
             }
         }
         finally
         {
             // Done checking
-            AppState.IsCheckingAuth = false;
+            AppStateService.IsCheckingAuth = false;
             _authCheckInProgress = false;
         }
     }
