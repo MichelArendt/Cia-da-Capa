@@ -20,11 +20,11 @@ form input, form textarea, form select {
     padding: 10px;
     border-radius: 20px;
     border: 1px solid colors.$secondary--light;
-    background-color: opacity-set(colors.$secondary--light, 15%);
+    background-color: colors.opacity-set(colors.$secondary--light, 15%);
 }
 
 form input::placeholder {
-    color: opacity-set(colors.$primary--dark, 30%);
+    color: colors.opacity-set(colors.$primary--dark, 30%);
 }
 
 .form__title {
@@ -79,7 +79,7 @@ form input::placeholder {
 
 .checkmark {
     @extend %flex--row--center;
-    background: opacity-set(colors.$secondary--light, 15%);
+    background: colors.opacity-set(colors.$secondary--light, 15%);
     border: 1px solid colors.$secondary--light;
     width: 30px;
     height: 30px;
@@ -91,11 +91,11 @@ form input::placeholder {
     }
 }
 .checkbox-container:hover .checkmark {
-    background: opacity-set(colors.$secondary--light, 50%);
+    background: colors.opacity-set(colors.$secondary--light, 50%);
     border: 1px solid colors.$primary--dark;
 }
 
 .checkbox-container:hover input:checked ~ .checkmark {
-    background: opacity-set(colors.$primary--main, 75%);
+    background: colors.opacity-set(colors.$primary--main, 75%);
     border: 1px solid colors.$primary--dark;
 }

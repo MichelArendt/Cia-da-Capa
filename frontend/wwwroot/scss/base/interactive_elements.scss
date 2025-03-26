@@ -32,7 +32,7 @@ button {
     line-height: 0.6em;
     padding: 20px;
     color: colors.$secondary--light;
-    background: opacity-set(colors.$primary--dark, 90%);
+    background: colors.opacity-set(colors.$primary--dark, 90%);
 }
 
 // -----------------------
@@ -63,7 +63,7 @@ button {
     visibility: hidden;
     z-index: 1000;
     transition: all linear 0.2s;
-    background: opacity-set(colors.$primary--dark, 90%);
+    background: colors.opacity-set(colors.$primary--dark, 90%);
 }
 
 /* For fullscreen mobile */
@@ -202,7 +202,7 @@ button {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    background: opacity-set(colors.$primary--dark, 0.99);
+    background: colors.opacity-set(colors.$primary--dark, 0.99);
 }
 
 /* Directions */
@@ -300,11 +300,11 @@ table td {
 }
 
 table tbody tr {
-    border-bottom: 1px solid opacity-set(colors.$primary--dark, 25%);
+    border-bottom: 1px solid colors.opacity-set(colors.$primary--dark, 25%);
 }
 
 table tbody tr:nth-of-type(even) {
-    background-color: opacity-set(colors.$primary--dark, 10%);
+    background-color: colors.opacity-set(colors.$primary--dark, 10%);
 }
 
 table tbody tr:last-of-type {
@@ -312,7 +312,7 @@ table tbody tr:last-of-type {
 }
 
 table tbody tr.active-row {
-    background-color: opacity-set(colors.$primary--main, 50%);
+    background-color: colors.opacity-set(colors.$primary--main, 50%);
 }
 
 .table__actions {

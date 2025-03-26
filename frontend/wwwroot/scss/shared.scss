@@ -15,6 +15,61 @@
 }
 
 // ---------------------------
+// WEBSITE CONTAINERS
+// ---------------------------
+
+.website__main {
+    height: calc(100% - 80px);
+    @extend %flex--row--center-horizontal;
+    @extend %roboto-light;
+    padding: 0 10px;
+}
+
+.website__main-wrapper {
+    @extend .website--max-width;
+}
+
+@media (min-width: variables.$breakpoint--desktop) {
+    .website__main {
+    }
+}
+
+section {
+    margin: 50px 0;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.section--light {
+    background: colors.opacity-set(colors.$primary--dark, 10%);
+    box-shadow: colors.opacity-set(colors.$primary--dark, 10%) 0px 2px 8px 0px;
+}
+
+.section--full-width {
+    width: 100%;
+}
+
+.website--max-width {
+    width: 100%;
+    max-width: 1920px;
+}
+
+// ---------------------------
+// Content Alignment
+// ---------------------------
+.content-center {
+    display: grid;
+    grid-template-columns: 1fr minmax(var(--min-width, 100px), auto) 1fr;
+    /* min-width filled by component*/
+    width: 100%;
+}
+
+.content-center_spacer {}
+
+.content-center_item {
+}
+
+// ---------------------------
 // GENERAL
 // ---------------------------
 
@@ -37,32 +92,6 @@ p {
     max-width: 100%;
 }
 
-.website__main {
-    height: calc(100% - 80px);
-    @extend %flex--row--center-horizontal;
-    @extend %roboto-light;
-    padding: 0 10px;
-}
-
-.website__main-wrapper {
-    @extend .website--max-width;
-}
-
-@media (min-width: variables.$breakpoint--desktop) {
-    .website__main {
-    }
-}
-section {
-    margin: 50px 0;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.section--light {
-    background: opacity-set(colors.$primary--dark, 10%);
-    box-shadow: opacity-set(colors.$primary--dark, 10%) 0px 2px 8px 0px;
-}
-
 button {
     background: colors.$primary--dark;
     color: colors.$primary--main;
@@ -82,34 +111,6 @@ button:disabled {
     background: colors.$secondary--light;
     color: colors.$primary--dark;
     cursor: not-allowed;
-}
-
-// ---------------------------
-// Content Alignment
-// ---------------------------
-.content-center {
-    display: grid;
-    grid-template-columns: 1fr minmax(var(--min-width, 100px), auto) 1fr;
-    /* min-width filled by component*/
-    width: 100%;
-}
-
-.content-center_spacer {}
-
-.content-center_item {
-}
-
-// ---------------------------
-// WEBSITE CONTAINERS
-// ---------------------------
-
-.section--full-width {
-    width: 100%;
-}
-
-.website--max-width {
-    width: 100%;
-    max-width: 1920px;
 }
 
 // ---------------------------

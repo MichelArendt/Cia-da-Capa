@@ -173,7 +173,7 @@
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px 20px;
-    background: opacity-set(colors.$primary--dark, 5%);
+    background: colors.opacity-set(colors.$primary--dark, 5%);
 }
 
 .gallery-editable__draggable-image {
@@ -235,7 +235,7 @@
 }
 
 .gallery-editable__content-loader {
-    background-color: opacity-set(colors.$primary--dark, 90%);
+    background-color: colors.opacity-set(colors.$primary--dark, 90%);
     position: absolute;
     top: 0;
     left: 0;
