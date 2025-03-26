@@ -366,7 +366,7 @@ table tbody tr.active-row {
 }
 
 .tabbed-navigation_tab-content {
-  background: red;
+  background: white;
   display: none;
   padding: 15px;
 }
@@ -1137,8 +1137,8 @@ section {
 }
 
 .section--light {
-  background: hsla(240, 3%, 18%, 0.1);
-  box-shadow: hsla(240, 3%, 18%, 0.1) 0px 2px 8px 0px;
+  background: hsla(240, 3%, 18%, 0.05);
+  box-shadow: hsla(240, 3%, 18%, 0.05) 0px 2px 8px 0px;
 }
 
 .section--full-width {
