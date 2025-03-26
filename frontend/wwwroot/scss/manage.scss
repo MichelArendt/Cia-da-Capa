@@ -1,20 +1,16 @@
-
-
-// @use 'shared/_globals' as *;
+@use 'abstracts/colors' as colors;
+@use 'abstracts/placeholders' as *;
 
 // ---------------------------
 // FORM
 // ---------------------------
 .login-form {
     // background-color: red;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @extend %flex--column--center;
     height: 100%;
 
     * {
-        @extend .poppins-regular;
+        @extend %poppins-regular;
         // font-family: "Poppins", sans-serif;
         // font-weight: 400;
         // font-style: normal;
