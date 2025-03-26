@@ -1,0 +1,17 @@
+// ---------------------------
+// Font Styles
+// ---------------------------
+@mixin font-style($font-family, $weight: normal, $italic: false) {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: if($italic, italic, normal);
+}
+
+// ---------------------------
+// Animation
+// ---------------------------
+@mixin animation($name, $duration: 1s, $timing: ease-in-out) {
+    animation-name: $name;
+    animation-duration: $duration;
+    animation-timing-function: $timing;
+  }

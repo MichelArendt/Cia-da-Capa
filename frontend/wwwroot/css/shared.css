@@ -1,39 +1,182 @@
 @charset "UTF-8";
-.transition--default, .nav--interactive, .nav--interactive:hover {
-  transition: all 0.2s linear;
+/*!
+ * Extracted from Animate.css - https://animate.style
+ * Original Repository: https://github.com/animate-css/animate.css
+ * License: Hippocratic License 3.0 (HL3) - https://firstdonoharm.dev/version/3/0/license
+ * Copyright (c) 2024 Animate.css Contributors
+ *
+ * This partial code is based on Animate.css. The full library is available
+ * at https://github.com/animate-css/animate.css under the HL3 license.
+ */
+/**
+ * ----------------------------------------
+ * Tada
+ * ----------------------------------------
+ */
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  10%, 20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+  30%, 50%, 70%, 90% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+  40%, 60%, 80% {
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.tada {
+  animation-name: tada;
 }
 
-/* Reset margins, padding, and box-sizing */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
+/**
+ * ----------------------------------------
+ * Flash
+ * ----------------------------------------
+ */
+@keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+.flash {
+  animation-name: flash;
 }
 
-/* Ensure 100% height */
-html, body {
-  height: 100%;
+/**
+ * ----------------------------------------
+ * Bounce
+ * ----------------------------------------
+ */
+@keyframes bounce {
+  from, 20%, 53%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -10px, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -5px, 0) scaleY(1.05);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+.bounce {
+  animation-name: bounce;
+  transform-origin: center bottom;
 }
 
-/* Set a base font */
-/* Consistent anchor tag appearance */
-a {
-  text-decoration: none;
-  color: inherit;
+/**
+ * ----------------------------------------
+ * Rubber Band
+ * ----------------------------------------
+ */
+@keyframes rubberBand {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+.rubberBand {
+  animation-name: rubberBand;
 }
 
-/* Remove list styles */
-ul, ol {
-  list-style: none;
+/**
+ * ----------------------------------------
+ * Heat Beat
+ * ----------------------------------------
+ */
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+.heartBeat {
+  animation-name: heartBeat;
+  animation-duration: calc(var(--animate-duration) * 1.3);
+  animation-timing-function: ease-in-out;
 }
 
-/* Button normalization */
-button {
-  border: none;
-  background: none;
-  cursor: pointer;
+/**
+ * ----------------------------------------
+ * Fade in UP
+ * ----------------------------------------
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.fadeInUp {
+  animation-name: fadeInUp;
+}
+
+/**
+ * ----------------------------------------
+ * Fade out DOWN
+ * ----------------------------------------
+ */
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.fadeOutDown {
+  animation-name: fadeOutDown;
 }
 
 .mouse-disabled {
@@ -469,8 +612,7 @@ h1 em {
   background-color: #dfdfdf;
 }
 
-/* STYLE 6
-   ----------------------------- */
+/* === HEADING STYLE #6 === */
 .six h1 {
   text-align: center;
   color: #222;
@@ -496,7 +638,8 @@ h1 em {
   letter-spacing: none;
 }
 
-.six h1:after, .six h1:before {
+.six h1:after,
+.six h1:before {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -514,8 +657,7 @@ h1 em {
   width: 90px;
 }
 
-/* Style 7
-   ----------------------------- */
+/* === HEADING STYLE #7 === */
 .seven h1 {
   text-align: center;
   font-size: 30px;
@@ -530,7 +672,8 @@ h1 em {
   align-items: center;
 }
 
-.seven h1:after, .seven h1:before {
+.seven h1:after,
+.seven h1:before {
   content: " ";
   display: block;
   border-bottom: 1px solid #c50000;
@@ -539,8 +682,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
-/* Style 8
-   ----------------------------- */
+/* === HEADING STYLE #8 === */
 .eight h1 {
   text-align: center;
   text-transform: uppercase;
@@ -552,15 +694,15 @@ h1 em {
   grid-gap: 22px;
 }
 
-.eight h1:after, .eight h1:before {
+.eight h1:after,
+.eight h1:before {
   content: " ";
   display: block;
   border-bottom: 2px solid #ccc;
   background-color: #f8f8f8;
 }
 
-/* Style 9
-   ----------------------------- */
+/* === HEADING STYLE #9 === */
 .nine h1 {
   text-align: center;
   font-size: 50px;
@@ -588,7 +730,8 @@ h1 em {
   align-items: center;
 }
 
-.nine h1 span:after, .nine h1 span:before {
+.nine h1 span:after,
+.nine h1 span:before {
   content: " ";
   display: block;
   border-bottom: 1px solid #ccc;
@@ -597,6 +740,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
+/* === HEADING STYLE #10 === */
 .ten h1 {
   font-size: 34px;
   font-weight: 500;
@@ -613,6 +757,7 @@ h1 em {
   margin-bottom: 1.25rem;
 }
 
+/* === HEADING STYLE #11 === */
 .eleven h1 {
   font-size: 30px;
   text-align: center;
@@ -654,6 +799,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
+/* === HEADING STYLE #12 === */
 .twelve h1 {
   font-size: 26px;
   font-weight: 700;
@@ -667,7 +813,7 @@ h1 em {
 }
 
 .twelve h1:before {
-  background-color: #c50000;
+  background-color: hsl(37, 59%, 54%);
   content: "";
   display: block;
   height: 3px;
@@ -676,7 +822,7 @@ h1 em {
 }
 
 .twelve h1:after {
-  background-color: #c50000;
+  background-color: hsl(37, 59%, 54%);
   content: "";
   display: block;
   position: absolute;
@@ -687,6 +833,7 @@ h1 em {
   margin-bottom: 0.25em;
 }
 
+/* === HEADING STYLE #13 === */
 .thirteen h1 {
   position: relative;
   font-size: 20px;
@@ -701,7 +848,8 @@ h1 em {
   padding: 5px 11px 3px 11px;
 }
 
-.thirteen h1:before, .thirteen h1:after {
+.thirteen h1:before,
+.thirteen h1:after {
   background-color: #c50000;
   position: absolute;
   content: "";
@@ -724,191 +872,15 @@ h1:after {
   background-color: #c50000;
 }
 
-/*!
- * Extracted from Animate.css - https://animate.style
- * Original Repository: https://github.com/animate-css/animate.css
- * License: Hippocratic License 3.0 (HL3) - https://firstdonoharm.dev/version/3/0/license
- * Copyright (c) 2024 Animate.css Contributors
- *
- * This partial code is based on Animate.css. The full library is available
- * at https://github.com/animate-css/animate.css under the HL3 license.
- */
-/**
- * ----------------------------------------
- * Tada
- * ----------------------------------------
- */
-@keyframes tada {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-  10%, 20% {
-    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
-  }
-  30%, 50%, 70%, 90% {
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
-  }
-  40%, 60%, 80% {
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
-  }
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-.tada {
-  animation-name: tada;
-}
-
-/**
- * ----------------------------------------
- * Flash
- * ----------------------------------------
- */
-@keyframes flash {
-  from, 50%, to {
-    opacity: 1;
-  }
-  25%, 75% {
-    opacity: 0;
-  }
-}
-.flash {
-  animation-name: flash;
-}
-
-/**
- * ----------------------------------------
- * Bounce
- * ----------------------------------------
- */
-@keyframes bounce {
-  from, 20%, 53%, to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, 0, 0);
-  }
-  40%, 43% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -10px, 0) scaleY(1.1);
-  }
-  70% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -5px, 0) scaleY(1.05);
-  }
-  80% {
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, 0, 0) scaleY(0.95);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0) scaleY(1.02);
-  }
-}
-.bounce {
-  animation-name: bounce;
-  transform-origin: center bottom;
-}
-
-/**
- * ----------------------------------------
- * Rubber Band
- * ----------------------------------------
- */
-@keyframes rubberBand {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-  30% {
-    transform: scale3d(1.25, 0.75, 1);
-  }
-  40% {
-    transform: scale3d(0.75, 1.25, 1);
-  }
-  50% {
-    transform: scale3d(1.15, 0.85, 1);
-  }
-  65% {
-    transform: scale3d(0.95, 1.05, 1);
-  }
-  75% {
-    transform: scale3d(1.05, 0.95, 1);
-  }
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-.rubberBand {
-  animation-name: rubberBand;
-}
-
-/**
- * ----------------------------------------
- * Heat Beat
- * ----------------------------------------
- */
-@keyframes heartBeat {
-  0% {
-    transform: scale(1);
-  }
-  14% {
-    transform: scale(1.3);
-  }
-  28% {
-    transform: scale(1);
-  }
-  42% {
-    transform: scale(1.3);
-  }
-  70% {
-    transform: scale(1);
-  }
-}
-.heartBeat {
-  animation-name: heartBeat;
-  animation-duration: calc(var(--animate-duration) * 1.3);
-  animation-timing-function: ease-in-out;
-}
-
-/**
- * ----------------------------------------
- * Fade in UP
- * ----------------------------------------
- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-.fadeInUp {
-  animation-name: fadeInUp;
-}
-
-/**
- * ----------------------------------------
- * Fade out DOWN
- * ----------------------------------------
- */
-@keyframes fadeOutDown {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-  }
-}
-.fadeOutDown {
-  animation-name: fadeOutDown;
+.transition--default, .nav--interactive, .nav--interactive:hover {
+  transition: all 0.2s linear;
 }
 
 .section--full-width {
   width: 100%;
 }
 
-.website--max-width, .website__header-wrapper, .website__main-wrapper {
+.website--max-width, .website__main-wrapper, .website__header-wrapper {
   width: 100%;
   max-width: 1920px;
 }
@@ -920,7 +892,7 @@ h1:after {
   width: 100%;
 }
 
-.flex, .website__header, .website__header-wrapper, .website__nav, .header__logo, .nav__button, .website__main {
+.flex, .website__main, .website__header, .website__header-wrapper, .website__nav, .header__logo, .nav__button {
   display: flex;
   /* Row (Horizontal) direction */
   /* Column (Vertical) direction */
@@ -932,12 +904,12 @@ h1:after {
   /* Vertical centering in row */
   /* Full center in row */
 }
-.flex--row--center-horizontal, .website__header, .website__main {
+.flex--row--center-horizontal, .website__main, .website__header {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
-.flex--row--center-vertical, .header__logo, .nav__button, .notification {
+.flex--row--center-vertical, .notification, .header__logo, .nav__button {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -999,6 +971,182 @@ h1:after {
   border: 0;
 }
 
+form {
+  font-size: 20px;
+}
+form > div {
+  padding: 10px 0;
+}
+
+form input, form textarea, form select {
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid hsl(0, 0%, 73%);
+  background-color: hsla(0, 0%, 73%, 0.15);
+}
+
+form input::placeholder {
+  color: hsla(240, 3%, 18%, 0.3);
+}
+
+.form__title {
+  color: hsl(37, 59%, 54%);
+  text-align: center;
+  padding: 20px;
+}
+
+.form-group {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 5px 0;
+}
+
+.form_buttons {
+  gap: 20px;
+  padding: 0;
+}
+
+.checkbox-container {
+  justify-self: center;
+  align-self: center;
+  gap: 5px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-container input {
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background: hsl(37, 59%, 54%);
+}
+.checkbox-container input:checked ~ .checkmark svg {
+  opacity: 1;
+}
+
+.checkbox-container label {
+  pointer-events: none;
+}
+
+.checkmark {
+  background: hsla(0, 0%, 73%, 0.15);
+  border: 1px solid hsl(0, 0%, 73%);
+  width: 30px;
+  height: 30px;
+  transition: all linear 0.2s;
+}
+.checkmark svg {
+  fill: white;
+  opacity: 0;
+}
+
+.checkbox-container:hover .checkmark {
+  background: hsla(0, 0%, 73%, 0.5);
+  border: 1px solid hsl(240, 3%, 18%);
+}
+
+.checkbox-container:hover input:checked ~ .checkmark {
+  background: hsla(37, 59%, 54%, 0.75);
+  border: 1px solid hsl(240, 3%, 18%);
+}
+
+/* Reset margins, padding, and box-sizing */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+/* Ensure 100% height */
+html, body {
+  height: 100%;
+}
+
+/* Set a base font */
+/* Consistent anchor tag appearance */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Button normalization */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.website__header {
+  background-color: hsl(240, 3%, 18%);
+  color: hsl(0, 0%, 73%);
+  height: 80px;
+  padding: 0 10px;
+}
+.website__header > * {
+  height: 100%;
+}
+
+.website__nav {
+  flex-grow: 1;
+}
+
+.header__logo {
+  height: 100%;
+  flex-grow: 1;
+}
+.header__logo > img {
+  height: 30px;
+}
+
+@media (min-width: 800px) {
+  .header__logo {
+    order: -1;
+  }
+}
+.nav__button {
+  height: 100%;
+  padding: 10px;
+  font-size: 20px;
+  width: auto;
+}
+
+.nav--interactive {
+  color: hsl(0, 0%, 73%);
+  background: hsl(240, 3%, 18%);
+}
+.nav--interactive li {
+  background: hsl(240, 3%, 18%);
+}
+.nav--interactive svg {
+  fill: hsl(0, 0%, 73%);
+}
+
+.nav--interactive:hover {
+  color: hsl(37, 59%, 54%);
+  background: hsl(240, 3%, 28%);
+}
+.nav--interactive:hover svg {
+  fill: hsl(37, 59%, 54%);
+}
+
+@media (min-width: 800px) {
+  .nav__button {
+    justify-content: center;
+    align-items: center;
+  }
+}
 .fullscreen-interactive {
   width: 100vw;
   height: 100vh;
@@ -1262,148 +1410,23 @@ table tbody tr.active-row {
   fill: hsl(24, 70%, 50%);
 }
 
-form {
-  font-size: 20px;
-}
-form > div {
-  padding: 10px 0;
+.tabbed-navigation_tabs {
+  display: flex;
 }
 
-form input, form textarea, form select {
-  font-size: 20px;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid hsl(0, 0%, 73%);
-  background-color: hsla(0, 0%, 73%, 0.15);
+.tabbed-navigation_tab-button {
+  width: unset;
 }
 
-form input::placeholder {
-  color: hsla(240, 3%, 18%, 0.3);
-}
-
-.form__title {
-  color: hsl(37, 59%, 54%);
-  text-align: center;
-  padding: 20px;
-}
-
-.form-group {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 5px 0;
-}
-
-.form_buttons {
-  gap: 20px;
-}
-
-.checkbox-container {
-  justify-self: center;
-  align-self: center;
-  gap: 5px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.checkbox-container input {
+.tabbed-navigation_tab-content {
+  background: hsl(0, 0%, 73%);
   display: none;
 }
 
-.checkbox-container input:checked ~ .checkmark {
-  background: hsl(37, 59%, 54%);
-}
-.checkbox-container input:checked ~ .checkmark svg {
-  opacity: 1;
+.tabbed-navigation_tab-content--visible {
+  display: block;
 }
 
-.checkbox-container label {
-  pointer-events: none;
-}
-
-.checkmark {
-  background: hsla(0, 0%, 73%, 0.15);
-  border: 1px solid hsl(0, 0%, 73%);
-  width: 30px;
-  height: 30px;
-  transition: all linear 0.2s;
-}
-.checkmark svg {
-  fill: white;
-  opacity: 0;
-}
-
-.checkbox-container:hover .checkmark {
-  background: hsla(0, 0%, 73%, 0.5);
-  border: 1px solid hsl(240, 3%, 18%);
-}
-
-.checkbox-container:hover input:checked ~ .checkmark {
-  background: hsla(37, 59%, 54%, 0.75);
-  border: 1px solid hsl(240, 3%, 18%);
-}
-
-.website__header {
-  background-color: hsl(240, 3%, 18%);
-  color: hsl(0, 0%, 73%);
-  height: 80px;
-  padding: 0 10px;
-}
-.website__header > * {
-  height: 100%;
-}
-
-.website__nav {
-  flex-grow: 1;
-}
-
-.header__logo {
-  height: 100%;
-  flex-grow: 1;
-}
-.header__logo > img {
-  height: 30px;
-}
-
-@media (min-width: 800px) {
-  .header__logo {
-    order: -1;
-  }
-}
-.nav__button {
-  height: 100%;
-  padding: 10px;
-  font-size: 20px;
-  width: auto;
-}
-
-.nav--interactive {
-  color: hsl(0, 0%, 73%);
-  background: hsl(240, 3%, 18%);
-}
-.nav--interactive li {
-  background: hsl(240, 3%, 18%);
-}
-.nav--interactive svg {
-  fill: hsl(0, 0%, 73%);
-}
-
-.nav--interactive:hover {
-  color: hsl(37, 59%, 54%);
-  background: hsl(240, 3%, 28%);
-}
-.nav--interactive:hover svg {
-  fill: hsl(37, 59%, 54%);
-}
-
-@media (min-width: 800px) {
-  .nav__button {
-    justify-content: center;
-    align-items: center;
-  }
-}
 :root {
   --breakpoint-desktop: $breakpoint--desktop;
 }
@@ -1434,6 +1457,7 @@ p {
 
 section {
   margin: 50px 0;
+  padding: 5px;
 }
 
 button {
@@ -1713,17 +1737,4 @@ button:disabled {
 }
 .notification--error > :first-child {
   animation: heartBeat 1s infinite both;
-}
-
-.tabbed-navigation_tabs {
-  display: flex;
-}
-
-.tabbed-navigation_tab-content {
-  background: hsl(0, 0%, 73%);
-  display: none;
-}
-
-.tabbed-navigation_tab-content--visible {
-  display: block;
 }

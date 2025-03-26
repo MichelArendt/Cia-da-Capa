@@ -1,103 +1,4 @@
 @charset "UTF-8";
-.transition--default {
-  transition: all 0.2s linear;
-}
-
-.section--full-width {
-  width: 100%;
-}
-
-.website--max-width {
-  width: 100%;
-  max-width: 1920px;
-}
-
-.content-center {
-  display: grid;
-  grid-template-columns: 1fr minmax(var(--min-width, 100px), auto) 1fr;
-  /* min-width filled by component*/
-  width: 100%;
-}
-
-.flex, .login-form > label {
-  display: flex;
-  /* Row (Horizontal) direction */
-  /* Column (Vertical) direction */
-}
-.flex--row {
-  display: flex;
-  flex-direction: row;
-  /* Horizontal centering in row */
-  /* Vertical centering in row */
-  /* Full center in row */
-}
-.flex--row--center-horizontal, .gallery-editable__images {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-.flex--row--center-vertical {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.flex--row--center, .gallery-editable__draggable-image {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-.flex--column, .login-form > label {
-  display: flex;
-  flex-direction: column;
-  /* Horizontal centering in column */
-  /* Vertical centering in column */
-  /* Full center in column */
-}
-.flex--column--center-horizontal, .gallery-editable__header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.flex--column--center-vertical {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.flex--column--center, .gallery-editable__reorder-save-overlay {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex--grow--1 {
-  flex-grow: 1;
-}
-
-@media (min-width: 800px) {
-  .display--none--desktop {
-    display: none;
-  }
-}
-@media (max-width: 800px) {
-  .display--none--mobile {
-    display: none;
-  }
-}
-/* Screen reader only */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 .mouse-disabled {
   cursor: not-allowed;
 }
@@ -531,8 +432,7 @@ h1 em {
   background-color: #dfdfdf;
 }
 
-/* STYLE 6
-   ----------------------------- */
+/* === HEADING STYLE #6 === */
 .six h1 {
   text-align: center;
   color: #222;
@@ -558,7 +458,8 @@ h1 em {
   letter-spacing: none;
 }
 
-.six h1:after, .six h1:before {
+.six h1:after,
+.six h1:before {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -576,8 +477,7 @@ h1 em {
   width: 90px;
 }
 
-/* Style 7
-   ----------------------------- */
+/* === HEADING STYLE #7 === */
 .seven h1 {
   text-align: center;
   font-size: 30px;
@@ -592,7 +492,8 @@ h1 em {
   align-items: center;
 }
 
-.seven h1:after, .seven h1:before {
+.seven h1:after,
+.seven h1:before {
   content: " ";
   display: block;
   border-bottom: 1px solid #c50000;
@@ -601,8 +502,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
-/* Style 8
-   ----------------------------- */
+/* === HEADING STYLE #8 === */
 .eight h1 {
   text-align: center;
   text-transform: uppercase;
@@ -614,15 +514,15 @@ h1 em {
   grid-gap: 22px;
 }
 
-.eight h1:after, .eight h1:before {
+.eight h1:after,
+.eight h1:before {
   content: " ";
   display: block;
   border-bottom: 2px solid #ccc;
   background-color: #f8f8f8;
 }
 
-/* Style 9
-   ----------------------------- */
+/* === HEADING STYLE #9 === */
 .nine h1 {
   text-align: center;
   font-size: 50px;
@@ -650,7 +550,8 @@ h1 em {
   align-items: center;
 }
 
-.nine h1 span:after, .nine h1 span:before {
+.nine h1 span:after,
+.nine h1 span:before {
   content: " ";
   display: block;
   border-bottom: 1px solid #ccc;
@@ -659,6 +560,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
+/* === HEADING STYLE #10 === */
 .ten h1 {
   font-size: 34px;
   font-weight: 500;
@@ -675,6 +577,7 @@ h1 em {
   margin-bottom: 1.25rem;
 }
 
+/* === HEADING STYLE #11 === */
 .eleven h1 {
   font-size: 30px;
   text-align: center;
@@ -716,6 +619,7 @@ h1 em {
   background-color: #f8f8f8;
 }
 
+/* === HEADING STYLE #12 === */
 .twelve h1 {
   font-size: 26px;
   font-weight: 700;
@@ -729,7 +633,7 @@ h1 em {
 }
 
 .twelve h1:before {
-  background-color: #c50000;
+  background-color: hsl(37, 59%, 54%);
   content: "";
   display: block;
   height: 3px;
@@ -738,7 +642,7 @@ h1 em {
 }
 
 .twelve h1:after {
-  background-color: #c50000;
+  background-color: hsl(37, 59%, 54%);
   content: "";
   display: block;
   position: absolute;
@@ -749,6 +653,7 @@ h1 em {
   margin-bottom: 0.25em;
 }
 
+/* === HEADING STYLE #13 === */
 .thirteen h1 {
   position: relative;
   font-size: 20px;
@@ -763,7 +668,8 @@ h1 em {
   padding: 5px 11px 3px 11px;
 }
 
-.thirteen h1:before, .thirteen h1:after {
+.thirteen h1:before,
+.thirteen h1:after {
   background-color: #c50000;
   position: absolute;
   content: "";
@@ -784,6 +690,105 @@ h1 em {
 h1:before,
 h1:after {
   background-color: #c50000;
+}
+
+.transition--default {
+  transition: all 0.2s linear;
+}
+
+.section--full-width {
+  width: 100%;
+}
+
+.website--max-width {
+  width: 100%;
+  max-width: 1920px;
+}
+
+.content-center {
+  display: grid;
+  grid-template-columns: 1fr minmax(var(--min-width, 100px), auto) 1fr;
+  /* min-width filled by component*/
+  width: 100%;
+}
+
+.flex, .login-form > label {
+  display: flex;
+  /* Row (Horizontal) direction */
+  /* Column (Vertical) direction */
+}
+.flex--row {
+  display: flex;
+  flex-direction: row;
+  /* Horizontal centering in row */
+  /* Vertical centering in row */
+  /* Full center in row */
+}
+.flex--row--center-horizontal, .gallery-editable__images {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.flex--row--center-vertical {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.flex--row--center, .gallery-editable__draggable-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.flex--column, .login-form > label {
+  display: flex;
+  flex-direction: column;
+  /* Horizontal centering in column */
+  /* Vertical centering in column */
+  /* Full center in column */
+}
+.flex--column--center-horizontal, .gallery-editable__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.flex--column--center-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.flex--column--center, .gallery-editable__reorder-save-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex--grow--1 {
+  flex-grow: 1;
+}
+
+@media (min-width: 800px) {
+  .display--none--desktop {
+    display: none;
+  }
+}
+@media (max-width: 800px) {
+  .display--none--mobile {
+    display: none;
+  }
+}
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .login-form {

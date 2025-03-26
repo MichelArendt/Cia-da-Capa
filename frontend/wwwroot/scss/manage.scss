@@ -1,7 +1,4 @@
-@use 'shared/_globals' as *;
-@use 'shared/_utils' as *;
-@use 'shared/_colors' as *;
-@use 'shared/_typography' as *;
+
 
 // @use 'shared/_globals' as *;
 
@@ -44,12 +41,12 @@
 .login-form input {
     font-size: 20px;
     padding: 15px;
-    border: 1px solid $color-primary--main;
+    border: 1px solid colors.$primary--main;
     border-top: none;
     border-left: none;
     border-right: none;
     background: #fbfbfb;
-    color: $color-primary--main;
+    color: colors.$primary--main;
     outline: none;
 }
 
@@ -58,20 +55,19 @@
 }
 
 .login-form button[type="submit"] {
-    background: $color-primary--main;
+    background: colors.$primary--main;
     padding: 20px;
     transition: all linear 0.2s;
 }
 .login-form button[type="submit"]:hover {
-    background: $color-secondary--main;
+    background: colors.$secondary--main;
 }
 .login-form button[type="submit"]:disabled {
-    background: $color-secondary--light;
+    background: colors.$secondary--light;
 }
 
 .login-form > label {
-    @extend .flex;
-    @extend .flex--column;
+    @extend %flex--column;
     padding: 20px;
 }
 
@@ -82,10 +78,10 @@
 }
 
 .gallery-editable__header {
-    @extend .flex--column--center-horizontal;
+    @extend %flex--column--center-horizontal;
     position: relative;
-    background: $color-primary--dark;
-    color: $color-secondary--light;
+    background: colors.$primary--dark;
+    color: colors.$secondary--light;
     padding: 40px;
 }
 
@@ -104,12 +100,12 @@
     opacity: 0;
     z-index: 2;
     padding: 30px;
-    border-top: 1px solid $color-secondary--light;
-    border-bottom: 1px solid $color-secondary--light;
+    border-top: 1px solid colors.$secondary--light;
+    border-bottom: 1px solid colors.$secondary--light;
 }
 
 .gallery-editable__reorder-save-overlay {
-    @extend .flex--column--center;
+    @extend %flex--column--center;
     position: absolute;
     top: 0;
     left: 0;
@@ -118,10 +114,10 @@
     opacity: 0;
     display: none;
     z-index: 100;
-    border-top: 1px solid $color-secondary--light;
-    border-bottom: 1px solid $color-secondary--light;
-    background: $color-primary--main;
-    color: $color-primary--dark;
+    border-top: 1px solid colors.$secondary--light;
+    border-bottom: 1px solid colors.$secondary--light;
+    background: colors.$primary--main;
+    color: colors.$primary--dark;
     transition: all linear 0.2s;
 
     > button {
@@ -132,7 +128,7 @@
 }
 
 .gallery-editable__reorder-save-overlay:hover {
-    background: $color-secondary--main;
+    background: colors.$secondary--main;
 
     > button {
         color: white;
@@ -158,12 +154,12 @@
   align-items: center;
   gap: 20px;
   font-size: 20px;
-  background: $color-primary--dark;
-  color: $color-secondary--light;
+  background: colors.$primary--dark;
+  color: colors.$secondary--light;
   transition: all 0.1s linear;
 
   > svg {
-    fill: $color-secondary--light;
+    fill: colors.$secondary--light;
   }
 
   &--show {
@@ -173,15 +169,15 @@
 }
 
 .gallery-editable__images {
-    @extend .flex--row--center-horizontal;
+    @extend %flex--row--center-horizontal;
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px 20px;
-    background: opacity-set($color-primary--dark, 5%);
+    background: opacity-set(colors.$primary--dark, 5%);
 }
 
 .gallery-editable__draggable-image {
-    @extend .flex--row--center;
+    @extend %flex--row--center;
     position: relative;
     background: white;
     border: 1px solid #ddd;
@@ -198,8 +194,8 @@
 }
 
 .gallery-editable__draggable-image:hover {
-    border: 1px solid $color-primary--main;
-    box-shadow: 1px 1px 10px $color-primary--main; /* Soft shadow */
+    border: 1px solid colors.$primary--main;
+    box-shadow: 1px 1px 10px colors.$primary--main; /* Soft shadow */
 }
 
 .gallery-editable__image-priority {
@@ -207,8 +203,8 @@
     top: 0;
     left: 0;
     padding: 10px;
-    background-color: $color-primary--dark;
-    color: $color-secondary--light;
+    background-color: colors.$primary--dark;
+    color: colors.$secondary--light;
 }
 
 
@@ -217,19 +213,19 @@
     top: 0;
     right: 0;
     padding: 10px;
-    background-color: $color-primary--dark;
-    color: $color-secondary--light;
+    background-color: colors.$primary--dark;
+    color: colors.$secondary--light;
 }
 
 .gallery-editable__delete-button:hover {
-    background-color: $color-primary--main;
-    color: $color-primary--dark;
+    background-color: colors.$primary--main;
+    color: colors.$primary--dark;
     transition: all linear 0.2s;
 }
 
 .gallery-editable__delete-button:disabled {
-    background-color: $color-secondary--light;
-    color: $color-primary--dark;
+    background-color: colors.$secondary--light;
+    color: colors.$primary--dark;
     cursor: not-allowed;
 }
 
@@ -239,7 +235,7 @@
 }
 
 .gallery-editable__content-loader {
-    background-color: opacity-set($color-primary--dark, 90%);
+    background-color: opacity-set(colors.$primary--dark, 90%);
     position: absolute;
     top: 0;
     left: 0;
@@ -247,14 +243,10 @@
     z-index: 100;
     display: none;
     transition: all linear 0.1s;
-    color: $color-primary--main;
+    color: colors.$primary--main;
 
     &--visible {
         display: flex;
         opacity: 1;
     }
 }
-
-// ---------------------------
-// Product Edit - SIZES
-// ---------------------------

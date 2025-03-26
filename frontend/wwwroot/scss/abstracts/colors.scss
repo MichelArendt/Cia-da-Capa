@@ -1,0 +1,58 @@
+@use "sass:color";
+
+// ------------------------------
+// Functions
+// ------------------------------
+
+// Add light to a base color
+@function lightness-add($base-color, $percentage_to_add) {
+    @return color.adjust($base-color, $lightness: $percentage_to_add);
+}
+
+// Set color with specific opacity
+@function opacity-set($color, $alpha) {
+    $hue: color.channel($color, "hue", $space: hsl);
+    $saturation: color.channel($color, "saturation", $space: hsl);
+    $lightness: color.channel($color, "lightness", $space: hsl);
+    @return hsla($hue, $saturation, $lightness, $alpha);
+}
+
+// ------------------------------
+// General
+// ------------------------------
+
+// Primary Colors
+$primary--main: hsla(37, 59%, 54%, 1.0);
+$primary--dark: hsla(240, 3%, 18%, 1.0);
+
+// Secondary Colors
+$secondary--main: hsla(24, 70%, 50%, 1.0);
+$secondary--light: hsla(0, 0%, 73%, 1.0);
+
+// ------------------------------
+// Feedback
+// ------------------------------
+
+// Success
+$feedback--success: hsla(120, 50%, 40%, 1.0);
+$feedback--success-bg: hsla(120, 50%, 92%, 1.0);
+
+// Info
+$feedback--info: hsla(208, 90%, 50%, 1.0);
+$feedback--info-bg: hsla(208, 90%, 93%, 1.0);
+
+// Validation Error
+$feedback--highlight: hsla(45, 90%, 40%, 1.0);
+$feedback--highlight-bg: hsla(45, 90%, 92%, 1.0);
+
+// Validation Error
+$feedback--warning: hsla(39, 100%, 45%, 1.0);
+$feedback--warning-bg: hsla(39, 100%, 93%, 1.0);
+
+// Error
+$feedback--error: hsla(0, 68%, 46%, 1.0);
+$feedback--error-bg: hsla(0, 68%, 93%, 1.0);
+
+// Neutral
+$neutral--main: hsla(0, 0%, 20%, 1.0);
+$neutral--bg: hsla(0, 0%, 96%, 1.0);

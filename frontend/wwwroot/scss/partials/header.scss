@@ -1,0 +1,86 @@
+@use '../abstracts/colors' as colors;
+@use '../abstracts/placeholders' as *;
+@use '../abstracts/variables' as variables;
+
+// ---------------------------
+// Website header and nav
+// ---------------------------
+.website__header {
+    @extend %flex--row--center-horizontal;
+    background-color: colors.$primary--dark;
+    color: colors.$secondary--light;
+    height: 80px;
+    padding: 0 10px;
+
+    >* {
+        height: 100%;
+    }
+}
+
+.website__header-wrapper {
+    @extend %website--max-width;
+    @extend %flex;
+}
+
+.website__nav {
+    flex-grow: 1;
+    @extend %flex;
+}
+
+.website__menu {}
+
+.header__logo {
+    @extend %flex--row--center-vertical;
+    height: 100%;
+    flex-grow: 1;
+
+    >img {
+        height: 30px;
+    }
+}
+
+@media (min-width: variables.$breakpoint--desktop) {
+    .header__logo {
+        order: -1; // Move logo to the start of the header
+    }
+}
+
+.nav__button {
+    @extend %flex--row--center-vertical;
+    @extend %poppins-light;
+    height: 100%;
+    padding: 10px;
+    font-size: 20px;
+    width: auto; // removes width 100% from button selector
+}
+
+.nav--interactive {
+    @extend %transition--default;
+    color: colors.$secondary--light;
+    background: colors.$primary--dark;
+
+    li {
+        background: colors.$primary--dark;
+    }
+
+    svg {
+        fill: colors.$secondary--light;
+    }
+}
+
+.nav--interactive:hover {
+    @extend %transition--default;
+    color: colors.$primary--main;
+    background: lightness-add(colors.$primary--dark, 10%);
+
+    svg {
+        fill: colors.$primary--main;
+    }
+}
+
+@media (min-width: variables.$breakpoint--desktop) {
+    .nav__button {
+        justify-content: center;
+        align-items: center;
+    }
+}

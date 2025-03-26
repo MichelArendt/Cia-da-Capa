@@ -1,59 +1,56 @@
-@forward '_colors';
-@forward '_typography';
-@forward '_utils';
-
-@use '_utils' as *;
-@use '_colors' as *;
+@use '../abstracts/colors' as colors;
+@use '../abstracts/placeholders' as *;
 
 // ---------------------------
 // GENERAL
 // ---------------------------
 form {
-    @extend .poppins-regular;
+    @extend %poppins-regular;
     font-size: 20px;
 
     >div {
-        @extend .flex--column;
+        @extend %flex--column;
         padding: 10px 0;
     }
 }
 
 form input, form textarea, form select {
-    @extend .roboto-regular;
+    @extend %roboto-regular;
     font-size: 20px;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid $color-secondary--light;
-    background-color: opacity-set($color-secondary--light, 15%);
+    border: 1px solid colors.$secondary--light;
+    background-color: opacity-set(colors.$secondary--light, 15%);
 }
 
 form input::placeholder {
-    color: opacity-set($color-primary--dark, 30%);
+    color: opacity-set(colors.$primary--dark, 30%);
 }
 
 .form__title {
-    color: $color-primary--main;
+    color: colors.$primary--main;
     text-align: center;
     padding: 20px;
 }
 
 .form-group {
-    @extend .flex--column--center-vertical;
+    @extend %flex--column--center-vertical;
     flex: 1 1 0;
     min-width: 0;
     padding: 5px 0;
 }
 
 .form_buttons {
-    @extend .flex--row;
+    @extend %flex--row;
     gap: 20px;
+    padding: 0;
 }
 
 // ---------------------------
 // CHECKBOX
 // ---------------------------
 .checkbox-container {
-    @extend .flex--row;
+    @extend %flex--row;
     justify-self: center;
     align-self: center;
     gap: 5px;
@@ -69,7 +66,7 @@ form input::placeholder {
 }
 
 .checkbox-container input:checked ~ .checkmark {
-    background: $color-primary--main;
+    background: colors.$primary--main;
 
     svg {
         opacity: 1;
@@ -81,9 +78,9 @@ form input::placeholder {
 }
 
 .checkmark {
-    @extend .flex--row--center;
-    background: opacity-set($color-secondary--light, 15%);
-    border: 1px solid $color-secondary--light;
+    @extend %flex--row--center;
+    background: opacity-set(colors.$secondary--light, 15%);
+    border: 1px solid colors.$secondary--light;
     width: 30px;
     height: 30px;
     transition: all linear 0.2s;
@@ -94,11 +91,11 @@ form input::placeholder {
     }
 }
 .checkbox-container:hover .checkmark {
-    background: opacity-set($color-secondary--light, 50%);
-    border: 1px solid $color-primary--dark;
+    background: opacity-set(colors.$secondary--light, 50%);
+    border: 1px solid colors.$primary--dark;
 }
 
 .checkbox-container:hover input:checked ~ .checkmark {
-    background: opacity-set($color-primary--main, 75%);
-    border: 1px solid $color-primary--dark;
+    background: opacity-set(colors.$primary--main, 75%);
+    border: 1px solid colors.$primary--dark;
 }

@@ -1,15 +1,6 @@
-// _smart-content.scss
-
-// Import necessary variables and utilities
-@forward '_globals';
-@forward '_utils';
-@forward '_normalize';
-@forward '_colors';
-@forward '_typography';
-
-@use '_globals' as *;
-@use '_utils' as *;
-@use '_colors' as *;
+@use '../abstracts/colors' as colors;
+@use '../abstracts/placeholders' as *;
+@use '../abstracts/variables' as variables;
 
 // Define CSS variable for breakpoint
 .fullscreen-interactive {
@@ -28,7 +19,7 @@
 // General
 // -----------------------
 button {
-    @extend .roboto-light;
+    @extend %roboto-light;
 }
 
 .overlay__button {}
@@ -40,8 +31,8 @@ button {
     font-size: 50px;
     line-height: 0.6em;
     padding: 20px;
-    color: $color-secondary--light;
-    background: opacity-set($color-primary--dark, 90%);
+    color: colors.$secondary--light;
+    background: opacity-set(colors.$primary--dark, 90%);
 }
 
 // -----------------------
@@ -72,7 +63,7 @@ button {
     visibility: hidden;
     z-index: 1000;
     transition: all linear 0.2s;
-    background: opacity-set($color-primary--dark, 90%);
+    background: opacity-set(colors.$primary--dark, 90%);
 }
 
 /* For fullscreen mobile */
@@ -90,7 +81,7 @@ button {
 }
 
 /* Desktop */
-@media (min-width: $breakpoint--desktop) {
+@media (min-width: variables.$breakpoint--desktop) {
     .svg--rotate {
         transition: all linear 0.2s;
     }
@@ -172,7 +163,7 @@ button {
 }
 
 /* Desktop */
-@media (min-width: $breakpoint--desktop) {
+@media (min-width: variables.$breakpoint--desktop) {
     .select__content {
         position: absolute;
         width: unset;
@@ -211,7 +202,7 @@ button {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    background: opacity-set($color-primary--dark, 0.99);
+    background: opacity-set(colors.$primary--dark, 0.99);
 }
 
 /* Directions */
@@ -294,7 +285,7 @@ table {
 }
 
 table thead tr {
-    background-color: $color-primary--dark;
+    background-color: colors.$primary--dark;
     color: #ffffff;
     text-align: left;
 }
@@ -309,19 +300,19 @@ table td {
 }
 
 table tbody tr {
-    border-bottom: 1px solid opacity-set($color-primary--dark, 25%);
+    border-bottom: 1px solid opacity-set(colors.$primary--dark, 25%);
 }
 
 table tbody tr:nth-of-type(even) {
-    background-color: opacity-set($color-primary--dark, 10%);
+    background-color: opacity-set(colors.$primary--dark, 10%);
 }
 
 table tbody tr:last-of-type {
-    border-bottom: 2px solid $color-primary--dark;
+    border-bottom: 2px solid colors.$primary--dark;
 }
 
 table tbody tr.active-row {
-    background-color: opacity-set($color-primary--main, 50%);
+    background-color: opacity-set(colors.$primary--main, 50%);
 }
 
 .table__actions {
@@ -329,5 +320,27 @@ table tbody tr.active-row {
 }
 
 .table__actions:hover {
-    fill: $color-secondary--main;
+    fill: colors.$secondary--main;
+}
+
+// ---------------------------
+// Tabbed navigation
+// ---------------------------
+.tabbed-navigation_tabs {
+    display: flex;
+}
+
+.tabbed-navigation_tab-button {
+    width: unset; // remove 100% width from button
+}
+
+.tabbed-navigation_tab-content {
+    // background: colors.$secondary--light;
+    background: red;
+    display: none;
+    padding: 15px;
+}
+
+.tabbed-navigation_tab-content--visible {
+    display: block;
 }

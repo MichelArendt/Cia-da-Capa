@@ -1,0 +1,135 @@
+@use 'mixins' as mixins;
+@use 'variables' as variables;
+
+// ---------------------------
+// Website containers
+// ---------------------------
+%section--full-width {
+    width: 100%;
+}
+
+%website--max-width {
+    max-width: 1920px;
+}
+
+// ---------------------------
+// Flex Utility Placeholders
+// ---------------------------
+
+%flex {
+    display: flex;
+}
+
+// Row (Horizontal)
+%flex--row {
+    @extend %flex;
+    flex-direction: row;
+}
+
+%flex--row--center-horizontal {
+    @extend %flex--row;
+    justify-content: center;
+}
+
+%flex--row--center-vertical {
+    @extend %flex--row;
+    align-items: center;
+}
+
+%flex--row--center {
+    @extend %flex--row;
+    justify-content: center;
+    align-items: center;
+}
+
+// Column (Vertical)
+%flex--column {
+    @extend %flex;
+    flex-direction: column;
+}
+
+%flex--column--center-horizontal {
+    @extend %flex--column;
+    align-items: center;
+}
+
+%flex--column--center-vertical {
+    @extend %flex--column;
+    justify-content: center;
+}
+
+%flex--column--center {
+    @extend %flex--column;
+    justify-content: center;
+    align-items: center;
+}
+
+// Grow
+%flex--grow--1 {
+    flex-grow: 1;
+}
+
+// ---------------------------
+// Reusable Font Classes (Placeholders)
+// ---------------------------
+%roboto-light {
+    @include mixins.font-style(variables.$font-roboto, 300);
+}
+
+%roboto-regular {
+    @include mixins.font-style(variables.$font-roboto, 400);
+}
+
+%roboto-bold {
+    @include mixins.font-style(variables.$font-roboto, 700);
+}
+
+%poppins-light {
+    @include mixins.font-style(variables.$font-poppins, 300);
+}
+
+%poppins-regular {
+    @include mixins.font-style(variables.$font-poppins, 400);
+}
+
+%poppins-bold {
+    @include mixins.font-style(variables.$font-poppins, 700);
+}
+
+// ---------------------------
+// Animation
+// ---------------------------
+%bounce {
+    animation-name: bounce;
+    transform-origin: center bottom;
+}
+
+%fadeOutDown {
+    animation-name: fadeOutDown;
+}
+
+%fadeInUp {
+    animation-name: fadeInUp;
+}
+
+%flash {
+    animation-name: flash;
+}
+
+%heartBeat {
+    animation-name: heartBeat;
+    animation-duration: calc(var(--animate-duration) * 1.3);
+    animation-timing-function: ease-in-out;
+}
+
+%rubberBand {
+    animation-name: rubberBand;
+}
+
+%tada {
+    animation-name: tada;
+}
+
+%transition--default {
+    transition: all 0.3s ease-in-out;
+}
