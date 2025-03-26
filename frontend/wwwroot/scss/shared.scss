@@ -35,16 +35,16 @@
 }
 
 section {
-    margin: 50px 0;
-    padding: 10px;
+    margin: 25px 0;
+    padding: 50px 10px;
     border-radius: 10px;
 }
 
 .section--light {
-    background: colors.opacity-set(colors.$primary--dark, 10%);
-    box-shadow: colors.opacity-set(colors.$primary--dark, 10%) 0px 2px 8px 0px;
+    box-shadow: 0 0 0 100vmax colors.opacity-set(colors.$primary--dark, 5%);
+    clip-path: inset(0 -100vmax);
+    background: colors.opacity-set(colors.$primary--dark, 5%);
 }
-
 .section--full-width {
     width: 100%;
 }
