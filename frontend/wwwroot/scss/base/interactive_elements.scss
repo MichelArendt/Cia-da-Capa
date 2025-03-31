@@ -337,8 +337,9 @@ table tbody tr.active-row {
 .tabbed-navigation_tab-content {
     // background: colors.$secondary--light;
     background: white;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     display: none;
-    padding: 15px;
+    padding: 30px;
 }
 
 .tabbed-navigation_tab-content--visible {

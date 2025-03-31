@@ -1,6 +1,10 @@
 @use '../abstracts/colors' as colors;
 @use '../abstracts/placeholders' as *;
 
+.form--max-width {
+    @extend %form--max-width;
+}
+
 // ---------------------------
 // GENERAL
 // ---------------------------

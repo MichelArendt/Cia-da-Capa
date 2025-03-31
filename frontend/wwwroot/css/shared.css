@@ -1,6 +1,12 @@
 @charset "UTF-8";
 .website__header-wrapper {
+  width: 100%;
   max-width: 1920px;
+}
+
+.form--max-width {
+  width: 100%;
+  max-width: 600px;
 }
 
 .website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .form_buttons, .checkbox-container, .checkmark, .notification, .header__logo, .nav__button, .website__main, .website__header {
@@ -57,7 +63,7 @@ form input, form textarea, form select {
   font-style: normal;
 }
 
-.nav--interactive, .nav--interactive:hover {
+button, .nav--interactive, .nav--interactive:hover {
   transition: all 0.3s ease-in-out;
 }
 
@@ -367,8 +373,9 @@ table tbody tr.active-row {
 
 .tabbed-navigation_tab-content {
   background: white;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   display: none;
-  padding: 15px;
+  padding: 30px;
 }
 
 .tabbed-navigation_tab-content--visible {
@@ -1109,7 +1116,7 @@ form input::placeholder {
 
 .nav--interactive:hover {
   color: hsl(37, 59%, 54%);
-  background: lightness-add(hsl(240, 3%, 18%), 10%);
+  background: hsla(37, 59%, 54%, 0.25);
 }
 .nav--interactive:hover svg {
   fill: hsl(37, 59%, 54%);
@@ -1131,14 +1138,15 @@ form input::placeholder {
 }
 
 section {
-  margin: 50px 0;
-  padding: 10px;
+  margin: 25px 0;
+  padding: 75px 10px;
   border-radius: 10px;
 }
 
 .section--light {
+  box-shadow: 0 0 0 100vmax hsla(240, 3%, 18%, 0.05);
+  clip-path: inset(0 -100vmax);
   background: hsla(240, 3%, 18%, 0.05);
-  box-shadow: hsla(240, 3%, 18%, 0.05) 0px 2px 8px 0px;
 }
 
 .section--full-width {
@@ -1177,17 +1185,9 @@ p {
 }
 
 button {
-  background: hsl(240, 3%, 18%);
-  color: hsl(37, 59%, 54%);
   padding: 20px;
   width: 100%;
   text-transform: uppercase;
-  transition: all linear 0.2s;
-}
-
-button:hover {
-  background: hsl(37, 59%, 54%);
-  color: hsl(240, 3%, 18%);
 }
 
 button:disabled {

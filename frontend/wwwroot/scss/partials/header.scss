@@ -55,9 +55,9 @@
 }
 
 .nav--interactive {
-    @extend %transition--default;
     color: colors.$secondary--light;
     background: colors.$primary--dark;
+    @extend %transition--default;
 
     li {
         background: colors.$primary--dark;
@@ -71,7 +71,7 @@
 .nav--interactive:hover {
     @extend %transition--default;
     color: colors.$primary--main;
-    background: lightness-add(colors.$primary--dark, 10%);
+    background: colors.opacity-set(colors.$primary--main, 25%);
 
     svg {
         fill: colors.$primary--main;

@@ -36,7 +36,7 @@
 
 section {
     margin: 25px 0;
-    padding: 50px 10px;
+    padding: 75px 10px;
     border-radius: 10px;
 }
 
@@ -93,18 +93,18 @@ p {
 }
 
 button {
-    background: colors.$primary--dark;
-    color: colors.$primary--main;
+    // background: colors.$primary--dark;
+    // color: colors.$primary--main;
     padding: 20px;
     width: 100%;
     text-transform: uppercase;
 
-    transition: all linear 0.2s;
+    @extend %transition--default;
 }
 
 button:hover {
-    background: colors.$primary--main;
-    color: colors.$primary--dark;
+    // background: colors.$primary--main;
+    // color: colors.$primary--dark;
 }
 
 button:disabled {
