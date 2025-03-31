@@ -36,6 +36,28 @@ class ProductSizeModel
         $this->db->exec($query);
     }
 
+    public function create($productId, $sizeLabelId, $width, $height, $depth)
+    {
+        try {
+            $stmt = $this->db->prepare("
+            INSERT INTO product_sizes (product_id, size_label_id, width, height, depth)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+
+            $stmt->execute([
+                $productId,
+                $sizeLabelId,
+                $width,
+                $height,
+                $depth
+            ]);
+
+            return $this->db->lastInsertId();
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->create()");
+        }
+    }
+
     // Fetch all product sizes
     public function getAll(): array
     {

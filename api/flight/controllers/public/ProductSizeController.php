@@ -2,7 +2,6 @@
 
 namespace Controllers\Public;
 
-use PDOException;
 use Flight;
 use Exception;
 use Helpers\HttpResponse;

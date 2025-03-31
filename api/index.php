@@ -129,6 +129,7 @@ require 'flight/controllers/public/ProductSizeLabelController.php';
 require 'flight/controllers/manage/UserController.php';
 require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
+require 'flight/controllers/manage/ProductSizeController.php';
 require 'flight/controllers/manage/ProductVariantController.php';
 require 'flight/controllers/manage/ProductImageController.php';
 require 'flight/controllers/manage/ProductSizeLabelController.php';
@@ -191,6 +192,9 @@ Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSi
 Flight::route('PUT /manage/products/size-labels/@id', 'Controllers\Manage\ProductSizeLabelController->Update');
 Flight::route('DELETE /manage/products/size-labels/@id', 'Controllers\Manage\ProductSizeLabelController->deleteForIdAndReorderPriorities');
 Flight::route('PUT /manage/products/size-labels/update-ordering', 'Controllers\Manage\ProductSizeLabelController->updateOrdering');
+
+// Product Sizes
+Flight::route('POST /manage/products/@id/sizes', 'Controllers\Manage\ProductSizeController->create');
 
 // Product Images
 Flight::route('POST /manage/products/@id/images', 'Controllers\Manage\ProductImageController->uploadImages');
