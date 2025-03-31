@@ -11,60 +11,88 @@
 @inject ProductCategoryService ProductCategoryService
 @inject ProductService ProductService
 
-<h3>@(isEditing ? "Editando" : "Adicionando novo") produto</h3>
+<div class="one">
+    @if (!isUpdating)
+    {
+        <h1>Informações do Produto</h1>
+    } else {
+        <h1>
+            Editando Produto
+            @if (ProductStateService.CategoriesDict.ContainsKey(productFormModel.CategoryId))
+            {
+                <span>
+                    @ProductStateService.CategoriesDict[productFormModel.CategoryId].Reference
+                    -@productFormModel.Reference
+                </span>
+            }
+        </h1>
+    }
+</div>
 
 <EditForm Model="@productFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
-        <label for="title">Título:</label>
-        <InputText id="title" name="title" @bind-Value="productFormModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productFormModel.Title)" />
+    <div class="display--row--above-breakpoint">
+        <div class="form-group">
+            <label for="category_id">Categoria:</label>
+            <InputSelect id="category_id" @bind-Value="productFormModel.CategoryId" disabled="@isSubmitting">
+                <option value="0">Selecione uma categoria...</option>
+                @foreach (var pair in ProductStateService.CategoriesDict)
+                {
+                    <option value="@pair.Value.Id">@pair.Value.Title</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => productFormModel.CategoryId)" />
+        </div>
+
+        <div class="form-group">
+            <label for="reference">Referência:</label>
+            <InputText id="reference" name="reference" @bind-Value="productFormModel.Reference" placeholder="001" autocomplete="on" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productFormModel.Reference)" />
+        </div>
     </div>
 
-    <div>
-        <label for="reference">Referência:</label>
-        <InputText id="reference" name="reference" @bind-Value="productFormModel.Reference" placeholder="001" autocomplete="on" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productFormModel.Reference)" />
+    <div class="display--row--above-breakpoint">
+        <div class="form-group">
+            <label for="title">Título:</label>
+            <InputText id="title" name="title" @bind-Value="productFormModel.Title" placeholder="Mochila impermeável" autocomplete="on" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productFormModel.Title)" />
+        </div>
+
+        <div class="form-group">
+            <label for="priority">Prioridade:</label>
+            <InputNumber id="priority" @bind-Value="productFormModel.Priority" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productFormModel.Priority)" />
+        </div>
     </div>
 
-    <div>
+    <div class="form-group">
         <label for="description">Descrição:</label>
-        <InputTextArea id="description" name="description" @bind-Value="productFormModel.Description" placeholder="Descrição do produto" disabled="@isSubmitting" />
+        <InputTextArea id="description" name="description" @bind-Value="productFormModel.Description" rows="6" placeholder="Descrição do produto" disabled="@isSubmitting" />
         <ValidationMessage For="@(() => productFormModel.Description)" />
     </div>
 
-    <div>
-        <label for="category_id">Categoria:</label>
-        <InputSelect id="category_id" @bind-Value="productFormModel.CategoryId" disabled="@isSubmitting">
-            <option value="0">Selecione uma categoria...</option>
-            @foreach (var pair in ProductStateService.CategoriesDict)
-            {
-                <option value="@pair.Value.Id">@pair.Value.Title</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => productFormModel.CategoryId)" />
+    <div class="display--row--above-breakpoint">
+        <div class="form-group">
+            <Checkbox Id="isActive"
+                      BindValue="@productFormModel.IsActive"
+                      BindValueChanged="@((checkedVal) => productFormModel.IsActive = checkedVal)"
+                      Disabled="@isSubmitting"
+                      Label="Ativo" />
+        </div>
+
+        <div class="form-group">
+            <Checkbox Id="isHighlighted"
+                      BindValue="@productFormModel.IsHighlighted"
+                      BindValueChanged="@((checkedVal) => productFormModel.IsHighlighted = checkedVal)"
+                      Disabled="@isSubmitting"
+                      Label="Destacado" />
+        </div>
     </div>
 
     <div>
-        <label for="isActive">Ativo:</label>
-        <InputCheckbox id="isActive" @bind-Value="productFormModel.IsActive" disabled="@isSubmitting" />
-    </div>
-
-    <div>
-        <label for="isHighlighted">Destacado:</label>
-        <InputCheckbox id="isHighlighted" @bind-Value="productFormModel.IsHighlighted" disabled="@isSubmitting" />
-    </div>
-
-    <div>
-        <label for="priority">Prioridade:</label>
-        <InputNumber id="priority" @bind-Value="productFormModel.Priority" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productFormModel.Priority)" />
-    </div>
-
-    <div>
-        @if (isEditing)
+        @if (isUpdating)
         {
             <button type="submit" disabled="@isSubmitting">
                 Atualizar
@@ -92,7 +120,7 @@
     private ApiStateHandler<int?> productApiHandler = default!;
     private ProductFormModel productFormModel = default!;
     private ProductFormDto productFormDto = new();
-    private bool isEditing { get; set; } = false;
+    private bool isUpdating { get; set; } = false;
     private string? errorMessage;
     private bool isSubmitting { get; set; } = false;
 
@@ -104,7 +132,7 @@
         if (ProductDto != null)
         {
             // editing product
-            isEditing = true;
+            isUpdating = true;
             productFormModel = new(ProductDto);
             productApiHandler = new(ProductService.UpdateProductFunc(productFormDto, ProductDto.Id));
         }
@@ -132,7 +160,7 @@
         if (productApiHandler.IsSuccess())
         {
             // Success
-            if (isEditing){
+            if (isUpdating){
                 // updated product
                 NotificationService.DisplaySuccess("Produto atualizado com sucesso.");
             } else {
@@ -151,7 +179,7 @@
         } else {
             // Error
             NotificationModel errorNotificationModel;
-            if (isEditing)
+            if (isUpdating)
             {
                 // editing
                 errorNotificationModel = productApiHandler.GetErrorNotificationModel("Erro ao tentar atualizar informações do producto.");

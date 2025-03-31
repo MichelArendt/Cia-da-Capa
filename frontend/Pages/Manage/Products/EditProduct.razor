@@ -17,17 +17,27 @@
 @inject ProductImageService ProductImageService
 
 <PageTitle>Editando Produto (Gerenciamento)</PageTitle>
+
+
 @if (productApiHandler.IsExecuting())
 {
     <ContentLoader DisplayMessage="Carregando informações do produto..." />
 }
 else if (productApiHandler.IsSuccess() && productApiHandler.Content != null)
 {
-    <ProductForm ProductDto="productApiHandler.Content" />
+    <CenterContent MinWidth="200px">
+        <section class="form--max-width">
+            <ProductForm ProductDto="productApiHandler.Content" />
+        </section>
 
-    <ProductSizesEditable ProductDto="productApiHandler.Content" />
+        <section class="section--light form--max-width">
+            <ProductSizesEditable ProductDto="productApiHandler.Content" />
+        </section>
+    </CenterContent>
 
-    <ProductVariantsEditable Product="productApiHandler" />
+    <section>
+        <ProductVariantsEditable Product="productApiHandler" />
+    </section>
 }
 else
 {

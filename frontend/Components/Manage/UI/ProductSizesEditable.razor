@@ -5,7 +5,9 @@
 @inject ProductStateService ProductStateService
 @inject ProductSizeService ProductSizeService
 
-<h3>Tamanhos</h3>
+<div class="one">
+    <h1>Tamanhos</h1>
+</div>
 
 <TabbedNavigation Tabs="Tabs" />
 
@@ -35,15 +37,21 @@
 
         if (ProductDto.Sizes.Any())
         {
+            // foreach (var sizeLabels in ProductStateService.SizeLabelsDict)
+            // {
+            //     Console.WriteLine(sizeLabels.Key + " -- " + sizeLabels.Value.Label);
+            // }
+
             foreach (var currentSize in ProductDto.Sizes)
             {
                 var size = new ProductSizeDto
                         {
                             Id = currentSize.Id,
+                            SizeLabelId = currentSize.SizeLabelId,
                             Width = currentSize.Width,
                             Height = currentSize.Height,
                             Depth = currentSize.Depth
-                        }; 
+                        };
 
                 Tabs.Add(new TabViewModel
                 {
@@ -54,7 +62,7 @@
                             <ProductSizeForm ProductDto="ProductDto" SizeId="size.Id" />
                         </text>
                     )
-                });
+                    });
             }
         }
 

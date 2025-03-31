@@ -7,51 +7,66 @@
 @inject ProductStateService ProductStateService
 @inject ProductSizeService ProductSizeService
 
-<h1>@(SizeId == null ? "Adicionar novo" : "Atualizando") tamanho de produto</h1>
+<div class="twelve">
+    <h1>@(SizeId == null ? "Adicionar" : "Atualizar")</h1>
+</div>
 
 <EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary class="feedback feedback--error" />
 
-    <div>
-        <label for="size_label_id">Categoria:</label>
-        <InputSelect id="size_label_id" @bind-Value="productSizeFormModel.SizeLabelId" disabled="@isSubmitting">
-            TODO: exclude labels the product already has
-            <option value="0">Selecione um rótulo...</option>
-            @foreach (var sizeLabel in ProductStateService.SizeLabelsListOrderedByPriority)
-            {
-                <option value="@sizeLabel.Id">@sizeLabel.Label</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => productSizeFormModel.SizeLabelId)" />
+    TODO: exclude labels the product already has
+
+    <div class="display--row--above-breakpoint">
+        <div class="form-group">
+            <label for="size_label_id">Rótulo:</label>
+            <InputSelect id="size_label_id" @bind-Value="productSizeFormModel.SizeLabelId" disabled="@isSubmitting">
+
+                <option value="0">-</option>
+                @foreach (var sizeLabel in ProductStateService.SizeLabelsListOrderedByPriority.Where(label =>
+                   label.Id == productSizeFormModel.SizeLabelId || // allow current selection
+                   !ProductDto.Sizes.Any(size => size.SizeLabelId == label.Id) // exclude used
+                ))
+                {
+                    <option value="@sizeLabel.Id">@sizeLabel.Label</option>
+                }
+            </InputSelect>
+
+            <ValidationMessage For="@(() => productSizeFormModel.SizeLabelId)" />
+        </div>
+
+        <div class="form-group">
+            <label for="width">Largura (cm):</label>
+
+            <InputNumber id="width" name="width" @bind-Value="productSizeFormModel.Width" placeholder="40" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Width)" />
+        </div>
     </div>
 
-    <div>
-        <label for="width">Largura (cm):</label>
-        <InputNumber id="width" name="width" @bind-Value="productSizeFormModel.Width" placeholder="40" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productSizeFormModel.Width)" />
+
+    <div class="display--row--above-breakpoint">
+        <div class="form-group">
+            <label for="height">Altura (cm):</label>
+
+            <InputNumber id="height" name="height" @bind-Value="productSizeFormModel.Height" placeholder="30" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Height)" />
+        </div>
+
+        <div class="form-group">
+            <label for="depth">Profundidade (cm):</label>
+
+            <InputNumber id="depth" name="depth" @bind-Value="productSizeFormModel.Depth" placeholder="1.4" disabled="@isSubmitting" />
+            <ValidationMessage For="@(() => productSizeFormModel.Depth)" />
+        </div>
     </div>
 
-    <div>
-        <label for="height">Altura (cm):</label>
-        <InputNumber id="height" name="height" @bind-Value="productSizeFormModel.Height" placeholder="30" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productSizeFormModel.Height)" />
-    </div>
-
-    <div>
-        <label for="depth">Profundidade (cm):</label>
-        <InputNumber id="depth" name="depth" @bind-Value="productSizeFormModel.Depth" placeholder="1.4" disabled="@isSubmitting" />
-        <ValidationMessage For="@(() => productSizeFormModel.Depth)" />
-    </div>
-
-    <div>
+    <div class="form_buttons">
         @if (SizeId == null)
         {
             <button type="submit" disabled="@isSubmitting">Adicionar tamanho</button>
         }
         else
         {
-            <div>[@SizeId]</div>
             <button type="submit" disabled="@isSubmitting">Atualizar tamanho</button>
             <button disabled="@isSubmitting" @onclick="DeleteSize">Remover tamanho</button>
         }
@@ -68,6 +83,7 @@
     // DTOs & Form Models
     private ProductSizeDto? productSizeDto = new();
     private NewProductSizeDto newProductSizeDto = new();
+    private UpdateProductSizeDto updateProductSizeDto = new();
     private ProductSizeFormModel productSizeFormModel = new();
 
     // Form & Feedback
@@ -88,7 +104,7 @@
     {
         if (SizeId == null)
         {
-            // Creating a new variant
+            // CREATE NEW VARIANT
             isUpdating = false;
 
             newProductSizeDto.ProductId = ProductDto.Id;
@@ -101,20 +117,22 @@
         }
         else
         {
-            // We're updating a variant, attempt to fetch it from Product's Content
+            // UPDATE VARIANT
+            // attempt to fetch it from Product's Content
             productSizeDto = ProductDto!.Sizes.Find(s => s.Id == SizeId);
 
             // Create handlers using DTO's reference
             if (productSizeDto != null)
             {
                 // Fill the form's view model
+                productSizeFormModel.SizeLabelId = productSizeDto.SizeLabelId;
                 productSizeFormModel.Width = productSizeDto.Width;
-                productSizeDto.Height = productSizeDto.Height;
-                productSizeDto.Depth = productSizeDto.Depth;
+                productSizeFormModel.Height = productSizeDto.Height;
+                productSizeFormModel.Depth = productSizeDto.Depth;
 
                 // HANDLER - update
                 updateProductSizeApiHandler = 
-                    new(ProductSizeService.UpdateProductSizeFunc(productSizeDto));
+                    new(ProductSizeService.UpdateProductSizeFunc(updateProductSizeDto));
 
                 // HANDLER - delete
                 deleteProductVariantApiHandler = 
@@ -144,11 +162,14 @@
 
             if (isUpdating)
             {
-                productSizeDto.Width = (int)productSizeFormModel.Width;
-                productSizeDto.Height = (int)productSizeFormModel.Height;
-                productSizeDto.Depth = (int)productSizeFormModel.Depth;
-
                 // UPDATING SIZE
+                updateProductSizeDto.Id = productSizeDto.Id;
+                updateProductSizeDto.SizeLabelId = (int)productSizeFormModel.SizeLabelId;
+                updateProductSizeDto.Width = (int)productSizeFormModel.Width;
+                updateProductSizeDto.Height = (int)productSizeFormModel.Height;
+                updateProductSizeDto.Depth = (int)productSizeFormModel.Depth;
+                Console.WriteLine($"{updateProductSizeDto.Width}, {updateProductSizeDto.Height}, {updateProductSizeDto.Depth}");
+
                 await updateProductSizeApiHandler.ExecuteAsync();
 
                 // Check if update succeeded
@@ -169,6 +190,7 @@
             {
                 // CREATING SIZE
                 newProductSizeDto.ProductId = ProductDto.Id;
+                newProductSizeDto.SizeLabelId = (int)productSizeFormModel.SizeLabelId;
                 newProductSizeDto.Width = (int)productSizeFormModel.Width;
                 newProductSizeDto.Height = (int)productSizeFormModel.Height;
                 newProductSizeDto.Depth = (int)productSizeFormModel.Depth;

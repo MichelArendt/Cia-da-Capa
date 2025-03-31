@@ -63,11 +63,11 @@ namespace frontend.Services.API
         /// </summary>
         /// <param name="productSizeDto">The product size DTO.</param>
         /// <returns>A function that returns a task with the HTTP response message.</returns>
-        public Func<Task<HttpResponseMessage>> UpdateProductSizeFunc(ProductSizeDto productSizeDto)
+        public Func<Task<HttpResponseMessage>> UpdateProductSizeFunc(UpdateProductSizeDto updateProductSizeDto)
         {
             return () => _httpClient.PutAsJsonAsync(
-                ApiRoutes.Manage.ProductSizes.Update(productSizeDto.Id),
-                productSizeDto,
+                ApiRoutes.Manage.ProductSizes.Update(updateProductSizeDto.Id),
+                updateProductSizeDto,
                 JsonHelper._options);
         }
 
