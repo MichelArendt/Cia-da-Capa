@@ -195,6 +195,8 @@ Flight::route('PUT /manage/products/size-labels/update-ordering', 'Controllers\M
 
 // Product Sizes
 Flight::route('POST /manage/products/@id/sizes', 'Controllers\Manage\ProductSizeController->create');
+Flight::route('PUT /manage/products/sizes/@id', 'Controllers\Manage\ProductSizeController->update');
+Flight::route('DELETE /manage/products/sizes/@id', 'Controllers\Manage\ProductSizeController->delete');
 
 // Product Images
 Flight::route('POST /manage/products/@id/images', 'Controllers\Manage\ProductImageController->uploadImages');

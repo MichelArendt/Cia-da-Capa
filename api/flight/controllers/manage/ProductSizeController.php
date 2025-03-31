@@ -30,7 +30,7 @@ class ProductSizeController
                 !isset($data['depth'])
             ) {
                 HttpResponse::returnValidationError(
-                    "Todos os campos obrigatórios devem ser preenchidos: product_id, size_label_id, width, height, depth."
+                    "Todos os campos obrigatórios devem ser preenchidos!"
                 );
             }
 
@@ -53,11 +53,68 @@ class ProductSizeController
             }
 
             HttpResponse::responseCreateSuccess(
-                "Tamanho do produto criado com sucesso!",
+                "Rótulo do produto criado com sucesso!",
                 (int)$newProductSizeId
             );
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeController->create()");
+        }
+    }
+
+    public function update($id)
+    {
+        error_log("Updating product size with ID: $id");
+        try {
+            $id = (int) $id;
+
+            // Decode JSON input
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            // Validate required fields
+            if (
+                empty($data['size_label_id']) ||
+                !isset($data['width']) ||
+                !isset($data['height']) ||
+                !isset($data['depth'])
+            ) {
+                HttpResponse::returnValidationError(
+                    "Todos os campos obrigatórios devem ser preenchidos!"
+                );
+            }
+
+            // Perform update
+            $success = $this->productSizeModel->update(
+                $id,
+                (int) $data['size_label_id'],
+                (float) $data['width'],
+                (float) $data['height'],
+                (float) $data['depth']
+            );
+
+            if (!$success) {
+                throw new \Exception("Falha ao atualizar o rótulo do produto.");
+            }
+
+            HttpResponse::responseUpdateSuccess("Rótulo do produto atualizado com sucesso.", $id);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeController->update()");
+        }
+    }
+
+    public function delete($id)
+    {
+        try {
+            $id = (int) $id;
+
+            $success = $this->productSizeModel->delete($id);
+
+            if (!$success) {
+                throw new \Exception("Falha ao deletar o rótulo do produto.");
+            }
+
+            HttpResponse::responseDeleteSuccess("Rótulo do produto removido com sucesso.");
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeController->delete()");
         }
     }
 }

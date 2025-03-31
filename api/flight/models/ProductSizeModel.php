@@ -36,6 +36,30 @@ class ProductSizeModel
         $this->db->exec($query);
     }
 
+    // Fetch all product sizes
+    public function getAll(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_sizes");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
+        }
+    }
+
+    // Fetch by ID
+    public function getSizesForProductId($product_id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
+            $stmt->execute([$product_id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getSizesForProductId()");
+        }
+    }
+
     public function create($productId, $sizeLabelId, $width, $height, $depth)
     {
         try {
@@ -58,27 +82,35 @@ class ProductSizeModel
         }
     }
 
-    // Fetch all product sizes
-    public function getAll(): array
+    public function update($id, $sizeLabelId, $width, $height, $depth)
     {
+        error_log("2 Updating product size with ID: $id, $sizeLabelId, $width, $height, $depth");
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_sizes");
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            $stmt = $this->db->prepare("
+                UPDATE product_sizes
+                SET size_label_id = ?, width = ?, height = ?, depth = ?
+                WHERE id = ?
+            ");
+
+            return $stmt->execute([
+                $sizeLabelId,
+                $width,
+                $height,
+                $depth,
+                $id
+            ]);
         } catch (Exception $e) {
-            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getAll()");
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->update()");
         }
     }
 
-    // Fetch by ID
-    public function getSizesForProductId($product_id)
+    public function delete($id)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
-            $stmt->execute([$product_id]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            $stmt = $this->db->prepare("DELETE FROM product_sizes WHERE id = ?");
+            return $stmt->execute([$id]);
         } catch (Exception $e) {
-            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->getSizesForProductId()");
+            HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->delete()");
         }
     }
 }
