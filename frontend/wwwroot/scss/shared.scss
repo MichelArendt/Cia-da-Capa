@@ -41,9 +41,9 @@ section {
 }
 
 .section--light {
-    box-shadow: 0 0 0 100vmax colors.opacity-set(colors.$primary--dark, 5%);
+    box-shadow: 0 0 0 100vmax colors.opacity-set(colors.$primary--main, 5%);
     clip-path: inset(0 -100vmax);
-    background: colors.opacity-set(colors.$primary--dark, 5%);
+    background: colors.opacity-set(colors.$primary--main, 5%);
 }
 .section--full-width {
     width: 100%;

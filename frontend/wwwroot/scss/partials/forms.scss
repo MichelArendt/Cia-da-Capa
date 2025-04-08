@@ -18,13 +18,24 @@ form {
     }
 }
 
+form button {
+    background: colors.$primary--dark;
+    color: colors.$primary--main;
+}
+
+form button:hover {
+    background: colors.$primary--main;
+    color: colors.$primary--dark;
+}
+
 form input, form textarea, form select {
     @extend %roboto-regular;
     font-size: 20px;
     padding: 10px;
     border-radius: 20px;
     border: 1px solid colors.$secondary--light;
-    background-color: colors.opacity-set(colors.$secondary--light, 15%);
+    background-color: colors.lightness-add(colors.$secondary--light, 24%);
+    // background-color: white;
 }
 
 form input::placeholder {
