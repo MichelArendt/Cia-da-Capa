@@ -331,13 +331,25 @@ table tbody tr.active-row {
 }
 
 .tabbed-navigation_tab-button {
+    background: colors.$primary--dark;
+    color: colors.$primary--main;
+}
+
+.tabbed-navigation_tab-button:hover {
+    background: colors.$primary--main;
+    color: colors.$primary--dark;
+}
+
+.tabbed-navigation_tab-button.selected, .tabbed-navigation_tab-content {
+    background: colors.opacity-set(colors.$secondary--light, 20%);
+    color: colors.$primary--dark;
+}
+
+.tabbed-navigation_tab-button {
     width: unset; // remove 100% width from button
 }
 
 .tabbed-navigation_tab-content {
-    // background: colors.$secondary--light;
-    background: white;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     display: none;
     padding: 30px;
 }

@@ -3,7 +3,7 @@
 <div class="tabbed-navigation_tabs">
     @foreach (var tab in Tabs)
     {
-        <button class="tabbed-navigation_tab-button" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
+        <button class="tabbed-navigation_tab-button @(tab.Visible ? "selected" : "")" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
             @tab.Title
         </button>
     }

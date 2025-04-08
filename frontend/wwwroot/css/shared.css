@@ -368,12 +368,25 @@ table tbody tr.active-row {
 }
 
 .tabbed-navigation_tab-button {
+  background: hsl(240, 3%, 18%);
+  color: hsl(37, 59%, 54%);
+}
+
+.tabbed-navigation_tab-button:hover {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 3%, 18%);
+}
+
+.tabbed-navigation_tab-button.selected, .tabbed-navigation_tab-content {
+  background: hsla(0, 0%, 73%, 0.2);
+  color: hsl(240, 3%, 18%);
+}
+
+.tabbed-navigation_tab-button {
   width: unset;
 }
 
 .tabbed-navigation_tab-content {
-  background: white;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   display: none;
   padding: 30px;
 }
@@ -992,12 +1005,22 @@ form > div {
   padding: 10px 0;
 }
 
+form button {
+  background: hsl(240, 3%, 18%);
+  color: hsl(37, 59%, 54%);
+}
+
+form button:hover {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 3%, 18%);
+}
+
 form input, form textarea, form select {
   font-size: 20px;
   padding: 10px;
   border-radius: 20px;
   border: 1px solid hsl(0, 0%, 73%);
-  background-color: hsla(0, 0%, 73%, 0.15);
+  background-color: hsl(0, 0%, 97%);
 }
 
 form input::placeholder {
@@ -1144,9 +1167,9 @@ section {
 }
 
 .section--light {
-  box-shadow: 0 0 0 100vmax hsla(240, 3%, 18%, 0.05);
+  box-shadow: 0 0 0 100vmax hsla(37, 59%, 54%, 0.05);
   clip-path: inset(0 -100vmax);
-  background: hsla(240, 3%, 18%, 0.05);
+  background: hsla(37, 59%, 54%, 0.05);
 }
 
 .section--full-width {
