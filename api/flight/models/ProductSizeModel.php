@@ -10,17 +10,23 @@ use Helpers\HttpResponse;
 class ProductSizeModel
 {
     private $db;
+    private $table;
+    private $table_products;
+    private $table_product_size_labels;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['product_sizes'];
+        $this->table_products = Flight::get('tables')['products'];
+        $this->table_product_size_labels = Flight::get('tables')['product_size_labels'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
         $query = "
-          CREATE TABLE IF NOT EXISTS product_sizes (
+          CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NOT NULL,
             size_label_id INT NOT NULL,
@@ -29,8 +35,8 @@ class ProductSizeModel
             depth FLOAT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-            FOREIGN KEY (size_label_id) REFERENCES product_size_labels(id) ON DELETE CASCADE
+            FOREIGN KEY (product_id) REFERENCES `{$this->table_products}`(id) ON DELETE CASCADE,
+            FOREIGN KEY (size_label_id) REFERENCES `{$this->table_product_size_labels}`(id) ON DELETE CASCADE
           )";
 
         $this->db->exec($query);
@@ -40,7 +46,7 @@ class ProductSizeModel
     public function getAll(): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_sizes");
+            $stmt = $this->db->prepare("SELECT * FROM " . $this->table);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
@@ -52,7 +58,7 @@ class ProductSizeModel
     public function getSizesForProductId($product_id)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_sizes WHERE product_id = ?");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE product_id = ?");
             $stmt->execute([$product_id]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
@@ -64,7 +70,7 @@ class ProductSizeModel
     {
         try {
             $stmt = $this->db->prepare("
-            INSERT INTO product_sizes (product_id, size_label_id, width, height, depth)
+            INSERT INTO `{$this->table}` (product_id, size_label_id, width, height, depth)
             VALUES (?, ?, ?, ?, ?)
         ");
 
@@ -87,7 +93,7 @@ class ProductSizeModel
         error_log("2 Updating product size with ID: $id, $sizeLabelId, $width, $height, $depth");
         try {
             $stmt = $this->db->prepare("
-                UPDATE product_sizes
+                UPDATE `{$this->table}`
                 SET size_label_id = ?, width = ?, height = ?, depth = ?
                 WHERE id = ?
             ");
@@ -107,7 +113,7 @@ class ProductSizeModel
     public function delete($id)
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM product_sizes WHERE id = ?");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = ?");
             return $stmt->execute([$id]);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeModel->delete()");

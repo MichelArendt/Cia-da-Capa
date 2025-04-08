@@ -10,17 +10,21 @@ use Helpers\HttpResponse;
 class ProductImageModel
 {
     private $db;
+    private $table;
+    private $table_product_variants;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['product_images'];
+        $this->table_product_variants = Flight::get('tables')['product_variants'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
         $query = "
-          CREATE TABLE IF NOT EXISTS product_images (
+          CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NULL,
             product_variant_id INT NULL,
@@ -31,8 +35,8 @@ class ProductImageModel
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-            FOREIGN KEY (product_variant_id) REFERENCES product_variants(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES `{$this->table}`(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_variant_id) REFERENCES `{$this->table_product_variants}`(id) ON DELETE CASCADE,
 
             CONSTRAINT ck_product_variant_exclusive
                 CHECK (
@@ -46,27 +50,29 @@ class ProductImageModel
         // Check if the trigger already exists by querying INFORMATION_SCHEMA.
         // Then create it only if not found.
         try {
+            $triggerName = 'before_insert_' . $this->table;
+
             $checkTrigger = $this->db->prepare("
                 SELECT TRIGGER_NAME
                 FROM INFORMATION_SCHEMA.TRIGGERS
                 WHERE TRIGGER_SCHEMA = DATABASE()
-                  AND TRIGGER_NAME = 'before_insert_product_images'
+                  AND TRIGGER_NAME = :triggerName
             ");
-            $checkTrigger->execute();
+            $checkTrigger->execute([':triggerName' => $triggerName]);
             $exists = $checkTrigger->fetch();
 
             if (!$exists) {
                 // Create BEFORE INSERT Trigger (Auto-Increment Priority)
                 $triggerQuery = "
-                    CREATE TRIGGER before_insert_product_images
-                    BEFORE INSERT ON product_images
+                    CREATE TRIGGER {$triggerName}
+                    BEFORE INSERT ON `{$this->table}`
                     FOR EACH ROW
                     BEGIN
                         DECLARE max_priority INT;
 
                         -- Get the highest priority for the same product_id OR product_variant_id
                         SELECT COALESCE(MAX(priority), 0) + 1 INTO max_priority
-                        FROM product_images
+                        FROM `{$this->table}`
                         WHERE (NEW.product_id IS NOT NULL AND product_id = NEW.product_id)
                             OR (NEW.product_variant_id IS NOT NULL AND product_variant_id = NEW.product_variant_id);
 
@@ -77,10 +83,6 @@ class ProductImageModel
 
                 $this->db->exec($triggerQuery);
             }
-
-            // // If you want to forcibly recreate it, drop first
-            // $this->db->exec("DROP TRIGGER IF EXISTS before_insert_product_images");
-            // error_log('TRIGGER before_insert_product_images on product_images DROPPED');
         } catch (\PDOException $e) {
             HttpResponse::handlePdoException($e, __METHOD__, "Trigger creation failed in ProductImageModel->createTableIfNotExists()");
         }
@@ -89,7 +91,7 @@ class ProductImageModel
     public function addImage($data)
     {
         try {
-            $query = "INSERT INTO product_images (product_id, product_variant_id, file_path, thumbnail_file_path, medium_file_path) VALUES (:product_id, :product_variant_id, :file_path, :thumbnail_file_path, :medium_file_path)";
+            $query = "INSERT INTO `{$this->table}` (product_id, product_variant_id, file_path, thumbnail_file_path, medium_file_path) VALUES (:product_id, :product_variant_id, :file_path, :thumbnail_file_path, :medium_file_path)";
             $stmt = $this->db->prepare($query);
 
             return $stmt->execute([
@@ -108,7 +110,7 @@ class ProductImageModel
     {
         try {
             $stmt = $this->db->prepare("
-                SELECT * FROM product_images
+                SELECT * FROM `{$this->table}`
                 WHERE product_id = :product_id
                 ORDER BY priority ASC"
             );
@@ -123,7 +125,7 @@ class ProductImageModel
     {
         try {
             $stmt = $this->db->prepare("
-                SELECT * FROM product_images
+                SELECT * FROM `{$this->table}`
                 WHERE product_variant_id = :product_variant_id
                 ORDER BY priority ASC"
             );
@@ -137,7 +139,7 @@ class ProductImageModel
     public function getById($image_id)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $image_id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -152,7 +154,7 @@ class ProductImageModel
             $this->db->beginTransaction();
 
             // 1. Retrieve the image record so we know which product/variant and the current priority.
-            $stmt = $this->db->prepare("SELECT * FROM product_images WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $image_id]);
             $image = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -166,13 +168,13 @@ class ProductImageModel
             $this->deleteImageFile($image['medium_file_path']);
 
             // 3. Delete the image record.
-            $stmt = $this->db->prepare("DELETE FROM product_images WHERE id = :id");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $image_id]);
 
             // 4. Determine the condition for reordering.
             // If this image is linked to a product:
             if (!empty($image['product_id'])) {
-                $sql = "UPDATE product_images
+                $sql = "UPDATE `{$this->table}`
                     SET priority = priority - 1
                     WHERE product_id = :product_id AND priority > :deleted_priority";
                 $params = [
@@ -182,7 +184,7 @@ class ProductImageModel
             }
             // Else, if linked to a product variant:
             elseif (!empty($image['product_variant_id'])) {
-                $sql = "UPDATE product_images
+                $sql = "UPDATE `{$this->table}`
                     SET priority = priority - 1
                     WHERE product_variant_id = :product_variant_id AND priority > :deleted_priority";
                 $params = [
@@ -244,7 +246,7 @@ class ProductImageModel
             $idsList = implode(', ', $ids);
 
             // Build the final SQL statement.
-            $sql = "UPDATE product_images SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
+            $sql = "UPDATE `{$this->table}` SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
 
             // Prepare and execute the SQL statement.
             $stmt = $this->db->prepare($sql);

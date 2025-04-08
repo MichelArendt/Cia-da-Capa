@@ -47,6 +47,8 @@ use Models\ProductImageModel;
 
 // Load Config
 $config = require 'flight/config/database.php';
+$constants = require __DIR__ . '/flight/config/constants.php';
+Flight::set('tables', $constants['tables']);
 
 // --------------------------------
 // Database

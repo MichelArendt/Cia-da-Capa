@@ -23,11 +23,12 @@ class AuthMiddleware {
 
         $token = $_COOKIE['session_token'];
 
-        // Get PDO instance from Flight
+        // Get PDO instance from Flight and user's table name
         $db = Flight::get('db');
+        $table = Flight::get('tables')['users'];
 
         // Check if the token is valid and not expired
-        $stmt = $db->prepare("SELECT id FROM users WHERE token = ? AND expires_at > NOW()");
+        $stmt = $db->prepare("SELECT id FROM `{$table}` WHERE token = ? AND expires_at > NOW()");
         $stmt->execute([$token]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 

@@ -10,17 +10,19 @@ use Helpers\HttpResponse;
 class ProductSizeLabelModel
 {
     private $db;
+    private $table;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['product_size_labels'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
         $query = "
-          CREATE TABLE IF NOT EXISTS product_size_labels (
+          CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             label VARCHAR(50) UNIQUE NOT NULL,
@@ -34,27 +36,29 @@ class ProductSizeLabelModel
         // Check if the trigger already exists by querying INFORMATION_SCHEMA.
         // Then create it only if not found.
         try {
+            $triggerName = 'before_insert_' . $this->table;
+
             $checkTrigger = $this->db->prepare("
                 SELECT TRIGGER_NAME
                 FROM INFORMATION_SCHEMA.TRIGGERS
                 WHERE TRIGGER_SCHEMA = DATABASE()
-                  AND TRIGGER_NAME = 'before_insert_product_size_labels'
+                  AND TRIGGER_NAME = :triggerName
             ");
-            $checkTrigger->execute();
+            $checkTrigger->execute([':triggerName' => $triggerName]);
             $exists = $checkTrigger->fetch();
 
             if (!$exists) {
                 // Create BEFORE INSERT Trigger (Auto-Increment Priority)
                 $triggerQuery = "
-                    CREATE TRIGGER before_insert_product_size_labels
-                    BEFORE INSERT ON product_size_labels
+                    CREATE TRIGGER {$triggerName}
+                    BEFORE INSERT ON `{$this->table}`
                     FOR EACH ROW
                     BEGIN
                         DECLARE max_priority INT;
 
                         -- Get the next priority number
                         SELECT COALESCE(MAX(priority), 0) + 1 INTO max_priority
-                        FROM product_size_labels;
+                        FROM `{$this->table}`;
 
                         -- Assign the next priority number
                         SET NEW.priority = max_priority;
@@ -72,7 +76,7 @@ class ProductSizeLabelModel
     public function getAll(): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_size_labels");
+            $stmt = $this->db->prepare("SELECT * FROM " . $this->table);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
@@ -83,7 +87,7 @@ class ProductSizeLabelModel
     public function getById($sizeLabelId)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_size_labels WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $sizeLabelId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -97,7 +101,7 @@ class ProductSizeLabelModel
         try {
             $stmt = $this->db->prepare(
                 "
-            INSERT INTO product_size_labels (title, label, created_at, updated_at)
+            INSERT INTO `{$this->table}` (title, label, created_at, updated_at)
             VALUES (:title, :label, NOW(), NOW())"
             );
 
@@ -119,7 +123,7 @@ class ProductSizeLabelModel
         try {
             $id = (int)$id;
 
-            $sql = "UPDATE product_size_labels
+            $sql = "UPDATE `{$this->table}`
                     SET title = :title,
                         label = :label,
                         updated_at = NOW()
@@ -146,7 +150,7 @@ class ProductSizeLabelModel
     {
         try {
             // Check if the size label exists and get its priority
-            $stmt = $this->db->prepare("SELECT id, priority FROM product_size_labels WHERE id = ?");
+            $stmt = $this->db->prepare("SELECT id, priority FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -166,11 +170,11 @@ class ProductSizeLabelModel
             }
 
             // Delete the size label
-            $stmt = $this->db->prepare("DELETE FROM product_size_labels WHERE id = ?");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
 
             // Reorder priorities: decrement by one for all size labels with a higher priority than the deleted one
-            $stmt = $this->db->prepare("UPDATE product_size_labels SET priority = priority - 1 WHERE priority > ?");
+            $stmt = $this->db->prepare("UPDATE `{$this->table}` SET priority = priority - 1 WHERE priority > ?");
             return $stmt->execute([$deletedPriority]);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeLabelModel->delete()");
@@ -202,7 +206,7 @@ class ProductSizeLabelModel
             $idsList = implode(', ', $ids);
 
             // Build the final SQL statement.
-            $sql = "UPDATE product_size_labels SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
+            $sql = "UPDATE `{$this->table}` SET priority = CASE id {$caseSql} END WHERE id IN ({$idsList})";
 
             // Prepare and execute the SQL statement.
             $stmt = $this->db->prepare($sql);

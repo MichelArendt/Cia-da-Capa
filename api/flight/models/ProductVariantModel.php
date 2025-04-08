@@ -10,17 +10,21 @@ use Helpers\HttpResponse;
 class ProductVariantModel
 {
     private $db;
+    private $table;
+    private $table_products;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['product_variants'];
+        $this->table_products = Flight::get('tables')['products'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
         $query = "
-          CREATE TABLE IF NOT EXISTS product_variants (
+          CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             product_id INT NOT NULL,
             reference VARCHAR(255) NOT NULL,
@@ -28,7 +32,7 @@ class ProductVariantModel
             description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES `{$this->table_products}`(id) ON DELETE CASCADE,
             UNIQUE (product_id, reference)
           )";
 
@@ -41,7 +45,7 @@ class ProductVariantModel
         try {
             $stmt = $this->db->prepare(
                 "
-                INSERT INTO product_variants (product_id, reference, title, description, created_at, updated_at)
+                INSERT INTO `{$this->table}` (product_id, reference, title, description, created_at, updated_at)
                 VALUES (:product_id, :reference, :title, :description, NOW(), NOW())"
             );
 
@@ -64,7 +68,7 @@ class ProductVariantModel
     public function getVariantsForProductId($id): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_variants WHERE product_id = :product_id");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE product_id = :product_id");
             $stmt->execute([':product_id' => $id]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {
@@ -77,7 +81,7 @@ class ProductVariantModel
         try {
             $stmt = $this->db->prepare(
                 "
-            UPDATE product_variants
+            UPDATE `{$this->table}`
             SET reference = :reference,
                 title = :title,
                 description = :description,
@@ -117,7 +121,7 @@ class ProductVariantModel
             }
 
             // Delete the product variant
-            $stmt = $this->db->prepare("DELETE FROM product_variants WHERE id = :id");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $id]);
 
             $this->db->commit();

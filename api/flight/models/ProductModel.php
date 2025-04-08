@@ -10,16 +10,20 @@ use Helpers\HttpResponse;
 class ProductModel
 {
     private $db;
+    private $table;
+    private $table_product_categories;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['products'];
+        $this->table_product_categories = Flight::get('tables')['product_categories'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
-        $query = "CREATE TABLE IF NOT EXISTS products (
+        $query = "CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             reference VARCHAR(255) NOT NULL,
@@ -30,7 +34,7 @@ class ProductModel
             priority INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (category_id) REFERENCES product_categories(id) ON DELETE CASCADE,
+            FOREIGN KEY (category_id) REFERENCES `{$this->table_product_categories}`(id) ON DELETE CASCADE,
             UNIQUE KEY (reference, category_id)
       )";
 
@@ -41,7 +45,7 @@ class ProductModel
     public function getAll(): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM products");
+            $stmt = $this->db->prepare("SELECT * FROM " . $this->table);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
@@ -53,7 +57,7 @@ class ProductModel
     public function getForId($id)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: null; // Ensure null if no results
         } catch (Exception $e) {
@@ -73,7 +77,7 @@ class ProductModel
             }
 
             // Insert product
-            $stmt = $this->db->prepare("INSERT INTO products (title, reference, description, category_id, is_active, is_highlighted, priority)
+            $stmt = $this->db->prepare("INSERT INTO `{$this->table}` (title, reference, description, category_id, is_active, is_highlighted, priority)
                                       VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $reference, $description, $category_id, (int)$is_active, (int)$is_highlighted, $priority]);
 
@@ -86,7 +90,7 @@ class ProductModel
     public function update($id, $title, $reference, $description, $category_id, $is_active, $is_highlighted, $priority)
     {
         try {
-            $query = "UPDATE products
+            $query = "UPDATE `{$this->table}`
                   SET title = :title,
                       reference = :reference,
                       description = :description,

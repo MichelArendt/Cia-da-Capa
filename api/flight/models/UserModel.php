@@ -10,10 +10,12 @@ use Helpers\HttpResponse;
 class UserModel
 {
     private $db;
+    private $table;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['users'];
     }
 
     /**
@@ -22,7 +24,7 @@ class UserModel
     public function createTableIfNotExists()
     {
         try {
-            $query = "CREATE TABLE IF NOT EXISTS users (
+            $query = "CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
@@ -42,13 +44,13 @@ class UserModel
     public function createAdminUserIfNotExists()
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt = $this->db->prepare("SELECT id FROM `{$this->table}` WHERE username = ?");
             $stmt->execute(['admin']);
             $adminUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$adminUser) {
                 $stmt = $this->db->prepare("
-                    INSERT INTO users (username, password, token, expires_at)
+                    INSERT INTO `{$this->table}` (username, password, token, expires_at)
                     VALUES (?, ?, NULL, NULL)
                 ");
                 $stmt->execute([
@@ -72,7 +74,7 @@ class UserModel
     {
         try {
             // 1) Validate the user
-            $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -84,7 +86,7 @@ class UserModel
             $token = bin2hex(random_bytes(32));
             $expiresAt = date('Y-m-d H:i:s', time() + 86400 * 7);
 
-            $stmt = $this->db->prepare("UPDATE users SET token = ?, expires_at = ? WHERE id = ?");
+            $stmt = $this->db->prepare("UPDATE `{$this->table}` SET token = ?, expires_at = ? WHERE id = ?");
             $stmt->execute([$token, $expiresAt, $user['id']]);
 
             // Return the token
@@ -100,12 +102,12 @@ class UserModel
     public function logout(string $token): void
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM users WHERE token = ?");
+            $stmt = $this->db->prepare("SELECT id FROM `{$this->table}` WHERE token = ?");
             $stmt->execute([$token]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                $stmt = $this->db->prepare("UPDATE users SET token = NULL, expires_at = NULL WHERE id = ?");
+                $stmt = $this->db->prepare("UPDATE `{$this->table}` SET token = NULL, expires_at = NULL WHERE id = ?");
                 $stmt->execute([$user['id']]);
                 // Optional: log a message
                 error_log("UserModel->logout: User with id={$user['id']} logged out successfully.");

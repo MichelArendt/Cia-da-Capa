@@ -10,16 +10,18 @@ use Helpers\HttpResponse;
 class ProductCategoryModel
 {
     private $db;
+    private $table;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
+        $this->table = Flight::get('tables')['product_categories'];
     }
 
     // Check if the table exists and create it if necessary
     public function createTableIfNotExists()
     {
-        $query = "CREATE TABLE IF NOT EXISTS product_categories (
+        $query = "CREATE TABLE IF NOT EXISTS `{$this->table}` (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) UNIQUE NOT NULL,
             reference VARCHAR(255) UNIQUE NOT NULL,
@@ -37,7 +39,7 @@ class ProductCategoryModel
         try {
             $stmt = $this->db->prepare(
                 "
-            INSERT INTO product_categories (title, reference, is_active, created_at, updated_at)
+            INSERT INTO `{$this->table}` (title, reference, is_active, created_at, updated_at)
             VALUES (:title, :reference, :is_active, NOW(), NOW())"
             );
 
@@ -59,7 +61,7 @@ class ProductCategoryModel
     public function getAll(): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_categories");
+            $stmt = $this->db->prepare("SELECT * FROM " . $this->table);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
@@ -70,7 +72,7 @@ class ProductCategoryModel
     public function getById($categoryId)
     {
         try {
-            $stmt = $this->db->prepare("SELECT * FROM product_categories WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE id = :id");
             $stmt->execute([':id' => $categoryId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -82,7 +84,7 @@ class ProductCategoryModel
     {
         try {
             $id = (int)$id;
-            $sql = "UPDATE product_categories
+            $sql = "UPDATE `{$this->table}`
                 SET title = :title,
                     reference = :reference,
                     is_active = :is_active,
@@ -109,7 +111,7 @@ class ProductCategoryModel
     {
         try {
             // Check if the category exists
-            $stmt = $this->db->prepare("SELECT id FROM product_categories WHERE id = ?");
+            $stmt = $this->db->prepare("SELECT id FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
 
             if (!$stmt->fetch()) {
@@ -117,7 +119,7 @@ class ProductCategoryModel
             }
 
             // Check if there are any products associated with this category
-            $stmt = $this->db->prepare("SELECT COUNT(*) as product_count FROM products WHERE category_id = ?");
+            $stmt = $this->db->prepare("SELECT COUNT(*) as product_count FROM `{$this->table}` WHERE category_id = ?");
             $stmt->execute([$id]);
             $productCount = $stmt->fetch(PDO::FETCH_ASSOC)['product_count'] ?? 0;
 
@@ -126,7 +128,7 @@ class ProductCategoryModel
             }
 
             // Delete the category
-            $stmt = $this->db->prepare("DELETE FROM product_categories WHERE id = ?");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
 
             HttpResponse::responseDeleteSuccess("Categoria deletada com sucesso.");
