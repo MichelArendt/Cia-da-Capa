@@ -7,15 +7,13 @@
 @inject ProductStateService ProductStateService
 @inject ProductSizeService ProductSizeService
 
-<div class="twelve">
+@* <div class="twelve">
     <h1>@(SizeId == null ? "Adicionar" : "Atualizar")</h1>
-</div>
+</div> *@
 
 <EditForm Model="@productSizeFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary class="feedback feedback--error" />
-
-    TODO: exclude labels the product already has
 
     <div class="display--row--above-breakpoint">
         <div class="form-group">
