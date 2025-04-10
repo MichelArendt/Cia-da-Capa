@@ -44,8 +44,11 @@ class UserModel
     public function createAdminUserIfNotExists()
     {
         try {
+            $admin_username = Flight::get('admin_username');
+            $admin_password = Flight::get('admin_password');
+
             $stmt = $this->db->prepare("SELECT id FROM `{$this->table}` WHERE username = ?");
-            $stmt->execute(['admin']);
+            $stmt->execute([$admin_username]);
             $adminUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$adminUser) {
@@ -54,8 +57,8 @@ class UserModel
                     VALUES (?, ?, NULL, NULL)
                 ");
                 $stmt->execute([
-                    'admin',
-                    password_hash('admin', PASSWORD_DEFAULT)
+                    $admin_username,
+                    password_hash($admin_password, PASSWORD_DEFAULT)
                 ]);
 
                 // Optional: Log info if needed

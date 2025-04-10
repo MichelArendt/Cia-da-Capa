@@ -3,8 +3,24 @@
 require 'flight/Flight.php';
 require 'flight/helpers/HttpResponse.php';
 require 'flight/helpers/ValidationHelper.php';
+require_once __DIR__ . '/flight/config/env.php';
 
 use Helpers\HttpResponse;
+
+// Detect local environment based on hostname
+$isLocal = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']);
+$envFile = $isLocal ? '.env.local' : '.env.production';
+
+// Load environment
+loadEnv(__DIR__ . "/flight/config/$envFile");
+
+// Load Config
+$constants = require __DIR__ . '/flight/config/constants.php';
+
+// Set commonly used values into Flight
+Flight::set('tables', $constants['tables']);
+Flight::set('admin_username', $_ENV['ADMIN_USERNAME']);
+Flight::set('admin_password', $_ENV['ADMIN_PASSWORD']);
 
 // --------------------------------
 // FILE UPLOAD
@@ -45,20 +61,15 @@ use Models\ProductSizeLabelModel;
 use Models\ProductSizeModel;
 use Models\ProductImageModel;
 
-// Load Config
-$config = require 'flight/config/database.php';
-$constants = require __DIR__ . '/flight/config/constants.php';
-Flight::set('tables', $constants['tables']);
-
 // --------------------------------
 // Database
 // --------------------------------
 
 // Set Up Database Connection Using Config
-$dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
+$dsn = "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset={$_ENV['DB_CHARSET']}";
 
 try {
-    $pdo = new PDO($dsn, $config['username'], $config['password']);
+    $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Store in Flight
