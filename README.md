@@ -25,21 +25,8 @@ Clone the repository to your local machine:
 git clone https://github.com/MichelArendt/Cia-da-Capa.git
 ```
 
-## 2. Create a file named **database.php** inside **/api/flight/config/**. Example below:
-
-
-```php
-<?php
-return [
-    'host' => 'localhost',
-    'dbname' => 'mydb',
-    'username' => 'root',
-    'password' => 'mypw',
-    'charset' => 'utf8'
-];
-
-```
-Replace the values (**mydb**, **root**, **mypw**) with your actual database credentials.
+## 2. For production
+Duplicate the file **.env.local** inside **/api/flight/config/** and rename the duplicated one to **.env.production** and replace values.
 
 ## 3. Launch Options
 
