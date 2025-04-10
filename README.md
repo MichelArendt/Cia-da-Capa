@@ -26,7 +26,7 @@ git clone https://github.com/MichelArendt/Cia-da-Capa.git
 ```
 
 ## 2. For production
-Duplicate the file **.env.local** inside **/api/flight/config/** and rename the duplicated one to **.env.production** and replace values.
+Duplicate the file **.env.local** inside **/api/flight/config/**, rename the duplicated one to **.env.production** and replace values.
 
 ## 3. Launch Options
 

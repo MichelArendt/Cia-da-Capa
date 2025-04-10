@@ -25,9 +25,9 @@ else if (
     errorMessage += ProductStateService.SizeLabelsApiHandler.ErrorMessage ?? "";
 
     @NotificationService.DisplayError(
-                                                                                                "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
-                                                                                                errorMessage
-                                                                                            );
+        "Problema ao conectar com o bando de dados. Tente novamente mais tarde!",
+        errorMessage
+    );
 }
 else if (AppStateService.IsCheckingAuth)
 {
