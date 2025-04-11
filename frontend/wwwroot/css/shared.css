@@ -146,7 +146,6 @@ button {
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  z-index: 1000;
   transition: all linear 0.2s;
   background: hsla(240, 3%, 18%, 0.9);
 }
@@ -163,6 +162,13 @@ button {
 
 /* Desktop */
 @media (min-width: 800px) {
+  .dropdown:hover .dropdown__content {
+    opacity: 1;
+    visibility: visible;
+  }
+  .dropdown:hover .svg--rotate {
+    transform: rotate(180deg);
+  }
   .svg--rotate {
     transition: all linear 0.2s;
   }
@@ -174,15 +180,10 @@ button {
     overflow-y: hidden;
     overflow-x: visible;
     min-width: max-content;
-    transform: translateY(-100%);
   }
-  .dropdown:hover .dropdown__content {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-  .dropdown:hover .svg--rotate {
-    transform: rotate(180deg);
+  .dropdown__content li {
+    list-style-type: none;
+    padding: 10px 15px;
   }
 }
 .select {
@@ -1128,10 +1129,6 @@ form input::placeholder {
 
 .nav--interactive {
   color: hsl(0, 0%, 73%);
-  background: hsl(240, 3%, 18%);
-}
-.nav--interactive li {
-  background: hsl(240, 3%, 18%);
 }
 .nav--interactive svg {
   fill: hsl(0, 0%, 73%);
@@ -1143,6 +1140,10 @@ form input::placeholder {
 }
 .nav--interactive:hover svg {
   fill: hsl(37, 59%, 54%);
+}
+
+li.nav--highlight {
+  border-bottom: 2px solid hsla(37, 59%, 54%, 0.25);
 }
 
 @media (min-width: 800px) {

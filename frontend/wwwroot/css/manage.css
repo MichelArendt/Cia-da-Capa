@@ -69,7 +69,6 @@
 
 .login-form button[type=submit] {
   background: hsl(37, 59%, 54%);
-  background: red;
   color: hsl(240, 3%, 18%);
   padding: 20px;
   transition: all linear 0.2s;

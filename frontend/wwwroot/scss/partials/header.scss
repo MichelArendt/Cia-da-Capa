@@ -56,11 +56,11 @@
 
 .nav--interactive {
     color: colors.$secondary--light;
-    background: colors.$primary--dark;
+    // background: colors.$primary--dark;
     @extend %transition--default;
 
     li {
-        background: colors.$primary--dark;
+        // background: colors.$primary--dark;
     }
 
     svg {
@@ -76,6 +76,10 @@
     svg {
         fill: colors.$primary--main;
     }
+}
+
+li.nav--highlight {
+    border-bottom: 2px solid colors.opacity-set(colors.$primary--main, 25%);
 }
 
 @media (min-width: variables.$breakpoint--desktop) {

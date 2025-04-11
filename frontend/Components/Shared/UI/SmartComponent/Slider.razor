@@ -4,16 +4,16 @@
 
 @* @inject AppStateService AppState *@
 
-<div class="slider" @onclick="Toggle">
+<div class="slider" @onclick="Open">
     <button class="slider__button @HeaderClassName">
         @HeaderContent
     </button>
+
     <div class="slider__content slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
-        <div class="slider__content-wrapper"
-        @onclick:stopPropagation>
+        <div class="slider__content-wrapper" @onclick:stopPropagation>
+            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
             @BodyMobileContentTitle
             @BodyContent
-            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
         </div>
     </div>
 </div>

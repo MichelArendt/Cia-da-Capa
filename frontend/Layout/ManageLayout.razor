@@ -39,6 +39,12 @@
                     }
                     else
                     {
+                        <li class="nav--highlight">
+                            <NavLink href="manage/produtos/adicionar">
+                                Adicionar produto
+                            </NavLink>
+                        </li>
+
                         @foreach (var (index, category) in ProductStateService.CategoriesDict)
                         {
                             <li>@category.Title</li>
@@ -56,18 +62,18 @@
                     <span>Produtos</span>
                 </HeaderContent>
                 <BodyContent>
-                    <li>
-                        <NavLink href="manage/produtos/adicionar">
-                            Adicionar produto
-                        </NavLink>
-                    </li>
-
                     @if (!ProductStateService.CategoriesDict.Any())
                     {
                         <li>Não há categorias cadastradas!</li>
                     }
                     else
                     {
+                        <li class="nav--highlight">
+                            <NavLink href="manage/produtos/adicionar">
+                                Adicionar produto
+                            </NavLink>
+                        </li>
+
                         @foreach (var (index, category) in ProductStateService.CategoriesDict)
                         {
                             <li>@category.Title</li>
@@ -107,7 +113,7 @@
             </BodyMobileContentTitle>
 
             <BodyContent>
-                <input type='text' />
+                <input type='text' placeholder="NÃO IMPLEMENTADO" />
             </BodyContent>
         </Dropdown>
 
