@@ -70,19 +70,27 @@
 
 .nav--interactive:hover {
     @extend %transition--default;
-    color: colors.$primary--main;
-    background: colors.opacity-set(colors.$primary--main, 25%);
-
-    svg {
-        fill: colors.$primary--main;
-    }
 }
+
+// .nav--interactive.nav--active{
+//     background: red;
+// }
 
 li.nav--highlight {
     border-bottom: 2px solid colors.opacity-set(colors.$primary--main, 25%);
 }
 
 @media (min-width: variables.$breakpoint--desktop) {
+
+    .nav--interactive:hover {
+        color: colors.$primary--main;
+        background: colors.opacity-set(colors.$primary--main, 25%);
+
+        svg {
+            fill: colors.$primary--main;
+        }
+    }
+
     .nav__button {
         justify-content: center;
         align-items: center;

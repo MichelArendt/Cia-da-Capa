@@ -5,7 +5,7 @@ namespace frontend.Components.Shared.UI.SmartComponent
 {
     public abstract class SmartComponentBase : ComponentBase, IDisposable
     {
-        protected bool IsOpen { get; private set; }
+        protected bool IsOpen { get; private set; } = false;
 
         [Inject]
         protected AppStateService AppState { get; set; } = default!;

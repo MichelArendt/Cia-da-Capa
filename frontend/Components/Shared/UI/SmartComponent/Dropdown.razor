@@ -6,19 +6,25 @@
 
 @inject IJSRuntime JSRuntime
 
-<div class="dropdown @ClassName" @onclick="ToggleOnlyOnMobile">
-    <button class="dropdown__button @HeaderClassName" @onclick="OnClick">
+<div class="dropdown @ClassName">
+    <button class="dropdown__button @HeaderClassName" @onclick="Open">
         @HeaderContent
+
         @if (!HideArrow)
         {
             <Svg ClassName="svg--rotate" Path="@Svg.Paths.ArrowDropDown" Width="15" Height="15" />
         }
     </button>
 
-    <div class="dropdown__content @(IsOpen ? "dropdown__content--visible" : "")"
-    style="@DynamicStyle"
-    @ref="DropdownRef"
-    >
+    <div class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
+        style="@DynamicStyle"
+        @ref="DropdownRef">
+
+        <button class="overlay__button overlay__button--close" @onclick="Close"
+        @onclick:stopPropagation>
+            <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
+        </button>
+
         <div class="dropdown__content-wrapper"
         @onclick:stopPropagation>
             @if (AppState.IsMobile) {
@@ -26,13 +32,6 @@
             }
             @BodyContent
         </div>
-        @if (AppState.IsMobile)
-        {
-            <button class="overlay__button overlay__button--close" @onclick="Close"
-            @onclick:stopPropagation>
-                &times;
-            </button>
-        }
     </div>
 </div>
 
@@ -85,7 +84,7 @@
 
     private async Task UpdateDynamicPosition()
     {
-        if (DropdownRef.Id == default)
+        if (!AppState.IsMobile || DropdownRef.Id == default)
         {
             return;
         }

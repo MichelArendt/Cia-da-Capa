@@ -1,17 +1,18 @@
-﻿@inherits SmartComponentBase
+﻿ @inherits SmartComponentBase
 
 @using frontend.Services
 
-@* @inject AppStateService AppState *@
-
-<div class="slider" @onclick="Open">
-    <button class="slider__button @HeaderClassName">
+<div class="slider">
+    <button class="slider__button @HeaderClassName" @onclick="Open">
         @HeaderContent
     </button>
 
-    <div class="slider__content slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
+    <div class="slider__content fullscreen-overlay slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
         <div class="slider__content-wrapper" @onclick:stopPropagation>
-            <button class="overlay__button overlay__button--close" @onclick="Close">&times;</button>
+            <button class="overlay__button overlay__button--close" @onclick="Close" @onclick:stopPropagation>
+                <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
+            </button>
+
             @BodyMobileContentTitle
             @BodyContent
         </div>
@@ -39,5 +40,15 @@
         right,
         top,
         bottom
+    }
+
+    private string GetBodyClassName()
+    {
+        var baseClass = $"slider__content slider__content--{Direction}";
+        if (IsOpen)
+        {
+            baseClass += " slider__content--visible";
+        }
+        return baseClass;
     }
 }
