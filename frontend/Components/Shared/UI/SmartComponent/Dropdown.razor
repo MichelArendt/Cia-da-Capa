@@ -17,8 +17,8 @@
     </button>
 
     <div class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
-        style="@DynamicStyle"
-        @ref="DropdownRef">
+    style="@DynamicStyle"
+    @ref="DropdownRef">
 
         <button class="overlay__button overlay__button--close" @onclick="Close"
         @onclick:stopPropagation>
@@ -84,10 +84,11 @@
 
     private async Task UpdateDynamicPosition()
     {
-        if (!AppState.IsMobile || DropdownRef.Id == default)
+        if (AppState.IsMobile || DropdownRef.Id == default)
         {
             return;
         }
+
         DOMRect elementBoundingRect = await JSRuntime.InvokeAsync<DOMRect>("getBoundingClientRect", DropdownRef);
 
         if (elementBoundingRect == null)
