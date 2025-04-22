@@ -1,5 +1,7 @@
 ﻿@using frontend.Components.Shared.Utilities
 
+@inject IJSRuntime JSRuntime
+
 @inject NavigationManager Navigation
 @inject AppStateService AppStateService
 @inject ProductStateService ProductStateService
@@ -100,8 +102,23 @@ else
         // Initial fetch of categories and sizelabels
         await Task.WhenAll(
             ProductStateService.CategoriesApiHandler.ExecuteAsync(),
-            ProductStateService.SizeLabelsApiHandler.ExecuteAsync()
+            ProductStateService.SizeLabelsApiHandler.ExecuteAsync(),
+            InitMobileFlag()
         );
+    }
+
+    private async Task InitMobileFlag()
+    {
+        try
+        {
+            int width = await JSRuntime.InvokeAsync<int>("getBrowserWidth");
+            AppStateService.BrowserWidth = width;
+            AppStateService.IsMobile = width < AppStateService.BreakpointDesktop;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error initializing IsMobile: " + ex.Message);
+        }
     }
 
     private async Task HandleNavigationAsync(NavigationContext context)

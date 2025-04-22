@@ -16,7 +16,9 @@ window.resizeListener = {
 
         // Add the resize event listener to the window object
         // The `onResize` method will be triggered whenever the browser window is resized
+        // or it's orientation changes
         window.addEventListener("resize", this.boundOnResize);
+        window.addEventListener("orientationchange", this.boundOnResize);
     },
 
     /**
@@ -26,8 +28,9 @@ window.resizeListener = {
     dispose: function () {
         // Check if the resize event listener was previously bound
         if (this.boundOnResize) {
-            // Remove the resize event listener from the window object
+            // Remove the resize event listeners from the window object
             window.removeEventListener("resize", this.boundOnResize);
+            window.removeEventListener("orientationchange", this.boundOnResize);
         }
 
         // Clear the Blazor .NET object reference to free up memory and avoid potential issues
