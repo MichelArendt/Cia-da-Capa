@@ -13,19 +13,15 @@
 
 <Header>
 	<NavResponsiveMenuOptions>
-		<div>
-			<NavLink href="" class="nav__button nav--interactive">
-				Página Inicial
-			</NavLink>
-		</div>
 		@if (AppState.IsMobile)
 		{ 
 			<List>
 				<HeaderContent>
 					<button class="nav__button nav--interactive" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button>
 				</HeaderContent>
+
 				<BodyContent>
-					<li>CATEGORIAS</li>
+					<li>PRODUTOS</li>
 				</BodyContent>
 			</List>
 		}
@@ -37,16 +33,17 @@
 				OnClick="@(() => Navigation.NavigateTo("produto"))"
 			>
 				<HeaderContent>
-					<span>CATEGORIAS</span>
+					<span>PRODUTOS</span>
 				</HeaderContent>
+
 				<BodyContent>
-					<li>CATEGORIAS</li>
+					<li>PRODUTOS</li>
 				</BodyContent>
 			</Dropdown>
 		}
 		<div>
 			<NavLink href="/contato" class="nav__button nav--interactive">
-				Contato
+				CONTATO
 			</NavLink>
 		</div>
 	</NavResponsiveMenuOptions>

@@ -1,6 +1,77 @@
 ﻿@page "/"
+@using frontend.Components.Shared.UI.Carousel
 @using frontend.Components.Shared.UI.SmartComponent
 
-<PageTitle>Home - Cia da Capa</PageTitle>
+<PageTitle>Cia da Capa</PageTitle>
 
-HOME
+<section class="splash">
+    <div class="splash-item">
+        <div class="splash-item-svg">
+            <Svg Path="@Svg.Paths.Verified" Width="40" Height="40" />
+        </div>
+        <div class="splash-item-text">
+            no mercado<br />
+            <strong>HÁ 29 ANOS</strong>
+        </div>
+    </div>
+
+    <div class="splash-separator"></div>
+
+    <div class="splash-item">
+        <div class="splash-item-svg">
+            <Svg Path="@Svg.Paths.Palette" Width="40" Height="40" />
+        </div>
+        <div class="splash-item-text">
+            produtos<br />
+            <strong>PERSONALIZADOS</strong>
+        </div>
+    </div>
+
+    <div class="splash-separator"></div>
+
+    <div class="splash-item">
+        <div class="splash-item-svg">
+            <Svg Path="@Svg.Paths.Medal" Width="40" Height="40" />
+        </div>
+        <div class="splash-item-text">
+            garantia<br />
+            <strong>DE QUALIDADE</strong>
+        </div>
+    </div>
+
+    <div class="splash-separator"></div>
+
+    <div class="splash-item">
+        <div class="splash-item-svg">
+            <Svg Path="@Svg.Paths.DeliveryTruckSpeed" Width="40" Height="40" />
+        </div>
+        <div class="splash-item-text">
+            entrega para<br />
+            <strong>TODO O BRASIL</strong>
+        </div>
+    </div>
+</section>
+
+<section class="splash-clients">
+    <div class="splash-clients-text">
+        <div class="splash-item-text">
+            principais<br />
+            <strong>CLIENTES</strong>
+        </div>
+    </div>
+
+    <div class="splash-clients-logos">
+        <Carousel>
+            <CarouselItem><img src="images/clients/aurora.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/brf.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/caixa.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/ccaa.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/correios.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/fiat.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/prefeitura_bh.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/prefeitura_canoas.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/pronatec.jpg" /></CarouselItem>
+            <CarouselItem><img src="images/clients/senac.jpg" /></CarouselItem>
+        </Carousel>
+    </div>
+</section>

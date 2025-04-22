@@ -1,0 +1,28 @@
+﻿
+<div class="carousel">
+    <ul class="carousel-list" @ref="CarouselListRef">
+        @ChildContent
+    </ul>
+
+    <button class="carousel-button carousel-button--previous" type="button" @onclick="() => Scroll(false)">
+        <Svg Path="@Svg.Paths.ChevronLeft" Width="20" Height="20" />
+    </button>
+
+    <button class="carousel-button carousel-button--next" type="button" @onclick="() => Scroll(true)">
+        <Svg Path="@Svg.Paths.ChevronRight" Width="20" Height="20" />
+    </button>
+</div>
+
+@code {
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private ElementReference CarouselListRef;
+
+    private async Task Scroll(bool scrollToTheRight){
+        // Scroll the carousel to the right
+        await JSRuntime.InvokeVoidAsync("scrollCarousel", CarouselListRef, scrollToTheRight);
+    }
+}

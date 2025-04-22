@@ -1,3 +1,114 @@
+@use 'abstracts/colors' as colors;
+@use 'abstracts/placeholders' as *;
+@use 'abstracts/variables' as variables;
+
 main {
-  font-size: 16px;
+    font-size: 16px;
+}
+
+// ---------------------------
+// HOME PAGE - splashes
+// ---------------------------
+
+.splash {
+    @extend %flex--column--center-horizontal;
+    border: 1px solid colors.$primary--main;
+    color: colors.$primary--main;
+    padding: unset;
+    border-radius: 0;
+    margin: 25px 0 0 0;
+}
+
+.splash-item {
+    @extend %flex--row--center;
+    padding: 30px;
+}
+
+.splash-separator {
+    height: 2px;
+    width: 80%;
+    background: colors.opacity-set(colors.$primary--main, 0.2);
+}
+
+.splash-item-svg {
+    svg {
+        fill: colors.$primary--main;
+    }
+}
+
+.splash-item-text {
+    font-size: 20px;
+
+    strong {
+        font-weight: 700;
+    }
+}
+
+
+// Desktop view - splash
+@media (min-width: variables.$breakpoint--desktop) {
+    // .splash {
+    //     @extend %flex--row--center-vertical;
+    //     border: 1px solid colors.$primary--main;
+    //     border-radius: 0;
+    //     height: 150px;
+    //     margin: unset;
+    //     padding: unset;
+    //     padding: 0 50px;
+    // }
+
+    // .splash-item {
+    //     @extend %flex--row--center;
+    //     flex-grow: 1;
+    //     gap: 20px;
+    //     color: colors.$primary--main;
+    //     margin: 50px 20px;
+    // }
+
+    // .splash-separator {
+    //     width: 1px;
+    //     height: 80%;
+    //     margin: 0 50px;
+    //     background: colors.$primary--main;
+    // }
+
+}
+
+// Splash - Client
+
+.splash-clients {
+    @extend %flex--column;
+    border-radius: 0;
+    // height: 150px;
+    margin: unset;
+    padding: unset;
+    border: 1px solid colors.$primary--main;
+    border-top: none;
+    color: colors.$primary--main;
+    width: 100%;
+}
+
+.splash-clients-text {
+    padding: 20px;
+
+    font-size: 20px;
+    text-align: center;
+
+    strong {
+        font-weight: 700;
+    }
+}
+
+.splash-clients-logos {
+    @extend %flex--row--center-vertical;
+    width: 100%;
+    overflow-x: hidden;
+
+    > * {
+        height: 100%;
+    }
+}
+
+@media (min-width: variables.$breakpoint--desktop) {
+
 }

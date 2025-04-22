@@ -1,0 +1,11 @@
+﻿<li class="carousel-item">
+    @* <div class="carousel-item__content"> *@
+    @*     @ChildContent *@
+    @* </div> *@
+
+    @ChildContent
+</li>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

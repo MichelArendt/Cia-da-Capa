@@ -1,3 +1,84 @@
+.splash-clients, .splash, .splash-item, .splash-clients-logos {
+  display: flex;
+}
+
+.splash-item, .splash-clients-logos {
+  flex-direction: row;
+}
+
+.splash-clients-logos {
+  align-items: center;
+}
+
+.splash-item {
+  justify-content: center;
+  align-items: center;
+}
+
+.splash-clients, .splash {
+  flex-direction: column;
+}
+
+.splash {
+  align-items: center;
+}
+
 main {
   font-size: 16px;
+}
+
+.splash {
+  border: 1px solid hsl(37, 59%, 54%);
+  color: hsl(37, 59%, 54%);
+  padding: unset;
+  border-radius: 0;
+  margin: 25px 0 0 0;
+}
+
+.splash-item {
+  padding: 30px;
+}
+
+.splash-separator {
+  height: 2px;
+  width: 80%;
+  background: hsla(37, 59%, 54%, 0.2);
+}
+
+.splash-item-svg svg {
+  fill: hsl(37, 59%, 54%);
+}
+
+.splash-item-text {
+  font-size: 20px;
+}
+.splash-item-text strong {
+  font-weight: 700;
+}
+
+.splash-clients {
+  border-radius: 0;
+  height: 150px;
+  margin: unset;
+  padding: unset;
+  border: 1px solid hsl(37, 59%, 54%);
+  border-top: none;
+  color: hsl(37, 59%, 54%);
+  width: 100%;
+}
+
+.splash-clients-text {
+  padding: 50px 50px;
+  font-size: 20px;
+}
+.splash-clients-text strong {
+  font-weight: 700;
+}
+
+.splash-clients-logos {
+  width: 100%;
+  overflow-x: hidden;
+}
+.splash-clients-logos > * {
+  height: 100%;
 }
