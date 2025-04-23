@@ -11,7 +11,32 @@ main {
 // ---------------------------
 
 .splash {
-    @extend %flex--column--center-horizontal;
+    // @extend %flex--column--center-horizontal;
+    display: grid;
+
+    // MOBILE: Single column
+    grid-template-columns: 1fr;
+    place-items: center;
+
+    // TABLET: Two columns
+    @media (min-width: 620px) {
+        grid-template-columns: 1fr min-content 1fr;
+
+        :nth-child(4) {
+            display: none;
+        }
+    }
+
+    // Desktop: One row
+    @media (min-width: 1280px) {
+        display: flex;
+        height: 150px;
+
+        :nth-child(4) {
+            display: block;
+        }
+    }
+
     border: 1px solid colors.$primary--main;
     color: colors.$primary--main;
     padding: unset;
@@ -21,13 +46,22 @@ main {
 
 .splash-item {
     @extend %flex--row--center;
-    padding: 30px;
+    gap: 10px;
+    padding: 30px 20px;
+    flex-grow: 1;
 }
 
 .splash-separator {
     height: 2px;
     width: 80%;
     background: colors.opacity-set(colors.$primary--main, 0.2);
+
+    @media (min-width: 620px) {
+        width: 1px;
+        height: 80%;
+        margin: 0 50px;
+        background: colors.$primary--main;
+    }
 }
 
 .splash-item-svg {
@@ -44,36 +78,6 @@ main {
     }
 }
 
-
-// Desktop view - splash
-@media (min-width: variables.$breakpoint--desktop) {
-    // .splash {
-    //     @extend %flex--row--center-vertical;
-    //     border: 1px solid colors.$primary--main;
-    //     border-radius: 0;
-    //     height: 150px;
-    //     margin: unset;
-    //     padding: unset;
-    //     padding: 0 50px;
-    // }
-
-    // .splash-item {
-    //     @extend %flex--row--center;
-    //     flex-grow: 1;
-    //     gap: 20px;
-    //     color: colors.$primary--main;
-    //     margin: 50px 20px;
-    // }
-
-    // .splash-separator {
-    //     width: 1px;
-    //     height: 80%;
-    //     margin: 0 50px;
-    //     background: colors.$primary--main;
-    // }
-
-}
-
 // Splash - Client
 
 .splash-clients {
@@ -86,6 +90,10 @@ main {
     border-top: none;
     color: colors.$primary--main;
     width: 100%;
+
+    @media (min-width: 620px) {
+        flex-direction: row;
+    }
 }
 
 .splash-clients-text {
@@ -104,11 +112,9 @@ main {
     width: 100%;
     overflow-x: hidden;
 
-    > * {
+    >* {
         height: 100%;
     }
 }
 
-@media (min-width: variables.$breakpoint--desktop) {
-
-}
+@media (min-width: variables.$breakpoint--desktop) {}
