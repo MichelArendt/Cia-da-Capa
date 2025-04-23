@@ -17,21 +17,29 @@
 // ---------------------------
 // WEBSITE CONTAINERS
 // ---------------------------
+html,
+body {
+    height: 100%;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+}
 
 .website__main {
-    height: calc(100% - 80px);
     @extend %flex--row--center-horizontal;
     @extend %roboto-light;
     padding: 0 10px;
+    flex-grow: 1;
 }
 
 .website__main-wrapper {
-    @extend .website--max-width;
+    @extend %website--max-width;
 }
 
 @media (min-width: variables.$breakpoint--desktop) {
-    .website__main {
-    }
+    .website__main {}
 }
 
 section {
@@ -45,6 +53,7 @@ section {
     clip-path: inset(0 -100vmax);
     background: colors.opacity-set(colors.$primary--main, 5%);
 }
+
 .section--full-width {
     width: 100%;
 }
@@ -66,8 +75,7 @@ section {
 
 .content-center_spacer {}
 
-.content-center_item {
-}
+.content-center_item {}
 
 // ---------------------------
 // GENERAL
@@ -79,10 +87,20 @@ section {
 
 a {
     color: colors.$primary--main;
+    @extend %transition--default;
+
+    >svg {
+        fill: colors.$primary--main;
+        @extend %transition--default;
+    }
 }
 
 a:hover {
     color: colors.$secondary--main;
+
+    >svg {
+        fill: colors.$secondary--main;
+    }
 }
 
 p {
@@ -126,8 +144,7 @@ button:disabled {
 
 .content-center_spacer {}
 
-.content-center_item {
-}
+.content-center_item {}
 
 // ---------------------------
 // BASE FLEX CLASS

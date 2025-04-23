@@ -2,6 +2,8 @@
 @use 'abstracts/placeholders' as *;
 @use 'abstracts/variables' as variables;
 
+@use 'partials/footer' as *;
+
 main {
     font-size: 16px;
 }
@@ -17,6 +19,12 @@ main {
     // MOBILE: Single column
     grid-template-columns: 1fr;
     place-items: center;
+
+    border: 1px solid colors.$primary--main;
+    color: colors.$primary--main;
+    padding: unset;
+    border-radius: 0;
+    margin: 25px 0 0 0;
 
     // TABLET: Two columns
     @media (min-width: 620px) {
@@ -36,12 +44,6 @@ main {
             display: block;
         }
     }
-
-    border: 1px solid colors.$primary--main;
-    color: colors.$primary--main;
-    padding: unset;
-    border-radius: 0;
-    margin: 25px 0 0 0;
 }
 
 .splash-item {

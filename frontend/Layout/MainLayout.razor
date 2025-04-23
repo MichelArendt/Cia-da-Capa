@@ -91,6 +91,80 @@
 	</div>
 </main>
 
+<footer>
+	<section class="footer__links">
+		<div class="footer-links__aboutus">
+			<h1>Institucional</h1>
+
+			<div class="footer-content__wrapper">
+				<a href="#">Quem somos</a>
+				<a href="#">Responsabilidade social</a>
+				<a href="#">Política de privacidade</a>
+			</div>
+		</div>
+
+		<div class="footer-links__contact">
+            <h1>Contato</h1>
+
+			<div class="footer-content__wrapper">
+				<a href="https://wa.link/q5awe0" target="_blank" class="footer-contact__phone">
+					<Svg Path="@Svg.Paths.WhatsApp" Width="16" Height="16" />
+					<div>
+						(49) 9-9135-7628
+					</div>
+				</a>
+
+				<div class="footer-contact__phone">
+					<Svg Path="@Svg.Paths.PhoneInTalk" Width="16" Height="16" />
+					<div>
+						<span>(49) 3442-1550</span>
+						<span>(49) 3030-0300</span>
+					</div>
+				</div>
+
+				<div class="footer-contact__phone">
+					<Svg Path="@Svg.Paths.Fax" Width="16" Height="16" />
+					<div>
+						(49) 3442 1550 Ramal 07
+					</div>
+				</div>
+
+				<a href="#">Outras formas</a>
+			</div>
+		</div>
+
+		<div class="footer-links__socials">
+			<h1>Redes Sociais</h1>
+
+			<div class="footer-content__wrapper">
+				<a href="#" target="_blank">
+					<Svg Path="@Svg.Paths.Instagram" Width="30" Height="30" />
+				</a>
+
+				<a href="#" target="_blank">
+					<Svg Path="@Svg.Paths.Facebook" Width="30" Height="30" />
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="footer__copyright">
+		<div>
+			CDC Indústria e Comércio de Bolsas Eireli EPP | CNPJ 04.553.782/0001-47 | IE 254.276.679
+		</div>
+
+		<div>
+			<a href="https://maps.app.goo.gl/vd8xbJcHdaikzhyv5" target="_blank">
+				<Svg Path="@Svg.Paths.Location" Width="12" Height="12" /> Rua Victor Sopelsa, n° 299, Bairro Parque de Exposições - Concórdia/SC - CEP 89711-330
+			</a>
+		</div>
+
+		<div>
+			Copyright ©@DateTime.Now.Year Todos os direitos reservados - por Michel Arendt
+		</div>
+	</section>
+</footer>
+
 @code {
 	[Inject]
 	private NavigationManager Navigation { get; set; } = default!;

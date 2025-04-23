@@ -86,6 +86,14 @@
     @include mixins.font-style(variables.$font-roboto, 400);
 }
 
+%roboto-medium {
+    @include mixins.font-style(variables.$font-roboto, 500);
+}
+
+%roboto-semibold {
+    @include mixins.font-style(variables.$font-roboto, 600);
+}
+
 %roboto-bold {
     @include mixins.font-style(variables.$font-roboto, 700);
 }
@@ -96,6 +104,14 @@
 
 %poppins-regular {
     @include mixins.font-style(variables.$font-poppins, 400);
+}
+
+%poppins-medium {
+    @include mixins.font-style(variables.$font-poppins, 500);
+}
+
+%poppins-semibold {
+    @include mixins.font-style(variables.$font-poppins, 600);
 }
 
 %poppins-bold {
