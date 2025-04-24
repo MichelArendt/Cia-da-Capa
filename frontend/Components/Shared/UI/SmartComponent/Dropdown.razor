@@ -20,10 +20,13 @@
     style="@DynamicStyle"
     @ref="DropdownRef">
 
-        <button class="overlay__button overlay__button--close" @onclick="Close"
-        @onclick:stopPropagation>
-            <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
-        </button>
+        @if (AppState.IsMobile)
+        {
+            <button class="overlay__button overlay__button--close" @onclick="Close"
+            @onclick:stopPropagation>
+                <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
+            </button>
+        }
 
         <div class="dropdown__content-wrapper"
         @onclick:stopPropagation>
