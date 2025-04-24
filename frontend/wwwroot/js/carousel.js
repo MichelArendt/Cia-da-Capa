@@ -1,15 +1,4 @@
-﻿//window.scrollCarousel = (element, toRight) => {
-//    const distance = 200;
-
-//    if (element) {
-//        element.scrollBy({
-//            left: toRight ? distance : -distance,
-//            behavior: 'smooth'
-//        });
-//    }
-//};
-
-window.scrollCarouselToIndex = function (carouselListRef, index) {
+﻿window.scrollCarouselToIndex = function (carouselListRef, index) {
     if (!carouselListRef || !carouselListRef.children || index >= carouselListRef.children.length)
         return;
 

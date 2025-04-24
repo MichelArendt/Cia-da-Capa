@@ -11,7 +11,7 @@
         </div>
         <div class="splash-item-text">
             no mercado<br />
-            <strong>HÁ 29 ANOS</strong>
+            <strong>HÁ @YearsSince1995 ANOS</strong>
         </div>
     </div>
 
@@ -75,3 +75,18 @@
         </Carousel>
     </div>
 </section>
+
+@code {
+    private int YearsSince1995 => CalculateYearsSince(new DateTime(1995, 4, 1));
+
+    private int CalculateYearsSince(DateTime startDate)
+    {
+        var today = DateTime.Today;
+        int years = today.Year - startDate.Year;
+        if (today < startDate.AddYears(years))
+        {
+            years--; // hasn't reached the anniversary this year yet
+        }
+        return years;
+    }
+}
