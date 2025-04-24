@@ -35,6 +35,10 @@ footer {
   font-style: normal;
 }
 
+.footer__links, .footer__copyright {
+  transition: all 0.3s ease-in-out;
+}
+
 footer {
   background: hsl(240, 3%, 18%);
   color: hsl(0, 0%, 73%);
@@ -63,7 +67,7 @@ footer h1 {
 }
 
 .footer-content__wrapper {
-  gap: 15px;
+  gap: 10px;
 }
 
 .footer-links__contact {

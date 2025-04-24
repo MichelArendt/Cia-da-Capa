@@ -63,7 +63,7 @@ form input, form textarea, form select {
   font-style: normal;
 }
 
-button, .nav--interactive, .nav--interactive:hover {
+a, a > svg, button, .nav--interactive, .nav--interactive:hover {
   transition: all 0.3s ease-in-out;
 }
 

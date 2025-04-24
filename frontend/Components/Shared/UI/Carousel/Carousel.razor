@@ -1,7 +1,9 @@
 ﻿
 <div class="carousel">
     <ul class="carousel-list" @ref="CarouselListRef">
-        @ChildContent
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
     </ul>
 
     <button class="carousel-button carousel-button--previous" type="button" @onclick="() => Scroll(false)">
@@ -20,9 +22,62 @@
     public RenderFragment? ChildContent { get; set; }
 
     private ElementReference CarouselListRef;
+    private readonly List<ElementReference> _items = new();
+    private int _currentIndex = 0;
 
-    private async Task Scroll(bool scrollToTheRight){
-        // Scroll the carousel to the right
-        await JSRuntime.InvokeVoidAsync("scrollCarousel", CarouselListRef, scrollToTheRight);
+    private System.Timers.Timer? _scrollTimer;
+
+    // Called from CarouselItem
+    public void RegisterItem(ElementReference item)
+    {
+        _items.Add(item);
+
+        if (_items.Count == 1)
+        {
+            // Only start once after first item is added
+            StartAutoScroll();
+        }
+    }
+
+    private async Task Scroll(bool scrollToTheRight)
+    {
+        _currentIndex = scrollToTheRight
+            ? (_currentIndex + 1) % _items.Count
+            : (_currentIndex - 1 + _items.Count) % _items.Count;
+
+        await ScrollToIndex(_currentIndex);
+    }
+
+    private async Task ScrollToIndex(int index)
+    {
+        await JSRuntime.InvokeVoidAsync("scrollCarouselToIndex", CarouselListRef, index);
+    }
+
+    @* protected override void OnAfterRender(bool firstRender) *@
+    @* { *@
+    @*     if (firstRender) *@
+    @*     { *@
+    @*         StartAutoScroll(); *@
+    @*     } *@
+    @* } *@
+
+    private void StartAutoScroll()
+    {
+        _scrollTimer = new System.Timers.Timer(2500);
+        _scrollTimer.Elapsed += async (_, _) =>
+        {
+            await InvokeAsync(async () =>
+            {
+                _currentIndex = (_currentIndex + 1) % _items.Count;
+                await ScrollToIndex(_currentIndex);
+            });
+        };
+        _scrollTimer.AutoReset = true;
+        _scrollTimer.Start();
+    }
+
+    public void Dispose()
+    {
+        _scrollTimer?.Dispose();
     }
 }
