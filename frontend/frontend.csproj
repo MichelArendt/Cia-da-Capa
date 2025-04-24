@@ -23,11 +23,6 @@
 		<Folder Include="wwwroot\images\products\" />
 	</ItemGroup>
 
-	<!-- <Target Name="LogPublishedFiles" AfterTargets="Publish">
-		<Message Text="Listing all files in $(PublishDir):" Importance="high" />
-		<Exec Command="dir $(PublishDir) /s" />
-	</Target> -->
-
 	<!-- Clean the /build folder before publish -->
 	<Target Name="CleanBuildFolder" BeforeTargets="PrepareForPublish">
 		<Message Text="Cleaning folder: $(PublishDir)" Importance="high" />
@@ -36,16 +31,9 @@
 		<Message Text="Folder $(PublishDir) has been cleaned and recreated." Importance="high" />
 	</Target>
 
-	<!--<Target Name="RemoveServiceWorkerOnDebug" AfterTargets="FlattenOutput" Condition="'$(Configuration)'=='Debug'">
-		-->
-	<!-- Remove service-worker.js from the publish output -->
-	<!--
-		<Exec Command="del &quot;$(PublishDir)service-worker.js&quot;" />
-		-->
-	<!-- Optionally, remove the assets manifest if you don't want any service worker files -->
-	<!--
-		<Exec Command="del &quot;$(PublishDir)service-worker-assets.js&quot;" />
-	</Target>-->
+	<Target Name="CompileSCSS" BeforeTargets="Build">
+		<Exec Command="sass wwwroot/scss/manage.scss:wwwroot/css/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css wwwroot/scss/shared.scss:wwwroot/css/shared.css --no-source-map" />
+	</Target>
 
 	<Target Name="RemoveSRIIfDebug" AfterTargets="FlattenOutput">
 		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
@@ -65,8 +53,9 @@
 		<RemoveDir Directories="$(PublishDir)wwwroot" />
 	</Target>
 
-	<Target Name="CompileSCSS" BeforeTargets="Build">
-		<Exec Command="sass wwwroot/scss/manage.scss:wwwroot/css/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css wwwroot/scss/shared.scss:wwwroot/css/shared.css --no-source-map" />
+	<!-- Adds versioning to file names and updates the index.html file accordingly to bust cache -->
+	<Target Name="PostPublishScript" AfterTargets="FlattenOutput">
+		<Exec Command="powershell.exe -ExecutionPolicy Bypass -File $(ProjectDir)version-files.ps1" />
 	</Target>
 
 	<ItemGroup>
