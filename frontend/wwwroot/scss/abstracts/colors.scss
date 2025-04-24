@@ -22,12 +22,15 @@
 // ------------------------------
 
 // Primary Colors
-$primary--main: hsla(37, 59%, 54%, 1.0);
+$primary--main: hsla(37, 59%, 54%, 1.0); // Warm golden
 $primary--dark: hsla(240, 3%, 18%, 1.0);
 
 // Secondary Colors
-$secondary--main: hsla(24, 70%, 50%, 1.0);
-$secondary--light: hsla(0, 0%, 73%, 1.0);
+// $secondary--main: hsla(24, 70%, 50%, 1.0); // 	Vibrant orange
+$secondary--light: hsla(0, 0%, 73%, 1.0); // Soft neutral gray
+// $secondary--hover: hsla(24, 70%, 40%, 1.0); //  Darker for press
+// $secondary--hover-2: hsla(24, 70%, 60%, 1.0);
+$secondary--main: 	hsla(20, 80%, 48%, 1.0);
 
 // ------------------------------
 // Feedback

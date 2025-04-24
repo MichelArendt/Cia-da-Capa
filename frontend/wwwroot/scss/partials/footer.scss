@@ -34,7 +34,6 @@ footer h1 {
 
 .footer__links {
     @extend %flex--column;
-    // width: 100%;
     max-width: 1200px;
     padding: 50px 20px;
     @extend %transition--default;

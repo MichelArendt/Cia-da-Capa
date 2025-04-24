@@ -343,7 +343,7 @@ table tbody tr.active-row {
 }
 
 .table__actions:hover {
-  fill: hsl(24, 70%, 50%);
+  fill: hsl(20, 80%, 48%);
 }
 
 .tabbed-navigation_tabs {
@@ -1242,10 +1242,10 @@ a > svg {
 }
 
 a:hover {
-  color: hsl(24, 70%, 50%);
+  color: hsl(20, 80%, 48%);
 }
 a:hover > svg {
-  fill: hsl(24, 70%, 50%);
+  fill: hsl(20, 80%, 48%);
 }
 
 p {

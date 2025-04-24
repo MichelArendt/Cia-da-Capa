@@ -75,7 +75,7 @@
 }
 
 .login-form button[type=submit]:hover {
-  background: hsl(24, 70%, 50%);
+  background: hsl(20, 80%, 48%);
 }
 
 .login-form button[type=submit]:disabled {
@@ -134,7 +134,7 @@
 }
 
 .gallery-editable__reorder-save-overlay:hover {
-  background: hsl(24, 70%, 50%);
+  background: hsl(20, 80%, 48%);
 }
 .gallery-editable__reorder-save-overlay:hover > button {
   color: white;
