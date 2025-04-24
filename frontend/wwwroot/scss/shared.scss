@@ -49,9 +49,9 @@ section {
 }
 
 .section--light {
-    box-shadow: 0 0 0 100vmax colors.opacity-set(colors.$primary--main, 5%);
+    box-shadow: 0 0 0 100vmax colors.opacity-set(colors.$primary-main, 5%);
     clip-path: inset(0 -100vmax);
-    background: colors.opacity-set(colors.$primary--main, 5%);
+    background: colors.opacity-set(colors.$primary-main, 5%);
 }
 
 .section--full-width {
@@ -86,20 +86,20 @@ section {
 }
 
 a {
-    color: colors.$primary--main;
+    color: colors.$primary-main;
     @extend %transition--default;
 
     >svg {
-        fill: colors.$primary--main;
+        fill: colors.$primary-main;
         @extend %transition--default;
     }
 }
 
 a:hover {
-    color: colors.$secondary--main;
+    color: colors.$secondary-main;
 
     >svg {
-        fill: colors.$secondary--main;
+        fill: colors.$secondary-main;
     }
 }
 
@@ -111,8 +111,8 @@ p {
 }
 
 button {
-    // background: colors.$primary--dark;
-    // color: colors.$primary--main;
+    // background: colors.$primary-dark;
+    // color: colors.$primary-main;
     padding: 20px;
     width: 100%;
     text-transform: uppercase;
@@ -121,13 +121,13 @@ button {
 }
 
 button:hover {
-    // background: colors.$primary--main;
-    // color: colors.$primary--dark;
+    // background: colors.$primary-main;
+    // color: colors.$primary-dark;
 }
 
 button:disabled {
-    background: colors.$secondary--light;
-    color: colors.$primary--dark;
+    background: colors.$secondary-light;
+    color: colors.$primary-dark;
     cursor: not-allowed;
 }
 
@@ -268,23 +268,23 @@ button:disabled {
     list-style: disc;
 
     &--success {
-        background-color: colors.$feedback--success-bg;
-        color: colors.$feedback--success;
+        background-color: colors.$feedback-success-bg;
+        color: colors.$feedback-success;
     }
 
     &--error {
-        background-color: colors.$feedback--error-bg;
-        color: colors.$feedback--error;
+        background-color: colors.$feedback-error-bg;
+        color: colors.$feedback-error;
     }
 
     &--info {
-        background-color: colors.$feedback--info-bg;
-        color: colors.$feedback--info;
+        background-color: colors.$feedback-info-bg;
+        color: colors.$feedback-info;
     }
 
     &--warning {
-        background-color: colors.$feedback--warning-bg;
-        color: colors.$feedback--warning;
+        background-color: colors.$feedback-warning-bg;
+        color: colors.$feedback-warning;
     }
 }
 
@@ -294,8 +294,8 @@ button:disabled {
     font-size: 1rem;
     margin: 0.5rem;
     list-style: disc;
-    background-color: colors.$feedback--error-bg;
-    color: colors.$feedback--error;
+    background-color: colors.$feedback-error-bg;
+    color: colors.$feedback-error;
 
     >li {
         margin-left: 30px;
@@ -330,8 +330,8 @@ button:disabled {
     aspect-ratio: 1;
     border-radius: 50%;
     background:
-        radial-gradient(farthest-side, colors.$primary--main 100%, #0000) top/8px 8px no-repeat,
-        conic-gradient(#0000 30%, colors.$primary--main);
+        radial-gradient(farthest-side, colors.$primary-main 100%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, colors.$primary-main);
     -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
     animation: l13 1s infinite linear;
 }
@@ -353,7 +353,7 @@ button:disabled {
     50% {
         transform: translateX(10px);
         /* Adjust distance */
-        color: colors.$primary--main;
+        color: colors.$primary-main;
 
     }
 
@@ -410,8 +410,8 @@ button:disabled {
 
 .page__500 {
     padding: 20px;
-    background: colors.$primary--dark;
-    color: colors.$secondary--light;
+    background: colors.$primary-dark;
+    color: colors.$secondary-light;
 
     >svg {
         fill: #d9534f;
@@ -484,13 +484,13 @@ button:disabled {
 }
 
 .notification--success {
-    background: colors.$feedback--success-bg;
-    color: colors.$feedback--success;
-    box-shadow: colors.$feedback--success;
-    border-color: colors.$feedback--success;
+    background: colors.$feedback-success-bg;
+    color: colors.$feedback-success;
+    box-shadow: colors.$feedback-success;
+    border-color: colors.$feedback-success;
 
     >svg {
-        fill: colors.$feedback--success;
+        fill: colors.$feedback-success;
     }
 
     > :first-child {
@@ -499,13 +499,13 @@ button:disabled {
 }
 
 .notification--warning {
-    background: colors.$feedback--warning-bg;
-    color: colors.$feedback--warning;
-    box-shadow: colors.$feedback--warning;
-    border-color: colors.$feedback--warning;
+    background: colors.$feedback-warning-bg;
+    color: colors.$feedback-warning;
+    box-shadow: colors.$feedback-warning;
+    border-color: colors.$feedback-warning;
 
     >svg {
-        fill: colors.$feedback--warning;
+        fill: colors.$feedback-warning;
     }
 
     > :first-child {
@@ -514,13 +514,13 @@ button:disabled {
 }
 
 .notification--info {
-    background: colors.$feedback--info-bg;
-    color: colors.$feedback--info;
-    box-shadow: colors.$feedback--info;
-    border-color: colors.$feedback--info;
+    background: colors.$feedback-info-bg;
+    color: colors.$feedback-info;
+    box-shadow: colors.$feedback-info;
+    border-color: colors.$feedback-info;
 
     >svg {
-        fill: colors.$feedback--info;
+        fill: colors.$feedback-info;
     }
 
     > :first-child {
@@ -529,13 +529,13 @@ button:disabled {
 }
 
 .notification--highlight {
-    background: colors.$feedback--highlight-bg;
-    color: colors.$feedback--highlight;
-    box-shadow: colors.$feedback--highlight;
-    border-color: colors.$feedback--highlight;
+    background: colors.$feedback-highlight-bg;
+    color: colors.$feedback-highlight;
+    box-shadow: colors.$feedback-highlight;
+    border-color: colors.$feedback-highlight;
 
     >svg {
-        fill: colors.$feedback--highlight;
+        fill: colors.$feedback-highlight;
     }
 
     > :first-child {
@@ -544,13 +544,13 @@ button:disabled {
 }
 
 .notification--error {
-    background: colors.$feedback--error-bg;
-    color: colors.$feedback--error;
-    box-shadow: colors.$feedback--error;
-    border-color: colors.$feedback--error;
+    background: colors.$feedback-error-bg;
+    color: colors.$feedback-error;
+    box-shadow: colors.$feedback-error;
+    border-color: colors.$feedback-error;
 
     >svg {
-        fill: colors.$feedback--error;
+        fill: colors.$feedback-error;
     }
 
     > :first-child {

@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: colors.opacity-set(colors.$primary--dark, 1);
+    background: colors.opacity-set(colors.$primary-dark, 1);
 }
 
 // -----------------------
@@ -35,8 +35,8 @@ button {
     font-size: 50px;
     line-height: 0.6em;
     padding: 20px;
-    color: colors.$primary--dark;
-    background: colors.opacity-set(colors.$primary--main, .5);
+    color: colors.$primary-dark;
+    background: colors.opacity-set(colors.$primary-main, .5);
 }
 
 // -----------------------
@@ -46,6 +46,10 @@ button {
     display: inline-block;
     position: relative;
     // z-index: 100;
+}
+
+.dropdown.nav--interactive {
+    // background: red;
 }
 
 .dropdown__button {
@@ -68,7 +72,7 @@ button {
     visibility: hidden;
     // z-index: 99;
     transition: all linear 0.2s;
-    // background: colors.opacity-set(colors.$primary--dark, 90%);
+    // background: colors.opacity-set(colors.$secondary-hover, 90%);
 }
 
 /* For fullscreen mobile */
@@ -217,7 +221,7 @@ button {
     // align-items: center;
     // justify-content: center;
     // z-index: 1000;
-    // background: colors.opacity-set(colors.$primary--dark, 0.99);
+    // background: colors.opacity-set(colors.$primary-dark, 0.99);
 }
 
 /* Directions */
@@ -301,7 +305,7 @@ table {
 }
 
 table thead tr {
-    background-color: colors.$primary--dark;
+    background-color: colors.$primary-dark;
     color: #ffffff;
     text-align: left;
 }
@@ -316,19 +320,19 @@ table td {
 }
 
 table tbody tr {
-    border-bottom: 1px solid colors.opacity-set(colors.$primary--dark, 25%);
+    border-bottom: 1px solid colors.opacity-set(colors.$primary-dark, 25%);
 }
 
 table tbody tr:nth-of-type(even) {
-    background-color: colors.opacity-set(colors.$primary--dark, 10%);
+    background-color: colors.opacity-set(colors.$primary-dark, 10%);
 }
 
 table tbody tr:last-of-type {
-    border-bottom: 2px solid colors.$primary--dark;
+    border-bottom: 2px solid colors.$primary-dark;
 }
 
 table tbody tr.active-row {
-    background-color: colors.opacity-set(colors.$primary--main, 50%);
+    background-color: colors.opacity-set(colors.$primary-main, 50%);
 }
 
 .table__actions {
@@ -336,7 +340,7 @@ table tbody tr.active-row {
 }
 
 .table__actions:hover {
-    fill: colors.$secondary--main;
+    fill: colors.$secondary-main;
 }
 
 // ---------------------------
@@ -347,19 +351,19 @@ table tbody tr.active-row {
 }
 
 .tabbed-navigation_tab-button {
-    background: colors.$primary--dark;
-    color: colors.$primary--main;
+    background: colors.$primary-dark;
+    color: colors.$primary-main;
 }
 
 .tabbed-navigation_tab-button:hover {
-    background: colors.$primary--main;
-    color: colors.$primary--dark;
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
 }
 
 .tabbed-navigation_tab-button.selected,
 .tabbed-navigation_tab-content {
-    background: colors.opacity-set(colors.$secondary--light, 20%);
-    color: colors.$primary--dark;
+    background: colors.opacity-set(colors.$secondary-light, 20%);
+    color: colors.$primary-dark;
 }
 
 .tabbed-navigation_tab-button {

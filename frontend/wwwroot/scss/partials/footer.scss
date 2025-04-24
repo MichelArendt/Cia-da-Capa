@@ -5,13 +5,13 @@
 footer {
     @extend %flex--column--center-horizontal;
     @extend %poppins-regular;
-    background: colors.$primary--dark;
-    color: colors.$secondary--light;
+    background: colors.$primary-dark;
+    color: colors.$secondary-light;
 
     font-size: 14px;
 
     h1 {
-        color: colors.$secondary--light;
+        color: colors.$secondary-light;
     }
 
     section {
@@ -22,7 +22,7 @@ footer {
 
 footer div.footer-contact__phone {
     svg {
-        fill: colors.$secondary--light;
+        fill: colors.$secondary-light;
     }
 }
 
@@ -69,7 +69,7 @@ footer h1 {
     gap: 20px;
     width: 100%;
     padding: 15px 20px;
-    border-top: 1px solid colors.$secondary--light;
+    border-top: 1px solid colors.$secondary-light;
     border-radius: 0;
 
     font-size: 12px;

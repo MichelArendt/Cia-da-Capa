@@ -20,8 +20,8 @@ main {
     grid-template-columns: 1fr;
     place-items: center;
 
-    border: 1px solid colors.$primary--main;
-    color: colors.$primary--main;
+    border: 1px solid colors.$primary-main;
+    color: colors.$primary-main;
     padding: unset;
     border-radius: 0;
     margin: 25px 0 0 0;
@@ -56,19 +56,19 @@ main {
 .splash-separator {
     height: 2px;
     width: 80%;
-    background: colors.opacity-set(colors.$primary--main, 0.2);
+    background: colors.opacity-set(colors.$primary-main, 0.2);
 
     @media (min-width: 620px) {
         width: 1px;
         height: 80%;
         margin: 0 50px;
-        background: colors.$primary--main;
+        background: colors.$primary-main;
     }
 }
 
 .splash-item-svg {
     svg {
-        fill: colors.$primary--main;
+        fill: colors.$primary-main;
     }
 }
 
@@ -88,9 +88,9 @@ main {
     // height: 150px;
     margin: unset;
     padding: unset;
-    border: 1px solid colors.$primary--main;
+    border: 1px solid colors.$primary-main;
     border-top: none;
-    color: colors.$primary--main;
+    color: colors.$primary-main;
     width: 100%;
 
     @media (min-width: 620px) {

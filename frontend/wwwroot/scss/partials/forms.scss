@@ -19,13 +19,13 @@ form {
 }
 
 form button {
-    background: colors.$primary--dark;
-    color: colors.$primary--main;
+    background: colors.$primary-dark;
+    color: colors.$primary-main;
 }
 
 form button:hover {
-    background: colors.$primary--main;
-    color: colors.$primary--dark;
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
 }
 
 form input, form textarea, form select {
@@ -33,17 +33,17 @@ form input, form textarea, form select {
     font-size: 20px;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid colors.$secondary--light;
-    background-color: colors.lightness-add(colors.$secondary--light, 24%);
+    border: 1px solid colors.$secondary-light;
+    background-color: colors.lightness-add(colors.$secondary-light, 24%);
     // background-color: white;
 }
 
 form input::placeholder {
-    color: colors.opacity-set(colors.$primary--dark, 30%);
+    color: colors.opacity-set(colors.$primary-dark, 30%);
 }
 
 .form__title {
-    color: colors.$primary--main;
+    color: colors.$primary-main;
     text-align: center;
     padding: 20px;
 }
@@ -81,7 +81,7 @@ form input::placeholder {
 }
 
 .checkbox-container input:checked ~ .checkmark {
-    background: colors.$primary--main;
+    background: colors.$primary-main;
 
     svg {
         opacity: 1;
@@ -94,8 +94,8 @@ form input::placeholder {
 
 .checkmark {
     @extend %flex--row--center;
-    background: colors.opacity-set(colors.$secondary--light, 15%);
-    border: 1px solid colors.$secondary--light;
+    background: colors.opacity-set(colors.$secondary-light, 15%);
+    border: 1px solid colors.$secondary-light;
     width: 30px;
     height: 30px;
     transition: all linear 0.2s;
@@ -106,11 +106,11 @@ form input::placeholder {
     }
 }
 .checkbox-container:hover .checkmark {
-    background: colors.opacity-set(colors.$secondary--light, 50%);
-    border: 1px solid colors.$primary--dark;
+    background: colors.opacity-set(colors.$secondary-light, 50%);
+    border: 1px solid colors.$primary-dark;
 }
 
 .checkbox-container:hover input:checked ~ .checkmark {
-    background: colors.opacity-set(colors.$primary--main, 75%);
-    border: 1px solid colors.$primary--dark;
+    background: colors.opacity-set(colors.$primary-main, 75%);
+    border: 1px solid colors.$primary-dark;
 }

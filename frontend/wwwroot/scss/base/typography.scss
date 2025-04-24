@@ -287,7 +287,7 @@ h1 em {
     bottom: 3px;
     left: 50%;
     margin-left: -14px;
-    background-color: colors.$primary--main;
+    background-color: colors.$primary-main;
 }
 
 .one h1:after {
@@ -299,7 +299,7 @@ h1 em {
     margin-top: 5px;
     left: 50%;
     margin-left: -50px;
-    background-color: colors.$primary--main;
+    background-color: colors.$primary-main;
 }
 
 .one h1 span {
@@ -646,7 +646,7 @@ h1 em {
 }
 
 .twelve h1:before {
-    background-color: colors.$primary--main;
+    background-color: colors.$primary-main;
     content: '';
     display: block;
     height: 3px;
@@ -655,7 +655,7 @@ h1 em {
 }
 
 .twelve h1:after {
-    background-color: colors.$primary--main;
+    background-color: colors.$primary-main;
     content: '';
     display: block;
     position: absolute;

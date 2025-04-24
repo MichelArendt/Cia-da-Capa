@@ -7,8 +7,8 @@
 // ---------------------------
 .website__header {
     @extend %flex--row--center-horizontal;
-    background-color: colors.$primary--dark;
-    color: colors.$secondary--light;
+    background-color: colors.$primary-dark;
+    color: colors.$secondary-light;
     height: 80px;
     padding: 0 10px;
 
@@ -55,16 +55,16 @@
 }
 
 .nav--interactive {
-    color: colors.$secondary--light;
-    // background: colors.$primary--dark;
+    color: colors.$secondary-light;
+    // background: colors.$primary-dark;
     @extend %transition--default;
 
     li {
-        // background: colors.$primary--dark;
+        // background: colors.$primary-dark;
     }
 
     svg {
-        fill: colors.$secondary--light;
+        fill: colors.$secondary-light;
     }
 }
 
@@ -77,17 +77,16 @@
 // }
 
 li.nav--highlight {
-    border-bottom: 2px solid colors.opacity-set(colors.$primary--main, 25%);
+    border-bottom: 2px solid colors.opacity-set(colors.$primary-main, 25%);
 }
 
 @media (min-width: variables.$breakpoint--desktop) {
-
     .nav--interactive:hover {
-        color: colors.$primary--main;
-        background: colors.opacity-set(colors.$primary--main, 25%);
+        color: colors.$primary-main;
+        background: colors.opacity-set(colors.$primary-main, 25%);
 
         svg {
-            fill: colors.$primary--main;
+            fill: colors.$primary-main;
         }
     }
 
