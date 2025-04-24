@@ -50,16 +50,10 @@
 
     private async Task ScrollToIndex(int index)
     {
+        ResetScrollTimer();
+
         await JSRuntime.InvokeVoidAsync("scrollCarouselToIndex", CarouselListRef, index);
     }
-
-    @* protected override void OnAfterRender(bool firstRender) *@
-    @* { *@
-    @*     if (firstRender) *@
-    @*     { *@
-    @*         StartAutoScroll(); *@
-    @*     } *@
-    @* } *@
 
     private void StartAutoScroll()
     {
@@ -74,6 +68,15 @@
         };
         _scrollTimer.AutoReset = true;
         _scrollTimer.Start();
+    }
+
+    private void ResetScrollTimer()
+    {
+        if (_scrollTimer is null)
+            return;
+
+        _scrollTimer.Stop();
+        _scrollTimer.Start(); // restarts countdown
     }
 
     public void Dispose()
