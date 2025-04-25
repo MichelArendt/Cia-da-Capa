@@ -94,7 +94,7 @@
 // }
 
 li.nav--highlight {
-    border-bottom: 2px solid red;
+    border-bottom: 2px solid colors.$primary-main-darker;
 }
 
 @media (min-width: variables.$breakpoint--desktop) {
