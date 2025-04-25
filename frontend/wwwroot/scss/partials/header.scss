@@ -8,8 +8,8 @@
 .website__header {
     @extend %flex--row--center-horizontal;
     background-color: colors.$primary-dark;
-    color: colors.$secondary-light;
     height: 80px;
+    min-height: 80px;
     padding: 0 10px;
 
     > * {
@@ -33,61 +33,83 @@
     @extend %flex--row--center-vertical;
     height: 100%;
     flex-grow: 1;
+    padding-left: 10px;
 
     >img {
         height: 30px;
     }
 }
 
-@media (min-width: variables.$breakpoint--desktop) {
-    .header__logo {
-        order: -1; // Move logo to the start of the header
-    }
-}
-
 .nav__button {
     @extend %flex--row--center-vertical;
-    @extend %poppins-light;
+    @extend %poppins-regular;
     height: 100%;
-    padding: 10px;
+    padding: 10px 15px;
     font-size: 20px;
+    font-weight: 300;
+    text-transform: capitalize;
     width: auto; // removes width 100% from button selector
-}
 
-.nav--interactive {
-    color: colors.$secondary-light;
     // background: colors.$primary-dark;
+    color: colors.$secondary-light;
+
     @extend %transition--default;
 
-    li {
-        // background: colors.$primary-dark;
-    }
-
     svg {
+        @extend %transition--default;
         fill: colors.$secondary-light;
     }
 }
 
-.nav--interactive:hover {
-    @extend %transition--default;
+.nav__button:hover {
+    background: colors.$primary-main;
+    // color: colors.$primary-dark;
+    color: white;
+
+    svg {
+        // fill: colors.$primary-dark;
+        fill: white;
+    }
 }
+
+// .nav--interactive {
+//     color: colors.$secondary-light;
+//     @extend %transition--default;
+
+//     > svg {
+//         fill: colors.$secondary-light;
+//     }
+
+//     .interactive-element__content--colors {
+//         background: colors.$primary-main;
+//     }
+// }
+
+// .nav--interactive:hover {
+//     @extend %transition--default;
+// }
 
 // .nav--interactive.nav--active{
 //     background: red;
 // }
 
 li.nav--highlight {
-    border-bottom: 2px solid colors.opacity-set(colors.$primary-main, 25%);
+    border-bottom: 2px solid red;
 }
 
 @media (min-width: variables.$breakpoint--desktop) {
-    .nav--interactive:hover {
-        color: colors.$primary-main;
-        background: colors.opacity-set(colors.$primary-main, 25%);
+    // .nav--interactive:hover {
+    //     color: colors.$nav-interactive-color-hover;
 
-        svg {
-            fill: colors.$primary-main;
-        }
+    //     background: colors.$nav-interactive-bg-hover;
+    //     // background: colors.opacity-set(colors.$primary-main, 0.25);
+
+    //     svg {
+    //         fill: colors.$primary-main;
+    //     }
+    // }
+    .header__logo {
+        order: -1; // Move logo to the start of the header
     }
 
     .nav__button {

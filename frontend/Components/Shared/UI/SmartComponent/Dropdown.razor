@@ -7,7 +7,9 @@
 @inject IJSRuntime JSRuntime
 
 <div class="dropdown @ClassName">
-    <button class="dropdown__button @HeaderClassName" @onclick="Open">
+    <button 
+        class="dropdown__button @HeaderClassName" 
+        @onclick="AppState.IsMobile ? EventCallback.Factory.Create(this, Open) : EventCallback.Empty">
         @HeaderContent
 
         @if (!HideArrow)
@@ -16,9 +18,11 @@
         }
     </button>
 
-    <div class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
-    style="@DynamicStyle"
-    @ref="DropdownRef">
+    <div 
+        class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
+        style="@DynamicStyle"
+        @ref="DropdownRef"
+    >
 
         @if (AppState.IsMobile)
         {

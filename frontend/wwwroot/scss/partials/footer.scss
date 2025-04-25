@@ -18,6 +18,13 @@ footer {
         padding: unset;
         margin: unset;
     }
+
+    a:hover {
+
+        // transform: translateX(2px);
+        animation: pulse;
+        animation-duration: .5s;
+    }
 }
 
 footer div.footer-contact__phone {

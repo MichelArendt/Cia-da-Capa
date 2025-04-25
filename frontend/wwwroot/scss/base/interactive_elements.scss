@@ -45,10 +45,23 @@ button {
     }
 }
 
-.interactive-element__content--colors {
-    background: colors.$primary-dark;
-    color: colors.$primary-main;
-}
+// .interactive-element--colors {
+//     background: colors.$primary-dark;
+//     color: colors.$primary-main;
+
+//     svg {
+//         fill: colors.$primary-main;
+//     }
+// }
+
+// .interactive-element--colors:hover {
+//     background: colors.$primary-main;
+//     color: white;
+
+//     svg {
+//         fill: white;
+//     }
+// }
 
 // -----------------------
 // Dropdown
@@ -57,6 +70,17 @@ button {
     display: inline-block;
     position: relative;
     // z-index: 100;
+}
+
+.dropdown:hover {
+    background: black;
+    // background: colors.$primary-main-darker;
+    // background: red;
+    // background: #2D2D2F;
+
+    // button {
+    //     background: unset;
+    // }
 }
 
 .dropdown.nav--interactive .dropdown__content {
@@ -70,6 +94,15 @@ button {
     gap: 5px;
     padding: 10px;
 
+    font-weight: 500;
+    background: colors.$primary-dark;
+    // background: red;
+    color: colors.$secondary-light;
+
+    svg {
+        fill: colors.$secondary-light;
+    }
+
     // background: colors.$primary-dark;
     // color: colors.$primary-main;
 
@@ -79,12 +112,13 @@ button {
 }
 
 .dropdown__button:hover {
-    // background: colors.$primary-main;
-    // color: white;
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
+    color: white;
 
-    // svg {
-    //     fill: white;
-    // }
+    svg {
+        fill: colors.$primary-dark;
+    }
 }
 
 .dropdown__content {
@@ -100,8 +134,8 @@ button {
     visibility: hidden;
     // z-index: 99;
     transition: all linear 0.2s;
+    background: black;
     // background: colors.opacity-set(colors.$secondary-hover, 90%);
-    // background: red;
 }
 
 /* For fullscreen mobile */
@@ -145,7 +179,7 @@ button {
     .dropdown__content {
         // z-index: 99;
         position: absolute;
-        width: unset;
+        width: 100%;
         height: unset;
         //opacity: unset;
         //visibility: unset;

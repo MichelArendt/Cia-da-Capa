@@ -190,3 +190,27 @@
         transform: translate3d(0, 100%, 0);
     }
 }
+
+/**
+ * ----------------------------------------
+ * Pulse
+ * ----------------------------------------
+ */
+@keyframes pulse {
+    from {
+      transform: scale3d(1, 1, 1);
+    }
+
+    50% {
+      transform: scale3d(1.010, 1.010, 1.010);
+    }
+
+    to {
+      transform: scale3d(1, 1, 1);
+    }
+  }
+
+  .pulse {
+    animation-name: pulse;
+    animation-timing-function: ease-in-out;
+  }

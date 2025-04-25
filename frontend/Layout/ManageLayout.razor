@@ -27,7 +27,7 @@
         {
             <List>
                 <HeaderContent>
-                    <button class="nav__button nav--interactive"
+                    <button class="nav__button"
                     @onclick="@(() => Navigation.NavigateTo("manage/produtos"))">
                         Produtos
                     </button>
@@ -56,7 +56,7 @@
         else
         {
             <Dropdown ClassName="nav--interactive"
-            HeaderClassName="nav__button nav--interactive"
+            HeaderClassName="nav__button"
             OnClick="@(() => Navigation.NavigateTo("manage/produtos"))">
                 <HeaderContent>
                     <span>Produtos</span>
@@ -83,17 +83,17 @@
             </Dropdown>
         }
         <div>
-            <NavLink href="manage/banners" class="nav__button nav--interactive">
+            <NavLink href="manage/banners" class="nav__button">
                 Banners
             </NavLink>
         </div>
         <div>
-            <NavLink href="manage/categorias" class="nav__button nav--interactive">
+            <NavLink href="manage/categorias" class="nav__button">
                 Categorias
             </NavLink>
         </div>
         <div>
-            <NavLink href="manage/rotulos" class="nav__button nav--interactive">
+            <NavLink href="manage/rotulos" class="nav__button">
                 Rótulos
             </NavLink>
         </div>
@@ -117,7 +117,7 @@
             </BodyContent>
         </Dropdown>
 
-        <button class="nav__button nav--interactive"
+        <button class="nav__button"
         @onclick="@UserLogout"
         alt="Logout">
             <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />

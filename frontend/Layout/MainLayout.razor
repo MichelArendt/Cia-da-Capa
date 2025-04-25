@@ -17,41 +17,44 @@
 		{ 
 			<List>
 				<HeaderContent>
-					<button class="nav__button nav--interactive" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button>
+					<button class="nav__button" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button>
 				</HeaderContent>
 
 				<BodyContent>
-					<li>PRODUTOS</li>
+					<li>Produtos</li>
 				</BodyContent>
 			</List>
 		}
 		else
 		{
-			<Dropdown 
-				ClassName="nav--interactive"
-				HeaderClassName="nav__button nav--interactive"
+			<Dropdown ClassName=""
+				HeaderClassName="nav__button"
 				OnClick="@(() => Navigation.NavigateTo("produto"))"
 			>
 				<HeaderContent>
-					<span>PRODUTOS</span>
+					<span>Produtos</span>
 				</HeaderContent>
 
 				<BodyContent>
-					<li>PRODUTOS</li>
+					<li class="nav--highlight">Produtos</li>
+					<li>Teste 1</li>
+					<li>Teste 2</li>
+					<li>Teste 3</li>
+					<li>Testando</li>
 				</BodyContent>
 			</Dropdown>
 		}
 		<div>
-			<NavLink href="/contato" class="nav__button nav--interactive">
-				CONTATO
+			<NavLink href="/contato" class="nav__button">
+				Contato
 			</NavLink>
 		</div>
 	</NavResponsiveMenuOptions>
 
 	<NavPermanentButtons>
 		<Dropdown 
-			ClassName="nav--interactive"
-			HeaderClassName="nav__button nav--interactive"
+			ClassName=""
+			HeaderClassName="nav__button"
 			HideArrow="true"
 		>
 			<HeaderContent>
@@ -66,9 +69,10 @@
 				<input type='text' />
 			</BodyContent>
 		</Dropdown>
+
 		<Slider 
 			Direction="Slider.SlideFromDirection.right"
-			HeaderClassName="nav__button nav--interactive"
+			HeaderClassName="nav__button"
 		>
 			<HeaderContent>
 				<Svg Path="@Svg.Paths.RemoveShoppingCart" Width="35" Height="35" />

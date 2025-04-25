@@ -13,7 +13,7 @@
         /// <summary>
         /// Breakpoint for desktop layout.
         /// </summary>
-        public int BreakpointDesktop { get; } = 800;
+        public int BreakpointDesktop { get; } = 750;
 
         private int _browserWidth;
         /// <summary>
