@@ -15,7 +15,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: colors.opacity-set(colors.$primary-dark, 1);
+    background: colors.$primary-dark;
+    color: colors.$secondary-light;
 }
 
 // -----------------------
@@ -35,8 +36,18 @@ button {
     font-size: 50px;
     line-height: 0.6em;
     padding: 20px;
+
     color: colors.$primary-dark;
-    background: colors.opacity-set(colors.$primary-main, .5);
+    background: colors.$primary-main;
+
+    svg {
+        fill: colors.$primary-dark;
+    }
+}
+
+.interactive-element__content--colors {
+    background: colors.$primary-dark;
+    color: colors.$primary-main;
 }
 
 // -----------------------
@@ -48,7 +59,8 @@ button {
     // z-index: 100;
 }
 
-.dropdown.nav--interactive {
+.dropdown.nav--interactive .dropdown__content {
+    // background: colors.$nav-interactive-bg-hover;
     // background: red;
 }
 
@@ -56,7 +68,23 @@ button {
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 5px;
+    padding: 10px;
+
+    // background: colors.$primary-dark;
+    // color: colors.$primary-main;
+
+    // > svg {
+    //     fill: colors.$primary-main;
+    // }
+}
+
+.dropdown__button:hover {
+    // background: colors.$primary-main;
+    // color: white;
+
+    // svg {
+    //     fill: white;
+    // }
 }
 
 .dropdown__content {
@@ -73,6 +101,7 @@ button {
     // z-index: 99;
     transition: all linear 0.2s;
     // background: colors.opacity-set(colors.$secondary-hover, 90%);
+    // background: red;
 }
 
 /* For fullscreen mobile */
@@ -222,10 +251,14 @@ button {
     // justify-content: center;
     // z-index: 1000;
     // background: colors.opacity-set(colors.$primary-dark, 0.99);
+    visibility: hidden;
 }
 
-/* Directions */
+.slider__content--visible {
+    visibility: visible;
+}
 
+/* DIRECTIONS */
 /* Slide in from the left */
 .slider__content--left {
     top: 0;
@@ -420,7 +453,7 @@ table tbody tr.active-row {
     // display: inline-block;
     height: 100%;
 
-    > * {
+    >* {
         height: 100%;
     }
 }
