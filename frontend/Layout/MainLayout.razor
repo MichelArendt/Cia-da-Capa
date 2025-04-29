@@ -14,23 +14,23 @@
 
 <Header>
 	<NavResponsiveMenuOptions>
-		@if (AppStateService.IsMobile)
-		{ 
-			<List>
-				<HeaderContent>
-					<button class="nav__button" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button>
-				</HeaderContent>
+		@* @if (AppStateService.IsMobile) *@
+		@* {  *@
+		@* 	<List> *@
+		@* 		<HeaderContent> *@
+		@* 			<button class="nav__button" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button> *@
+		@* 		</HeaderContent> *@
 
-				<BodyContent>
-					<li>Produtos</li>
-				</BodyContent>
-			</List>
-		}
-		else
-		{
+		@* 		<BodyContent> *@
+		@* 			<li>Produtos</li> *@
+		@* 		</BodyContent> *@
+		@* 	</List> *@
+		@* } *@
+		@* else *@
+		@* { *@
 			<Dropdown ClassName=""
 				HeaderClassName="nav__button"
-				OnClick="@(() => Navigation.NavigateTo("produto"))"
+				OnClickDesktop="@(() => Navigation.NavigateTo("produtos"))"
 			>
 				<HeaderContent>
 					<span>Produtos</span>
@@ -51,7 +51,7 @@
 					}
 				</BodyContent>
 			</Dropdown>
-		}
+		@* } *@
 		<div>
 			<NavLink href="/contato" class="nav__button">
 				Contato
