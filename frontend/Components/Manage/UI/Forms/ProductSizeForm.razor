@@ -198,7 +198,7 @@
                 // Check if create succeeded
                 if (createProductSizeApiHandler.IsSuccess())
                 {
-                    // Retch product sizes
+                    // Refetch product sizes
                     await fetchProductSizesApiHandler.ExecuteAsync();
 
                     if (fetchProductSizesApiHandler.IsSuccess() && fetchProductSizesApiHandler.Content != null)
@@ -208,6 +208,7 @@
 
                         NotificationService.DisplaySuccess(createProductSizeApiHandler.ServerMessage);
                         ProductSizeService?.InvokeProductSizeAddedOrDeleted();
+                        NotificationService.DisplaySuccess("Tamanho criado com sucesso!");
                     }
                     else
                     {

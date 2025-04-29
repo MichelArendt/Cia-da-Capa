@@ -9,13 +9,15 @@
     <h1>Tamanhos</h1>
 </div>
 
-<TabbedNavigation Tabs="Tabs" />
+<TabbedNavigation @ref="TabbedNavigationRef" Tabs="Tabs" />
 
 @code {
     [Parameter]
     public required ProductDto ProductDto { get; set; }
 
-    private List<TabViewModel> Tabs { get; set; } = [];
+    private List<TabViewModel> Tabs { get; set; } = []; 
+    private TabbedNavigation? TabbedNavigationRef;
+
 
     protected override void OnInitialized()
     {
@@ -42,8 +44,10 @@
             //     Console.WriteLine(sizeLabels.Key + " -- " + sizeLabels.Value.Label);
             // }
 
+            // Loop through product's sizes
             foreach (var currentSize in ProductDto.Sizes)
             {
+                // Console.WriteLine(currentSize.Id + " -- " + currentSize.SizeLabelId + " -- " + currentSize.Width);
                 var size = new ProductSizeDto
                         {
                             Id = currentSize.Id,
@@ -75,6 +79,8 @@
                 </text>
             )
         });
+
+        TabbedNavigationRef?.SwitchToLastTab();
 
         StateHasChanged();
     }

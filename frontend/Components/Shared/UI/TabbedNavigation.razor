@@ -1,5 +1,7 @@
 ﻿@using frontend.ViewModels.TabbedNavigation
 
+@inject ProductSizeService ProductSizeService
+
 <div class="tabbed-navigation_tabs">
     @foreach (var tab in Tabs)
     {
@@ -26,14 +28,30 @@
     {
         base.OnInitialized();
 
-        SwitchToTab(0);
+        SwitchToTab(Tabs.Count - 1);
+        ProductSizeService.ProductSizeAddedOrDeleted += SwitchToLastTab;
+    }
+
+    public void Dispose()
+    {
+        ProductSizeService.ProductSizeAddedOrDeleted -= SwitchToLastTab;
     }
 
     public void SwitchToTab(int id)
     {
+        // Console.WriteLine($"Switching to tab {id}");
         Tabs.ForEach(t => t.Visible = false);
         Tabs.ElementAt(id).Visible = true;
         CurrentTab = id;
+        StateHasChanged();
+    }
+
+    public void SwitchToLastTab()
+    {
+        Console.WriteLine($"Switching to last tab");
+        Tabs.ForEach(t => t.Visible = false);
+        Tabs.Last().Visible = true;
+        CurrentTab = Tabs.Count - 1;
         StateHasChanged();
     }
 }
