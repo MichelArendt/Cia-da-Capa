@@ -9,7 +9,7 @@
 <div class="dropdown @ClassName">
     <button 
         class="dropdown__button @HeaderClassName" 
-        @onclick="AppState.IsMobile ? EventCallback.Factory.Create(this, Open) : EventCallback.Empty">
+        @onclick="AppState.IsMobile ? EventCallback.Factory.Create(this, Open) : OnClickDesktop">
         @HeaderContent
 
         @if (!HideArrow)
@@ -50,7 +50,7 @@
     public string? HeaderClassName { get; set; }
 
     [Parameter]
-    public EventCallback OnClick { get; set; }
+    public EventCallback OnClickDesktop { get; set; }
 
     [Parameter]
     public RenderFragment? HeaderContent { get; set; } // Holds the first child
