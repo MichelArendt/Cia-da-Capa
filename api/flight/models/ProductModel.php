@@ -70,8 +70,9 @@ class ProductModel
     {
         try {
             // Validate category existence
-            $stmt = $this->db->prepare("SELECT id FROM product_categories WHERE id = ?");
+            $stmt = $this->db->prepare("SELECT id FROM `{$this->table_product_categories}` WHERE id = ?");
             $stmt->execute([$category_id]);
+
             if (!$stmt->fetch()) {
                 throw new Exception("Product category not found.");
             }
