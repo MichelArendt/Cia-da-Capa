@@ -37,13 +37,13 @@
 				</HeaderContent>
 
 				<BodyContent>
-					<li class="nav--highlight">Em destaque</li>
 					@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
 					{
 						<li>Vazio!</li>
 					}
 					else
 					{
+						<li class="nav--highlight">Em destaque</li>
 						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
 						{
 							<li>@category.Title</li>
