@@ -69,7 +69,7 @@
 
 .login-form button[type=submit] {
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   padding: 20px;
   transition: all linear 0.2s;
 }
@@ -88,7 +88,7 @@
 
 .gallery-editable__header {
   position: relative;
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
   padding: 40px;
 }
@@ -124,7 +124,7 @@
   border-top: 1px solid hsl(0, 0%, 73%);
   border-bottom: 1px solid hsl(0, 0%, 73%);
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   transition: all linear 0.2s;
 }
 .gallery-editable__reorder-save-overlay > button {
@@ -159,7 +159,7 @@
   align-items: center;
   gap: 20px;
   font-size: 20px;
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
   transition: all 0.1s linear;
 }
@@ -175,7 +175,7 @@
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px 20px;
-  background: hsla(240, 11.1111111111%, 1.7647058824%, 0.05);
+  background: hsla(240, 2%, 18%, 0.05);
 }
 
 .gallery-editable__draggable-image {
@@ -203,7 +203,7 @@
   top: 0;
   left: 0;
   padding: 10px;
-  background-color: rgb(4, 4, 5);
+  background-color: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
 }
 
@@ -212,19 +212,19 @@
   top: 0;
   right: 0;
   padding: 10px;
-  background-color: rgb(4, 4, 5);
+  background-color: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
 }
 
 .gallery-editable__delete-button:hover {
   background-color: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   transition: all linear 0.2s;
 }
 
 .gallery-editable__delete-button:disabled {
   background-color: hsl(0, 0%, 73%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   cursor: not-allowed;
 }
 
@@ -234,7 +234,7 @@
 }
 
 .gallery-editable__content-loader {
-  background-color: hsla(240, 11.1111111111%, 1.7647058824%, 0.9);
+  background-color: hsla(240, 2%, 18%, 0.9);
   position: absolute;
   top: 0;
   left: 0;

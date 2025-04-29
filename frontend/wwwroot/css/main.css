@@ -40,7 +40,7 @@ footer {
 }
 
 footer {
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
   font-size: 14px;
 }

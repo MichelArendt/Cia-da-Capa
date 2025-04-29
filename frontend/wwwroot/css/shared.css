@@ -57,7 +57,7 @@ form input, form textarea, form select {
   font-style: normal;
 }
 
-a, a > svg, button {
+a, a > svg, button, .nav__button, .nav__button svg {
   transition: all 0.3s ease-in-out;
 }
 
@@ -105,7 +105,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
 }
 
@@ -116,11 +116,11 @@ button {
   font-size: 50px;
   line-height: 0.6em;
   padding: 20px;
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   background: hsl(37, 59%, 54%);
 }
 .overlay__button--close svg {
-  fill: rgb(4, 4, 5);
+  fill: hsl(240, 2%, 18%);
 }
 
 .dropdown {
@@ -131,6 +131,12 @@ button {
 .dropdown:hover {
   background: black;
 }
+.dropdown:hover .dropdown__button:not(.nav__button:hover) {
+  background: black;
+}
+.dropdown:hover svg {
+  fill: hsl(0, 0%, 73%);
+}
 
 .dropdown__button {
   display: flex;
@@ -138,7 +144,7 @@ button {
   gap: 5px;
   padding: 10px;
   font-weight: 500;
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
 }
 .dropdown__button svg {
@@ -147,18 +153,17 @@ button {
 
 .dropdown__button:hover {
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
   color: white;
 }
 .dropdown__button:hover svg {
-  fill: rgb(4, 4, 5);
+  fill: white;
 }
 
 .dropdown__content {
   opacity: 0;
   visibility: hidden;
   transition: all linear 0.2s;
-  background: black;
+  color: white;
 }
 
 /* For fullscreen mobile */
@@ -191,6 +196,7 @@ button {
     overflow-y: hidden;
     overflow-x: visible;
     min-width: max-content;
+    background: black;
   }
   .dropdown__content li {
     list-style-type: none;
@@ -338,7 +344,7 @@ table {
 }
 
 table thead tr {
-  background-color: rgb(4, 4, 5);
+  background-color: hsl(240, 2%, 18%);
   color: #ffffff;
   text-align: left;
 }
@@ -353,15 +359,15 @@ table td {
 }
 
 table tbody tr {
-  border-bottom: 1px solid hsla(240, 11.1111111111%, 1.7647058824%, 0.25);
+  border-bottom: 1px solid hsla(240, 2%, 18%, 0.25);
 }
 
 table tbody tr:nth-of-type(even) {
-  background-color: hsla(240, 11.1111111111%, 1.7647058824%, 0.1);
+  background-color: hsla(240, 2%, 18%, 0.1);
 }
 
 table tbody tr:last-of-type {
-  border-bottom: 2px solid rgb(4, 4, 5);
+  border-bottom: 2px solid hsl(240, 2%, 18%);
 }
 
 table tbody tr.active-row {
@@ -377,19 +383,19 @@ table tbody tr.active-row {
 }
 
 .tabbed-navigation_tab-button {
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(37, 59%, 54%);
 }
 
 .tabbed-navigation_tab-button:hover {
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
 }
 
 .tabbed-navigation_tab-button.selected,
 .tabbed-navigation_tab-content {
   background: hsla(0, 0%, 73%, 0.2);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
 }
 
 .tabbed-navigation_tab-button {
@@ -1086,13 +1092,13 @@ form > div {
 }
 
 form button {
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(37, 59%, 54%);
 }
 
 form button:hover {
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
 }
 
 form input, form textarea, form select {
@@ -1104,7 +1110,7 @@ form input, form textarea, form select {
 }
 
 form input::placeholder {
-  color: hsla(240, 11.1111111111%, 1.7647058824%, 0.3);
+  color: hsla(240, 2%, 18%, 0.3);
 }
 
 .form__title {
@@ -1164,17 +1170,18 @@ form input::placeholder {
 
 .checkbox-container:hover .checkmark {
   background: hsla(0, 0%, 73%, 0.5);
-  border: 1px solid rgb(4, 4, 5);
+  border: 1px solid hsl(240, 2%, 18%);
 }
 
 .checkbox-container:hover input:checked ~ .checkmark {
   background: hsla(37, 59%, 54%, 0.75);
-  border: 1px solid rgb(4, 4, 5);
+  border: 1px solid hsl(240, 2%, 18%);
 }
 
 .website__header {
-  background-color: rgb(4, 4, 5);
+  background-color: hsl(240, 2%, 18%);
   height: 80px;
+  min-height: 80px;
   padding: 0 10px;
 }
 .website__header > * {
@@ -1196,7 +1203,7 @@ form input::placeholder {
 
 .nav__button {
   height: 100%;
-  padding: 10px;
+  padding: 10px 15px;
   font-size: 20px;
   font-weight: 300;
   text-transform: capitalize;
@@ -1209,15 +1216,14 @@ form input::placeholder {
 
 .nav__button:hover {
   background: hsl(37, 59%, 54%);
-  color: rgb(4, 4, 5);
   color: white;
 }
 .nav__button:hover svg {
-  fill: rgb(4, 4, 5);
+  fill: white;
 }
 
 li.nav--highlight {
-  border-bottom: 2px solid red;
+  border-bottom: 2px solid hsl(37, 59%, 27%);
 }
 
 @media (min-width: 750px) {
@@ -1309,7 +1315,7 @@ button {
 
 button:disabled {
   background: hsl(0, 0%, 73%);
-  color: rgb(4, 4, 5);
+  color: hsl(240, 2%, 18%);
   cursor: not-allowed;
 }
 
@@ -1527,7 +1533,7 @@ button:disabled {
 
 .page__500 {
   padding: 20px;
-  background: rgb(4, 4, 5);
+  background: hsl(240, 2%, 18%);
   color: hsl(0, 0%, 73%);
 }
 .page__500 > svg {

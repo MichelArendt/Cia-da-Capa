@@ -5,7 +5,8 @@
 @using frontend.Components.Shared.UI.SmartComponent
 @using frontend.Components.Shared.UI.SVG
 
-@inject AppStateService AppState
+@inject AppStateService AppStateService
+@inject ProductStateService ProductStateService
 
 <HeadContent>
 	<link rel="stylesheet" href="css/main.css" />
@@ -13,7 +14,7 @@
 
 <Header>
 	<NavResponsiveMenuOptions>
-		@if (AppState.IsMobile)
+		@if (AppStateService.IsMobile)
 		{ 
 			<List>
 				<HeaderContent>
@@ -36,11 +37,18 @@
 				</HeaderContent>
 
 				<BodyContent>
-					<li class="nav--highlight">Produtos</li>
-					<li>Teste 1</li>
-					<li>Teste 2</li>
-					<li>Teste 3</li>
-					<li>Testando</li>
+					<li class="nav--highlight">Em destaque</li>
+					@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
+					{
+						<li>Vazio!</li>
+					}
+					else
+					{
+						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
+						{
+							<li>@category.Title</li>
+						}
+					}
 				</BodyContent>
 			</Dropdown>
 		}
