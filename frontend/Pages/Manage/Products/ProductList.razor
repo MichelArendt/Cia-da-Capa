@@ -5,6 +5,7 @@
 @using frontend.Services.API
 
 @inject ProductService ProductService
+@inject ProductStateService ProductStateService
 @inject NotificationService NotificationService
 
 <PageTitle>Produtos (Gerenciamento)</PageTitle>
@@ -17,7 +18,12 @@
     {
         @foreach (var product in productsApiHandler.Content)
         {
-            <div><NavLink href="@($"manage/produtos/editar/{product.Id}")">Editar</NavLink> @product.Title @product.Reference @product.Description</div>
+            <div>
+                <NavLink href="@($"manage/produtos/editar/{product.Id}")">Editar</NavLink>
+                [<i>@ProductStateService.CategoriesDict[product.CategoryId].Title</i>]
+                <strong>@ProductStateService.CategoriesDict[product.CategoryId].Reference-@product.Reference</strong> 
+                @product.Title  <br />
+            </div>
         }
     } else {
         <span>Nenhum produto encontrado!</span>
