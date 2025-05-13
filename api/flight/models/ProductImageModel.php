@@ -11,12 +11,14 @@ class ProductImageModel
 {
     private $db;
     private $table;
+    private $table_product;
     private $table_product_variants;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
         $this->table = Flight::get('tables')['product_images'];
+        $this->table_product = Flight::get('tables')['products'];
         $this->table_product_variants = Flight::get('tables')['product_variants'];
     }
 
@@ -35,7 +37,7 @@ class ProductImageModel
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-            FOREIGN KEY (product_id) REFERENCES `{$this->table}`(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES `{$this->table_product}`(id) ON DELETE CASCADE,
             FOREIGN KEY (product_variant_id) REFERENCES `{$this->table_product_variants}`(id) ON DELETE CASCADE,
 
             CONSTRAINT ck_product_variant_exclusive
