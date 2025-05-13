@@ -19,10 +19,18 @@
         @foreach (var product in productsApiHandler.Content)
         {
             <div>
-                <NavLink href="@($"manage/produtos/editar/{product.Id}")">Editar</NavLink>
-                [<i>@ProductStateService.CategoriesDict[product.CategoryId].Title</i>]
-                <strong>@ProductStateService.CategoriesDict[product.CategoryId].Reference-@product.Reference</strong> 
-                @product.Title  <br />
+                <NavLink href="@($"manage/produtos/editar/{product.Id}")">
+                    <Svg Path="@Svg.Paths.Edit" />
+                </NavLink>
+
+                <NavLink @onclick="() => Delete(product.Id)">
+                    <Svg Path="@Svg.Paths.Delete" />
+                </NavLink>
+
+                @ProductStateService.CategoriesDict[product.CategoryId].Title
+
+                [<strong>@ProductStateService.GetProductFullReference(product)</strong>] 
+                @product.Title<br />
             </div>
         }
     } else {
@@ -34,15 +42,43 @@
 
 @code {
     private ApiStateHandler<List<ProductDto>> productsApiHandler = new();
+    private ApiStateHandler<object> productDeleteApiHandler = new();
+
     private string defaultErrorMessage = "Erro ao tentar recuperar a lista de produtos.";
+
+    protected override void OnInitialized()
+    {
+    }
 
     protected override async Task OnInitializedAsync()
     {
+
         await productsApiHandler.ExecuteAsync(ProductService.GetProductsListFunc());
 
         if (!productsApiHandler.IsSuccess())
         {
             NotificationService.Display(productsApiHandler.GetErrorNotificationModel(defaultErrorMessage));
+        }
+    }
+
+    private async Task Delete(int id){
+        Console.WriteLine($"Deleting product with id {id}");
+
+        await productDeleteApiHandler.ExecuteAsync(ProductService.DeleteProductFunc(id));
+
+        if (productDeleteApiHandler.IsSuccess())
+        {
+            NotificationService.DisplaySuccess(
+                "Produto excluído com sucesso!"
+            );
+
+            await productsApiHandler.ExecuteAsync(ProductService.GetProductsListFunc());
+
+            StateHasChanged();
+        }
+        else
+        {
+            NotificationService.Display(productDeleteApiHandler.GetErrorNotificationModel("Erro ao tentar excluir o produto."));
         }
     }
 }

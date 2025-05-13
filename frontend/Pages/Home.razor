@@ -1,6 +1,10 @@
 ﻿@page "/"
+
+@using frontend.Components
 @using frontend.Components.Shared.UI.Carousel
 @using frontend.Components.Shared.UI.SmartComponent
+
+@inject ProductService ProductService
 
 <PageTitle>Cia da Capa</PageTitle>
 
@@ -52,16 +56,16 @@
     </div>
 </section>
 
-<Dropdown ClassName=""
-          HeaderClassName="">
-    <HeaderContent>
-        <span>Produtos</span>
-    </HeaderContent>
+@* <Dropdown ClassName="" *@
+@*           HeaderClassName=""> *@
+@*     <HeaderContent> *@
+@*         <span>Produtos</span> *@
+@*     </HeaderContent> *@
 
-    <BodyContent>
-        <li>Produtos</li>
-    </BodyContent>
-</Dropdown>
+@*     <BodyContent> *@
+@*         <li>Produtos</li> *@
+@*     </BodyContent> *@
+@* </Dropdown> *@
 
 <section class="splash-clients">
     <div class="splash-clients-text">
@@ -86,6 +90,12 @@
         </Carousel>
     </div>
 </section>
+
+<ProductSuggestions FetchFunction="ProductService.GetHighlightedProductsListFunc()">
+    <Title>
+        NOSSOS PRODUTOS <strong>MAIS PROCURADOS</strong>
+    </Title>
+</ProductSuggestions>
 
 @code {
     private int YearsSince1995 => CalculateYearsSince(new DateTime(1995, 4, 1));

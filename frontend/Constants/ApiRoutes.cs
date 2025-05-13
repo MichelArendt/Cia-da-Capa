@@ -15,6 +15,7 @@
             public static class Products
             {
                 public const string GetAll = $"{API}/public/products";
+                public const string GetAllHighlighted = $"{API}/public/products/highlighted";
                 public static string GetById(int id) => $"{API}/public/products/{id}";
                 public static string GetByIdFull(int id) => $"{API}/public/products/{id}/full";
 
@@ -63,6 +64,7 @@
             {
                 public const string Create = $"{API}/manage/products";
                 public static string Update(int id) => $"{API}/manage/products/{id}";
+                public static string Delete(int id) => $"{API}/manage/products/{id}";
                 public static class Images
                 {
                     public static string UploadImageForProductId(int productId) => $"{API}/manage/products/{productId}/images";

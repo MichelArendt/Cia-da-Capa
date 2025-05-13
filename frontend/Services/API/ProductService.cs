@@ -27,6 +27,15 @@ namespace frontend.Services.API
         }
 
         /// <summary>
+        /// Gets the list of highlighted products.
+        /// </summary>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
+        public Func<Task<HttpResponseMessage>> GetHighlightedProductsListFunc()
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetAllHighlighted);
+        }
+
+        /// <summary>
         /// Creates a new product.
         /// </summary>
         /// <param name="product">The product to create.</param>
@@ -45,6 +54,11 @@ namespace frontend.Services.API
         public Func<Task<HttpResponseMessage>> UpdateProductFunc(ProductFormDto product, int productId)
         {
             return () => _httpClient.PutAsJsonAsync(ApiRoutes.Manage.Products.Update(productId), product, JsonHelper._options);
+        }
+
+        public Func<Task<HttpResponseMessage>> DeleteProductFunc(int productId)
+        {
+            return () => _httpClient.DeleteAsync(ApiRoutes.Manage.Products.Delete(productId));
         }
 
         /// <summary>

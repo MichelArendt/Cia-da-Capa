@@ -1,0 +1,68 @@
+﻿@using frontend.Helpers
+
+@inject ProductStateService ProductStateService
+
+<section>
+    <h2 class="product-suggestions">
+        @if (Title is not null)
+        {
+            @Title
+        }
+        else
+        {
+            <text>OUTROS <strong>PRODUTOS</strong></text>
+        }
+    </h2>
+
+    @if (fetchProductListApiHandler.IsExecuting())
+    {
+        <ContentLoader DisplayMessage="Carregando produtos" />
+    }
+    else if (fetchProductListApiHandler.IsSuccess() && fetchProductListApiHandler.Content != null)
+    {
+        <div class="product-listing">
+            @foreach (var product in fetchProductListApiHandler.Content)
+            {
+                <a class="product-listing__item">
+                    <div class="product-listing__image-container">
+                        <img src="@product.Images.FirstOrDefault()?.ThumbnailFilePath" class="product-listing__image" />
+                        @if (product.Images.Count >= 2)
+                        {
+                            <img src="@product.Images[1].ThumbnailFilePath" class="product-listing__image product-listing__image--alternate" />
+                        }
+                    </div>
+                    <span>@product.Title - @ProductStateService.GetProductFullReference(product)</span>
+                </a>
+            }
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter]
+    public RenderFragment? Title { get; set; }
+
+    [Parameter]
+    public List<ProductDto> Products { get; set; } = new();
+
+    [Parameter]
+    public required Func<Task<HttpResponseMessage>> FetchFunction { get; set; }
+
+    private ApiStateHandler<List<ProductDto>> fetchProductListApiHandler = default!;
+
+    protected override void OnInitialized()
+    {
+        // fetchProductListApiHandler = new(ProductService.GetHighlightedProductsListFunc());
+        fetchProductListApiHandler = new(FetchFunction);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await fetchProductListApiHandler.ExecuteAsync();
+
+            StateHasChanged();
+        }
+    }
+}
