@@ -5,6 +5,7 @@ namespace Models;
 use PDO;
 use Flight;
 use Exception;
+use Helpers\FileHelper;
 use Helpers\HttpResponse;
 
 class ProductModel
@@ -12,12 +13,16 @@ class ProductModel
     private $db;
     private $table;
     private $table_product_categories;
+    private $table_product_images;
+    private $table_product_variants;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
         $this->table = Flight::get('tables')['products'];
         $this->table_product_categories = Flight::get('tables')['product_categories'];
+        $this->table_product_images = Flight::get('tables')['product_images'];
+        $this->table_product_variants = Flight::get('tables')['product_variants'];
     }
 
     // Check if the table exists and create it if necessary
@@ -50,6 +55,20 @@ class ProductModel
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure an empty array if no results
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductModel->getAll()");
+            return [];
+        }
+    }
+
+    // Fetch all highlighted products
+    public function getAllHighlighted(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM `{$this->table}` WHERE is_highlighted = 1");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Always return an array
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductModel->getAllHighlighted()");
+            return [];
         }
     }
 
@@ -116,6 +135,66 @@ class ProductModel
             ]);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductModel->update()");
+        }
+    }
+
+    public function delete(int $id): bool
+    {
+        try {
+            error_log("1. Starting transaction...");
+            $this->db->beginTransaction();
+
+            error_log("2. Fetching image paths...");
+            $stmt = $this->db->prepare("
+            SELECT file_path FROM `{$this->table_product_images}`
+            WHERE product_id = ? OR product_variant_id IN (
+                SELECT id FROM `{$this->table_product_variants}` WHERE product_id = ?
+            )");
+            $stmt->execute([$id, $id]);
+            $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("3. Image paths fetched: " . count($images));
+
+            error_log("4. Deleting product from DB...");
+            $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = ?");
+            $stmt->execute([$id]);
+            error_log("5. Product DB deletion executed.");
+
+            if (!empty($images)) {
+                error_log("6. Preparing to delete image folders...");
+
+                // Delete all unique image folders
+                $foldersToDelete = [];
+                foreach ($images as $image) {
+                    $relativeFolder = dirname($image['file_path']);
+                    $absoluteFolder = $_SERVER['DOCUMENT_ROOT'] . $relativeFolder;
+                    if (is_dir($absoluteFolder)) {
+                        $foldersToDelete[$absoluteFolder] = true;
+                    }
+                }
+
+                foreach (array_keys($foldersToDelete) as $folderPath) {
+                    error_log("Deleting folder: " . $folderPath);
+                    if (!FileHelper::deleteFolderRecursive($folderPath)) {
+                        throw new Exception("Failed to delete image folder: $folderPath");
+                    }
+                }
+                error_log("7. All folders deleted successfully.");
+            }
+
+            $this->db->commit();
+            error_log("8. Transaction committed.");
+
+            return true;
+        } catch (Exception $e) {
+            error_log("9. Exception occurred: " . $e->getMessage());
+
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+                error_log("10. Transaction rolled back.");
+            }
+
+            HttpResponse::handleException($e, __METHOD__, "ProductModel->delete()");
+            return false;
         }
     }
 }

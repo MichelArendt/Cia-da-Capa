@@ -1,6 +1,7 @@
 <?php
 
 require 'flight/Flight.php';
+require 'flight/helpers/FileHelper.php';
 require 'flight/helpers/HttpResponse.php';
 require 'flight/helpers/ValidationHelper.php';
 require_once __DIR__ . '/flight/config/env.php';
@@ -172,6 +173,7 @@ Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVa
 
 // Product
 Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
+Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlighted');
 Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
 Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
 
@@ -224,6 +226,7 @@ Flight::route('DELETE /manage/products/variants/@variantId', 'Controllers\Manage
 
 // Product
 Flight::route('PUT /manage/products/@id', 'Controllers\Manage\ProductController->update');
+Flight::route('DELETE /manage/products/@id', 'Controllers\Manage\ProductController->delete');
 
 // --------------------------------
 // ROUTES - 404

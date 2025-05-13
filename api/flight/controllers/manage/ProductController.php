@@ -100,4 +100,22 @@ class ProductController
             HttpResponse::handleException($e, __METHOD__, "ProductController->update()");
         }
     }
+
+    public function delete($id)
+    {
+        try {
+            $productModel = Flight::get('productModel');
+
+            // Call the model's delete method
+            $result = $productModel->delete((int)$id);
+
+            if (!$result) {
+                HttpResponse::returnValidationError("Falha ao excluir o produto.");
+            }
+
+            HttpResponse::responseDeleteSuccess("Produto excluído com sucesso.");
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductController->delete()");
+        }
+    }
 }

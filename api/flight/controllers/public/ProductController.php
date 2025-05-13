@@ -12,15 +12,38 @@ class ProductController
     {
         try {
             $productModel = Flight::get('productModel');
+            $productImageModel = Flight::get('productImageModel');
+
             $products = $productModel->getAll();
 
             if ($products === null) {
                 throw new Exception("Failed to retrieve products.");
             }
 
+            // Add images to each product
+            foreach ($products as &$product) {
+                $product['images'] = $productImageModel->getForProductId($product['id']);
+            }
+
             HttpResponse::responseFetchSuccess($products);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductController->getAll()");
+        }
+    }
+
+    public function getAllHighlighted()
+    {
+        try {
+            $productModel = Flight::get('productModel');
+            $products = $productModel->getAllHighlighted();
+
+            if ($products === null) {
+                throw new Exception("Falha ao pegar os produtos destacados.");
+            }
+
+            HttpResponse::responseFetchSuccess($products);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getAllHighlighted()");
         }
     }
 
@@ -67,7 +90,6 @@ class ProductController
             foreach ($product['variants'] as &$variant) { // Pass For reference to modify directly
                 $variant['images'] = $productImageModel->getForVariantId($variant['id']);
             }
-
 
             HttpResponse::responseFetchSuccess($product);
         } catch (Exception $e) {
