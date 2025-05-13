@@ -141,6 +141,22 @@
     @include mixins.font-style(variables.$font-poppins, 700);
 }
 
+%merriweather-light {
+    @include mixins.font-style(variables.$font-merriweather, 300);
+}
+
+%merriweather-regular {
+    @include mixins.font-style(variables.$font-merriweather, 400);
+}
+
+%merriweather-bold {
+    @include mixins.font-style(variables.$font-merriweather, 700);
+}
+
+%merriweather-black {
+    @include mixins.font-style(variables.$font-merriweather, 900);
+}
+
 // ---------------------------
 // Animation
 // ---------------------------

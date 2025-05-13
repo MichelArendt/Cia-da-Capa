@@ -55,10 +55,14 @@ form input::placeholder {
     padding: 5px 0;
 }
 
-.form_buttons {
+.form__buttons {
     @extend %flex--row;
     gap: 20px;
     padding: 0;
+}
+
+.form__section {
+    padding: 50px 0;
 }
 
 // ---------------------------

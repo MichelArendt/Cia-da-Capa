@@ -4,9 +4,19 @@
 
 @inject AppStateService AppStateService
 @inject NotificationService NotificationService
+@inject ProductStateService ProductStateService
 @inject ProductVariantService ProductVariantService
 
-<h3>@(VariantId == null ? "Adicionar nova" : "Atualizando") Variante de produto</h3>
+@if (VariantId == null)
+{
+    <h3>Adicionar variante</h3>
+}
+else
+{
+    <h3>Atualizando variante @ProductStateService.GetProductFullReference(Product.Content!)-@productVariantDto?.Reference</h3>
+}
+
+@* <h3>@(VariantId == null ? "Adicionar nova" : "Atualizando") Variante de produto</h3> *@
 
 @if (Product.Content == null)
 {
@@ -16,20 +26,22 @@
 }
 else
 {
-    <EditForm Model="@productVariantFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <EditForm Model="@productVariantFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" class="form__section">
         <DataAnnotationsValidator />
         <ValidationSummary class="feedback feedback--error" />
 
-        <div>
-            <label for="reference">Referência:</label>
-            <InputText id="reference" name="reference" @bind-Value="productVariantFormModel.Reference" placeholder="rodinhas" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => productVariantFormModel.Reference)" />
-        </div>
+        <div class="display--row--above-breakpoint">
+            <div class="form-group">
+                <label for="reference">Referência:</label>
+                <InputText id="reference" name="reference" @bind-Value="productVariantFormModel.Reference" placeholder="rodinhas" disabled="@IsSubmitting" />
+                <ValidationMessage For="@(() => productVariantFormModel.Reference)" />
+            </div>
 
-        <div>
-            <label for="title">Título (como o cliente vê):</label>
-            <InputText id="title" name="title" @bind-Value="productVariantFormModel.Title" placeholder="com rodinhas" disabled="@IsSubmitting" />
-            <ValidationMessage For="@(() => productVariantFormModel.Title)" />
+            <div class="form-group">
+                <label for="title">Título (como o cliente vê):</label>
+                <InputText id="title" name="title" @bind-Value="productVariantFormModel.Title" placeholder="com rodinhas" disabled="@IsSubmitting" />
+                <ValidationMessage For="@(() => productVariantFormModel.Title)" />
+            </div>
         </div>
 
         <div>
@@ -38,14 +50,13 @@ else
             <ValidationMessage For="@(() => productVariantFormModel.Description)" />
         </div>
 
-        <div>
+        <div class="form__buttons">
             @if (VariantId == null)
             {
                 <button type="submit" disabled="@IsSubmitting">Adicionar variante</button>
             }
             else
             {
-                <div>[@VariantId]</div>
                 <button type="submit" disabled="@IsSubmitting">Atualizar variante</button>
                 <button disabled="@IsSubmitting" @onclick="DeleteVariant">Remover variante</button>
             }

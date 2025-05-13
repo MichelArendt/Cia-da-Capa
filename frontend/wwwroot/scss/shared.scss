@@ -557,3 +557,46 @@ button:disabled {
         animation: heartBeat 1s infinite both;
     }
 }
+
+// ---------------------------
+// Product listing
+// ---------------------------
+
+.product-listing {
+    @extend %flex--row--center;
+    @extend %poppins-medium;
+}
+
+.product-listing__item {
+    @extend %flex--column--center-horizontal;
+    max-width: 300px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+        .product-listing__image--alternate {
+            opacity: 1;
+        }
+    }
+}
+
+.product-listing__image-container {
+    @extend %flex--row--center;
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.product-listing__image {
+    @extend %transition--default;
+}
+
+.product-listing__image--alternate {
+    position: absolute;
+    opacity: 0;
+}

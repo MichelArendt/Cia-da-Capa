@@ -9,11 +9,11 @@
   max-width: 600px;
 }
 
-.website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .form_buttons, .checkbox-container, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
+.website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
   display: flex;
 }
 
-.form_buttons, .checkbox-container, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
+.form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
   flex-direction: row;
 }
 
@@ -25,13 +25,17 @@
   align-items: center;
 }
 
-.checkmark, .overlay__button--close, .carousel-item {
+.product-listing, .product-listing__image-container, .checkmark, .overlay__button--close, .carousel-item {
   justify-content: center;
   align-items: center;
 }
 
-.notifications, form > div, .form-group {
+.notifications, form > div, .form-group, .product-listing__item {
   flex-direction: column;
+}
+
+.product-listing__item {
+  align-items: center;
 }
 
 .form-group {
@@ -57,7 +61,25 @@ form input, form textarea, form select {
   font-style: normal;
 }
 
-a, a > svg, button, .nav__button, .nav__button svg {
+.product-listing {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.product-suggestions {
+  font-family: "Merriweather", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.product-suggestions strong {
+  font-family: "Merriweather", serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+a, a > svg, button, .product-listing__image, .nav__button, .nav__button svg {
   transition: all 0.3s ease-in-out;
 }
 
@@ -460,6 +482,10 @@ table tbody tr.active-row {
   right: 0;
 }
 
+.product-suggestions {
+  text-align: center;
+  padding: 50px 0;
+}
 /* === BASE HEADING === */
 h1 {
   position: relative;
@@ -1125,9 +1151,13 @@ form input::placeholder {
   padding: 5px 0;
 }
 
-.form_buttons {
+.form__buttons {
   gap: 20px;
   padding: 0;
+}
+
+.form__section {
+  padding: 50px 0;
 }
 
 .checkbox-container {
@@ -1655,4 +1685,29 @@ button:disabled {
 }
 .notification--error > :first-child {
   animation: heartBeat 1s infinite both;
+}
+
+.product-listing__item {
+  max-width: 300px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.product-listing__item:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.product-listing__item:hover .product-listing__image--alternate {
+  opacity: 1;
+}
+
+.product-listing__image-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.product-listing__image--alternate {
+  position: absolute;
+  opacity: 0;
 }
