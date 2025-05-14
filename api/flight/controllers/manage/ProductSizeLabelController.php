@@ -2,6 +2,7 @@
 
 namespace Controllers\Manage;
 
+use Error;
 use Flight;
 use Exception;
 use Helpers\HttpResponse;
@@ -132,6 +133,7 @@ class ProductSizeLabelController
      */
     public function updateOrdering()
     {
+        error_log(1);
         try {
             // Decode incoming JSON request
             $data = json_decode(file_get_contents("php://input"), true);

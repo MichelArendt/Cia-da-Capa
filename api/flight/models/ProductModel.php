@@ -141,10 +141,8 @@ class ProductModel
     public function delete(int $id): bool
     {
         try {
-            error_log("1. Starting transaction...");
             $this->db->beginTransaction();
 
-            error_log("2. Fetching image paths...");
             $stmt = $this->db->prepare("
             SELECT file_path FROM `{$this->table_product_images}`
             WHERE product_id = ? OR product_variant_id IN (
@@ -152,16 +150,11 @@ class ProductModel
             )");
             $stmt->execute([$id, $id]);
             $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("3. Image paths fetched: " . count($images));
 
-            error_log("4. Deleting product from DB...");
             $stmt = $this->db->prepare("DELETE FROM `{$this->table}` WHERE id = ?");
             $stmt->execute([$id]);
-            error_log("5. Product DB deletion executed.");
 
             if (!empty($images)) {
-                error_log("6. Preparing to delete image folders...");
-
                 // Delete all unique image folders
                 $foldersToDelete = [];
                 foreach ($images as $image) {
@@ -173,24 +166,19 @@ class ProductModel
                 }
 
                 foreach (array_keys($foldersToDelete) as $folderPath) {
-                    error_log("Deleting folder: " . $folderPath);
                     if (!FileHelper::deleteFolderRecursive($folderPath)) {
                         throw new Exception("Failed to delete image folder: $folderPath");
                     }
                 }
-                error_log("7. All folders deleted successfully.");
             }
 
             $this->db->commit();
-            error_log("8. Transaction committed.");
 
             return true;
         } catch (Exception $e) {
-            error_log("9. Exception occurred: " . $e->getMessage());
 
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
-                error_log("10. Transaction rolled back.");
             }
 
             HttpResponse::handleException($e, __METHOD__, "ProductModel->delete()");

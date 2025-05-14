@@ -87,12 +87,10 @@
         <div class="one">
             <h1>
                 Rótulos cadastrados
-                @* <span>Clique e arraste para reordenar a prioridade dos rótulos:</span>
-                <span><strong>quanto menor o número, antes eles aparecem para os clientes</strong>.</span> *@
             </h1>
         </div>
 
-        <p>Prioridade é a ordem como os rótulos aparecem para os clientes: <strong>quanto menor o número, antes eles aparecem</strong>.</p>
+        <p>Prioridade é a ordem como os rótulos aparecem para os clientes: <strong>quanto MENOR o número, antes eles aparecem</strong>.</p>
 
         <div class="table-wrapper">
             <table>
@@ -135,7 +133,7 @@
 
         @if (ProductStateService.SizeLabelsDict.Any())
         {
-            <button disabled="@(!orderingChanged)" @onclick="UpdateSizeLabelsOrdering">
+            <button type="button" disabled="@(!orderingChanged)" @onclick="UpdateSizeLabelsOrdering">
                 Salvar alterações
             </button>
         }

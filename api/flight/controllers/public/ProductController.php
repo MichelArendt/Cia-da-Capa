@@ -38,7 +38,7 @@ class ProductController
             $products = $productModel->getAllHighlighted();
 
             if ($products === null) {
-                throw new Exception("Falha ao pegar os produtos destacados.");
+                throw new Exception("Falha ao recuperar os produtos destacados.");
             }
 
             HttpResponse::responseFetchSuccess($products);
