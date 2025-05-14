@@ -204,9 +204,9 @@ Flight::route('DELETE /manage/products/categories/@id', 'Controllers\Manage\Prod
 
 // Product Size Label
 Flight::route('POST /manage/products/size-labels', 'Controllers\Manage\ProductSizeLabelController->create');
+Flight::route('PUT /manage/products/size-labels/update-ordering', 'Controllers\Manage\ProductSizeLabelController->updateOrdering');
 Flight::route('PUT /manage/products/size-labels/@id', 'Controllers\Manage\ProductSizeLabelController->Update');
 Flight::route('DELETE /manage/products/size-labels/@id', 'Controllers\Manage\ProductSizeLabelController->deleteForIdAndReorderPriorities');
-Flight::route('PUT /manage/products/size-labels/update-ordering', 'Controllers\Manage\ProductSizeLabelController->updateOrdering');
 
 // Product Sizes
 Flight::route('POST /manage/products/@id/sizes', 'Controllers\Manage\ProductSizeController->create');
