@@ -1341,6 +1341,13 @@ button {
   padding: 20px;
   width: 100%;
   text-transform: uppercase;
+  background: hsl(240, 2%, 18%);
+  color: hsl(37, 59%, 54%);
+}
+
+button:hover {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 2%, 18%);
 }
 
 button:disabled {
