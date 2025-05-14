@@ -48,24 +48,30 @@ $secondary-main:    hsla(20, 80%, 48%, 1.0);
 
 // Success
 $feedback-success: hsla(120, 50%, 40%, 1.0);
+$feedback-success-hover: hsla(120, 50%, 60%, 1.0);
 $feedback-success-bg: hsla(120, 50%, 92%, 1.0);
 
 // Info
 $feedback-info: hsla(208, 90%, 50%, 1.0);
+$feedback-info-hover: hsla(208, 90%, 70%, 1.0);
 $feedback-info-bg: hsla(208, 90%, 93%, 1.0);
 
 // Validation Error
 $feedback-highlight: hsla(45, 90%, 40%, 1.0);
+$feedback-highlight-hover: hsla(45, 90%, 60%, 1.0);
 $feedback-highlight-bg: hsla(45, 90%, 92%, 1.0);
 
 // Validation Error
 $feedback-warning: hsla(39, 100%, 45%, 1.0);
+$feedback-warning-hover: hsla(39, 100%, 65%, 1.0);
 $feedback-warning-bg: hsla(39, 100%, 93%, 1.0);
 
 // Error
 $feedback-error: hsla(0, 68%, 46%, 1.0);
+$feedback-error-hover: hsla(0, 68%, 66%, 1.0);
 $feedback-error-bg: hsla(0, 68%, 93%, 1.0);
 
 // Neutral
 $neutral-main: hsla(0, 0%, 20%, 1.0);
+$neutral-main-hover: hsla(0, 0%, 40%, 1.0);
 $neutral-bg: hsla(0, 0%, 96%, 1.0);

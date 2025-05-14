@@ -117,10 +117,15 @@ button {
     width: 100%;
     text-transform: uppercase;
 
+    background: colors.$primary-dark;
+    color: colors.$primary-main;
+
     @extend %transition--default;
 }
 
 button:hover {
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
     // background: colors.$primary-main;
     // color: colors.$primary-dark;
 }
@@ -489,8 +494,12 @@ button:disabled {
     box-shadow: colors.$feedback-success;
     border-color: colors.$feedback-success;
 
-    >svg {
+    svg, a svg {
         fill: colors.$feedback-success;
+    }
+
+    a:hover svg {
+        fill: colors.$feedback-success-hover;
     }
 
     > :first-child {
@@ -504,8 +513,12 @@ button:disabled {
     box-shadow: colors.$feedback-warning;
     border-color: colors.$feedback-warning;
 
-    >svg {
+    svg, a svg {
         fill: colors.$feedback-warning;
+    }
+
+    a:hover svg {
+        fill: colors.$feedback-warning-hover;
     }
 
     > :first-child {
@@ -519,8 +532,12 @@ button:disabled {
     box-shadow: colors.$feedback-info;
     border-color: colors.$feedback-info;
 
-    >svg {
+    svg, a svg {
         fill: colors.$feedback-info;
+    }
+
+    a:hover svg {
+        fill: colors.$feedback-info-hover;
     }
 
     > :first-child {
@@ -534,8 +551,12 @@ button:disabled {
     box-shadow: colors.$feedback-highlight;
     border-color: colors.$feedback-highlight;
 
-    >svg {
+    svg, a svg {
         fill: colors.$feedback-highlight;
+    }
+
+    a:hover svg {
+        fill: colors.$feedback-highlight-hover;
     }
 
     > :first-child {
@@ -549,9 +570,14 @@ button:disabled {
     box-shadow: colors.$feedback-error;
     border-color: colors.$feedback-error;
 
-    >svg {
+    svg, a svg {
         fill: colors.$feedback-error;
     }
+
+    a:hover svg {
+        fill: colors.$feedback-error-hover;
+    }
+
 
     > :first-child {
         animation: heartBeat 1s infinite both;
