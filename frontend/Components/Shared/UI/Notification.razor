@@ -9,7 +9,13 @@
         >
             <Svg Path="@GetSvgPath(notification.Type)" />  
             @notification.Content
-            <Svg Path="@Svg.Paths.Close" />
+
+            @if (notification.Type != NotificationType.Warning)
+            {
+                <a @onclick="() => notificationService.Notifications.Remove(notification)">
+                    <Svg Path="@Svg.Paths.Close" />
+                </a>
+            }
         </div>
     }
 </div>

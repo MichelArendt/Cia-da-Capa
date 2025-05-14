@@ -33,10 +33,14 @@
                 @product.Title<br />
             </div>
         }
-    } else {
+    }
+    else
+    {
         <span>Nenhum produto encontrado!</span>
     }
-} else {
+}
+else
+{
     @productsApiHandler.GetErrorFeedbackComponent(defaultErrorMessage)
 }
 
@@ -52,7 +56,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         await productsApiHandler.ExecuteAsync(ProductService.GetProductsListFunc());
 
         if (!productsApiHandler.IsSuccess())

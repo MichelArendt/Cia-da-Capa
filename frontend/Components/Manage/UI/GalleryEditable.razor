@@ -199,7 +199,6 @@
             _dragDepth++;
             if (!isDragging) // Prevent spamming
             {
-                Console.WriteLine($"GalleryEditable HandleDragOver, depth: {_dragDepth}");
                 isDragging = true;
                 StateHasChanged();
             }
@@ -244,7 +243,6 @@
             _dragDepth--;
             if (_dragDepth <= 0)
             {
-                Console.WriteLine($"GalleryEditable HandleDragEnd, depth: {_dragDepth}");
                 isDragging = false;
                 StateHasChanged();
             }
