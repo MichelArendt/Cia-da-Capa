@@ -1635,8 +1635,11 @@ button:disabled {
   box-shadow: hsl(120, 50%, 40%);
   border-color: hsl(120, 50%, 40%);
 }
-.notification--success > svg {
+.notification--success svg, .notification--success a svg {
   fill: hsl(120, 50%, 40%);
+}
+.notification--success a:hover svg {
+  fill: hsl(120, 50%, 60%);
 }
 .notification--success > :first-child {
   animation: tada 1.5s infinite both;
@@ -1648,8 +1651,11 @@ button:disabled {
   box-shadow: hsl(39, 100%, 45%);
   border-color: hsl(39, 100%, 45%);
 }
-.notification--warning > svg {
+.notification--warning svg, .notification--warning a svg {
   fill: hsl(39, 100%, 45%);
+}
+.notification--warning a:hover svg {
+  fill: hsl(39, 100%, 65%);
 }
 .notification--warning > :first-child {
   animation: flash 2s infinite both;
@@ -1661,8 +1667,11 @@ button:disabled {
   box-shadow: hsl(208, 90%, 50%);
   border-color: hsl(208, 90%, 50%);
 }
-.notification--info > svg {
+.notification--info svg, .notification--info a svg {
   fill: hsl(208, 90%, 50%);
+}
+.notification--info a:hover svg {
+  fill: hsl(208, 90%, 70%);
 }
 .notification--info > :first-child {
   animation: rubberBand 1.5s infinite both;
@@ -1674,8 +1683,11 @@ button:disabled {
   box-shadow: hsl(45, 90%, 40%);
   border-color: hsl(45, 90%, 40%);
 }
-.notification--highlight > svg {
+.notification--highlight svg, .notification--highlight a svg {
   fill: hsl(45, 90%, 40%);
+}
+.notification--highlight a:hover svg {
+  fill: hsl(45, 90%, 60%);
 }
 .notification--highlight > :first-child {
   animation: bounce 1s infinite both;
@@ -1687,8 +1699,11 @@ button:disabled {
   box-shadow: hsl(0, 68%, 46%);
   border-color: hsl(0, 68%, 46%);
 }
-.notification--error > svg {
+.notification--error svg, .notification--error a svg {
   fill: hsl(0, 68%, 46%);
+}
+.notification--error a:hover svg {
+  fill: hsl(0, 68%, 66%);
 }
 .notification--error > :first-child {
   animation: heartBeat 1s infinite both;
