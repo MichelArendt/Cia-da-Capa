@@ -53,7 +53,7 @@ class ProductSizeController
             }
 
             HttpResponse::responseCreateSuccess(
-                "Rótulo do produto criado com sucesso!",
+                "Tamanho de produto criado com sucesso!",
                 (int)$newProductSizeId
             );
         } catch (Exception $e) {
@@ -92,10 +92,10 @@ class ProductSizeController
             );
 
             if (!$success) {
-                throw new \Exception("Falha ao atualizar o rótulo do produto.");
+                throw new \Exception("Falha ao atualizar o tamanho de produto.");
             }
 
-            HttpResponse::responseUpdateSuccess("Rótulo do produto atualizado com sucesso.", $id);
+            HttpResponse::responseUpdateSuccess("Tamanho de produto atualizado com sucesso.", $id);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeController->update()");
         }
@@ -109,10 +109,10 @@ class ProductSizeController
             $success = $this->productSizeModel->delete($id);
 
             if (!$success) {
-                throw new \Exception("Falha ao deletar o rótulo do produto.");
+                throw new \Exception("Falha ao deletar o tamanho de produto.");
             }
 
-            HttpResponse::responseDeleteSuccess("Rótulo do produto removido com sucesso.");
+            HttpResponse::responseDeleteSuccess("Tamanho de produto removido com sucesso.");
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductSizeController->delete()");
         }
