@@ -47,6 +47,19 @@ class ProductController
         }
     }
 
+    public function getAllHighlightedWithImages()
+    {
+        try {
+            $productModel = Flight::get('productModel');
+            $products = $productModel->getAllHighlightedWithImages();
+
+            HttpResponse::responseFetchSuccess($products);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getAllHighlighted()");
+        }
+    }
+
+
     public function getForId($id)
     {
         try {

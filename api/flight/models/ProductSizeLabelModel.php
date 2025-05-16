@@ -183,7 +183,6 @@ class ProductSizeLabelModel
 
     public function updateOrdering(array $orderData)
     {
-        error_log(2);
         try {
             if (empty($orderData)) {
                 throw new Exception("No ordering data provided");
