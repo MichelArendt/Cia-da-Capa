@@ -494,7 +494,8 @@ button:disabled {
     box-shadow: colors.$feedback-success;
     border-color: colors.$feedback-success;
 
-    svg, a svg {
+    svg,
+    a svg {
         fill: colors.$feedback-success;
     }
 
@@ -513,7 +514,8 @@ button:disabled {
     box-shadow: colors.$feedback-warning;
     border-color: colors.$feedback-warning;
 
-    svg, a svg {
+    svg,
+    a svg {
         fill: colors.$feedback-warning;
     }
 
@@ -532,7 +534,8 @@ button:disabled {
     box-shadow: colors.$feedback-info;
     border-color: colors.$feedback-info;
 
-    svg, a svg {
+    svg,
+    a svg {
         fill: colors.$feedback-info;
     }
 
@@ -551,7 +554,8 @@ button:disabled {
     box-shadow: colors.$feedback-highlight;
     border-color: colors.$feedback-highlight;
 
-    svg, a svg {
+    svg,
+    a svg {
         fill: colors.$feedback-highlight;
     }
 
@@ -570,7 +574,8 @@ button:disabled {
     box-shadow: colors.$feedback-error;
     border-color: colors.$feedback-error;
 
-    svg, a svg {
+    svg,
+    a svg {
         fill: colors.$feedback-error;
     }
 
@@ -591,6 +596,7 @@ button:disabled {
 .product-listing {
     @extend %flex--row--center;
     @extend %poppins-medium;
+    gap: 20px;
 }
 
 .product-listing__item {
@@ -600,12 +606,30 @@ button:disabled {
     text-align: center;
     cursor: pointer;
 
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+
+    >span {
+        margin: 20px 5px;
+        color: colors.$primary-dark;
+    }
 
     &:hover {
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+
+        > span {
+            color: colors.$primary-main;
+        }
 
         .product-listing__image--alternate {
+            opacity: 1;
+        }
+
+        .product-listing__image:not(.product-listing__image--alternate) {
+            opacity: 0;
+        }
+
+        button {
             opacity: 1;
         }
     }
@@ -616,6 +640,13 @@ button:disabled {
     position: relative;
     width: 300px;
     height: 300px;
+
+    svg {
+        width: 150px;
+        height: 150px;
+
+        fill: colors.$secondary-lighter;
+    }
 }
 
 .product-listing__image {
@@ -625,4 +656,27 @@ button:disabled {
 .product-listing__image--alternate {
     position: absolute;
     opacity: 0;
+}
+
+.product-listing__shopping-button {
+    @extend %flex--row--center;
+    gap: 10px;
+    padding: 10px;
+    background: colors.$primary-main;
+
+    >span {
+        color: colors.$primary-dark;
+    }
+
+    font-weight: 400;
+
+    opacity: 0;
+
+    &:hover {
+        background: colors.$secondary-main;
+
+        >span {
+            color: colors.$primary-dark;
+        }
+    }
 }

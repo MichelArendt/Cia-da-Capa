@@ -1635,7 +1635,8 @@ button:disabled {
   box-shadow: hsl(120, 50%, 40%);
   border-color: hsl(120, 50%, 40%);
 }
-.notification--success svg, .notification--success a svg {
+.notification--success svg,
+.notification--success a svg {
   fill: hsl(120, 50%, 40%);
 }
 .notification--success a:hover svg {
@@ -1651,7 +1652,8 @@ button:disabled {
   box-shadow: hsl(39, 100%, 45%);
   border-color: hsl(39, 100%, 45%);
 }
-.notification--warning svg, .notification--warning a svg {
+.notification--warning svg,
+.notification--warning a svg {
   fill: hsl(39, 100%, 45%);
 }
 .notification--warning a:hover svg {
@@ -1667,7 +1669,8 @@ button:disabled {
   box-shadow: hsl(208, 90%, 50%);
   border-color: hsl(208, 90%, 50%);
 }
-.notification--info svg, .notification--info a svg {
+.notification--info svg,
+.notification--info a svg {
   fill: hsl(208, 90%, 50%);
 }
 .notification--info a:hover svg {
@@ -1683,7 +1686,8 @@ button:disabled {
   box-shadow: hsl(45, 90%, 40%);
   border-color: hsl(45, 90%, 40%);
 }
-.notification--highlight svg, .notification--highlight a svg {
+.notification--highlight svg,
+.notification--highlight a svg {
   fill: hsl(45, 90%, 40%);
 }
 .notification--highlight a:hover svg {
@@ -1699,7 +1703,8 @@ button:disabled {
   box-shadow: hsl(0, 68%, 46%);
   border-color: hsl(0, 68%, 46%);
 }
-.notification--error svg, .notification--error a svg {
+.notification--error svg,
+.notification--error a svg {
   fill: hsl(0, 68%, 46%);
 }
 .notification--error a:hover svg {
@@ -1709,24 +1714,44 @@ button:disabled {
   animation: heartBeat 1s infinite both;
 }
 
+.product-listing {
+  gap: 20px;
+}
+
 .product-listing__item {
   max-width: 300px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+.product-listing__item span {
+  margin-top: 20px;
+  color: hsl(240, 2%, 18%);
 }
 .product-listing__item:hover {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+.product-listing__item:hover span {
+  color: hsl(37, 59%, 54%);
 }
 .product-listing__item:hover .product-listing__image--alternate {
   opacity: 1;
+}
+.product-listing__item:hover .product-listing__image:not(.product-listing__image--alternate) {
+  opacity: 0;
 }
 
 .product-listing__image-container {
   position: relative;
   width: 300px;
   height: 300px;
+}
+.product-listing__image-container svg {
+  width: 150px;
+  height: 150px;
+  fill: hsl(0, 0%, 95%);
 }
 
 .product-listing__image--alternate {
