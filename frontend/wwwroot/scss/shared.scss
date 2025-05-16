@@ -614,11 +614,10 @@ button:disabled {
     }
 
     &:hover {
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 
         > span {
-            color: colors.$primary-main;
+            // color: colors.$primary-main;
         }
 
         .product-listing__image--alternate {

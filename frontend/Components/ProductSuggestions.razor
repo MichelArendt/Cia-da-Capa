@@ -23,16 +23,28 @@
         <div class="product-listing">
             @foreach (var product in fetchProductListApiHandler.Content)
             {
-                <a class="product-listing__item">
+                <div class="product-listing__item">
                     <div class="product-listing__image-container">
-                        <img src="@product.Images.FirstOrDefault()?.ThumbnailFilePath" class="product-listing__image" />
-                        @if (product.Images.Count >= 2)
+                        @if (!product.Images.Any()) {
+                            <Svg Path="@Svg.Paths.NoPhotography" />
+                        } 
+                        else
                         {
-                            <img src="@product.Images[1].ThumbnailFilePath" class="product-listing__image product-listing__image--alternate" />
+                            <img src="@product.Images.FirstOrDefault()?.ThumbnailFilePath" class="product-listing__image" />
+                            @if (product.Images.Count >= 2)
+                            {
+                                <img src="@product.Images[1].ThumbnailFilePath" class="product-listing__image product-listing__image--alternate" />
+                            }
                         }
                     </div>
+
                     <span>@product.Title - @ProductStateService.GetProductFullReference(product)</span>
-                </a>
+
+                    <button class="product-listing__shopping-button">
+                        <Svg Path="@Svg.Paths.ShoppingCartAdd" Width="15" Height="15" />
+                        <span>Orçamento</span>
+                    </button>
+                </div>
             }
         </div>
     }
