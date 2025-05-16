@@ -173,7 +173,7 @@ Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVa
 
 // Product
 Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
-Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlighted');
+Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlightedWithImages');
 Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
 Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
 
