@@ -6,6 +6,7 @@ namespace frontend.Components.Shared.UI.SmartComponent
     public abstract class SmartComponentBase : ComponentBase, IDisposable
     {
         protected bool IsOpen { get; private set; } = false;
+        public event Action? IsOpenChanged;
 
         [Inject]
         protected AppStateService AppState { get; set; } = default!;
@@ -27,12 +28,14 @@ namespace frontend.Components.Shared.UI.SmartComponent
         public void Open()
         {
             IsOpen = true;
+            IsOpenChanged?.Invoke();
             StateHasChanged();
         }
 
         public void Close()
         {
             IsOpen = false;
+            IsOpenChanged?.Invoke();
             StateHasChanged();
         }
 
@@ -45,6 +48,7 @@ namespace frontend.Components.Shared.UI.SmartComponent
         public void Toggle()
         {
             IsOpen = !IsOpen;
+            IsOpenChanged?.Invoke();
             StateHasChanged();
         }
 
@@ -52,8 +56,7 @@ namespace frontend.Components.Shared.UI.SmartComponent
         {
             if (AppState.IsMobile == true)
             {
-                IsOpen = !IsOpen;
-                StateHasChanged();
+                Toggle();
             }
         }
     }
