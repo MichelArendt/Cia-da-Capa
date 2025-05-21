@@ -57,6 +57,8 @@
 
     private void StartAutoScroll()
     {
+        if (_items.Count == 0) return;
+
         _scrollTimer = new System.Timers.Timer(2500);
         _scrollTimer.Elapsed += async (_, _) =>
         {

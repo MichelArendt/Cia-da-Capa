@@ -597,8 +597,10 @@ button:disabled {
 
 .product-listing {
     @extend %flex--row--center;
+    flex-wrap: wrap;
     @extend %poppins-medium;
     gap: 20px;
+    width: 100%;
 }
 
 .product-listing__item {
