@@ -3,8 +3,8 @@
 @use '../abstracts/variables' as variables;
 
 .fullscreen-overlay, .fullscreen-overlay--transparent {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     position: fixed;
     top: 0;
@@ -307,6 +307,10 @@ button {
 .slider__content-wrapper {
     // width: 300px;
     // height: 100%;
+}
+
+.slider__content--visible {
+    // display: flex;
 }
 
 .slider__content-wrapper--docked {

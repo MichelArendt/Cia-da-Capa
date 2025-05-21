@@ -3,13 +3,26 @@
 @using frontend.Services
 
 <div class="slider">
+    @* Button to open content *@
     <button class="slider__button @HeaderClassName" @onclick="Open">
         @HeaderContent
     </button>
 
-    <div class="slider__content fullscreen-overlay slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
-        <div class="slider__content-wrapper" @onclick:stopPropagation>
+    @* Content when open *@
+    @* <div class="slider__content fullscreen-overlay slider__content--@Direction @(IsOpen ? "slider__content--visible" : "")">
+        <div class="slider__content-wrapper @(IsFullscreen ? "" : $"slider__content-wrapper--{Direction}")" @onclick:stopPropagation>
             <button class="overlay__button overlay__button--close" @onclick="Close" @onclick:stopPropagation>
+                <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
+            </button>
+
+            @BodyMobileContentTitle
+            @BodyContent
+        </div>
+    </div> *@
+
+    <div class="@ContentClassName" @attributes="GetConditionalClickAttributes()">
+        <div class="@WrapperClassName" @onclick:stopPropagation>
+            <button class="@(IsFullscreen ? "overlay__button" : "") overlay__button--close" @onclick="Close" @onclick:stopPropagation>
                 <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
             </button>
 
@@ -33,22 +46,89 @@
     public RenderFragment? BodyContent { get; set; } // Holds the remaining children
 
     [Parameter]
+    public bool IsFullscreen { get; set; } = true;
+
+    [Parameter]
     public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
+
     public enum SlideFromDirection
     {
         left,
         right,
-        top,
-        bottom
+        @* top,
+        bottom *@
     }
 
-    private string GetBodyClassName()
+    private string ContentClassName = "";
+    private string WrapperClassName = "";
+
+    protected override void OnInitialized()
+    {
+        IsOpenChanged += UpdateContentClassName;
+
+        UpdateContentClassName();
+        UpdateWrappperClassName();
+
+        base.OnInitialized();
+    }
+
+    public override void Dispose()
+    {
+        IsOpenChanged -= UpdateContentClassName;
+
+        // Call base class Dispose
+        base.Dispose();
+    }
+
+    private void UpdateContentClassName()
+    {
+        ContentClassName = $"slider__content slider__content--from-{@Direction} ";
+        ContentClassName += IsFullscreen ? "fullscreen-overlay slider__content--docked-center" : $"fullscreen-overlay--transparent slider__content--docked-{@Direction}";
+
+        if (IsOpen)
+        {
+            ContentClassName += " slider__content--visible";
+        }
+
+        StateHasChanged();
+    }
+
+    private void UpdateWrappperClassName()
+    {
+        WrapperClassName = $"slider__content-wrapper";
+
+        if (!IsFullscreen)
+        {
+            WrapperClassName += " slider__content-wrapper--docked";
+        }
+
+        StateHasChanged();
+    }
+
+    private Dictionary<string, object> GetConditionalClickAttributes()
+    {
+        if (!IsFullscreen)
+        {
+            return new Dictionary<string, object>
+        {
+            { "onclick", EventCallback.Factory.Create(this, Close) },
+            { "onclick:stopPropagation", true }
+        };
+        }
+
+        return new Dictionary<string, object>(); // No handler if fullscreen
+    }
+
+
+    @* private string GetBodyClassName()
     {
         var baseClass = $"slider__content slider__content--{Direction}";
+
         if (IsOpen)
         {
             baseClass += " slider__content--visible";
         }
+
         return baseClass;
-    }
+    } *@
 }
