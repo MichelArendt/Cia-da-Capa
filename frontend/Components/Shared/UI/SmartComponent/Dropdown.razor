@@ -6,7 +6,7 @@
 
 @inject IJSRuntime JSRuntime
 
-<div class="dropdown @ClassName">
+<div class="dropdown @ClassName" title="@Title">
     <button 
         class="dropdown__button @HeaderClassName" 
         @onclick="AppState.IsMobile ? EventCallback.Factory.Create(this, Open) : OnClickDesktop">
@@ -63,6 +63,9 @@
 
     [Parameter]
     public bool HideArrow { get; set; } = false;
+
+    [Parameter]
+    public string? Title { get; set; }
 
     private string? DynamicStyle { get; set; }
     private ElementReference DropdownRef; // Element reference for the dropdown

@@ -2,7 +2,7 @@
 
 @using frontend.Services
 
-<div class="slider">
+<div class="slider" title="@Title">
     @* Button to open content *@
     <button class="slider__button @HeaderClassName" @onclick="Open">
         @HeaderContent
@@ -47,6 +47,9 @@
 
     [Parameter]
     public bool IsFullscreen { get; set; } = true;
+
+    [Parameter]
+    public string? Title { get; set; }
 
     [Parameter]
     public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
