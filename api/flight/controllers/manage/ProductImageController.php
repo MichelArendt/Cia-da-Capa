@@ -113,7 +113,7 @@ class ProductImageController
 
                 // Save WebP versions
                 imagewebp($gd, "$productDir/$webpName", 80);
-                $thumbnail = $this->resizeGD($gd, 300);
+                $thumbnail = $this->resizeGD($gd, 150);
                 imagewebp($thumbnail, "$productDir/$thumbnailName", 80);
                 imagedestroy($thumbnail);
 
