@@ -130,6 +130,7 @@ Flight::before('start', function () {
 // CONTROLLERS - public
 // --------------------------------
 require 'flight/controllers/public/UserController.php';
+require 'flight/controllers/public/UtilsController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
 require 'flight/controllers/public/ProductSizeController.php';
@@ -176,6 +177,9 @@ Flight::route('GET /public/products', 'Controllers\Public\ProductController->get
 Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlightedWithImages');
 Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
 Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
+
+// Utils
+Flight::route('GET /public/utils/client-logos', 'Controllers\Public\UtilsController->getClientLogos');
 
 // --------------------------------
 // ROUTES - manage
