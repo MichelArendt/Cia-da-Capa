@@ -61,6 +61,11 @@ namespace frontend.Services.API
             return () => _httpClient.DeleteAsync(ApiRoutes.Manage.Products.Delete(productId));
         }
 
+        public Func<Task<HttpResponseMessage>> GetFullProductDetailsFunc(int id)
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetByIdFull(id));
+        }
+
         /// <summary>
         /// Fetches images for a specific product.
         /// </summary>

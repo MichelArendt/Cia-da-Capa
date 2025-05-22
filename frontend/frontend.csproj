@@ -18,7 +18,6 @@
 
 	<ItemGroup>
 		<Folder Include="Shared\" />
-		<Folder Include="Utilties\" />
 		<Folder Include="wwwroot\images\banners\" />
 		<Folder Include="wwwroot\images\products\" />
 	</ItemGroup>

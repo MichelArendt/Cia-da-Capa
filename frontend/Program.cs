@@ -28,6 +28,7 @@ namespace frontend
             builder.Services.AddScoped<ProductVariantService>();
             builder.Services.AddScoped<ProductImageService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<UtilsService>();
 
             builder.Services.AddSingleton<NotificationService>();
             builder.Services.AddSingleton<ProductStateService>();

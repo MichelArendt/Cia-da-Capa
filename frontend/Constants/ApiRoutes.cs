@@ -49,6 +49,11 @@
             {
                 public const string GetAll = $"{API}/public/products/size-labels";
             }
+
+            public static class Utils
+            {
+                public const string GetClientLogos = $"{API}/public/utils/client-logos";
+            }
         }
 
         // Manage
