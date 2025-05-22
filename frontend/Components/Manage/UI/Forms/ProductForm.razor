@@ -69,7 +69,7 @@
 
     <div class="form-group">
         <label for="description">Descrição:</label>
-        <InputTextArea id="description" name="description" @bind-Value="productFormModel.Description" rows="6" placeholder="Descrição do produto" disabled="@isSubmitting" />
+        <InputTextArea id="description" name="description" @bind-Value="productFormModel.Description" rows="8" placeholder="Descrição do produto" disabled="@isSubmitting" />
         <ValidationMessage For="@(() => productFormModel.Description)" />
     </div>
 
