@@ -1,5 +1,7 @@
 ﻿@using frontend.Helpers
 
+@inject NavigationManager Navigation
+
 @inject ProductStateService ProductStateService
 
 <section>
@@ -23,7 +25,7 @@
         <div class="product-listing">
             @foreach (var product in fetchProductListApiHandler.Content)
             {
-                <div class="product-listing__item">
+                <a href="produto/@product.Id" class="product-listing__item">
                     <div class="product-listing__image-container">
                         @if (!product.Images.Any()) {
                             <Svg Path="@Svg.Paths.NoPhotography" />
@@ -40,11 +42,11 @@
 
                     <span>@product.Title - @ProductStateService.GetProductFullReference(product)</span>
 
-                    <button class="product-listing__shopping-button">
+                    <button class="product-listing__shopping-button" @onclick:stopPropagation @onclick:preventDefault>
                         <Svg Path="@Svg.Paths.ShoppingCartAdd" Width="15" Height="15" />
                         <span>Orçamento</span>
                     </button>
-                </div>
+                </a>
             }
         </div>
     }
@@ -77,4 +79,9 @@
             StateHasChanged();
         }
     }
+
+    // private void NavigateToProduct(int productId)
+    // {
+    //     Navigation.NavigateTo($"/produtos/{productId}");
+    // }
 }
