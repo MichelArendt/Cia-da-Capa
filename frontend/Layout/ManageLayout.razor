@@ -55,9 +55,11 @@
         @* } *@
         @* else *@
         @* { *@
-            <Dropdown ClassName="nav--interactive"
-            HeaderClassName="nav__button"
-            OnClickDesktop="@(() => Navigation.NavigateTo("manage/produtos"))">
+            <Dropdown 
+                ClassName="nav--interactive"
+                HeaderClassName="nav__button"
+                OnClickDesktop="@(() => Navigation.NavigateTo("manage/produtos"))"
+            >
                 <HeaderContent>
                     <span>Produtos</span>
                 </HeaderContent>
@@ -103,6 +105,7 @@
         <Dropdown ClassName="nav--interactive"
             HeaderClassName="nav__button"
             HideArrow="true"
+            Title="Pesquisa"
         >
             <HeaderContent>
                 <Svg Path="@Svg.Paths.Search" Width="30" Height="30" />
@@ -118,8 +121,8 @@
         </Dropdown>
 
         <button class="nav__button"
-        @onclick="@UserLogout"
-        alt="Logout">
+            @onclick="@UserLogout"
+            title="Logout">
             <Svg Path="@Svg.Paths.Logout" Width="30" Height="30" />
         </button>
     </NavPermanentButtons>
