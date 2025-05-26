@@ -683,3 +683,10 @@ button:disabled {
         }
     }
 }
+
+
+@media (max-width: variables.$breakpoint--desktop) {
+    .product-listing__shopping-button {
+        display: none;;
+    }
+}

@@ -5,6 +5,7 @@
 @using frontend.Components.Shared.UI.SmartComponent
 
 @inject ProductService ProductService
+@inject UtilsService UtilsService
 
 <PageTitle>Cia da Capa</PageTitle>
 
@@ -75,20 +76,18 @@
         </div>
     </div>
 
-    <div class="splash-clients-logos">
-        <Carousel>
-            <CarouselItem><img src="images/clients/aurora.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/brf.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/caixa.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/ccaa.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/correios.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/fiat.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/prefeitura_bh.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/prefeitura_canoas.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/pronatec.jpg" /></CarouselItem>
-            <CarouselItem><img src="images/clients/senac.jpg" /></CarouselItem>
-        </Carousel>
-    </div>
+    @if (fetchClientLogosApiHandler.IsExecuting())
+    {
+        <ContentLoader DisplayMessage="Carregando logomarcas dos clientes..." />
+    } else if (clientLogos.Any())
+    {
+        <div class="splash-clients-logos">
+            <Carousel 
+                Pagination="Carousel.PaginationType.NONE"
+                Items="clientLogos"
+                AutoScroll/>
+        </div>
+    }
 </section>
 
 <ProductSuggestions FetchFunction="ProductService.GetHighlightedProductsListFunc()">
@@ -98,7 +97,39 @@
 </ProductSuggestions>
 
 @code {
+    private ApiStateHandler<List<string>> fetchClientLogosApiHandler = new();
+    private List<CarouselItem> clientLogos = new();
+
     private int YearsSince1995 => CalculateYearsSince(new DateTime(1995, 4, 1));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await fetchClientLogosApiHandler.ExecuteAsync(UtilsService.GetClientLogosFunc());
+
+        if (fetchClientLogosApiHandler.IsSuccess() && fetchClientLogosApiHandler.Content != null)
+        {
+            clientLogos = fetchClientLogosApiHandler.Content.Select(imagePath =>
+            {
+                // Extract filename from path
+                var fileName = System.IO.Path.GetFileNameWithoutExtension(imagePath);
+
+                // Replace - and _ with spaces, then capitalize each word
+                var altText = System.Globalization.CultureInfo.CurrentCulture.TextInfo
+                    .ToTitleCase(fileName.Replace("-", " ").Replace("_", " "));
+
+                return new CarouselItem
+                {
+                    Content = builder =>
+                    {
+                        builder.OpenElement(0, "img");
+                        builder.AddAttribute(1, "src", imagePath);
+                        builder.AddAttribute(2, "alt", altText);
+                        builder.CloseElement();
+                    }
+                };
+            }).ToList();
+        }
+    }
 
     private int CalculateYearsSince(DateTime startDate)
     {

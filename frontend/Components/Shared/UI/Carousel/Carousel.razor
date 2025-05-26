@@ -1,88 +1,171 @@
-﻿
-<div class="carousel">
-    <ul class="carousel-list" @ref="CarouselListRef">
-        <CascadingValue Value="this">
-            @ChildContent
-        </CascadingValue>
+﻿@implements IDisposable
+
+@inject AppStateService AppStateService
+
+<div class="carousel" style="@(MaxWidth > 0 ? $"max-width: {MaxWidth}px" : "")">
+    <ul class="carousel-content" @ref="CarouselContentRef">
+        @for (int i = 0; i < Items.Count; i++)
+        {
+            var index = i; // Capture loop index in a local variable
+
+            <li id="carousel-item-@i" class="carousel-item @(index == _currentIndex ? "carousel-item--active" : "")"
+                @onclick="async () =>
+                {
+                    if (Items.Count > index && Items[index].OnClick.HasDelegate)
+                    {
+                        await Items[index].OnClick.InvokeAsync(null);
+                    }
+                }">
+                  @Items[index].Content
+            </li>
+        }
     </ul>
 
-    <button class="carousel-button carousel-button--previous" type="button" @onclick="() => Scroll(false)">
-        <Svg Path="@Svg.Paths.ChevronLeft" Width="20" Height="20" />
-    </button>
+    @if (AppStateService.IsMobile
+        || (!AppStateService.IsMobile && (Pagination == PaginationType.NONE || Pagination == PaginationType.DOTS) && !PaginationArrows))
+    {
+        <div class="carousel-pagination">
+            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
+                @for (int i = 0; i < Items.Count; i++)
+                {
+                    var index = i;
+                    <span id="pagination-item-@i" class="carousel-pagination__dot @(index == _currentIndex ? "active" : "")"
+                          @onclick="() => ScrollToIndex(index)">
+                    </span>
+                }
+            </div>
+        </div>
+    }
+    else if (!AppStateService.IsMobile && (PaginationArrows || Pagination == PaginationType.CUSTOM))
+    {
+        <div class="carousel-pagination">
+            @if (PaginationArrows)
+            {
+                <div class="carousel-pagination__arrow carousel-pagination__arrow--left"
+                     @onclick="@(() => ScrollToIndex(_currentIndex - 1))">
+                    <Svg Path="@Svg.Paths.ChevronLeft" />
+                </div>
+                <div class="carousel-pagination__arrow carousel-pagination__arrow--right"
+                     @onclick="@(() => ScrollToIndex(_currentIndex + 1))">
+                    <Svg Path="@Svg.Paths.ChevronRight" />
+                </div>
+            }
 
-    <button class="carousel-button carousel-button--next" type="button" @onclick="() => Scroll(true)">
-        <Svg Path="@Svg.Paths.ChevronRight" Width="20" Height="20" />
-    </button>
+            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
+                @if (Pagination == PaginationType.CUSTOM)
+                {
+                    @for (int i = 0; i < Items.Count; i++)
+                    {
+                        var index = i;
+                        <div id="pagination-item-@i" class="carousel-pagination__item carousel-pagination__custom @(index == _currentIndex ? "active" : "")"
+                             @onclick="() => ScrollToIndex(index)">
+                            @Items[index].PaginationContent
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
 </div>
 
 @code {
+    [Parameter] public List<CarouselItem> Items { get; set; } = new();
+    [Parameter] public bool AutoScroll { get; set; } = false;
+    [Parameter] public PaginationType Pagination { get; set; } = PaginationType.NONE;
+    [Parameter] public bool PaginationArrows { get; set; } = false;
+    [Parameter] public int MaxWidth { get; set; } = 0;
+
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-
-    private ElementReference CarouselListRef;
-    private readonly List<ElementReference> _items = new();
+    private DotNetObjectReference<Carousel>? _dotNetHelper;
+    private ElementReference CarouselContentRef;
+    private ElementReference CarouselPaginationRef;
     private int _currentIndex = 0;
-
     private System.Timers.Timer? _scrollTimer;
 
-    // Called from CarouselItem
-    public void RegisterItem(ElementReference item)
+    protected override void OnInitialized()
     {
-        _items.Add(item);
+        AppStateService.IsMobileChanged += StateHasChanged;
+        base.OnInitialized();
+    }
 
-        if (_items.Count == 1)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _dotNetHelper = DotNetObjectReference.Create(this);
+
+        await JSRuntime.InvokeVoidAsync(
+            "enableDirectionalSwipeScroll",
+            CarouselContentRef,
+            _dotNetHelper,
+            Items.Count,
+            _currentIndex
+        );
+
+        if (firstRender && AutoScroll)
         {
-            // Only start once after first item is added
-            StartAutoScroll();
+            _scrollTimer?.Dispose();
+
+            _scrollTimer = new System.Timers.Timer(3000); // scroll every 3 seconds
+            _scrollTimer.Elapsed += async (_, _) =>
+            {
+                await InvokeAsync(async () =>
+                {
+                    var nextIndex = (_currentIndex + 1) % Items.Count;
+                    await ScrollToIndex(nextIndex);
+                });
+            };
+            _scrollTimer.AutoReset = true;
+            _scrollTimer.Start();
         }
     }
 
-    private async Task Scroll(bool scrollToTheRight)
+    [JSInvokable]
+    public void UpdateCurrentIndex(int index)
     {
-        _currentIndex = scrollToTheRight
-            ? (_currentIndex + 1) % _items.Count
-            : (_currentIndex - 1 + _items.Count) % _items.Count;
-
-        await ScrollToIndex(_currentIndex);
-    }
-
-    private async Task ScrollToIndex(int index)
-    {
-        ResetScrollTimer();
-
-        await JSRuntime.InvokeVoidAsync("scrollCarouselToIndex", CarouselListRef, index);
-    }
-
-    private void StartAutoScroll()
-    {
-        if (_items.Count == 0) return;
-
-        _scrollTimer = new System.Timers.Timer(2500);
-        _scrollTimer.Elapsed += async (_, _) =>
+        if (_currentIndex != index)
         {
-            await InvokeAsync(async () =>
-            {
-                _currentIndex = (_currentIndex + 1) % _items.Count;
-                await ScrollToIndex(_currentIndex);
-            });
-        };
-        _scrollTimer.AutoReset = true;
-        _scrollTimer.Start();
+            _currentIndex = index;
+            StateHasChanged();
+        }
     }
 
-    private void ResetScrollTimer()
+    [JSInvokable]
+    public async Task ScrollToIndex(int index)
     {
-        if (_scrollTimer is null)
-            return;
+        _currentIndex = index;
+        StateHasChanged(); // update the active class in both lists
 
-        _scrollTimer.Stop();
-        _scrollTimer.Start(); // restarts countdown
+        await JSRuntime.InvokeVoidAsync(
+            "scrollCarouselToIndex",
+            CarouselContentRef,
+            CarouselPaginationRef,
+            index
+        );
+
+        ResetAutoScrollTimer(); // stop/start the timer!
     }
+
+    private void ResetAutoScrollTimer()
+    {
+        if (AutoScroll && _scrollTimer != null)
+        {
+            _scrollTimer.Stop();
+            _scrollTimer.Start();
+        }
+    }
+
 
     public void Dispose()
     {
+        AppStateService.IsMobileChanged -= StateHasChanged;
+        _scrollTimer?.Stop();
         _scrollTimer?.Dispose();
+        _dotNetHelper?.Dispose();
+    }
+
+    public enum PaginationType
+    {
+        NONE,
+        DOTS,
+        CUSTOM
     }
 }

@@ -9,11 +9,11 @@
   max-width: 600px;
 }
 
-.website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
+.website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .header__logo, .nav__button, .website__main, .website__header {
   display: flex;
 }
 
-.form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .notification, .header__logo, .nav__button, .website__main, .website__header {
+.form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .header__logo, .nav__button, .website__main, .website__header {
   flex-direction: row;
 }
 
@@ -25,7 +25,7 @@
   align-items: center;
 }
 
-.product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item {
+.product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item {
   justify-content: center;
   align-items: center;
 }
@@ -433,53 +433,106 @@ table tbody tr.active-row {
 .carousel {
   position: relative;
   width: 100%;
+  overflow: hidden; /* Ensures no vertical scroll leaks */
 }
 
-.carousel-list {
-  display: flex;
-  gap: 50px;
-  padding: 10px 50px;
-  width: 100%;
-  height: 100%;
+.carousel-content, .carousel-pagination__content {
   list-style: none;
   overflow-x: scroll;
   touch-action: pan-x;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  /* Hide scrollbar in Firefox */
   scrollbar-width: none;
-  /* Hide scrollbar in IE and Edge */
   -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
 }
 
-.carousel-item {
-  background-color: #FFF;
+.carousel-content.dragging,
+.carousel-pagination__content.dragging {
+  cursor: grabbing;
+}
+
+.carousel-content {
+  display: flex;
+  gap: 20px; /* Consistent gap calculation */
+  padding: 10px 50px;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.carousel-pagination__content {
+  display: flex;
+}
+
+.carousel-content::-webkit-scrollbar, .carousel-pagination::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome/Safari */
+}
+
+.carousel-content,
+.carousel-pagination__content {
+  scroll-snap-type: x mandatory;
+}
+
+.carousel-item,
+.carousel-pagination__item,
+.carousel-pagination__dot {
   scroll-snap-align: center;
 }
 
-.carousel-item__content {
-  height: 100%;
+.carousel-item {
+  flex: 0 0 100%;
+  background-color: #FFF;
 }
-.carousel-item__content > * {
-  height: 100%;
-}
-
-.carousel-button {
-  position: absolute;
-  top: 50%;
-  width: 50px;
-  height: 100%;
-  transform: translateY(-50%);
-  background: white;
+.carousel-item > * {
+  pointer-events: none;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
-.carousel-button--previous {
-  left: 0;
+.carousel-pagination {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+  margin-top: 10px;
 }
 
-.carousel-button--next {
-  right: 0;
+.carousel-pagination__arrow {
+  padding: 0 5px;
+}
+
+.carousel-pagination__arrow--right {
+  order: 3;
+}
+
+.carousel-pagination__item {
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  width: 150px;
+  height: 150px;
+}
+.carousel-pagination__item > * {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.carousel-pagination__dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.carousel-pagination__dot.active {
+  background-color: #333;
 }
 
 .product-suggestions {
@@ -1777,4 +1830,10 @@ button:disabled {
 }
 .product-listing__shopping-button:hover > span {
   color: hsl(240, 2%, 18%);
+}
+
+@media (max-width: 750px) {
+  .product-listing__shopping-button {
+    display: none;
+  }
 }
