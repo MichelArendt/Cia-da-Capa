@@ -2,7 +2,7 @@
 
 @inject AppStateService AppStateService
 
-<div class="carousel" style="@(MaxWidth > 0 ? $"max-width: {MaxWidth}px" : "")">
+<div class="carousel" style="@CarouselStyle">
     <ul class="carousel-content" @ref="CarouselContentRef">
         @for (int i = 0; i < Items.Count; i++)
         {
@@ -73,7 +73,9 @@
     [Parameter] public bool AutoScroll { get; set; } = false;
     [Parameter] public PaginationType Pagination { get; set; } = PaginationType.NONE;
     [Parameter] public bool PaginationArrows { get; set; } = false;
+
     [Parameter] public int MaxWidth { get; set; } = 0;
+    [Parameter] public int MaxHeight { get; set; } = 0;
 
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
     private DotNetObjectReference<Carousel>? _dotNetHelper;
@@ -153,6 +155,18 @@
         }
     }
 
+    private string CarouselStyle
+    {
+        get
+        {
+            var styles = new List<string>();
+            if (MaxWidth > 0)
+                styles.Add($"max-width: {MaxWidth}px");
+            if (MaxHeight > 0)
+                styles.Add($"max-height: {MaxHeight}px");
+            return string.Join("; ", styles);
+        }
+    }
 
     public void Dispose()
     {
