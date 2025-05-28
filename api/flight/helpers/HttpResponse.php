@@ -20,7 +20,8 @@ class HttpResponse
             "status_code" => $code,
             "message" => $message,
             "error_message" => $errorMessage,
-            "data" => empty($data) ? null : $data // Ensure empty data is `{}` instead of `[]`
+            "data" => $data
+            // "data" => empty($data) ? null : $data // Ensure empty data is `{}` instead of `[]`
         ], $code);
     }
 
