@@ -2,34 +2,53 @@
 
 @inject ProductSizeService ProductSizeService
 
-<div class="tabbed-navigation_tabs">
+<div class="tabbed-navigation__tabs @ClassNameTabs">
     @foreach (var tab in Tabs)
     {
-        <button class="tabbed-navigation_tab-button @(tab.Visible ? "selected" : "")" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
+        <button class="tabbed-navigation__tab-button @ClassNameButton @(tab.Visible ? "selected" : "")" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
             @tab.Title
         </button>
     }
 </div>
 @foreach (var tab in Tabs)
 {
-    <div class="tabbed-navigation_tab-content @(tab.Visible ? "tabbed-navigation_tab-content--visible" : "")">
+    <div class="tabbed-navigation__tab-content @ClassNameContent @(tab.Visible ? "tabbed-navigation__tab-content--visible" : "")">
         @tab.Content
     </div>
 }
 
 @code {
-    [Parameter]
-    public required List<TabViewModel> Tabs { get; set; }
+    [Parameter] public required List<TabViewModel> Tabs { get; set; }
+    [Parameter] public int CurrentTab { get; set; }
+    // [Parameter] public string ClassNameStyleModifier { get; set; } = "--default";
 
-    [Parameter]
-    public int CurrentTab { get; set; }
+    [Parameter] public bool DefaultClasses { get; set; } = true;
+    [Parameter] public bool DefaultTabToLast { get; set; } = false;
+    [Parameter] public string ClassNameTabs { get; set; } = $"tabbed-navigation__tabs--default";
+    [Parameter] public string ClassNameButton { get; set; } = $"tabbed-navigation__tab-button--default";
+    [Parameter] public string ClassNameContent { get; set; } = $"tabbed-navigation__tab-content--default";
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        if( !DefaultClasses )
+        {
+            ClassNameTabs = "";
+            ClassNameButton = "";
+            ClassNameContent = "";
+        }
 
-        SwitchToTab(Tabs.Count - 1);
+        if (DefaultTabToLast)
+        {
+            SwitchToTab(Tabs.Count - 1);
+        }
+        else
+        {
+            SwitchToTab(0);
+        }
+
         ProductSizeService.ProductSizeAddedOrDeleted += SwitchToLastTab;
+
+        base.OnInitialized();
     }
 
     public void Dispose()
