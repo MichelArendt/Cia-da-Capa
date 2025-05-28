@@ -477,38 +477,62 @@ table tbody tr.active-row {
 // ---------------------------
 // Tabbed navigation
 // ---------------------------
-.tabbed-navigation_tabs {
+.tabbed-navigation__tabs {
     display: flex;
 }
 
-.tabbed-navigation_tab-button {
-    background: colors.$primary-dark;
-    color: colors.$primary-main;
-}
-
-.tabbed-navigation_tab-button:hover {
-    background: colors.$primary-main;
-    color: colors.$primary-dark;
-}
-
-.tabbed-navigation_tab-button.selected,
-.tabbed-navigation_tab-content {
-    background: colors.opacity-set(colors.$secondary-light, 20%);
-    color: colors.$primary-dark;
-}
-
-.tabbed-navigation_tab-button {
+.tabbed-navigation__tab-button {
     width: unset; // remove 100% width from button
+    font-weight: 500;
 }
 
-.tabbed-navigation_tab-content {
+.tabbed-navigation__tab-content {
     display: none;
     padding: 30px;
 }
 
-.tabbed-navigation_tab-content--visible {
+.tabbed-navigation__tab-content--visible {
     display: block;
 }
+
+// STYLING - default
+
+.tabbed-navigation__tab-button--default {
+    background: colors.$primary-dark;
+    color: colors.$primary-main;
+}
+
+.tabbed-navigation__tab-button--default:hover {
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
+}
+
+.tabbed-navigation__tab-button--default.selected,
+.tabbed-navigation__tab-content--default {
+    background: colors.opacity-set(colors.$secondary-light, 20%);
+    color: colors.$primary-dark;
+}
+
+// STYLING - product details
+
+.tabbed-navigation__tabs--product-details {
+    gap: 10px;
+}
+
+// .tabbed-navigation__tab-button--product-details {
+//     border-radius: 50px;
+//     background: colors.$primary-main;
+//     color: colors.$primary-dark;
+// }
+
+// .tabbed-navigation__tab-button--product-details:hover {
+//     background: colors.$secondary-hover;
+// }
+
+// .tabbed-navigation__tab-button--product-details.selected {
+//     background: colors.$secondary-lighter;
+//     color: colors.$primary-dark;
+// }
 
 // ---------------------------
 // Carousel

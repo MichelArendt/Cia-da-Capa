@@ -1,8 +1,8 @@
-.splash-clients, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .splash-item, .splash-clients-logos, .footer-contact__phone {
+.splash-clients, .product-details__add-to-cart, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .product-details__size, .splash-item, .splash-clients-logos, .footer-contact__phone {
   display: flex;
 }
 
-.splash-item, .splash-clients-logos, .footer-contact__phone {
+.product-details__size, .splash-item, .splash-clients-logos, .footer-contact__phone {
   flex-direction: row;
 }
 
@@ -15,7 +15,7 @@
   align-items: center;
 }
 
-.splash-clients, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer {
+.splash-clients, .product-details__add-to-cart, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer {
   flex-direction: column;
 }
 
@@ -29,9 +29,15 @@ footer h1 {
   font-style: normal;
 }
 
-footer {
+.product-details button, footer {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
+  font-style: normal;
+}
+
+.product-details__size-values {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -218,4 +224,64 @@ main {
 }
 .splash-clients-logos > * {
   height: 100%;
+}
+
+.product-container p {
+  padding: 5px 0;
+}
+
+.product-details__sizes,
+.product-details__add-to-cart,
+.product-details__share {
+  padding-top: 30px;
+}
+
+.product-details__size {
+  gap: 10px;
+}
+
+.product-details__size-values {
+  text-align: right;
+}
+
+.product-details button {
+  padding: 10px 15px;
+  border-radius: 50px;
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 2%, 18%);
+}
+
+.product-details button:hover {
+  background: hsl(24, 70%, 40%);
+  color: white;
+}
+
+.product-details button.selected {
+  background: hsl(0, 0%, 95%);
+  color: hsl(240, 2%, 18%);
+}
+
+.product-details input {
+  font-size: 20px;
+}
+
+.product-details .tabbed-navigation__tabs {
+  gap: 10px;
+}
+
+.product-details .tabbed-navigation__tab-content {
+  padding: 10px 0 0 0;
+}
+
+.product-details__add-to-cart-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.product-details__add-to-cart-container > * {
+  width: unset;
+  flex-grow: 0;
+}
+.product-details__add-to-cart-container :last-child {
+  flex-grow: 1;
 }

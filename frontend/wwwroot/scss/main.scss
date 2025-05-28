@@ -121,3 +121,80 @@ main {
 }
 
 @media (min-width: variables.$breakpoint--desktop) {}
+
+
+// ---------------------------
+// Product Details
+// ---------------------------
+.product-container {
+    & p {
+        padding: 5px 0;
+    }
+}
+
+.product-details {}
+
+.product-details__sizes,
+.product-details__add-to-cart,
+.product-details__share {
+    padding-top: 30px;
+}
+
+.product-details__size {
+    @extend %flex--row;
+    gap: 10px;
+}
+
+.product-details__size-values {
+    @extend %poppins-bold;
+    text-align: right;
+}
+
+.product-details button {
+    @extend %poppins-regular;
+    padding: 10px 15px;
+    border-radius: 50px;
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
+}
+
+.product-details button:hover {
+    background: colors.$secondary-hover;
+    color: white;
+}
+
+.product-details button.selected {
+    background: colors.$secondary-lighter;
+    color: colors.$primary-dark;
+}
+
+.product-details input {
+    font-size: 20px;
+}
+
+.product-details .tabbed-navigation__tabs {
+    gap: 10px;
+}
+
+.product-details .tabbed-navigation__tab-content {
+    padding: 10px 0 0 0;
+}
+
+.product-details__add-to-cart {
+    @extend %flex--column;
+}
+
+.product-details__add-to-cart-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    >* {
+        width: unset; // unset 100% from button
+        flex-grow: 0;
+    }
+
+    :last-child {
+        flex-grow: 1;
+    }
+}

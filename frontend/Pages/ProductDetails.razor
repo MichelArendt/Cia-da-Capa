@@ -1,0 +1,184 @@
+﻿@page "/produto/{id:int}"
+
+@inject ProductService ProductService
+@inject ProductStateService ProductStateService
+
+@using frontend.Components
+@using frontend.Components.Shared.UI.Carousel
+@using frontend.Utils
+@using frontend.ViewModels.TabbedNavigation
+
+@if (fetchFullProductApiHandler.IsExecuting())
+{
+    <ContentLoader />
+} else if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content != null)
+{
+    var product = fetchFullProductApiHandler.Content;
+    <div class="product-container">
+        <Carousel 
+            Pagination="Carousel.PaginationType.CUSTOM"
+            Items="productImageCarouselItems"
+            MaxWidth="600"
+            PaginationArrows />
+
+        <div class="product-details">
+            <div class="two--no-before">
+                <h1>
+                    @product.Title
+                    <span>@ProductStateService.GetProductFullReference(product)</span>
+                </h1>
+            </div>
+
+            <div class="product-details__description">
+                @HtmlFormatter.ConvertNewlinesToParagraphs(product.Description)
+            </div>
+
+            @if (product.Variants != null && product.Variants.Any())
+            {
+                <h2>VARIANTES:</h2>
+
+                <div class="product-details__variations">
+                    @{
+                        var tabs = new List<TabViewModel>();
+
+                        foreach (var variant in product.Variants)
+                        {
+                            tabs.Add(new TabViewModel
+                            {
+                                Title = variant.Title,
+                                Content = (
+                                    @<text>
+                                        @variant.Description
+                                    </text>
+                                ),
+                                Visible = true
+                            });
+                        }
+
+                        <TabbedNavigation Tabs="@tabs" 
+                                DefaultClasses="false" />
+                    }
+                </div>
+            }
+
+            @if (product.Sizes != null && product.Sizes.Any())
+            {
+                <div class="product-details__sizes">
+                    <h2>TAMANHOS:</h2>
+
+                    @{
+                        if (product.Sizes.Count > 1)
+                        {
+                            var tabs = new List<TabViewModel>();
+                        
+                            foreach (var size in product.Sizes)
+                            {
+                                tabs.Add(new TabViewModel
+                                {
+                                    Title = ProductStateService.SizeLabelsDict[size.SizeLabelId].Label,
+                                    Content = ( @RenderProductSize(size) ),
+                                    Visible = true
+                                });
+                            }
+
+                            <TabbedNavigation 
+                                Tabs="@tabs"
+                                DefaultClasses="false" />
+                        } else
+                        {
+                            @RenderProductSize( product.Sizes!.FirstOrDefault()! )
+                        }
+                    }
+                </div>
+            }
+
+            <div class="product-details__add-to-cart">
+                <h2>QUANTIDADE:</h2>
+
+                <AddToCart />
+            </div>
+
+            <div class="product-details__share">
+                 <ShareProduct />
+            </div>
+        </div>
+    </div>
+} else 
+{
+    <p>Erro ao carregar os detalhes do produto.</p>
+}
+
+@if (suggestionFilters != null && suggestionFilters.Count > 0)
+{
+    <ProductSuggestions FetchFunction="ProductService.GetFilteredProductsListFunc(suggestionFilters)">
+        <Title>
+            OUTRAS <strong>MOCHILAS</strong>
+        </Title>
+    </ProductSuggestions>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private ApiStateHandler<ProductDto> fetchFullProductApiHandler = new();
+    private List<CarouselItem> productImageCarouselItems = new();
+
+    private string ClassNameTabs => $"product-details__tabs--default";
+    private string ClassNameButton => $"product-details__tab-button--default";
+    private string ClassNameContent => $"product-details__tab-content--default";
+
+
+    private IDictionary<string, object?>? suggestionFilters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await fetchFullProductApiHandler.ExecuteAsync(ProductService.GetFullProductDetailsFunc(id));
+
+        if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content?.Images != null)
+        {
+            productImageCarouselItems = fetchFullProductApiHandler.Content.Images
+                .Select(image => new CarouselItem
+                {
+                    Content = builder =>
+                    {
+                        builder.OpenElement(0, "img");
+                        builder.AddAttribute(1, "src", image.MediumFilePath);
+                        builder.AddAttribute(2, "alt", "Imagem do produto");
+                        builder.CloseElement();
+                    },
+                    PaginationContent = builder =>
+                    {
+                        builder.OpenElement(0, "img");
+                        builder.AddAttribute(1, "src", image.ThumbnailFilePath);
+                        builder.AddAttribute(2, "alt", "Miniatura");
+                        builder.AddAttribute(3, "class", "carousel-thumbnail");
+                        builder.CloseElement();
+                    }
+                })
+                .ToList();
+
+            suggestionFilters = new Dictionary<string, object?>
+            {
+                ["category_id"] = fetchFullProductApiHandler.Content.CategoryId,
+                ["exclude_id"] = fetchFullProductApiHandler.Content.Id,
+                ["with_images"] = true
+            };
+        }
+    }
+
+    private RenderFragment RenderProductSize(ProductSizeDto productSizeDto) 
+        =>  @<div class="product-details__size">
+                <div>
+                    Largura:<br />
+                    Altura: <br />
+                    Profundidade:
+                </div>
+
+                <div class="product-details__size-values">
+                    @productSizeDto.Width cm<br />
+                    @productSizeDto.Height cm<br />
+                    @productSizeDto.Depth cm
+                </div>
+            </div>;
+}
