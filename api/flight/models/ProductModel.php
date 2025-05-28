@@ -59,6 +59,45 @@ class ProductModel
         }
     }
 
+    public function getAllFiltered(array $filters = []): array
+    {
+        try {
+            $where = [];
+            $params = [];
+
+            // Filter by category_id
+            if (!empty($filters['category_id'])) {
+                $where[] = "category_id = :category_id";
+                $params[':category_id'] = $filters['category_id'];
+            }
+
+            // Exclude a specific product ID
+            if (!empty($filters['exclude_id'])) {
+                $where[] = "id != :exclude_id";
+                $params[':exclude_id'] = $filters['exclude_id'];
+            }
+
+            // Only highlighted products (if set)
+            if (isset($filters['highlighted']) && $filters['highlighted'] !== null && $filters['highlighted'] !== '') {
+                $where[] = "is_highlighted = :highlighted";
+                $params[':highlighted'] = (int)$filters['highlighted'];
+            }
+
+            // Build the WHERE clause
+            $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+            $sql = "SELECT * FROM `{$this->table}` $whereClause ORDER BY priority ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductModel->getAllFiltered()");
+            return [];
+        }
+    }
+
+
     // Fetch all highlighted products
     public function getAllHighlighted(): array
     {
@@ -125,7 +164,6 @@ class ProductModel
             return [];
         }
     }
-
 
     // Fetch by ID
     public function getForId($id)
