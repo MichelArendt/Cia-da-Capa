@@ -106,6 +106,7 @@ namespace frontend.Services
                 notificationService.Display(SizeLabelsApiHandler.GetErrorNotificationModel("Falha ao tentar atualizar os rótulos de tamanho em ProductStateService."));
             }
         }
+
         public string GetProductFullReference(ProductDto product)
         {
             return $"{CategoriesDict[product.CategoryId].Reference}-{product.Reference}";

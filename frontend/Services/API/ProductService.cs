@@ -27,6 +27,15 @@ namespace frontend.Services.API
         }
 
         /// <summary>
+        /// Gets the list of filtered products.
+        /// </summary>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
+        public Func<Task<HttpResponseMessage>> GetFilteredProductsListFunc(IDictionary<string, object?> filters)
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetFiltered(filters));
+        }
+
+        /// <summary>
         /// Gets the list of highlighted products.
         /// </summary>
         /// <returns>A function that returns a task with the HTTP response message.</returns>

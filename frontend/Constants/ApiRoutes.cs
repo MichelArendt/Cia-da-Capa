@@ -15,6 +15,22 @@
             public static class Products
             {
                 public const string GetAll = $"{API}/public/products";
+
+                /// <summary>
+                /// Builds a filtered products endpoint with query params.
+                /// </summary>
+                /// <param name="filters">e.g. new Dictionary&lt;string, object&gt; { ["category_id"]=5, ["exclude_id"]=23 }</param>
+                public static string GetFiltered(IDictionary<string, object?> filters)
+                {
+                    var baseUrl = $"{API}/public/products";
+                    if (filters == null || !filters.Any()) return baseUrl;
+
+                    var query = string.Join("&", filters
+                        .Where(kv => kv.Value != null)
+                        .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value?.ToString() ?? string.Empty)}"));
+                    return $"{baseUrl}?{query}";
+                }
+
                 public const string GetAllHighlighted = $"{API}/public/products/highlighted";
                 public static string GetById(int id) => $"{API}/public/products/{id}";
                 public static string GetByIdFull(int id) => $"{API}/public/products/{id}/full";
