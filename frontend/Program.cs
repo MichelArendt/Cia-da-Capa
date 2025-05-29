@@ -33,8 +33,13 @@ namespace frontend
             builder.Services.AddSingleton<NotificationService>();
             builder.Services.AddSingleton<ProductStateService>();
             builder.Services.AddSingleton<AppStateService>();
+            builder.Services.AddSingleton<VersionService>();
 
             var app = builder.Build();
+
+            // Load version.json before running the app
+            var versionService = app.Services.GetRequiredService<VersionService>();
+            await versionService.LoadAsync(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             await app.RunAsync();
         }

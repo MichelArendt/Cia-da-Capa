@@ -13,3 +13,9 @@ $html = $html -replace '(?<=(href|src)="[^"]+\.(js|css))(\?v=\d+)?(?=")', "?v=$v
 $html | Set-Content $indexHtmlPath
 
 Write-Output "VERSIONING index.html with version: $version"
+
+# Also write version.json for Blazor
+$versionJsonPath = "$PSScriptRoot/../frontend/wwwroot/version.json"
+"{`"CssVersion`": `"$version`"}" | Set-Content $versionJsonPath -Encoding UTF8
+
+Write-Output "Wrote version.json with version: $version"

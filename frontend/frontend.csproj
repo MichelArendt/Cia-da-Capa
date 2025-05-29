@@ -34,10 +34,6 @@
 		<Exec Command="sass wwwroot/scss/manage.scss:wwwroot/css/manage.css wwwroot/scss/main.scss:wwwroot/css/main.css wwwroot/scss/shared.scss:wwwroot/css/shared.css --no-source-map" />
 	</Target>
 
-	<Target Name="RemoveSRIIfDebug" AfterTargets="FlattenOutput">
-		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
-	</Target>
-
 	<!-- Flatten output of all files in wwwroot into ../build/ -->
 	<Target Name="FlattenOutput" AfterTargets="Publish">
 		<!-- Include all files under wwwroot -->
@@ -50,6 +46,10 @@
 
 		<!-- Remove the now-empty wwwroot folder -->
 		<RemoveDir Directories="$(PublishDir)wwwroot" />
+	</Target>
+
+	<Target Name="RemoveSRIIfDebug" AfterTargets="FlattenOutput">
+		<Exec Condition="'$(Configuration)' == 'Debug'" Command="powershell -NoProfile -Command &quot;(Get-Content '$(PublishDir)index.html') -replace ' integrity=&quot;.*?&quot;', '' | Set-Content '$(PublishDir)index.html'&quot;" />
 	</Target>
 
 	<!-- Adds versioning to file names and updates the index.html file accordingly to bust cache -->

@@ -15,10 +15,12 @@
 @inject ProductStateService ProductStateService
 @inject ProductCategoryService ProductCategoryService
 @inject UserService UserService
+@inject VersionService VersionService
+
 <PageTitle>Gerenciamento - Cia da Capa</PageTitle>
 
 <HeadContent>
-    <link rel="stylesheet" href="css/manage.css?v=@DateTime.Now.Ticks" />
+    <link rel="stylesheet" href="css/manage.css?v=@VersionService.CssVersion" />
 </HeadContent>
 
 <Header>

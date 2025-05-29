@@ -7,9 +7,10 @@
 
 @inject AppStateService AppStateService
 @inject ProductStateService ProductStateService
+@inject VersionService VersionService
 
 <HeadContent>
-	<link rel="stylesheet" href="css/main.css" />
+	<link rel="stylesheet" href="css/main.css?v=@VersionService.CssVersion" />
 </HeadContent>
 
 <Header>
