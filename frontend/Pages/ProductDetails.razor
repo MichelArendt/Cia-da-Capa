@@ -72,21 +72,7 @@
                     @{
                         if (product.Sizes.Count > 1)
                         {
-                            var tabs = new List<TabViewModel>();
-                        
-                            foreach (var size in product.Sizes)
-                            {
-                                tabs.Add(new TabViewModel
-                                {
-                                    Title = ProductStateService.SizeLabelsDict[size.SizeLabelId].Label,
-                                    Content = ( @RenderProductSize(size) ),
-                                    Visible = true
-                                });
-                            }
-
-                            <TabbedNavigation 
-                                Tabs="@tabs"
-                                DefaultClasses="false" />
+                            <TabbedNavigation Tabs="@sizeTabs" DefaultClasses="false" />
                         } else
                         {
                             @RenderProductSize( product.Sizes!.FirstOrDefault()! )
@@ -135,6 +121,8 @@
     private List<CarouselItem> currentCarouselItems = new();
     private Dictionary<int, List<CarouselItem>> variantCarouselItems = new(); // key: variantId
     private int selectedVariantId = 0;
+
+    private List<TabViewModel> sizeTabs = new();
 
     private IDictionary<string, object?>? suggestionFilters;
 
@@ -197,6 +185,19 @@
                         Visible = false
                     });
                 }
+            }
+
+            // Build tabs for sizes
+            if (product.Sizes != null && product.Sizes.Count > 1)
+            {
+                sizeTabs = product.Sizes.Select(size =>
+                    new TabViewModel
+                    {
+                        Title = ProductStateService.SizeLabelsDict[size.SizeLabelId].Label,
+                        Content = (@RenderProductSize(size)),
+                        Visible = false
+                    }).ToList();
+                sizeTabs[0].Visible = true;
             }
         }
     }
