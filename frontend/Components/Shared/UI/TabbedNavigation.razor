@@ -5,11 +5,12 @@
 <div class="tabbed-navigation__tabs @ClassNameTabs">
     @foreach (var tab in Tabs)
     {
-        <button class="tabbed-navigation__tab-button @ClassNameButton @(tab.Visible ? "selected" : "")" @onclick="@(() => SwitchToTab(Tabs.IndexOf(tab)))">
+        <button class="tabbed-navigation__tab-button @ClassNameButton @(tab.Visible ? "selected" : "")" @onclick="@(() => SwitchToTabAsync(Tabs.IndexOf(tab)))">
             @tab.Title
         </button>
     }
 </div>
+
 @foreach (var tab in Tabs)
 {
     <div class="tabbed-navigation__tab-content @ClassNameContent @(tab.Visible ? "tabbed-navigation__tab-content--visible" : "")">
@@ -20,13 +21,14 @@
 @code {
     [Parameter] public required List<TabViewModel> Tabs { get; set; }
     [Parameter] public int CurrentTab { get; set; }
-    // [Parameter] public string ClassNameStyleModifier { get; set; } = "--default";
 
     [Parameter] public bool DefaultClasses { get; set; } = true;
     [Parameter] public bool DefaultTabToLast { get; set; } = false;
     [Parameter] public string ClassNameTabs { get; set; } = $"tabbed-navigation__tabs--default";
     [Parameter] public string ClassNameButton { get; set; } = $"tabbed-navigation__tab-button--default";
     [Parameter] public string ClassNameContent { get; set; } = $"tabbed-navigation__tab-content--default";
+
+    [Parameter] public EventCallback<int> OnTabChanged { get; set; }
 
     protected override void OnInitialized()
     {
@@ -39,11 +41,13 @@
 
         if (DefaultTabToLast)
         {
-            SwitchToTab(Tabs.Count - 1);
+            // SwitchToTab(Tabs.Count - 1);
+            SwitchToTabInternal(Tabs.Count - 1);
         }
         else
         {
-            SwitchToTab(0);
+            // SwitchToTab(0);
+            SwitchToTabInternal(0);
         }
 
         ProductSizeService.ProductSizeAddedOrDeleted += SwitchToLastTab;
@@ -56,21 +60,41 @@
         ProductSizeService.ProductSizeAddedOrDeleted -= SwitchToLastTab;
     }
 
-    public void SwitchToTab(int id)
+    // public void SwitchToTab(int id)
+    // {
+    //     Tabs.ForEach(t => t.Visible = false);
+    //     Tabs.ElementAt(id).Visible = true;
+    //     CurrentTab = id;
+    //     StateHasChanged();
+    // }
+
+    // Internal version for initial setup, doesn't trigger the callback
+    private void SwitchToTabInternal(int id)
     {
-        // Console.WriteLine($"Switching to tab {id}");
         Tabs.ForEach(t => t.Visible = false);
         Tabs.ElementAt(id).Visible = true;
         CurrentTab = id;
         StateHasChanged();
     }
 
+    // Async version for user interaction, triggers OnTabChanged
+    public async Task SwitchToTabAsync(int id)
+    {
+        SwitchToTabInternal(id);
+
+        if (OnTabChanged.HasDelegate)
+        {
+            await OnTabChanged.InvokeAsync(id);
+        }
+    }
+
     public void SwitchToLastTab()
     {
-        Console.WriteLine($"Switching to last tab");
-        Tabs.ForEach(t => t.Visible = false);
-        Tabs.Last().Visible = true;
-        CurrentTab = Tabs.Count - 1;
-        StateHasChanged();
+        SwitchToTabInternal(Tabs.Count - 1);
+        // Console.WriteLine($"Switching to last tab");
+        // Tabs.ForEach(t => t.Visible = false);
+        // Tabs.Last().Visible = true;
+        // CurrentTab = Tabs.Count - 1;
+        // StateHasChanged();
     }
 }

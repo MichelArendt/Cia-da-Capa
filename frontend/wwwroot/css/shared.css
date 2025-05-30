@@ -1429,6 +1429,9 @@ button:hover {
   background: hsl(37, 59%, 54%);
   color: hsl(240, 2%, 18%);
 }
+button:hover svg {
+  fill: hsl(240, 2%, 18%);
+}
 
 button:disabled {
   background: hsl(0, 0%, 73%);

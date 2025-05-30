@@ -128,8 +128,10 @@ button {
 button:hover {
     background: colors.$primary-main;
     color: colors.$primary-dark;
-    // background: colors.$primary-main;
-    // color: colors.$primary-dark;
+
+    svg {
+        fill: colors.$primary-dark;
+    }
 }
 
 button:disabled {

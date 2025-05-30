@@ -15,13 +15,11 @@
 {
     var product = fetchFullProductApiHandler.Content;
     <div class="product-container">
-        @* <div class="product-images">
-        </div> *@
-            <Carousel 
-                Pagination="Carousel.PaginationType.CUSTOM"
-                Items="productImageCarouselItems"
-                MaxWidth="600"
-                PaginationArrows />
+        <Carousel 
+            Pagination="Carousel.PaginationType.CUSTOM"
+            Items="currentCarouselItems"
+            MaxWidth="600"
+            PaginationArrows />
 
         <div class="product-details">
             <div class="two--no-before">
@@ -31,7 +29,11 @@
                 </h1>
             </div>
 
-            <div class="product-details__description">
+            <TabbedNavigation Tabs="@variantTabs"
+                DefaultClasses="false"
+                OnTabChanged="@OnVariantTabChanged" />
+
+            @* <div class="product-details__description">
                 @HtmlFormatter.ConvertNewlinesToParagraphs(product.Description)
             </div>
 
@@ -60,7 +62,7 @@
                                 DefaultClasses="false" />
                     }
                 </div>
-            }
+            } *@
 
             @if (product.Sizes != null && product.Sizes.Any())
             {
@@ -123,12 +125,16 @@
     public int id { get; set; }
 
     private ApiStateHandler<ProductDto> fetchFullProductApiHandler = new();
-    private List<CarouselItem> productImageCarouselItems = new();
 
     private string ClassNameTabs => $"product-details__tabs--default";
     private string ClassNameButton => $"product-details__tab-button--default";
     private string ClassNameContent => $"product-details__tab-content--default";
 
+    private List<TabViewModel> variantTabs = new();
+    private List<CarouselItem> mainCarouselItems = new();
+    private List<CarouselItem> currentCarouselItems = new();
+    private Dictionary<int, List<CarouselItem>> variantCarouselItems = new(); // key: variantId
+    private int selectedVariantId = 0;
 
     private IDictionary<string, object?>? suggestionFilters;
 
@@ -138,34 +144,117 @@
 
         if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content?.Images != null)
         {
-            productImageCarouselItems = fetchFullProductApiHandler.Content.Images
-                .Select(image => new CarouselItem
-                {
-                    Content = builder =>
-                    {
-                        builder.OpenElement(0, "img");
-                        builder.AddAttribute(1, "src", image.MediumFilePath);
-                        builder.AddAttribute(2, "alt", "Imagem do produto");
-                        builder.CloseElement();
-                    },
-                    PaginationContent = builder =>
-                    {
-                        builder.OpenElement(0, "img");
-                        builder.AddAttribute(1, "src", image.ThumbnailFilePath);
-                        builder.AddAttribute(2, "alt", "Miniatura");
-                        builder.AddAttribute(3, "class", "carousel-thumbnail");
-                        builder.CloseElement();
-                    }
-                })
-                .ToList();
+            var product = fetchFullProductApiHandler.Content;
 
+            // Main product images
+            mainCarouselItems = BuildCarouselItems(product.Images ?? new List<ProductImageDto>());
+            currentCarouselItems = mainCarouselItems;
+
+            // Variants images
+            if (product.Variants != null)
+            {
+                foreach (var variant in product.Variants)
+                {
+                    if (variant.Images != null)
+                        variantCarouselItems[variant.Id] = BuildCarouselItems(variant.Images);
+                }
+            }
+
+            // Variants images
             suggestionFilters = new Dictionary<string, object?>
             {
-                ["category_id"] = fetchFullProductApiHandler.Content.CategoryId,
-                ["exclude_id"] = fetchFullProductApiHandler.Content.Id,
+                ["category_id"] = product.CategoryId,
+                ["exclude_id"] = product.Id,
                 ["with_images"] = true
             };
+
+
+            // Build tabs for "Normal" and variants
+            variantTabs.Clear();
+            variantTabs.Add(new TabViewModel
+            {
+                Title = "NORMAL",
+                Content = @<text>
+                    <div class="product-details__variant-description">
+                        @HtmlFormatter.ConvertNewlinesToParagraphs(product.Description)
+                    </div>
+                </text>,
+                Visible = true
+            });
+
+            if (product.Variants != null && product.Variants.Any())
+            {
+                foreach (var variant in product.Variants)
+                {
+                    variantTabs.Add(new TabViewModel
+                    {
+                        Title = variant.Title,
+                        Content = @<text>
+                            <div class="product-details__variant-description">
+                                @HtmlFormatter.ConvertNewlinesToParagraphs(variant.Description)
+                            </div>
+                        </text>,
+                        Visible = false
+                    });
+                }
+            }
         }
+    }
+    
+    private List<CarouselItem> BuildCarouselItems(IEnumerable<ProductImageDto> images)
+    {
+        return images.Select(image => new CarouselItem
+        {
+            Content = builder =>
+            {
+                builder.OpenElement(0, "img");
+                builder.AddAttribute(1, "src", image.MediumFilePath);
+                builder.AddAttribute(2, "alt", "Imagem do produto");
+                builder.CloseElement();
+            },
+            PaginationContent = builder =>
+            {
+                builder.OpenElement(0, "img");
+                builder.AddAttribute(1, "src", image.ThumbnailFilePath);
+                builder.AddAttribute(2, "alt", "Miniatura");
+                builder.AddAttribute(3, "class", "carousel-thumbnail");
+                builder.CloseElement();
+            }
+        }).ToList();
+    }
+
+    private void OnVariantTabChanged(int tabIndex)
+    {
+        // tabIndex 0 = Normal (main product), >= 1 = variant (order matches variantTabs)
+        if (tabIndex == 0)
+        {
+            currentCarouselItems = mainCarouselItems;
+            selectedVariantId = 0;
+        }
+        else if (fetchFullProductApiHandler.Content?.Variants != null)
+        {
+            var variant = fetchFullProductApiHandler.Content.Variants.ElementAtOrDefault(tabIndex - 1);
+
+            if (variant != null && variantCarouselItems.TryGetValue(variant.Id, out var images))
+            {
+                currentCarouselItems = images;
+                selectedVariantId = variant.Id;
+            }
+            else
+            {
+                // clear if variant is invalid or images not found
+                currentCarouselItems = new List<CarouselItem>();
+                selectedVariantId = 0;
+            }
+        }
+        else
+        {
+            //Clear if for some reason Variants is null
+            currentCarouselItems = new List<CarouselItem>();
+            selectedVariantId = 0;
+        }
+
+        StateHasChanged();
     }
 
     private RenderFragment RenderProductSize(ProductSizeDto productSizeDto) 

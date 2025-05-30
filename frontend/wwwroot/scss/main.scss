@@ -125,6 +125,8 @@ main {
 // Product Details
 // ---------------------------
 .product-container {
+    @extend %flex--column;
+    gap: 25px;
     width: 100%;
 
     & p {
@@ -134,8 +136,7 @@ main {
 
 @media (min-width: variables.$breakpoint--desktop) {
     .product-container {
-        display: flex;
-        gap: 50px;
+        flex-direction: row;
     }
 }
 
@@ -160,6 +161,14 @@ main {
     padding-top: 50px;
 }
 
+
+@media (min-width: variables.$breakpoint--desktop) {
+    .product-details__variant-description {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
 .product-details__size {
     @extend %flex--row;
     @extend %poppins-regular;
@@ -182,6 +191,10 @@ main {
 .product-details button:hover {
     background: colors.$secondary-hover;
     color: white;
+
+    svg {
+        fill: white;
+    }
 }
 
 .product-details button.selected {
@@ -228,6 +241,8 @@ main {
     color: colors.$secondary-mid;
     font-size: 20px;
 
+    transition: all 0.2s ease-in-out;
+
     button {
         width: unset;
     }
@@ -236,5 +251,14 @@ main {
         fill: colors.$secondary-mid;
         width: 30px;
         height: 30px;
+    }
+
+    a:hover,
+    button:hover {
+        color: colors.$secondary-hover;
+
+        svg {
+            fill: colors.$secondary-hover;
+        }
     }
 }

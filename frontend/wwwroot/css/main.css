@@ -1,4 +1,4 @@
-.splash-clients, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .product-details__size, .splash-item, .product-details__add-to-cart-button, .splash-clients-logos, .product-details__share, .footer-contact__phone {
+.splash-clients, .product-container, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .product-details__size, .splash-item, .product-details__add-to-cart-button, .splash-clients-logos, .product-details__share, .footer-contact__phone {
   display: flex;
 }
 
@@ -15,7 +15,7 @@
   align-items: center;
 }
 
-.splash-clients, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer {
+.splash-clients, .product-container, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer {
   flex-direction: column;
 }
 
@@ -227,6 +227,7 @@ main {
 }
 
 .product-container {
+  gap: 25px;
   width: 100%;
 }
 .product-container p {
@@ -235,8 +236,7 @@ main {
 
 @media (min-width: 750px) {
   .product-container {
-    display: flex;
-    gap: 50px;
+    flex-direction: row;
   }
 }
 .product-details {
@@ -254,6 +254,12 @@ main {
   padding-top: 50px;
 }
 
+@media (min-width: 750px) {
+  .product-details__variant-description {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}
 .product-details__size {
   gap: 10px;
 }
@@ -272,6 +278,9 @@ main {
 .product-details button:hover {
   background: hsl(24, 70%, 40%);
   color: white;
+}
+.product-details button:hover svg {
+  fill: white;
 }
 
 .product-details button.selected {
@@ -309,6 +318,7 @@ main {
   gap: 20px;
   color: hsl(0, 0%, 51%);
   font-size: 20px;
+  transition: all 0.2s ease-in-out;
 }
 .product-details__share button {
   width: unset;
@@ -317,4 +327,12 @@ main {
   fill: hsl(0, 0%, 51%);
   width: 30px;
   height: 30px;
+}
+.product-details__share a:hover,
+.product-details__share button:hover {
+  color: hsl(24, 70%, 40%);
+}
+.product-details__share a:hover svg,
+.product-details__share button:hover svg {
+  fill: hsl(24, 70%, 40%);
 }
