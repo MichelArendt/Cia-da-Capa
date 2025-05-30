@@ -9,7 +9,7 @@
   max-width: 600px;
 }
 
-.website__header-wrapper, .website__nav, .notifications, form > div, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .header__logo, .nav__button, .website__main, .website__header {
+.website__header-wrapper, .website__nav, .notifications, form > div, .carousel, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .header__logo, .nav__button, .website__main, .website__header {
   display: flex;
 }
 
@@ -30,7 +30,7 @@
   align-items: center;
 }
 
-.notifications, form > div, .form-group, .product-listing__item {
+.notifications, form > div, .carousel, .form-group, .product-listing__item {
   flex-direction: column;
 }
 
@@ -436,9 +436,8 @@ table tbody tr.active-row {
 }
 
 .carousel {
-  position: relative;
   width: 100%;
-  overflow: hidden;
+  min-width: 300px;
   /* Ensures no vertical scroll leaks */
 }
 
@@ -467,8 +466,8 @@ table tbody tr.active-row {
   /* Consistent gap calculation */
   padding: 10px 50px;
   width: 100%;
-  height: 100%;
   touch-action: none;
+  flex-grow: 0;
 }
 
 .carousel-pagination__content {

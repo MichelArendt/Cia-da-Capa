@@ -538,10 +538,14 @@ table tbody tr.active-row {
 // Carousel
 // ---------------------------
 .carousel {
-    position: relative;
+    // position: relative;
+    @extend %flex--column;
     width: 100%;
-    overflow: hidden;
+    min-width: 300px; // Ensures a minimum width for the carousel
+    // overflow: hidden;
     /* Ensures no vertical scroll leaks */
+    // flex-grow: 0;
+    // flex-shrink: 1;
 }
 
 .carousel-content,
@@ -572,8 +576,8 @@ table tbody tr.active-row {
     /* Consistent gap calculation */
     padding: 10px 50px;
     width: 100%;
-    height: 100%;
     touch-action: none;
+    flex-grow: 0;
 }
 
 .carousel-pagination__content {

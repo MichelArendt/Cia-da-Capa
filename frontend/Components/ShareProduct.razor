@@ -1,8 +1,48 @@
-﻿<span>Compartilhe: </span>
-<Svg Path="@Svg.Paths.WhatsApp" />
-<Svg Path="@Svg.Paths.Facebook" />
-<Svg Path="@Svg.Paths.Instagram" />
+﻿@inject NavigationManager Navigation
+
+<span>Compartilhe: </span>
+<a href="@WhatsAppUrl" target="_blank" rel="noopener" title="Compartilhar no WhatsApp">
+    <Svg Path="@Svg.Paths.WhatsApp" />
+</a>
+<a href="@FacebookUrl" target="_blank" rel="noopener" title="Compartilhar no Facebook">
+    <Svg Path="@Svg.Paths.Facebook" />
+</a>
+<a href="@XUrl" target="_blank" rel="noopener" title="Compartilhar no X">
+    <Svg Path="@Svg.Paths.X" />
+</a>
+@if (CanShareNatively)
+{
+    <button class="share-api-btn" @onclick="ShareViaApi" title="Compartilhar via dispositivo" style="background: none; border: none; padding: 0; cursor: pointer;">
+        <Svg Path="@Svg.Paths.Share" />
+    </button>
+}
 
 @code {
+    [Parameter] public string? ProductUrl { get; set; }
+    [Parameter] public required string ProductTitle { get; set; }
+    [Parameter] public string ShareMessage { get; set; } = "Confira este produto incrível!";
 
+    private string ShareUrl => !string.IsNullOrWhiteSpace(ProductUrl) ? ProductUrl : Navigation.Uri;
+
+    private string WhatsAppUrl => $"https://wa.me/?text={Uri.EscapeDataString(ShareMessage + " " + ShareUrl)}";
+    private string FacebookUrl => $"https://www.facebook.com/sharer/sharer.php?u={Uri.EscapeDataString(ShareUrl)}";
+    private string XUrl => $"https://twitter.com/intent/tweet?text={Uri.EscapeDataString(ShareMessage + " " + ShareUrl)}";
+
+    private bool CanShareNatively { get; set; } = false;
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CanShareNatively = await JS.InvokeAsync<bool>("canShareNatively");
+            StateHasChanged();
+        }
+    }
+
+    private async Task ShareViaApi()
+    {
+        await JS.InvokeVoidAsync("shareProduct", ProductTitle, ShareMessage, ShareUrl);
+    }
 }

@@ -120,28 +120,49 @@ main {
     }
 }
 
-@media (min-width: variables.$breakpoint--desktop) {}
-
 
 // ---------------------------
 // Product Details
 // ---------------------------
 .product-container {
+    width: 100%;
+
     & p {
         padding: 5px 0;
     }
 }
 
-.product-details {}
+@media (min-width: variables.$breakpoint--desktop) {
+    .product-container {
+        display: flex;
+        gap: 50px;
+    }
+}
 
+// .product-images {
+//     @extend %flex--row--center-horizontal;
+//     max-width: 600px;
+//     width: 100%;
+// }
+
+.product-details {
+    width: 100%;
+}
+
+.product-details h2 {
+    padding: 5px 0;
+}
+
+.product-details__variations,
 .product-details__sizes,
 .product-details__add-to-cart,
 .product-details__share {
-    padding-top: 30px;
+    padding-top: 50px;
 }
 
 .product-details__size {
     @extend %flex--row;
+    @extend %poppins-regular;
     gap: 10px;
 }
 
@@ -180,21 +201,40 @@ main {
     padding: 10px 0 0 0;
 }
 
-.product-details__add-to-cart {
-    @extend %flex--column;
-}
+// .product-details__add-to-cart {
+//     @extend %flex--column;
+// }
 
-.product-details__add-to-cart-container {
-    display: flex;
+.product-details__add-to-cart-button {
+    @extend %flex--row--center;
     gap: 10px;
-    flex-wrap: wrap;
 
     >* {
-        width: unset; // unset 100% from button
         flex-grow: 0;
     }
+}
 
-    :last-child {
-        flex-grow: 1;
+@media (min-width: variables.$breakpoint--desktop) {
+    .product-details__add-to-cart button {
+        width: unset;
+        flex-grow: 0;
+        padding: 15px 50px;
+    }
+}
+
+.product-details__share {
+    @extend %flex--row--center-vertical;
+    gap: 20px;
+    color: colors.$secondary-mid;
+    font-size: 20px;
+
+    button {
+        width: unset;
+    }
+
+    svg {
+        fill: colors.$secondary-mid;
+        width: 30px;
+        height: 30px;
     }
 }

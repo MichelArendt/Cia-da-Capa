@@ -15,11 +15,13 @@
 {
     var product = fetchFullProductApiHandler.Content;
     <div class="product-container">
-        <Carousel 
-            Pagination="Carousel.PaginationType.CUSTOM"
-            Items="productImageCarouselItems"
-            MaxWidth="600"
-            PaginationArrows />
+        @* <div class="product-images">
+        </div> *@
+            <Carousel 
+                Pagination="Carousel.PaginationType.CUSTOM"
+                Items="productImageCarouselItems"
+                MaxWidth="600"
+                PaginationArrows />
 
         <div class="product-details">
             <div class="two--no-before">
@@ -35,9 +37,8 @@
 
             @if (product.Variants != null && product.Variants.Any())
             {
-                <h2>VARIANTES:</h2>
-
                 <div class="product-details__variations">
+                    <h2>Variantes:</h2>
                     @{
                         var tabs = new List<TabViewModel>();
 
@@ -64,7 +65,7 @@
             @if (product.Sizes != null && product.Sizes.Any())
             {
                 <div class="product-details__sizes">
-                    <h2>TAMANHOS:</h2>
+                    <h2>Tamanhos:</h2>
 
                     @{
                         if (product.Sizes.Count > 1)
@@ -93,13 +94,13 @@
             }
 
             <div class="product-details__add-to-cart">
-                <h2>QUANTIDADE:</h2>
-
                 <AddToCart />
             </div>
 
             <div class="product-details__share">
-                 <ShareProduct />
+                 <ShareProduct 
+                     ProductTitle="@product.Title"
+                     />
             </div>
         </div>
     </div>
