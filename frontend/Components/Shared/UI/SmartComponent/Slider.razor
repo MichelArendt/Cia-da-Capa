@@ -33,26 +33,16 @@
 </div>
 
 @code {
-    [Parameter]
-    public RenderFragment? HeaderContent { get; set; } // Holds the first child
+    [Parameter] public RenderFragment? HeaderContent { get; set; } // Holds the first child
+    [Parameter] public string? HeaderClassName { get; set; }
+    [Parameter] public RenderFragment? BodyMobileContentTitle { get; set; }
+    [Parameter] public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+    [Parameter] public bool IsFullscreen { get; set; } = true;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
 
-    [Parameter]
-    public string? HeaderClassName { get; set; }
-
-    [Parameter]
-    public RenderFragment? BodyMobileContentTitle { get; set; }
-
-    [Parameter]
-    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
-
-    [Parameter]
-    public bool IsFullscreen { get; set; } = true;
-
-    [Parameter]
-    public string? Title { get; set; }
-
-    [Parameter]
-    public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
+    [Parameter] public Action<Action>? SubscribeTo { get; set; }
+    [Parameter] public Action<Action>? UnsubscribeFrom { get; set; }
 
     public enum SlideFromDirection
     {
@@ -69,6 +59,8 @@
     {
         IsOpenChanged += UpdateContentClassName;
 
+        SubscribeTo?.Invoke(NotifyChanged);
+
         UpdateContentClassName();
         UpdateWrappperClassName();
 
@@ -78,6 +70,8 @@
     public override void Dispose()
     {
         IsOpenChanged -= UpdateContentClassName;
+
+        UnsubscribeFrom?.Invoke(NotifyChanged);
 
         // Call base class Dispose
         base.Dispose();
@@ -121,6 +115,8 @@
 
         return new Dictionary<string, object>(); // No handler if fullscreen
     }
+
+    private void NotifyChanged() => InvokeAsync(StateHasChanged);
 
 
     @* private string GetBodyClassName()
