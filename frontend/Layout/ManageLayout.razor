@@ -25,77 +25,47 @@
 
 <Header>
     <NavResponsiveMenuOptions>
-        @* @if (AppStateService.IsMobile) *@
-        @* { *@
-        @*     <List> *@
-        @*         <HeaderContent> *@
-        @*             <button class="nav__button" *@
-        @*             @onclick="@(() => Navigation.NavigateTo("manage/produtos"))"> *@
-        @*                 Produtos *@
-        @*             </button> *@
-        @*         </HeaderContent> *@
-        @*         <BodyContent> *@
-        @*             @if (!ProductStateService.CategoriesDict.Any()) *@
-        @*             { *@
-        @*                 <li>Não há categorias cadastradas!</li> *@
-        @*             } *@
-        @*             else *@
-        @*             { *@
-        @*                 <li class="nav--highlight"> *@
-        @*                     <NavLink href="manage/produtos/adicionar"> *@
-        @*                         Adicionar produto *@
-        @*                     </NavLink> *@
-        @*                 </li> *@
+        <Dropdown 
+            ClassName="nav--interactive"
+            HeaderClassName="nav__button"
+            OnClickDesktop="@(() => Navigation.NavigateTo("manage/produtos"))"
+        >
+            <HeaderContent>
+                <span>Produtos</span>
+            </HeaderContent>
+            <BodyContent>
+                @if (!ProductStateService.CategoriesDict.Any())
+                {
+                    <li>Não há categorias cadastradas!</li>
+                }
+                else
+                {
+                    <li class="nav--highlight">
+                        <NavLink href="manage/produtos/adicionar">
+                            Adicionar produto
+                        </NavLink>
+                    </li>
 
-        @*                 @foreach (var (index, category) in ProductStateService.CategoriesDict) *@
-        @*                 { *@
-        @*                     <li>@category.Title</li> *@
-        @*                 } *@
-        @*             } *@
-        @*         </BodyContent> *@
-        @*     </List> *@
-        @* } *@
-        @* else *@
-        @* { *@
-            <Dropdown 
-                ClassName="nav--interactive"
-                HeaderClassName="nav__button"
-                OnClickDesktop="@(() => Navigation.NavigateTo("manage/produtos"))"
-            >
-                <HeaderContent>
-                    <span>Produtos</span>
-                </HeaderContent>
-                <BodyContent>
-                    @if (!ProductStateService.CategoriesDict.Any())
+                    @foreach (var (index, category) in ProductStateService.CategoriesDict)
                     {
-                        <li>Não há categorias cadastradas!</li>
+                        <li>@category.Title</li>
                     }
-                    else
-                    {
-                        <li class="nav--highlight">
-                            <NavLink href="manage/produtos/adicionar">
-                                Adicionar produto
-                            </NavLink>
-                        </li>
+                }
+            </BodyContent>
+        </Dropdown>
 
-                        @foreach (var (index, category) in ProductStateService.CategoriesDict)
-                        {
-                            <li>@category.Title</li>
-                        }
-                    }
-                </BodyContent>
-            </Dropdown>
-        @* } *@
         <div>
             <NavLink href="manage/banners" class="nav__button">
                 Banners
             </NavLink>
         </div>
+
         <div>
             <NavLink href="manage/categorias" class="nav__button">
                 Categorias
             </NavLink>
         </div>
+
         <div>
             <NavLink href="manage/rotulos" class="nav__button">
                 Rótulos
