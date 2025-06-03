@@ -35,7 +35,7 @@ footer h1 {
   font-style: normal;
 }
 
-.product-details__size-values {
+.product-details__size-values, .shopping-cart__header-counter {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -335,4 +335,19 @@ main {
 .product-details__share a:hover svg,
 .product-details__share button:hover svg {
   fill: hsl(24, 70%, 40%);
+}
+
+.shopping-cart {
+  background: red;
+}
+
+.shopping-cart__header-counter {
+  position: absolute;
+  top: 18px;
+  left: 2px;
+  width: 100%;
+  text-align: center;
+  color: hsl(37, 59%, 54%);
+  font-size: 18px;
+  line-height: 1;
 }

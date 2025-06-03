@@ -1,8 +1,33 @@
-﻿<button class="product-details__add-to-cart-button">
+﻿@inject ShoppingCartService ShoppingCartService
+
+<button class="product-details__add-to-cart-button" @onclick="@(() => ToggleProductInCart(Product))">
     <Svg Path="@Svg.Paths.ShoppingBag" />
-    <span>Adicionar ao orçamento</span>
+
+    @if (ShoppingCartService.HasProductInCart(Product.Id))
+    {
+        <span>Remover do orçamento</span>
+    } 
+    else
+    {
+        <span>Adicionar ao orçamento</span>
+    }
 </button>
 
 @code {
+    [Parameter] public ProductDto Product { get; set; } = new ProductDto();
 
+    private void ToggleProductInCart(ProductDto product)
+    {
+        if (ShoppingCartService.HasProductInCart(product.Id))
+        {
+            ShoppingCartService.RemoveProductFromCart(product.Id);
+        }
+        else
+        {
+            ShoppingCartService.AddProductToCart(product);
+        }
+
+        @* StateHasChanged(); *@
+    }
 }
+    

@@ -33,37 +33,6 @@
                 DefaultClasses="false"
                 OnTabChanged="@OnVariantTabChanged" />
 
-            @* <div class="product-details__description">
-                @HtmlFormatter.ConvertNewlinesToParagraphs(product.Description)
-            </div>
-
-            @if (product.Variants != null && product.Variants.Any())
-            {
-                <div class="product-details__variations">
-                    <h2>Variantes:</h2>
-                    @{
-                        var tabs = new List<TabViewModel>();
-
-                        foreach (var variant in product.Variants)
-                        {
-                            tabs.Add(new TabViewModel
-                            {
-                                Title = variant.Title,
-                                Content = (
-                                    @<text>
-                                        @variant.Description
-                                    </text>
-                                ),
-                                Visible = true
-                            });
-                        }
-
-                        <TabbedNavigation Tabs="@tabs" 
-                                DefaultClasses="false" />
-                    }
-                </div>
-            } *@
-
             @if (product.Sizes != null && product.Sizes.Any())
             {
                 <div class="product-details__sizes">
@@ -81,9 +50,11 @@
                 </div>
             }
 
-            <div class="product-details__add-to-cart">
-                <AddToCart />
-            </div>
+            @if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content != null) {
+                <div class="product-details__add-to-cart">
+                    <AddToCart Product="fetchFullProductApiHandler.Content" />
+                </div>
+            }
 
             <div class="product-details__share">
                  <ShareProduct 
@@ -107,8 +78,7 @@
 }
 
 @code {
-    [Parameter]
-    public int id { get; set; }
+    [Parameter] public int id { get; set; }
 
     private ApiStateHandler<ProductDto> fetchFullProductApiHandler = new();
 

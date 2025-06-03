@@ -1,0 +1,35 @@
+﻿@inject ShoppingCartService ShoppingCartService
+
+
+<div class="shopping-cart">
+    <h3>Orçamento</h3>
+
+    @if (!ShoppingCartService.Products.Any())
+    {
+        <span>Carrinho vazio!</span>
+    }
+    else
+    {
+        foreach (var cartItem in ShoppingCartService.Products.Values)
+        {
+            <div class="shopping-cart__product">
+                <span>@cartItem.Product.Title</span>
+                <span>Quantidade: @cartItem.Quantity</span>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ShoppingCartService.CartChanged += StateHasChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        ShoppingCartService.CartChanged -= StateHasChanged;
+    }
+}

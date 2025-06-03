@@ -317,6 +317,10 @@ button {
   justify-content: end;
 }
 
+.slider__button {
+  position: relative;
+}
+
 /* DIRECTIONS */
 /* Slide in from the left */
 .slider__content--from-left {

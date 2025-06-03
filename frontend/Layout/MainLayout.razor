@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
+@using frontend.Components
 @using frontend.Services
 @using frontend.Components.Shared
 @using frontend.Components.Shared.UI.SmartComponent
@@ -7,6 +8,7 @@
 
 @inject AppStateService AppStateService
 @inject ProductStateService ProductStateService
+@inject ShoppingCartService ShoppingCartService
 @inject VersionService VersionService
 
 <HeadContent>
@@ -15,44 +17,30 @@
 
 <Header>
 	<NavResponsiveMenuOptions>
-		@* @if (AppStateService.IsMobile) *@
-		@* {  *@
-		@* 	<List> *@
-		@* 		<HeaderContent> *@
-		@* 			<button class="nav__button" @onclick="@(() => Navigation.NavigateTo("produto"))">Produtos</button> *@
-		@* 		</HeaderContent> *@
+		<Dropdown ClassName=""
+			HeaderClassName="nav__button"
+			OnClickDesktop="@(() => Navigation.NavigateTo("produtos"))"
+		>
+			<HeaderContent>
+				<span>Produtos</span>
+			</HeaderContent>
 
-		@* 		<BodyContent> *@
-		@* 			<li>Produtos</li> *@
-		@* 		</BodyContent> *@
-		@* 	</List> *@
-		@* } *@
-		@* else *@
-		@* { *@
-			<Dropdown ClassName=""
-				HeaderClassName="nav__button"
-				OnClickDesktop="@(() => Navigation.NavigateTo("produtos"))"
-			>
-				<HeaderContent>
-					<span>Produtos</span>
-				</HeaderContent>
+			<BodyContent>
+				@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
+				{
+					<li>Vazio!</li>
+				}
+				else
+				{
+					<li class="nav--highlight">Em destaque</li>
+					@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
+					{
+						<li>@category.Title</li>
+					}
+				}
+			</BodyContent>
+		</Dropdown>
 
-				<BodyContent>
-					@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
-					{
-						<li>Vazio!</li>
-					}
-					else
-					{
-						<li class="nav--highlight">Em destaque</li>
-						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
-						{
-							<li>@category.Title</li>
-						}
-					}
-				</BodyContent>
-			</Dropdown>
-		@* } *@
 		<div>
 			<NavLink href="/contato" class="nav__button">
 				Contato
@@ -85,17 +73,23 @@
 			HeaderClassName="nav__button"
             IsFullscreen="false"
 			Title="Carrinho de Orçamento"
+			SubscribeTo="handler => ShoppingCartService.CartChanged += handler"
+			UnsubscribeFrom="handler => ShoppingCartService.CartChanged -= handler"
 		>
 			<HeaderContent>
-				<Svg Path="@Svg.Paths.ShoppingCartRemove" Width="35" Height="35" />
+				<Svg Path="@Svg.Paths.ShoppingCart" Width="35" Height="35" />
+
+				<span class="shopping-cart__header-counter">
+					@ShoppingCartService.Products.Count
+				</span>
 			</HeaderContent>
 
-			<BodyMobileContentTitle>
+			@* <BodyMobileContentTitle>
 				<div>Carrinho de orçamento</div>
-			</BodyMobileContentTitle>
+			</BodyMobileContentTitle> *@
 
 			<BodyContent>
-				<div>lista</div>
+				<ShoppingCart />
 			</BodyContent>
 		</Slider>
 	</NavPermanentButtons>

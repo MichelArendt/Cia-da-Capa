@@ -120,10 +120,10 @@ main {
     }
 }
 
-
 // ---------------------------
 // Product Details
 // ---------------------------
+
 .product-container {
     @extend %flex--column;
     gap: 25px;
@@ -261,4 +261,27 @@ main {
             fill: colors.$secondary-hover;
         }
     }
+}
+
+// ---------------------------
+// Shopping Cart
+// ---------------------------
+
+.shopping-cart {
+    background: red;
+}
+
+.shopping-cart__header-counter {
+    // background: colors.$primary-dark;
+    position: absolute;
+    top: 18px;
+    left: 2px;
+
+    width: 100%;
+    text-align: center;
+
+    @extend %poppins-bold;
+    color: colors.$primary-main;
+    font-size: 18px;
+    line-height: 1;
 }
