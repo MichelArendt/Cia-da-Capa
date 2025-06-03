@@ -27,6 +27,7 @@ namespace frontend
             builder.Services.AddScoped<ProductSizeService>();
             builder.Services.AddScoped<ProductVariantService>();
             builder.Services.AddScoped<ProductImageService>();
+            builder.Services.AddScoped<ShoppingCartService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<UtilsService>();
 
