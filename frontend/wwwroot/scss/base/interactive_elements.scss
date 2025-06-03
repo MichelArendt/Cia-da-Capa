@@ -51,6 +51,10 @@ button {
     svg {
         fill: colors.$primary-dark;
     }
+
+    &:hover {
+        background: colors.$secondary-main;
+    }
 }
 
 // .interactive-element--colors {

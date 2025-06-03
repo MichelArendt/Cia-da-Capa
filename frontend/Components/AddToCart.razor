@@ -1,4 +1,5 @@
-﻿@inject ShoppingCartService ShoppingCartService
+﻿@inject NotificationService NotificationService
+@inject ShoppingCartService ShoppingCartService
 
 <button class="product-details__add-to-cart-button" @onclick="@(() => ToggleProductInCart(Product))">
     <Svg Path="@Svg.Paths.ShoppingBag" />
@@ -15,6 +16,8 @@
 
 @code {
     [Parameter] public ProductDto Product { get; set; } = new ProductDto();
+    [Parameter] public int SizeId { get; set; } = 1;
+    [Parameter] public int VariantId { get; set; } = 1;
 
     private void ToggleProductInCart(ProductDto product)
     {
@@ -24,7 +27,20 @@
         }
         else
         {
-            ShoppingCartService.AddProductToCart(product);
+            if (SizeId == 0 || VariantId == 0)
+            {
+                NotificationService.DisplayError("Houve um erro ao adicionar seu produto ao carrinho!");
+            }
+            else
+            {
+                if (ShoppingCartService.AddProductToCart(product, SizeId, VariantId))
+                {
+                    NotificationService.DisplaySuccess("Produto adicionado ao orçamento com sucesso!");
+                } else
+                {
+                    NotificationService.DisplayError("Houve um erro desconhecido ao adicionar seu produto ao orçamento!");
+                }
+            }
         }
 
         @* StateHasChanged(); *@

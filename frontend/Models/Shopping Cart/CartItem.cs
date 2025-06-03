@@ -15,5 +15,8 @@ namespace frontend.Models.Shopping_Cart
                 _quantity = value < 100 ? 100 : value; // Ensure quantity is at least 100
             }
         }
+
+        public int SizeId { get; set; } = 0;
+        public int VariantId { get; set; } = 0;
     }
 }

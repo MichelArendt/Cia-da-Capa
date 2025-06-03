@@ -29,7 +29,8 @@
                 </h1>
             </div>
 
-            <TabbedNavigation Tabs="@variantTabs"
+            <TabbedNavigation 
+                Tabs="@variantTabs"
                 DefaultClasses="false"
                 OnTabChanged="@OnVariantTabChanged" />
 
@@ -41,7 +42,10 @@
                     @{
                         if (product.Sizes.Count > 1)
                         {
-                            <TabbedNavigation Tabs="@sizeTabs" DefaultClasses="false" />
+                            <TabbedNavigation 
+                                Tabs="@sizeTabs" 
+                                DefaultClasses="false"
+                                OnTabChanged="@OnSizeTabChanged" />
                         } else
                         {
                             @RenderProductSize( product.Sizes!.FirstOrDefault()! )
@@ -52,7 +56,10 @@
 
             @if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content != null) {
                 <div class="product-details__add-to-cart">
-                    <AddToCart Product="fetchFullProductApiHandler.Content" />
+                    <AddToCart 
+                        Product="fetchFullProductApiHandler.Content"
+                        SizeId="selectedSizeId"
+                        VariantId="selectedVariantId" />
                 </div>
             }
 
@@ -86,13 +93,15 @@
     private string ClassNameButton => $"product-details__tab-button--default";
     private string ClassNameContent => $"product-details__tab-content--default";
 
+    private List<TabViewModel> sizeTabs = new();
     private List<TabViewModel> variantTabs = new();
+
     private List<CarouselItem> mainCarouselItems = new();
     private List<CarouselItem> currentCarouselItems = new();
     private Dictionary<int, List<CarouselItem>> variantCarouselItems = new(); // key: variantId
-    private int selectedVariantId = 0;
 
-    private List<TabViewModel> sizeTabs = new();
+    private int selectedVariantId = 0;
+    private int selectedSizeId = 0;
 
     private IDictionary<string, object?>? suggestionFilters;
 
@@ -151,11 +160,14 @@
                             <div class="product-details__variant-description">
                                 @HtmlFormatter.ConvertNewlinesToParagraphs(variant.Description)
                             </div>
-                        </text>,
+                        </text>
+    ,
                         Visible = false
                     });
                 }
             }
+
+            selectedVariantId = product.Variants?.FirstOrDefault()?.Id ?? 0; // Default to first variant
 
             // Build tabs for sizes
             if (product.Sizes != null && product.Sizes.Count > 1)
@@ -168,6 +180,8 @@
                         Visible = false
                     }).ToList();
                 sizeTabs[0].Visible = true;
+
+                selectedSizeId = product.Sizes.FirstOrDefault()?.Id ?? 0; // Default to first size
             }
         }
     }
@@ -225,6 +239,20 @@
             selectedVariantId = 0;
         }
 
+        StateHasChanged();
+    }
+
+    private void OnSizeTabChanged(int tabIndex)
+    {
+        // tabIndex 0 = first size, >= 1 = other sizes (order matches sizeTabs)
+        if (fetchFullProductApiHandler.Content?.Sizes != null && fetchFullProductApiHandler.Content.Sizes.Count > 0)
+        {
+            selectedSizeId = fetchFullProductApiHandler.Content.Sizes.ElementAtOrDefault(tabIndex)?.Id ?? 0;
+        }
+        else
+        {
+            selectedSizeId = 0; // Clear if Sizes is null or empty
+        }
         StateHasChanged();
     }
 

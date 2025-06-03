@@ -1,5 +1,5 @@
-﻿@inject ShoppingCartService ShoppingCartService
-
+﻿@inject ProductStateService ProductStateService
+@inject ShoppingCartService ShoppingCartService
 
 <div class="shopping-cart">
     <h3>Orçamento</h3>
@@ -14,8 +14,38 @@
             foreach (var cartItem in ShoppingCartService.Products.Values)
             {
                 <div class="shopping-cart__product">
-                    <span>@cartItem.Product.Title</span>
-                    <span>Quantidade: @cartItem.Quantity</span>
+                    <div>
+                        <img src="@cartItem.Product.Images.FirstOrDefault()?.ThumbnailFilePath" alt="Imagem do produto" />
+                    </div>
+
+                    <div>
+                        <span>@cartItem.Product.Title</span>
+                        <span>@ProductStateService.GetProductFullReference(cartItem.Product)</span>
+
+                        <select @bind="cartItem.VariantId">
+                            @foreach (var variant in cartItem.Product.Variants)
+                            {
+                                <option value="@variant.Id">
+                                    @variant.Title
+                                </option>
+                            }
+                        </select>
+
+                        <select @bind="cartItem.SizeId">
+                            @foreach (var size in cartItem.Product.Sizes)
+                            {
+                                <option value="@size.Id">
+                                    @ProductStateService.SizeLabelsDict[size.SizeLabelId].Title
+                                </option>
+                            }
+                        </select>
+
+                        <input type="number" value="@cartItem.Quantity" min="100" />
+
+                        <button class="shopping-cart__button" @onclick="@(() => ShoppingCartService.RemoveProductFromCart(cartItem.Product.Id))">
+                            Excluir
+                        </button>
+                    </div>
                 </div>
             }
         }

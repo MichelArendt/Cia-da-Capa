@@ -101,6 +101,7 @@
 // ---------------------------
 // Reusable Font Classes (Placeholders)
 // ---------------------------
+
 %roboto-light {
     @include mixins.font-style(variables.$font-roboto, 300);
 }
@@ -121,6 +122,8 @@
     @include mixins.font-style(variables.$font-roboto, 700);
 }
 
+// Poppins
+
 %poppins-light {
     @include mixins.font-style(variables.$font-poppins, 300);
 }
@@ -140,6 +143,8 @@
 %poppins-bold {
     @include mixins.font-style(variables.$font-poppins, 700);
 }
+
+// Merriweather
 
 %merriweather-light {
     @include mixins.font-style(variables.$font-merriweather, 300);
@@ -163,6 +168,12 @@
 
 %merriweather-black {
     @include mixins.font-style(variables.$font-merriweather, 900);
+}
+
+// Lato
+
+%lato-regular {
+    @include mixins.font-style(variables.$font-lato, 400);
 }
 
 // ---------------------------

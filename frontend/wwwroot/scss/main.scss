@@ -271,24 +271,24 @@ main {
 // ---------------------------
 .shopping-cart {
     height: 100%;
+    background: white;
+
+    input, select {
+        width: 100%;
+        padding: 5px;
+
+        @extend %roboto-regular;
+    }
 }
 
 .shopping-cart__content {
     height: 100%;
-    padding: 5px;
+    // padding: 5px;
     overflow-y: auto;
 }
 
 .shopping-cart__content--empty {
     @extend %flex--row--center;
-}
-
-.shopping-cart h3 {
-    padding: 15px;
-
-    @extend %merriweather-medium;
-    text-align: center;
-    text-transform: uppercase;
 }
 
 .shopping-cart__header:hover .shopping-cart__header-counter {
@@ -307,4 +307,46 @@ main {
     color: colors.$primary-main;
     font-size: 18px;
     line-height: 1;
+}
+
+.shopping-cart h3 {
+    // background: colors.$secondary-darker;
+    padding: 10px;
+    // margin-bottom: 10px;
+    color: colors.$secondary-dark;
+    // border-bottom: 1px solid colors.$secondary-mid;
+
+    @extend %lato-regular;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.shopping-cart__product {
+    display: flex;
+    background: colors.$secondary-dark;
+    padding: 10px;
+
+    :first-child {
+        @extend %flex--row--center;
+    }
+
+    :last-child {
+        @extend %flex--column;
+        gap: 5px;
+    }
+}
+
+.shopping-cart__button {
+    background-color: colors.$primary-main;
+    color: colors.$primary-dark;
+
+    @extend %poppins-semibold;
+    letter-spacing: 1px;
+
+    &:hover{
+        background: colors.$secondary-hover;
+    }
 }

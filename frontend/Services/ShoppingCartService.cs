@@ -9,17 +9,23 @@ namespace frontend.Services
 
         public event Action? CartChanged;
 
-        public void AddProductToCart(ProductDto productDto)
+        public bool AddProductToCart(ProductDto productDto, int sizeId, int variantId)
         {
             if (productDto.Id > 0)
             {
                 Products[productDto.Id] = new CartItem
                 {
-                    Product = productDto
+                    Product = productDto,
+                    SizeId = sizeId,
+                    VariantId = variantId,
                 };
 
                 CartChanged?.Invoke();
+
+                return true;
             }
+
+            return false;
         }
 
         public void RemoveProductFromCart(int productId)
