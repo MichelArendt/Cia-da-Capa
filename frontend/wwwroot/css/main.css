@@ -1,8 +1,8 @@
-.splash-clients, .product-container, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .product-details__size, .splash-item, .product-details__add-to-cart-button, .splash-clients-logos, .product-details__share, .footer-contact__phone {
+.splash-clients, .product-container, .footer__links, .footer-content__wrapper, .footer-contact__phone > div, .footer__copyright, footer, .product-details__size, .splash-item, .product-details__add-to-cart-button, .shopping-cart__content--empty, .splash-clients-logos, .product-details__share, .footer-contact__phone {
   display: flex;
 }
 
-.product-details__size, .splash-item, .product-details__add-to-cart-button, .splash-clients-logos, .product-details__share, .footer-contact__phone {
+.product-details__size, .splash-item, .product-details__add-to-cart-button, .shopping-cart__content--empty, .splash-clients-logos, .product-details__share, .footer-contact__phone {
   flex-direction: row;
 }
 
@@ -10,7 +10,7 @@
   align-items: center;
 }
 
-.splash-item, .product-details__add-to-cart-button {
+.splash-item, .product-details__add-to-cart-button, .shopping-cart__content--empty {
   justify-content: center;
   align-items: center;
 }
@@ -38,6 +38,12 @@ footer h1 {
 .product-details__size-values, .shopping-cart__header-counter {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
+  font-style: normal;
+}
+
+.shopping-cart h3 {
+  font-family: "Merriweather", serif;
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -338,7 +344,19 @@ main {
 }
 
 .shopping-cart {
-  background: red;
+  height: 100%;
+}
+
+.shopping-cart__content {
+  height: 100%;
+  padding: 5px;
+  overflow-y: auto;
+}
+
+.shopping-cart h3 {
+  padding: 15px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .shopping-cart__header-counter {

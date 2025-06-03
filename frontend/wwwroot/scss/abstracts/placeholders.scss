@@ -149,6 +149,14 @@
     @include mixins.font-style(variables.$font-merriweather, 400);
 }
 
+%merriweather-medium {
+    @include mixins.font-style(variables.$font-merriweather, 500);
+}
+
+%merriweather-semibold {
+    @include mixins.font-style(variables.$font-merriweather, 600);
+}
+
 %merriweather-bold {
     @include mixins.font-style(variables.$font-merriweather, 700);
 }

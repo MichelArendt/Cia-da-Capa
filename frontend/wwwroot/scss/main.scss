@@ -222,7 +222,9 @@ main {
     @extend %flex--row--center;
     gap: 10px;
 
+
     >* {
+        @extend %transition--default;
         flex-grow: 0;
     }
 }
@@ -241,13 +243,14 @@ main {
     color: colors.$secondary-mid;
     font-size: 20px;
 
-    transition: all 0.2s ease-in-out;
+    @extend %transition--default;
 
     button {
         width: unset;
     }
 
     svg {
+        @extend %transition--default;
         fill: colors.$secondary-mid;
         width: 30px;
         height: 30px;
@@ -266,13 +269,33 @@ main {
 // ---------------------------
 // Shopping Cart
 // ---------------------------
-
 .shopping-cart {
-    background: red;
+    height: 100%;
+}
+
+.shopping-cart__content {
+    height: 100%;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.shopping-cart__content--empty {
+    @extend %flex--row--center;
+}
+
+.shopping-cart h3 {
+    padding: 15px;
+
+    @extend %merriweather-medium;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.shopping-cart__header:hover .shopping-cart__header-counter {
+    color: colors.$primary-dark;
 }
 
 .shopping-cart__header-counter {
-    // background: colors.$primary-dark;
     position: absolute;
     top: 18px;
     left: 2px;

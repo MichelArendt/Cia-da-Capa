@@ -4,20 +4,22 @@
 <div class="shopping-cart">
     <h3>Orçamento</h3>
 
-    @if (!ShoppingCartService.Products.Any())
-    {
-        <span>Carrinho vazio!</span>
-    }
-    else
-    {
-        foreach (var cartItem in ShoppingCartService.Products.Values)
+    <div class="shopping-cart__content @(!ShoppingCartService.Products.Any() ? "shopping-cart__content--empty" : "")">
+        @if (!ShoppingCartService.Products.Any())
         {
-            <div class="shopping-cart__product">
-                <span>@cartItem.Product.Title</span>
-                <span>Quantidade: @cartItem.Quantity</span>
-            </div>
+            <span>Carrinho vazio!</span>
         }
-    }
+        else
+        {
+            foreach (var cartItem in ShoppingCartService.Products.Values)
+            {
+                <div class="shopping-cart__product">
+                    <span>@cartItem.Product.Title</span>
+                    <span>Quantidade: @cartItem.Quantity</span>
+                </div>
+            }
+        }
+    </div>
 </div>
 
 @code {
