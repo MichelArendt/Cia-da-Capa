@@ -65,8 +65,6 @@ else
     }
 
     private async Task Delete(int id){
-        Console.WriteLine($"Deleting product with id {id}");
-
         await productDeleteApiHandler.ExecuteAsync(ProductService.DeleteProductFunc(id));
 
         if (productDeleteApiHandler.IsSuccess())
@@ -81,7 +79,10 @@ else
         }
         else
         {
-            NotificationService.Display(productDeleteApiHandler.GetErrorNotificationModel("Erro ao tentar excluir o produto."));
+            NotificationService.DisplayError(
+                "Erro ao tentar excluir o produto",
+                productDeleteApiHandler.ErrorMessage ?? "Ocorreu um erro desconhecido."
+            );
         }
     }
 }

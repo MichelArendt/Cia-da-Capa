@@ -28,7 +28,7 @@
     [Parameter] public string ClassNameButton { get; set; } = $"tabbed-navigation__tab-button--default";
     [Parameter] public string ClassNameContent { get; set; } = $"tabbed-navigation__tab-content--default";
 
-    [Parameter] public EventCallback<int> OnTabChanged { get; set; }
+    [Parameter] public EventCallback<int> OnTabChanged { get; set; } // Callback when the tab is changed
 
     protected override void OnInitialized()
     {

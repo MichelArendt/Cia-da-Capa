@@ -1,5 +1,7 @@
 ﻿@inject IJSRuntime JSRuntime
 
+@inject NotificationService NotificationService
+
 <svg xmlns="http://www.w3.org/2000/svg"
 width=@Width
 height=@Height
@@ -48,7 +50,7 @@ class="@ClassName"
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ServerError computing viewBox: {ex.Message}");
+                NotificationService.DisplayError("Erro ao calcular viewBox", ex.Message);
             }
         }
     }
