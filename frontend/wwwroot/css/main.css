@@ -23,7 +23,8 @@ footer {
   align-items: center;
 }
 
-.shopping-cart input, .shopping-cart select {
+.shopping-cart input,
+.shopping-cart select {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -150,6 +151,18 @@ footer h1 {
 }
 main {
   font-size: 16px;
+}
+
+.banners {
+  padding: 0;
+  margin: 0;
+}
+
+picture,
+picture img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .splash {
@@ -358,7 +371,8 @@ main {
   height: 100%;
   background: white;
 }
-.shopping-cart input, .shopping-cart select {
+.shopping-cart input,
+.shopping-cart select {
   width: 100%;
   padding: 5px;
 }

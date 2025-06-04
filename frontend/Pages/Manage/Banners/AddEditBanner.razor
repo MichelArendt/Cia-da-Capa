@@ -1,0 +1,169 @@
+﻿@page "/manage/banners/adicionar"
+@page "/manage/banners/editar/{id:int}"
+
+@layout ManageLayout
+
+@using frontend.DTOs
+@using frontend.Models.Manage.Forms
+@using frontend.Services.API
+@using frontend.Components.Shared.UI
+
+@inject NotificationService NotificationService
+@inject BannerService BannerService
+@inject NavigationManager Nav
+
+<PageTitle>@(IsEditMode ? "Editar Banner" : "Adicionar Banner")</PageTitle>
+
+@if (IsEditMode && apiHandler.IsExecuting())
+{
+    <ContentLoader DisplayMessage="Carregando informações do banner..." />
+}
+else if (!IsEditMode || (apiHandler.IsSuccess() && apiHandler.Content is not null))
+{
+    <EditForm EditContext="EditContext" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="title">Título do Banner</label>
+            <InputText id="title" class="form-control" @bind-Value="FormData.Title" />
+        </div>
+
+        <div class="form-group">
+            <label for="priority">Prioridade</label>
+            <InputNumber id="priority" class="form-control" @bind-Value="FormData.Priority" />
+        </div>
+
+        <div class="form-group">
+            <label for="mobile">Imagem Mobile (640x360)</label>
+            <InputFile id="mobile" OnChange="@(e => OnImageSelected(e, "mobile"))" />
+
+            @if(IsEditMode)
+            {
+                <div class="banner-image__container">
+                    <img src="@apiHandler.Content?.File_Path_Mobile" />
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="tablet">Imagem Tablet (1024x512)</label>
+            <InputFile id="tablet" OnChange="@(e => OnImageSelected(e, "tablet"))" />
+
+            @if (IsEditMode)
+            {
+                <div class="banner-image__container">
+                    <img src="@apiHandler.Content?.File_Path_Tablet" />
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="desktop">Imagem Desktop (1920x600)</label>
+            <InputFile id="desktop" OnChange="@(e => OnImageSelected(e, "desktop"))" />
+
+            @if (IsEditMode)
+            {
+                <div class="banner-image__container">
+                    <img src="@apiHandler.Content?.File_Path_Desktop" />
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary"
+                disabled="@((EditContext is null) || !EditContext.Validate() || !AreImagesValid)">
+            @(IsEditMode ? "Salvar Alterações" : "Criar Banner")
+        </button>
+    </EditForm>
+}
+else
+{
+    <p>Erro ao carregar informações do banner.</p>
+}
+
+@code {
+    [Parameter] public int? Id { get; set; }
+
+    private bool IsEditMode => Id.HasValue;
+    private ApiStateHandler<BannerDto> apiHandler = new();
+    private BannerFormModel FormData = new();
+    private EditContext? EditContext;
+
+    private IBrowserFile? FileMobile;
+    private IBrowserFile? FileTablet;
+    private IBrowserFile? FileDesktop;
+
+    private bool AreImagesValid =>
+    IsEditMode || (FileMobile is not null && FileTablet is not null && FileDesktop is not null);
+
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(FormData);
+        EditContext.OnFieldChanged += (_, __) => StateHasChanged();
+
+        if (IsEditMode && Id.HasValue)
+        {
+            apiHandler = new(BannerService.GetByIdFunc(Id.Value));
+            apiHandler.StateHasChanged += () => NotificationService.HandleApiStateChanged(apiHandler);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode && Id.HasValue)
+        {
+            await apiHandler.ExecuteAsync();
+            var banner = apiHandler.Content;
+
+            if (banner != null)
+            {
+                FormData.Title = banner.Title;
+                FormData.Priority = banner.Priority;
+            }
+        }
+    }
+
+    private void OnImageSelected(InputFileChangeEventArgs e, string type)
+    {
+        var file = e.File;
+        switch (type)
+        {
+            case "mobile": FileMobile = file; break;
+            case "tablet": FileTablet = file; break;
+            case "desktop": FileDesktop = file; break;
+        }
+        StateHasChanged(); // to update button state
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (IsEditMode && Id.HasValue)
+            {
+                if (FileMobile is not null)
+                    await BannerService.UpdateSingleImageAsync(Id.Value, FileMobile, "mobile");
+                if (FileTablet is not null)
+                    await BannerService.UpdateSingleImageAsync(Id.Value, FileTablet, "tablet");
+                if (FileDesktop is not null)
+                    await BannerService.UpdateSingleImageAsync(Id.Value, FileDesktop, "desktop");
+
+                NotificationService.DisplaySuccess("Banner atualizado com sucesso.");
+            }
+            else
+            {
+                await BannerService.CreateAsync(FormData.Title ?? "", FileMobile, FileTablet, FileDesktop);
+
+                if (BannerService.CreateBanner.IsSuccess())
+                    NotificationService.DisplaySuccess("Banner criado com sucesso.");
+            }
+
+            Nav.NavigateTo("manage/banners");
+        }
+        catch (Exception ex)
+        {
+            NotificationService.DisplaySuccess($"Erro ao salvar banner: {ex.Message}");
+        }
+    }
+}

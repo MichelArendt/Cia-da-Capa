@@ -68,6 +68,7 @@
 // ---------------------------
 // Gallery - Editable
 // ---------------------------
+
 .gallery-editable {
 }
 
@@ -243,4 +244,12 @@
         display: flex;
         opacity: 1;
     }
+}
+
+// ---------------------------
+// Banners
+// ---------------------------
+
+.banner-image__container {
+    display: flex;
 }

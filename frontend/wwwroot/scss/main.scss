@@ -9,6 +9,22 @@ main {
 }
 
 // ---------------------------
+// HOME PAGE - banners
+// ---------------------------
+
+.banners {
+    padding: 0;
+    margin: 0;
+}
+
+picture,
+picture img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+// ---------------------------
 // HOME PAGE - splashes
 // ---------------------------
 
@@ -269,11 +285,13 @@ main {
 // ---------------------------
 // Shopping Cart
 // ---------------------------
+
 .shopping-cart {
     height: 100%;
     background: white;
 
-    input, select {
+    input,
+    select {
         width: 100%;
         padding: 5px;
 
@@ -346,7 +364,7 @@ main {
     @extend %poppins-semibold;
     letter-spacing: 1px;
 
-    &:hover{
+    &:hover {
         background: colors.$secondary-hover;
     }
 }

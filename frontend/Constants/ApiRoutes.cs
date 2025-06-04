@@ -7,9 +7,10 @@
         // Public
         public static class Public
         {
-            public static class User
+            public static class Banners
             {
-                public const string Login = $"{API}/public/user/login";
+                public const string GetAll = $"{API}/public/banners";
+                public static string GetById(int id) => $"{API}/public/banners/{id}";
             }
 
             public static class Products
@@ -65,6 +66,10 @@
             {
                 public const string GetAll = $"{API}/public/products/size-labels";
             }
+            public static class User
+            {
+                public const string Login = $"{API}/public/user/login";
+            }
 
             public static class Utils
             {
@@ -75,10 +80,12 @@
         // Manage
         public static class Manage
         {
-            public static class User
+            public static class Banners
             {
-                public const string Logout = $"{API}/manage/user/logout";
-                public const string Validate = $"{API}/manage/user/validate";
+                public const string Create = $"{API}/manage/banners";
+                public static string UpdateImage(int id, string size) => $"{API}/manage/banners/{id}/image/{size}";
+                public static string Delete(int id) => $"{API}/manage/banners/{id}";
+                public const string UpdateOrdering = $"{API}/manage/banners/order";
             }
 
             public static class Products
@@ -140,6 +147,11 @@
             {
                 public static string Delete(int imageId) => $"{API}/manage/products/images/{imageId}";
                 public const string UpdateOrdering = $"{API}/manage/products/images/update-ordering";
+            }
+            public static class User
+            {
+                public const string Logout = $"{API}/manage/user/logout";
+                public const string Validate = $"{API}/manage/user/validate";
             }
         }
     }

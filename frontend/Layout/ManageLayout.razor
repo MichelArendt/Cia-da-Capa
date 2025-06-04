@@ -25,6 +25,7 @@
 
 <Header>
     <NavResponsiveMenuOptions>
+        @* Products *@
         <Dropdown 
             ClassName="nav--interactive"
             HeaderClassName="nav__button"
@@ -33,6 +34,7 @@
             <HeaderContent>
                 <span>Produtos</span>
             </HeaderContent>
+
             <BodyContent>
                 @if (!ProductStateService.CategoriesDict.Any())
                 {
@@ -54,18 +56,38 @@
             </BodyContent>
         </Dropdown>
 
-        <div>
+        @* Banners *@
+        <Dropdown ClassName="nav--interactive"
+                  HeaderClassName="nav__button"
+                  OnClickDesktop="@(() => Navigation.NavigateTo("manage/banners"))"
+        >
+            <HeaderContent>
+                <span>Banners</span>
+            </HeaderContent>
+
+            <BodyContent>
+                <li>
+                    <NavLink href="manage/banners/adicionar">
+                        Adicionar
+                    </NavLink>
+                </li>
+            </BodyContent>
+        </Dropdown>
+
+        @* <div>
             <NavLink href="manage/banners" class="nav__button">
                 Banners
             </NavLink>
-        </div>
+        </div> *@
 
+        @* Categories *@
         <div>
             <NavLink href="manage/categorias" class="nav__button">
                 Categorias
             </NavLink>
         </div>
 
+        @* Size Labels *@
         <div>
             <NavLink href="manage/rotulos" class="nav__button">
                 Rótulos

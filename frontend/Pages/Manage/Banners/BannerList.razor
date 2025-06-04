@@ -1,21 +1,82 @@
 ﻿@page "/manage/banners"
+
 @layout ManageLayout
 
-@using System.ComponentModel.DataAnnotations
-@using System.Text.Json
-@using frontend.DTOs
 @using frontend.Services
 @using frontend.Services.API
 
-@inject NavigationManager NavigationManager
 @inject AppStateService AppState
-@inject ProductStateService ProductStateService
-@inject ProductCategoryService ProductCategoryService
-@inject ProductService ProductService
+@inject BannerService BannerService
+@inject NotificationService NotificationService
 
 <PageTitle>Banners (Gerenciamento)</PageTitle>
 
-TODO: <strong>NÃO IMPLEMENTADO AINDA</strong>
+<h3>Banners</h3>
+
+@if (bannerApiHandler.IsSuccess() && bannerApiHandler.Content != null)
+{
+    if (bannerApiHandler.Content.Any())
+    {
+        @foreach (var banner in bannerApiHandler.Content)
+        {
+            <div>
+                <NavLink href="@($"manage/banners/editar/{banner.Id}")">
+                    <Svg Path="@Svg.Paths.Edit" />
+                </NavLink>
+
+                <NavLink @onclick="() => Delete(banner.Id)">
+                    <Svg Path="@Svg.Paths.Delete" />
+                </NavLink>
+
+                @banner.Title
+            </div>
+        }
+    }
+    else
+    {
+        <span>Nenhum produto encontrado!</span>
+    }
+}
+else
+{
+    @bannerApiHandler.GetErrorFeedbackComponent(defaultErrorMessage)
+}
 
 @code {
+    private ApiStateHandler<List<BannerDto>> bannerApiHandler = new();
+    private ApiStateHandler<object> bannerDeleteApiHandler = new();
+
+    private string defaultErrorMessage = "Erro ao tentar recuperar a lista de banners.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await bannerApiHandler.ExecuteAsync(BannerService.GetAllBannersFunc());
+
+        if (!bannerApiHandler.IsSuccess())
+        {
+            NotificationService.Display(bannerApiHandler.GetErrorNotificationModel(defaultErrorMessage));
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        await bannerDeleteApiHandler.ExecuteAsync(BannerService.DeleteBannerFunc(id));
+
+        if (bannerDeleteApiHandler.IsSuccess())
+        {
+            NotificationService.DisplaySuccess("Produto excluído com sucesso!");
+
+            // Refresh the banner list after deletion
+            await bannerApiHandler.ExecuteAsync();
+
+            StateHasChanged();
+        }
+        else
+        {
+            NotificationService.DisplayError(
+                "Erro ao tentar excluir o produto",
+                bannerDeleteApiHandler.ErrorMessage ?? "Ocorreu um erro desconhecido."
+            );
+        }
+    }
 }
