@@ -90,7 +90,6 @@ error_log(print_r($filters, true));
         }
     }
 
-
     public function getForId($id)
     {
         try {
