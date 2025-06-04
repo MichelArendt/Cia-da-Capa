@@ -1,15 +1,16 @@
 ﻿@page "/manage/rotulos"
 @layout ManageLayout
 
-@using System.Linq.Expressions
 @using System.ComponentModel.DataAnnotations;
+@using System.Linq.Expressions
 @using frontend.Components.Manage.UI
+@using frontend.Components.Shared.UI.SVG
+@using frontend.Components.Shared.UI.SmartComponent
 @using frontend.DTOs
 @using frontend.DTOs.Contracts
+@using frontend.Models.Manage.Forms
 @using frontend.Services
 @using frontend.Services.API
-@using frontend.Components.Shared.UI.SmartComponent
-@using frontend.Components.Shared.UI.SVG
 
 @inject AppStateService AppState
 @inject ProductStateService ProductStateService
