@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace frontend.Models.Forms
+namespace frontend.Models.Manage.Forms
 {
     public class ProductVariantFormModel
     {
