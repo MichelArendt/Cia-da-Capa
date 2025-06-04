@@ -1,4 +1,4 @@
-﻿using frontend.Models.Forms;
+﻿using frontend.Models.Manage.Forms;
 
 namespace frontend.DTOs
 {
