@@ -2,6 +2,7 @@
 
 return [
     'tables' => [
+        'banners'                => 'cia_banners',
         'product_categories'     => 'cia_product_categories',
         'products'               => 'cia_products',
         'product_variants'       => 'cia_product_variants',

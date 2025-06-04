@@ -46,21 +46,23 @@ Flight::set('upload-image__max-file-size', 5 * 1024 * 1024); // 5MB
 // --------------------------------
 // BASE CONFIGURATION
 // --------------------------------
-require 'flight/models/UserModel.php';
+require 'flight/models/BannerModel.php';
 require 'flight/models/ProductCategoryModel.php';
 require 'flight/models/ProductModel.php';
 require 'flight/models/ProductVariantModel.php';
 require 'flight/models/ProductSizeLabelModel.php';
 require 'flight/models/ProductSizeModel.php';
 require 'flight/models/ProductImageModel.php';
+require 'flight/models/UserModel.php';
 
-use Models\UserModel;
+use Models\BannerModel;
 use Models\ProductCategoryModel;
 use Models\ProductModel;
 use Models\ProductVariantModel;
 use Models\ProductSizeLabelModel;
 use Models\ProductSizeModel;
 use Models\ProductImageModel;
+use Models\UserModel;
 
 // --------------------------------
 // Database
@@ -77,31 +79,34 @@ try {
     Flight::set('db', $pdo);
 
     // Initialize models and create tables if they don't exist
-    $userModel = new UserModel();
+    $bannerModel = new BannerModel();
     $productCategoryModel = new ProductCategoryModel();
     $productModel = new ProductModel();
     $productVariantModel = new ProductVariantModel();
     $productSizeLabelModel = new ProductSizeLabelModel();
     $productSizeModel = new ProductSizeModel();
     $productImageModel = new ProductImageModel();
+    $userModel = new UserModel();
 
-    $userModel->createTableIfNotExists();
-    $userModel->createAdminUserIfNotExists();
+    $bannerModel->createTableIfNotExists();
     $productCategoryModel->createTableIfNotExists();
     $productModel->createTableIfNotExists();
     $productVariantModel->createTableIfNotExists();
     $productSizeLabelModel->createTableIfNotExists();
     $productSizeModel->createTableIfNotExists();
     $productImageModel->createTableIfNotExists();
+    $userModel->createTableIfNotExists();
+    $userModel->createAdminUserIfNotExists();
 
     // Store models in Flight
-    Flight::set('userModel', $userModel);
+    Flight::set('bannerModel', $bannerModel);
     Flight::set('productCategoryModel', $productCategoryModel);
     Flight::set('productModel', $productModel);
     Flight::set('productVariantModel', $productVariantModel);
     Flight::set('productSizeLabelModel', $productSizeLabelModel);
     Flight::set('productSizeModel', $productSizeModel);
     Flight::set('productImageModel', $productImageModel);
+    Flight::set('userModel', $userModel);
 } catch (Exception $e) {
     HttpResponse::handleException($e, 'index.php');
 }
@@ -129,29 +134,35 @@ Flight::before('start', function () {
 // --------------------------------
 // CONTROLLERS - public
 // --------------------------------
-require 'flight/controllers/public/UserController.php';
-require 'flight/controllers/public/UtilsController.php';
+require 'flight/controllers/public/BannerController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
 require 'flight/controllers/public/ProductSizeController.php';
 require 'flight/controllers/public/ProductVariantController.php';
 require 'flight/controllers/public/ProductImageController.php';
 require 'flight/controllers/public/ProductSizeLabelController.php';
+require 'flight/controllers/public/UserController.php';
+require 'flight/controllers/public/UtilsController.php';
 
 // --------------------------------
 // CONTROLLERS - manage
 // --------------------------------
-require 'flight/controllers/manage/UserController.php';
+require 'flight/controllers/manage/BannerController.php';
 require 'flight/controllers/manage/ProductController.php';
 require 'flight/controllers/manage/ProductCategoryController.php';
 require 'flight/controllers/manage/ProductSizeController.php';
 require 'flight/controllers/manage/ProductVariantController.php';
 require 'flight/controllers/manage/ProductImageController.php';
 require 'flight/controllers/manage/ProductSizeLabelController.php';
+require 'flight/controllers/manage/UserController.php';
 
 // --------------------------------
 // ROUTES - public
 // --------------------------------
+
+// Banners
+Flight::route('GET /public/banners/@id', 'Controllers\Public\BannerController->getById');
+Flight::route('GET /public/banners', 'Controllers\Public\BannerController->getAll');
 
 // User
 Flight::route('POST /public/user/login', 'Controllers\Public\UserController->login');
@@ -195,6 +206,12 @@ Flight::route('GET|POST|PUT|DELETE /manage/*', function () {
     // Continue to next route
     return true;
 });
+
+// Banners
+Flight::route('POST /manage/banners', 'Controllers\Manage\BannerController->create');
+Flight::route('POST /manage/banners/@id/image/@size', 'Controllers\Manage\BannerController->updateImage'); // @size = mobile/tablet/desktop
+Flight::route('DELETE /manage/banners/@id', 'Controllers\Manage\BannerController->delete');
+Flight::route('PUT /manage/banners/order', 'Controllers\Manage\BannerController->updateOrdering');
 
 // User
 Flight::route('POST /manage/user/logout', 'Controllers\Manage\UserController->logout');
