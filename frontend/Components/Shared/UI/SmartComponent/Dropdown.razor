@@ -7,9 +7,8 @@
 @inject IJSRuntime JSRuntime
 
 <div class="dropdown @ClassName" title="@Title">
-    <button 
-        class="dropdown__button @HeaderClassName" 
-        @onclick="AppState.IsMobile ? EventCallback.Factory.Create(this, Open) : OnClickDesktop">
+    <button class="dropdown__button @HeaderClassName"
+            @onclick="AppState.IsMobile? EventCallback.Factory.Create(this, Open) : OnClickDesktop">
         @HeaderContent
 
         @if (!HideArrow)
@@ -18,23 +17,22 @@
         }
     </button>
 
-    <div 
-        class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
-        style="@DynamicStyle"
-        @ref="DropdownRef"
-    >
+    <div class="dropdown__content @(AppState.IsMobile ? "fullscreen-overlay" : "") @(IsOpen ? "dropdown__content--visible" : "")"
+         style="@DynamicStyle"
+         @ref="DropdownRef">
 
         @if (AppState.IsMobile)
         {
             <button class="overlay__button overlay__button--close" @onclick="Close"
-            @onclick:stopPropagation>
+                    @onclick:stopPropagation>
                 <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
             </button>
         }
 
         <div class="dropdown__content-wrapper"
-        @onclick:stopPropagation>
-            @if (AppState.IsMobile) {
+             @onclick:stopPropagation>
+            @if (AppState.IsMobile)
+            {
                 <div class="dropdown__content-title">@BodyMobileContentTitle</div>
             }
             @BodyContent
@@ -43,29 +41,16 @@
 </div>
 
 @code {
-    [Parameter]
-    public string? ClassName { get; set; }
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public string? HeaderClassName { get; set; }
+    [Parameter] public EventCallback OnClickDesktop { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; } // Holds the first child
 
-    [Parameter]
-    public string? HeaderClassName { get; set; }
+    [Parameter] public RenderFragment? BodyMobileContentTitle { get; set; }
+    [Parameter] public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+    [Parameter] public bool HideArrow { get; set; } = false;
 
-    [Parameter]
-    public EventCallback OnClickDesktop { get; set; }
-
-    [Parameter]
-    public RenderFragment? HeaderContent { get; set; } // Holds the first child
-
-    [Parameter]
-    public RenderFragment? BodyMobileContentTitle { get; set; }
-
-    [Parameter]
-    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
-
-    [Parameter]
-    public bool HideArrow { get; set; } = false;
-
-    [Parameter]
-    public string? Title { get; set; }
+    [Parameter] public string? Title { get; set; }
 
     private string? DynamicStyle { get; set; }
     private ElementReference DropdownRef; // Element reference for the dropdown
