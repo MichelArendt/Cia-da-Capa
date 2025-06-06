@@ -4,23 +4,30 @@
 @using frontend.Components.Shared.UI.Carousel
 @using frontend.Components.Shared.UI.SmartComponent
 
+@inject BannerService BannerService
 @inject ProductService ProductService
 @inject UtilsService UtilsService
 
 <PageTitle>Cia da Capa</PageTitle>
 
-<section class="banners">
-    <picture>
-        <!-- Mobile first: devices with screen width 768px or less -->
-        <source srcset="/images/banners/banner-640x360.webp" media="(max-width: 768px)" />
+@if (banners.Any())
+{
+    <section class="banners">
+        @foreach (var banner in banners)
+        {
+            <picture>
+                <!-- Mobile first: devices with screen width 768px or less -->
+                <source srcset="@banner.File_Path_Mobile" media="(max-width: 768px)" />
 
-        <!-- Tablet: screen widths between 769px and 1200px -->
-        <source srcset="/images/banners/banner-1024x512.webp" media="(max-width: 1200px)" />
+                <!-- Tablet: screen widths between 769px and 1200px -->
+                <source srcset="@banner.File_Path_Tablet" media="(max-width: 1200px)" />
 
-        <!-- Desktop and larger -->
-        <img src="/images/banners/banner-1920x600.webp" alt="Banner promocional" style="width: 100%; height: auto;" />
-    </picture>
-</section>
+                <!-- Desktop and larger -->
+                <img src="@banner.File_Path_Desktop" alt="@banner.Title" style="width: 100%; height: auto;" />
+            </picture>
+        }
+    </section>
+}
 
 <section class="splash">
     <div class="splash-item">
@@ -101,12 +108,24 @@
 
 @code {
     private ApiStateHandler<List<string>> fetchClientLogosApiHandler = new();
+    private ApiStateHandler<List<BannerDto>> fetchBannersApiHandler = new();
     private List<CarouselItem> clientLogos = new();
+
+    private List<BannerDto> banners = new();
 
     private int YearsSince1995 => CalculateYearsSince(new DateTime(1995, 4, 1));
 
     protected override async Task OnInitializedAsync()
     {
+        await fetchBannersApiHandler.ExecuteAsync(BannerService.GetAllBannersFunc());
+
+        if (fetchBannersApiHandler.IsSuccess() && fetchBannersApiHandler.Content != null)
+        {
+            banners = fetchBannersApiHandler.Content;
+
+            StateHasChanged();
+        }
+
         await fetchClientLogosApiHandler.ExecuteAsync(UtilsService.GetClientLogosFunc());
 
         if (fetchClientLogosApiHandler.IsSuccess() && fetchClientLogosApiHandler.Content != null)
@@ -131,6 +150,8 @@
                     }
                 };
             }).ToList();
+
+            StateHasChanged();
         }
     }
 
