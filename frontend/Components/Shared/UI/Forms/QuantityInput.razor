@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Components
+
+<div class="quantity-input">
+    <button type="button" class="quantity-input__btn" @onclick="Decrement" disabled="@IsMin"
+            title="@(Value == 100 ? "Quantidade mínima" : "Diminuir quantidade")"
+    >
+    -
+    </button>
+    <input class="quantity-input__field"
+           type="number"
+           @bind="CurrentValue"
+           min="@Min"
+           step="@Step"
+           @oninput="OnInput" />
+    <button type="button" class="quantity-input__btn" @onclick="Increment" title="Aumentar quantidade">
+        +
+    </button>
+</div>
+
+@code {
+    [Parameter] public int Value { get; set; }
+    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter] public int Step { get; set; } = 100;
+    [Parameter] public int Min { get; set; } = 100;
+
+    private int CurrentValue
+    {
+        get => Value;
+        set
+        {
+            int newValue = Math.Max(Min, (value / Step) * Step);
+            if (Value != newValue)
+            {
+                ValueChanged.InvokeAsync(newValue);
+            }
+        }
+    }
+
+    private bool IsMin => Value <= Min;
+
+    private void Increment() => ValueChanged.InvokeAsync(Value + Step);
+
+    private void Decrement()
+    {
+        if (Value > Min)
+            ValueChanged.InvokeAsync(Math.Max(Min, Value - Step));
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var newValue))
+            CurrentValue = newValue;
+    }
+}
