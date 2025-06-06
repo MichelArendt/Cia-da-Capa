@@ -300,7 +300,11 @@ picture img {
 }
 
 .shopping-cart__content {
+    @extend %flex--column;
+    gap: 10px;
+
     height: 100%;
+    width: 100%;
     // padding: 5px;
     overflow-y: auto;
 }
@@ -344,27 +348,73 @@ picture img {
 
 .shopping-cart__product {
     display: flex;
-    background: colors.$secondary-dark;
+    // background: colors.$secondary-dark;
+    width: 100%;
     padding: 10px;
+    gap: 5px;
 
-    :first-child {
-        @extend %flex--row--center;
-    }
+    color: colors.$primary-dark;
+}
 
-    :last-child {
-        @extend %flex--column;
-        gap: 5px;
+.shopping-cart__product-image {
+    @extend %flex--row--center;
+
+
+    img {
+        max-height: 80px;
+        max-width: 80px;
     }
 }
 
+.shopping-cart__product-details {
+    @extend %flex--column;
+    flex-grow: 1;
+    max-width: 100%;
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.shopping-cart__product-title {
+    font-weight: 500;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+}
+
+.shopping-cart__product-actions {
+    display: flex;
+    gap: 10px;
+}
+
 .shopping-cart__button {
-    background-color: colors.$primary-main;
-    color: colors.$primary-dark;
+    @extend %flex--row--center;
+    // background-color: colors.$primary-main;
+    // color: colors.$primary-dark;
+    background-color: unset;
+    padding: 5px;
+    width: unset;
 
     @extend %poppins-semibold;
     letter-spacing: 1px;
 
-    &:hover {
-        background: colors.$secondary-hover;
+    svg {
+        fill: colors.$primary-main;
+
+        @extend %transition--default;
     }
+
+    &:hover {
+        background: unset;
+
+        svg {
+            fill: colors.$secondary-main;
+        }
+    }
+}
+
+.shopping-cart__button-remove {
+    padding: 5px;
 }

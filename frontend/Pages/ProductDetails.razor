@@ -54,14 +54,12 @@
                 </div>
             }
 
-            @if (fetchFullProductApiHandler.IsSuccess() && fetchFullProductApiHandler.Content != null) {
-                <div class="product-details__add-to-cart">
-                    <AddToCart 
-                        Product="fetchFullProductApiHandler.Content"
-                        SizeId="selectedSizeId"
-                        VariantId="selectedVariantId" />
-                </div>
-            }
+            <div class="product-details__add-to-cart">
+                <AddToCart Product="fetchFullProductApiHandler.Content"
+                           SelectedSize="selectedSizeDto"
+                           SelectedVariant="selectedVariantDto"
+                    />
+            </div>
 
             <div class="product-details__share">
                  <ShareProduct 
@@ -100,8 +98,11 @@
     private List<CarouselItem> currentCarouselItems = new();
     private Dictionary<int, List<CarouselItem>> variantCarouselItems = new(); // key: variantId
 
-    private int selectedVariantId = 0;
-    private int selectedSizeId = 0;
+    // private int selectedVariantId = 0;
+    // private int selectedSizeId = 0;
+
+    private ProductSizeDto? selectedSizeDto;
+    private ProductVariantDto? selectedVariantDto;
 
     private IDictionary<string, object?>? suggestionFilters;
 
@@ -167,7 +168,8 @@
                 }
             }
 
-            selectedVariantId = product.Variants?.FirstOrDefault()?.Id ?? 0; // Default to first variant
+            //selectedVariantId = product.Variants?.FirstOrDefault()?.Id ?? 0; // Default to first variant
+            //selectedVariantDto = product.Variants?.FirstOrDefault(); // Default to first variant
 
             // Build tabs for sizes
             if (product.Sizes != null && product.Sizes.Count > 1)
@@ -181,11 +183,12 @@
                     }).ToList();
                 sizeTabs[0].Visible = true;
 
-                selectedSizeId = product.Sizes.FirstOrDefault()?.Id ?? 0; // Default to first size
+                //selectedSizeId = product.Sizes.FirstOrDefault()?.Id ?? 0; // Default to first size
+                selectedSizeDto = product.Sizes?.FirstOrDefault(); // Default to first size
             }
         }
     }
-    
+
     private List<CarouselItem> BuildCarouselItems(IEnumerable<ProductImageDto> images)
     {
         return images.Select(image => new CarouselItem
@@ -214,7 +217,8 @@
         if (tabIndex == 0)
         {
             currentCarouselItems = mainCarouselItems;
-            selectedVariantId = 0;
+            selectedVariantDto = null; // Clear selected variant DTO
+            // selectedVariantId = 0;
         }
         else if (fetchFullProductApiHandler.Content?.Variants != null)
         {
@@ -223,20 +227,22 @@
             if (variant != null && variantCarouselItems.TryGetValue(variant.Id, out var images))
             {
                 currentCarouselItems = images;
-                selectedVariantId = variant.Id;
+                // selectedVariantId = variant.Id;
+                selectedVariantDto = variant; // Update selected variant DTO
+
             }
             else
             {
                 // clear if variant is invalid or images not found
                 currentCarouselItems = new List<CarouselItem>();
-                selectedVariantId = 0;
+                // selectedVariantId = 0;
             }
         }
         else
         {
             //Clear if for some reason Variants is null
             currentCarouselItems = new List<CarouselItem>();
-            selectedVariantId = 0;
+            // selectedVariantId = 0;
         }
 
         StateHasChanged();
@@ -247,11 +253,12 @@
         // tabIndex 0 = first size, >= 1 = other sizes (order matches sizeTabs)
         if (fetchFullProductApiHandler.Content?.Sizes != null && fetchFullProductApiHandler.Content.Sizes.Count > 0)
         {
-            selectedSizeId = fetchFullProductApiHandler.Content.Sizes.ElementAtOrDefault(tabIndex)?.Id ?? 0;
+            selectedSizeDto = fetchFullProductApiHandler.Content.Sizes.ElementAtOrDefault(tabIndex);
+            // selectedSizeId = fetchFullProductApiHandler.Content.Sizes.ElementAtOrDefault(tabIndex)?.Id ?? 0;
         }
         else
         {
-            selectedSizeId = 0; // Clear if Sizes is null or empty
+            //selectedSizeId = 0; // Clear if Sizes is null or empty
         }
         StateHasChanged();
     }

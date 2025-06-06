@@ -4,7 +4,7 @@
 <button class="product-details__add-to-cart-button" @onclick="@(() => ToggleProductInCart(Product))">
     <Svg Path="@Svg.Paths.ShoppingBag" />
 
-    @if (ShoppingCartService.HasProductInCart(Product.Id))
+    @if ( ShoppingCartService.HasProductInCartWithSameConfiguration(Product, SelectedSize, SelectedVariant) )
     {
         <span>Remover do orçamento</span>
     } 
@@ -16,30 +16,45 @@
 
 @code {
     [Parameter] public ProductDto Product { get; set; } = new ProductDto();
-    [Parameter] public int SizeId { get; set; } = 1;
-    [Parameter] public int VariantId { get; set; } = 1;
+    [Parameter] public ProductSizeDto? SelectedSize { get; set; }
+    [Parameter] public ProductVariantDto? SelectedVariant { get; set; }
+    @* [Parameter] public int SizeId { get; set; } = 1;
+    [Parameter] public int VariantId { get; set; } = 1; *@
+
+    protected override void OnInitialized()
+    {
+        ShoppingCartService.CartChanged += StateHasChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        ShoppingCartService.CartChanged -= StateHasChanged;
+    }
 
     private void ToggleProductInCart(ProductDto product)
     {
-        if (ShoppingCartService.HasProductInCart(product.Id))
+        if ( ShoppingCartService.HasProductInCartWithSameConfiguration(Product, SelectedSize, SelectedVariant) )
         {
-            ShoppingCartService.RemoveProductFromCart(product.Id);
+            ShoppingCartService.RemoveProductFromCart(Product, SelectedSize, SelectedVariant);
         }
         else
         {
-            if (SizeId == 0 || VariantId == 0)
+            @* if (SizeId == 0 || VariantId == 0)
             {
                 NotificationService.DisplayError("Houve um erro ao adicionar seu produto ao carrinho!");
             }
             else
             {
-                if (ShoppingCartService.AddProductToCart(product, SizeId, VariantId))
-                {
-                    NotificationService.DisplaySuccess("Produto adicionado ao orçamento com sucesso!");
-                } else
-                {
-                    NotificationService.DisplayError("Houve um erro desconhecido ao adicionar seu produto ao orçamento!");
-                }
+            } *@
+            if ( ShoppingCartService.AddProductToCart(product, SelectedSize, SelectedVariant) )
+            {
+                NotificationService.DisplaySuccess("Produto adicionado ao orçamento com sucesso!");
+            }
+            else
+            {
+                NotificationService.DisplayError("Houve um erro desconhecido ao adicionar seu produto ao orçamento!");
             }
         }
 

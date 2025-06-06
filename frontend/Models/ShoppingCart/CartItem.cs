@@ -1,6 +1,6 @@
 ﻿using frontend.DTOs;
 
-namespace frontend.Models.Shopping_Cart
+namespace frontend.Models.ShoppingCart
 {
     public class CartItem
     {
@@ -16,7 +16,10 @@ namespace frontend.Models.Shopping_Cart
             }
         }
 
-        public int SizeId { get; set; } = 0;
-        public int VariantId { get; set; } = 0;
+        public ProductSizeDto? Size { get; set; }
+        public ProductVariantDto? Variant { get; set; }
+
+        //public int SizeId { get; set; } = 0;
+        //public int VariantId { get; set; } = 0;
     }
 }

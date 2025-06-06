@@ -1,4 +1,6 @@
-﻿@inject ProductStateService ProductStateService
+﻿@using frontend.Models.ShoppingCart
+
+@inject ProductStateService ProductStateService
 @inject ShoppingCartService ShoppingCartService
 
 <div class="shopping-cart">
@@ -11,40 +13,109 @@
         }
         else
         {
-            foreach (var cartItem in ShoppingCartService.Products.Values)
+            foreach (var cartItem in ShoppingCartService.Products)
             {
                 <div class="shopping-cart__product">
-                    <div>
+                    <div class="shopping-cart__product-image">
                         <img src="@cartItem.Product.Images.FirstOrDefault()?.ThumbnailFilePath" alt="Imagem do produto" />
                     </div>
 
-                    <div>
-                        <span>@cartItem.Product.Title</span>
-                        <span>@ProductStateService.GetProductFullReference(cartItem.Product)</span>
+                    <div class="shopping-cart__product-details">
+                        <span class="shopping-cart__product-title">@cartItem.Product.Title</span>
+                        @* <span>@ProductStateService.GetProductFullReference(cartItem.Product)</span> *@
 
-                        <select @bind="cartItem.VariantId">
-                            @foreach (var variant in cartItem.Product.Variants)
-                            {
-                                <option value="@variant.Id">
-                                    @variant.Title
+                        @{
+                            var details = GetSizeAndVariant(cartItem);
+                        }
+                        @if (!string.IsNullOrEmpty(details))
+                        {
+                            <span>@details</span>
+                        }
+                        @* @if (cartItem.Product.Sizes.Count > 1 && cartItem.Size != null)
+                        {
+                            @ProductStateService.SizeLabelsDict[cartItem.Size.SizeLabelId].Title
+                        }
+
+                        @if (cartItem.Product.Variants.Any() && cartItem.Variant != null)
+                        {
+                            @cartItem.Variant.Title
+                        } *@
+
+
+
+
+
+                        @* @if (cartItem.Size != null)
+                        {
+                            <span>
+                                Tamanho: @ProductStateService.SizeLabelsDict[cartItem.Size.SizeLabelId].Title
+                            </span>
+                        }
+
+                        @if (cartItem.Variant != null)
+                        {
+                            <span>
+                                Variante: @cartItem.Variant.Title
+                            </span>
+                        } *@
+
+                        @* @if (cartItem.Product.Variants.Any()) 
+                        {
+                            <select @bind="cartItem.VariantId">
+                                <option value="0">
+                                    Normal
                                 </option>
-                            }
-                        </select>
-
-                        <select @bind="cartItem.SizeId">
-                            @foreach (var size in cartItem.Product.Sizes)
+                                @foreach (var variant in cartItem.Product.Variants)
+                                {
+                                    <option value="@variant.Id">
+                                        @variant.Title
+                                    </option>
+                                }
+                            </select>
+                            @* @if (cartItem.Product.Variants.Count > 1)
                             {
-                                <option value="@size.Id">
-                                    @ProductStateService.SizeLabelsDict[size.SizeLabelId].Title
-                                </option>
+                            } else
+                            {
+                            
                             }
-                        </select>
+                        } *@
+                        
+                        @* @if (cartItem.Product.Sizes.Any()) 
+                        {
+                            <select @bind="cartItem.SizeId">
+                                @foreach (var size in cartItem.Product.Sizes)
+                                {
+                                    <option value="@size.Id">
+                                        @ProductStateService.SizeLabelsDict[size.SizeLabelId].Title
+                                    </option>
+                                }
+                            </select>
+                        } *@
 
-                        <input type="number" value="@cartItem.Quantity" min="100" />
+                        @* @if (cartItem.Product.Sizes.Count > 1)
+                        {
+                            <select @bind="cartItem.SizeId">
+                                @foreach (var size in cartItem.Product.Sizes)
+                                {
+                                    <option value="@size.Id">
+                                        @ProductStateService.SizeLabelsDict[size.SizeLabelId].Title
+                                    </option>
+                                }
+                            </select>
+                        } else
+                        {
+                            
+                        } *@
 
-                        <button class="shopping-cart__button" @onclick="@(() => ShoppingCartService.RemoveProductFromCart(cartItem.Product.Id))">
-                            Excluir
-                        </button>
+                        <div class="shopping-cart__product-actions">
+                            <QuantityInput @bind-Value="cartItem.Quantity" />
+
+                            @* <input type="number" @bind="cartItem.Quantity" min="100" step="100" /> *@
+
+                            <button class="shopping-cart__button shopping-cart__button-remove" @onclick="@(() => ShoppingCartService.RemoveProductFromCart(cartItem))">
+                                <Svg Path="@Svg.Paths.Delete" Width="25" Height="25" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             }
@@ -63,5 +134,15 @@
     public void Dispose()
     {
         ShoppingCartService.CartChanged -= StateHasChanged;
+    }
+
+    string GetSizeAndVariant(CartItem cartItem)
+    {
+        var parts = new List<string>();
+        if (cartItem.Product.Sizes.Count > 1 && cartItem.Size != null)
+            parts.Add(ProductStateService.SizeLabelsDict[cartItem.Size.SizeLabelId].Title);
+        if (cartItem.Product.Variants.Any() && cartItem.Variant != null)
+            parts.Add(cartItem.Variant.Title);
+        return string.Join(", ", parts);
     }
 }

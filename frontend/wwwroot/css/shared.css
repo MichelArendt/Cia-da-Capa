@@ -158,6 +158,49 @@ button {
   background: hsl(20, 80%, 48%);
 }
 
+.quantity-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-input__btn {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 2%, 18%);
+  font-size: 1.2em;
+  border-radius: 0.3em;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+.quantity-input__btn:hover {
+  background: hsl(20, 80%, 48%);
+}
+
+.quantity-input__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quantity-input__field {
+  width: 4em;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 0.2em;
+  height: 100%;
+  /* Hide browser arrows only for this field */
+}
+
+.quantity-input__field::-webkit-inner-spin-button,
+.quantity-input__field::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantity-input__field[type=number] {
+  -moz-appearance: textfield;
+}
+
 .dropdown {
   display: inline-block;
   position: relative;
