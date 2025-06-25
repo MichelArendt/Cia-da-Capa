@@ -36,6 +36,22 @@
                 public static string GetById(int id) => $"{API}/public/products/{id}";
                 public static string GetByIdFull(int id) => $"{API}/public/products/{id}/full";
 
+                public static string GetRandomWithImages(int? limit = null, bool? highlighted = null)
+                {
+                    var baseUrl = $"{API}/public/products/random-with-images";
+                    var queryParams = new List<string>();
+
+                    if (limit != null)
+                        queryParams.Add($"limit={limit}");
+
+                    if (highlighted != null)
+                        queryParams.Add($"highlighted={(highlighted.Value ? "1" : "0")}");
+
+                    return queryParams.Any()
+                        ? $"{baseUrl}?{string.Join("&", queryParams)}"
+                        : baseUrl;
+                }
+
                 public static class Images
                 {
                     public static string GetForProductId(int id) => $"{API}/public/products/{id}/images";

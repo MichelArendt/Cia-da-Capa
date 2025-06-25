@@ -45,6 +45,17 @@ namespace frontend.Services.API
         }
 
         /// <summary>
+        /// Gets a list of random highlighted products with images.
+        /// </summary>
+        /// <param name="limit">The maximum number of products to fetch (default: 10).</param>
+        /// <param name="highlighted">If set, filters by highlighted products (default: true).</param>
+        /// <returns>A function that returns a task with the HTTP response message.</returns>
+        public Func<Task<HttpResponseMessage>> GetRandomHighlightedProductsWithImagesFunc(int limit = 10, bool? highlighted = true)
+        {
+            return () => _httpClient.GetAsync(ApiRoutes.Public.Products.GetRandomWithImages(limit, highlighted));
+        }
+
+        /// <summary>
         /// Creates a new product.
         /// </summary>
         /// <param name="product">The product to create.</param>

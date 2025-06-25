@@ -24,7 +24,7 @@
 
 .website__nav {
     flex-grow: 1;
-    @extend %flex;
+    @extend %flex--row--center-vertical;
 }
 
 .website__menu {}
@@ -116,4 +116,10 @@ li.nav--highlight {
         justify-content: center;
         align-items: center;
     }
+}
+
+// Nav slider
+
+.website__nav .slider {
+    height: 100%; // Ensures the slider takes full height of the nav
 }
