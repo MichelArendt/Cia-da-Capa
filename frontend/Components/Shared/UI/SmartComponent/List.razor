@@ -1,26 +1,34 @@
 ﻿@inherits SmartComponentBase
 
-<div class="list">
-    <div class="list__header @HeaderClassName">
-        @HeaderContent
-    </div>
+<div class="list @ClassName">
+    @if (OnClick.HasDelegate)
+    {
+        <button class="list__header @HeaderClassName"
+             @onclick="OnClick">
+            @HeaderContent
+        </button>
+    } 
+    else
+    {
+        <div class="list__header @HeaderClassName"
+             @onclick="OnClick">
+            @HeaderContent
+        </div>
+    }
+
     <ul class="list__content list__content--@Orientation">
         @BodyContent
     </ul>
 </div>
 
 @code {
-    [Parameter]
-    public RenderFragment? HeaderContent { get; set; } // Holds the first child
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public string? HeaderClassName { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; } // Holds the first child
+    [Parameter] public EventCallback OnClick { get; set; }
 
-    [Parameter]
-    public string? HeaderClassName { get; set; } 
-
-    [Parameter]
-    public RenderFragment? BodyContent { get; set; } // Holds the remaining children
-
-    [Parameter]
-    public ListOrientation Orientation { get; set; } = ListOrientation.vertical;
+    [Parameter] public RenderFragment? BodyContent { get; set; } // Holds the remaining children
+    [Parameter] public ListOrientation Orientation { get; set; } = ListOrientation.vertical;
     public enum ListOrientation
     {
         vertical,

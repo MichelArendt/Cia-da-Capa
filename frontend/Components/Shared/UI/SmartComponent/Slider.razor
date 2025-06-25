@@ -21,10 +21,15 @@
     </div> *@
 
     <div class="@ContentClassName" @attributes="GetConditionalClickAttributes()">
+
+        <button class="overlay__button--close" @onclick="Close" @onclick:stopPropagation>
+            <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
+        </button>
+
         <div class="@WrapperClassName" @onclick:stopPropagation>
-            <button class="@(IsFullscreen ? "overlay__button" : "") overlay__button--close" @onclick="Close" @onclick:stopPropagation>
+            @* <button class="@(IsFullscreen ? "overlay__button" : "") overlay__button--close" @onclick="Close" @onclick:stopPropagation>
                 <Svg Path="@Svg.Paths.Close" Width="20" Height="20" />
-            </button>
+            </button> *@
 
             @BodyMobileContentTitle
             @BodyContent
@@ -40,6 +45,8 @@
     [Parameter] public bool IsFullscreen { get; set; } = true;
     [Parameter] public string? Title { get; set; }
     [Parameter] public SlideFromDirection Direction { get; set; } = SlideFromDirection.left;
+    [Parameter] public HorizontalContentAlignment HorizontalAlignment { get; set; } = HorizontalContentAlignment.center;
+    [Parameter] public VerticalContentAlignment VerticalAlignment { get; set; } = VerticalContentAlignment.top;
 
     [Parameter] public Action<Action>? SubscribeTo { get; set; }
     [Parameter] public Action<Action>? UnsubscribeFrom { get; set; }
@@ -50,6 +57,20 @@
         right,
         @* top,
         bottom *@
+    }
+
+    public enum HorizontalContentAlignment
+    {
+        left,
+        center,
+        right,
+    }
+
+    public enum VerticalContentAlignment
+    {
+        top,
+        center,
+        bottom,
     }
 
     private string ContentClassName = "";
@@ -94,7 +115,39 @@
     {
         WrapperClassName = $"slider__content-wrapper";
 
-        if (!IsFullscreen)
+        if (IsFullscreen)
+        {
+            switch (HorizontalAlignment)
+            {
+                case HorizontalContentAlignment.left:
+                    WrapperClassName += " slider__content-wrapper--horizontal--left";
+                    break;
+
+                case HorizontalContentAlignment.right:
+                    WrapperClassName += " slider__content-wrapper--horizontal--right";
+                    break;
+
+                default: // ContentAlignment.center
+                    WrapperClassName += " slider__content-wrapper--horizontal--center";
+                    break;
+            }
+
+            switch (VerticalAlignment)
+            {
+                case VerticalContentAlignment.top:
+                    WrapperClassName += " slider__content-wrapper--vertical--top";
+                    break;
+
+                case VerticalContentAlignment.bottom:
+                    WrapperClassName += " slider__content-wrapper--vertical--bottom";
+                    break;
+
+                default: // ContentAlignment.center
+                    WrapperClassName += " slider__content-wrapper--vertical--center";
+                    break;
+            }
+        } 
+        else
         {
             WrapperClassName += " slider__content-wrapper--docked";
         }

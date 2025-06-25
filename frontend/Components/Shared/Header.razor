@@ -2,23 +2,26 @@
 @using frontend.Components.Shared.UI.SmartComponent
 @using frontend.Components.Shared.UI.SVG
 
-@inject AppStateService AppState
+@inject AppStateService AppStateService
 
 <header class='website__header poppins-light'>
 	<div class='website__header-wrapper'>
 		<nav class='website__nav'>
-			@if (!AppState.IsManageRoute || AppState.IsAuthenticated)
+			@if (!AppStateService.IsManageRoute || AppStateService.IsAuthenticated)
 			{
-				@if (AppState.IsMobile)
+				@if (AppStateService.IsMobile)
 				{
 					<Slider Direction="Slider.SlideFromDirection.left"
-							HeaderClassName="nav__button nav--interactive">
+							HorizontalAlignment="Slider.HorizontalContentAlignment.left"
+							VerticalAlignment="Slider.VerticalContentAlignment.center"
+							HeaderClassName="nav__button nav--interactive"
+					>
 						<HeaderContent>
 							<Svg Path=@Svg.Paths.Menu Width="35" Height="35" />
 						</HeaderContent>
 
 						<BodyMobileContentTitle>
-							<NavLink href="@LogoLink" class="header__logo">
+							<NavLink href="@LogoLink">
 								<img src="@LogoImage" alt="@LogoAlt" />
 							</NavLink>
 						</BodyMobileContentTitle>
@@ -40,7 +43,7 @@
 			</NavLink>
 		</nav>
 
-		@if(!AppState.IsManageRoute || AppState.IsAuthenticated){
+		@if(!AppStateService.IsManageRoute || AppStateService.IsAuthenticated){
 			@NavPermanentButtons
 		}
 	</div>
@@ -61,12 +64,12 @@
 	{
 		base.OnInitialized();
 
-		if (AppState.IsManageRoute)
+		if (AppStateService.IsManageRoute)
 		{
 			LogoImage = "images/logo_manage.png";
 			LogoAlt = "Cia da Capa - Gerenciamento";
 			LogoLink = "manage";
-			AppState.IsAuthenticatedChanged += StateHasChanged;
+			AppStateService.IsAuthenticatedChanged += StateHasChanged;
 		}
 	}
 }
