@@ -165,6 +165,83 @@ class ProductModel
         }
     }
 
+    /**
+     * Get up to $limit random active products with their images.
+     * Optionally filter for highlighted products.
+     *
+     * @param int $limit
+     * @param bool|null $highlighted
+     * @return array
+     */ public function getRandomWithImages(int $limit = 10, ?bool $highlighted = true): array
+    {
+        try {
+            // Always default to highlighted products
+            $where = ["p.is_active = 1"];
+            $params = [];
+
+            if ($highlighted !== null) {
+                $where[] = "p.is_highlighted = :highlighted";
+                $params[':highlighted'] = $highlighted ? 1 : 0;
+            }
+
+            $whereClause = $where ? "WHERE " . implode(" AND ", $where) : "";
+            $sql = "
+            SELECT
+                p.*,
+                i.id AS image_id, i.file_path, i.thumbnail_file_path, i.medium_file_path, i.priority AS image_priority
+            FROM `{$this->table}` p
+            LEFT JOIN `{$this->table_product_images}` i ON p.id = i.product_id
+            $whereClause
+            ORDER BY RAND(), i.priority ASC
+            LIMIT :limit
+        ";
+
+            $stmt = $this->db->prepare($sql);
+
+            foreach ($params as $k => $v) {
+                $stmt->bindValue($k, $v, \PDO::PARAM_INT);
+            }
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $products = [];
+            foreach ($rows as $row) {
+                $productId = $row['id'];
+                if (!isset($products[$productId])) {
+                    $products[$productId] = [
+                        'id' => $row['id'],
+                        'title' => $row['title'],
+                        'reference' => $row['reference'],
+                        'description' => $row['description'],
+                        'category_id' => $row['category_id'],
+                        'is_active' => $row['is_active'],
+                        'is_highlighted' => $row['is_highlighted'],
+                        'priority' => $row['priority'],
+                        'created_at' => $row['created_at'],
+                        'updated_at' => $row['updated_at'],
+                        'images' => [],
+                    ];
+                }
+                if (!empty($row['image_id'])) {
+                    $products[$productId]['images'][] = [
+                        'id' => $row['image_id'],
+                        'file_path' => $row['file_path'],
+                        'thumbnail_file_path' => $row['thumbnail_file_path'],
+                        'medium_file_path' => $row['medium_file_path'],
+                        'priority' => $row['image_priority'],
+                    ];
+                }
+            }
+            return array_values($products);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductModel->getRandomWithImages()");
+            return [];
+        }
+    }
+
     // Fetch by ID
     public function getForId($id)
     {

@@ -184,10 +184,11 @@ Flight::route('GET /public/products/variants/@variantId/images', 'Controllers\Pu
 Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVariantController->getVariantsForProductId');
 
 // Product
-Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll');
 Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlightedWithImages');
-Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
+Flight::route('GET /public/products/random-with-images', 'Controllers\Public\ProductController->getRandomWithImages');
 Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
+Flight::route('GET /public/products/@id', 'Controllers\Public\ProductController->getForId');
+Flight::route('GET /public/products', 'Controllers\Public\ProductController->getAll'); // Must be last
 
 // Utils
 Flight::route('GET /public/utils/client-logos', 'Controllers\Public\UtilsController->getClientLogos');

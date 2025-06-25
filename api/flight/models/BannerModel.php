@@ -36,13 +36,14 @@ class BannerModel
                 file_path_tablet VARCHAR(255) NOT NULL,
                 file_path_desktop VARCHAR(255) NOT NULL,
                 priority INT DEFAULT 0,
+                is_active BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             );
         ";
         $this->db->exec($sql);
 
-        // Auto-increment priority trigger (optional, your existing logic)
+        // Auto-increment priority trigger
         $triggerName = "before_insert_{$this->table}";
         $check = $this->db->prepare("
             SELECT TRIGGER_NAME FROM INFORMATION_SCHEMA.TRIGGERS

@@ -26,7 +26,7 @@ class ProductController
                 'highlighted'  => $highlighted,
             ];
 
-error_log(print_r($filters, true));
+            error_log(print_r($filters, true));
 
 
             // --- 3. Call the model method, passing filters ---
@@ -89,6 +89,26 @@ error_log(print_r($filters, true));
             HttpResponse::handleException($e, __METHOD__, "ProductController->getAllHighlighted()");
         }
     }
+
+    public function getRandomWithImages()
+    {
+        try {
+            $productModel = Flight::get('productModel');
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+
+            // Default highlighted=1, allow override
+            $highlighted = isset($_GET['highlighted'])
+                ? ($_GET['highlighted'] === '0' || $_GET['highlighted'] === 'false' ? false : true)
+                : true;
+
+            $products = $productModel->getRandomWithImages($limit, $highlighted);
+
+            HttpResponse::responseFetchSuccess($products);
+        } catch (Exception $e) {
+            HttpResponse::handleException($e, __METHOD__, "ProductController->getRandomWithImages()");
+        }
+    }
+
 
     public function getForId($id)
     {
