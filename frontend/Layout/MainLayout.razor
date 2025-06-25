@@ -17,29 +17,61 @@
 
 <Header>
 	<NavResponsiveMenuOptions>
-		<Dropdown ClassName=""
-			HeaderClassName="nav__button"
-			OnClickDesktop="@(() => Navigation.NavigateTo("produtos"))"
-		>
-			<HeaderContent>
-				<span>Produtos</span>
-			</HeaderContent>
+		@if (!AppStateService.IsMobile)
+		{
+            // Desktop 
+			<Dropdown ClassName=""
+					  HeaderClassName="nav__button"
+					  OnClickDesktop="@(() => Navigation.NavigateTo("produtos"))">
+				<HeaderContent>
+					<span>Produtos</span>
+				</HeaderContent>
 
-			<BodyContent>
-				@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
-				{
-					<li>Vazio!</li>
-				}
-				else
-				{
-					<li class="nav--highlight">Em destaque</li>
-					@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
+				<BodyContent>
+					@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
 					{
-						<li>@category.Title</li>
+						<li>Vazio!</li>
 					}
-				}
-			</BodyContent>
-		</Dropdown>
+					else
+					{
+						<li class="nav--highlight">Em destaque</li>
+						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
+						{
+							<li>@category.Title</li>
+						}
+					}
+				</BodyContent>
+			</Dropdown>
+		} 
+		else
+		{
+			// Mobile
+			<List ClassName="nav__list"
+				  HeaderClassName=""
+				  OnClick="@(() => Navigation.NavigateTo("produtos"))">
+				<HeaderContent>
+					<span>Produtos</span>
+				</HeaderContent>
+
+				<BodyContent>
+					@if (!ProductStateService.CategoriesListOrderedByTitle.Any())
+					{
+						<li>Vazio!</li>
+					}
+					else
+					{
+						<li><a href="" class="list__item highlight">Em destaque</a></li>
+
+						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
+						{
+
+							<li><a href="" class="list__item">@category.Title</a></li>
+							
+						}
+					}
+				</BodyContent>
+			</List>
+		}
 
 		<div>
 			<NavLink href="/contato" class="nav__button">
