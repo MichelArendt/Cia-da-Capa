@@ -4,6 +4,11 @@
 
 <div class="carousel" style="@CarouselStyle">
     <ul class="carousel-content" @ref="CarouselContentRef">
+        @if (ItemsAlwaysCentered)
+        {
+            <li class="carousel-spacer"></li> <!-- LEFT SPACER -->
+        }
+
         @for (int i = 0; i < Items.Count; i++)
         {
             var index = i; // Capture loop index in a local variable
@@ -19,9 +24,14 @@
                   @Items[index].Content
             </li>
         }
+
+        @if (ItemsAlwaysCentered)
+        {
+            <li class="carousel-spacer"></li> <!-- RIGHT SPACER -->
+        }
     </ul>
 
-    @if (AppStateService.IsMobile
+  @*   @if (AppStateService.IsMobile
         || (!AppStateService.IsMobile && (Pagination == PaginationType.NONE || Pagination == PaginationType.DOTS) && !PaginationArrows))
     {
         <div class="carousel-pagination">
@@ -65,7 +75,84 @@
                 }
             </div>
         </div>
+    } *@
+
+    <!--
+    Pagination logic:
+    - If PaginationArrows is enabled, show arrows (regardless of Pagination mode).
+    - If Pagination is DOTS or CUSTOM, show the corresponding pagination content.
+    - Both arrows and dots/custom pagination can appear together.
+-->
+
+        <div class="carousel-pagination prevent-select">
+            @* Show left/right arrows if enabled *@
+            @if (PaginationArrows)
+            {
+                <div class="carousel-pagination__arrow carousel-pagination__arrow--left"
+                    @onclick="@(() => ScrollToIndex((_currentIndex - 1 + Items.Count) % Items.Count))">
+                    <Svg Path="@Svg.Paths.ChevronLeft" />
+                </div>
+            }
+
+            @* Show dots if Pagination is DOTS *@
+            @if (Pagination == PaginationType.DOTS)
+            {
+                <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
+                    @for (int i = 0; i < Items.Count; i++)
+                    {
+                        var index = i;
+                        <span id="pagination-item-@i"
+                              class="carousel-pagination__dot @(index == _currentIndex ? "active" : "")"
+                              @onclick="() => ScrollToIndex(index)">
+                        </span>
+                    }
+                </div>
+            }
+            @* Show custom pagination if Pagination is CUSTOM *@
+            else if (Pagination == PaginationType.CUSTOM)
+            {
+                <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
+                    @for (int i = 0; i < Items.Count; i++)
+                    {
+                        var index = i;
+                        <div id="pagination-item-@i"
+                             class="carousel-pagination__item carousel-pagination__custom @(index == _currentIndex ? "active" : "")"
+                             @onclick="() => ScrollToIndex(index)">
+                            @Items[index].PaginationContent
+                        </div>
+                    }
+                </div>
+            }
+
+            @* Show right arrow if enabled *@
+            @if (PaginationArrows)
+            {
+                <div class="carousel-pagination__arrow carousel-pagination__arrow--right"
+                    @onclick="@(() => ScrollToIndex((_currentIndex + 1) % Items.Count))">
+                    <Svg Path="@Svg.Paths.ChevronRight" />
+                </div>
+            }
+        </div>
+
+
+    @* @if (!AppStateService.IsMobile)
+    {
     }
+    else
+    {
+        <div class="carousel-pagination">
+            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
+                @for (int i = 0; i < Items.Count; i++)
+                {
+                    var index = i;
+                    <span id="pagination-item-@i"
+                          class="carousel-pagination__dot @(index == _currentIndex ? "active" : "")"
+                          @onclick="() => ScrollToIndex(index)">
+                    </span>
+                }
+            </div>
+        </div>
+    } *@
 </div>
 
 @code {
@@ -73,6 +160,7 @@
     [Parameter] public bool AutoScroll { get; set; } = false;
     [Parameter] public PaginationType Pagination { get; set; } = PaginationType.NONE;
     [Parameter] public bool PaginationArrows { get; set; } = false;
+    [Parameter] public bool ItemsAlwaysCentered { get; set; } = false;
 
     [Parameter] public int MaxWidth { get; set; } = 0;
     [Parameter] public int MaxHeight { get; set; } = 0;
@@ -140,7 +228,8 @@
             "scrollCarouselToIndex",
             CarouselContentRef,
             CarouselPaginationRef,
-            index
+            index,
+            ItemsAlwaysCentered
         );
 
         ResetAutoScrollTimer(); // stop/start the timer!

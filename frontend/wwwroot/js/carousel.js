@@ -1,8 +1,13 @@
-﻿window.scrollCarouselToIndex = function (carouselListRef, paginationListRef, index) {
+﻿// Smoothly scrolls carousel to the selected item, accounting for spacers if present.
+window.scrollCarouselToIndex = function (carouselListRef, paginationListRef, index, itemsAlwaysCentered) {
     // Helper to scroll a list by index
     function scrollToIndex(listRef, idx) {
         if (!listRef || typeof idx !== "number") return;
-        const item = listRef.children?.[idx];
+
+        // Skip the spacer if ItemsAlwaysCentered is enabled
+        const elementIndex = itemsAlwaysCentered ? idx + 1 : idx;
+        const item = listRef.children?.[elementIndex];
+
         if (!item) return;
 
         const listRect = listRef.getBoundingClientRect();
@@ -21,6 +26,7 @@
     scrollToIndex(paginationListRef, index);
 };
 
+// Observes carousel items and notifies Blazor of the current index (handles spacers)
 window.observeCarouselItems = (carouselListRef, dotNetHelper) => {
     const observerOptions = {
         root: carouselListRef,
@@ -30,7 +36,8 @@ window.observeCarouselItems = (carouselListRef, dotNetHelper) => {
     const observer = new IntersectionObserver((entries) => {
         for (const entry of entries) {
             if (entry.isIntersecting) {
-                const index = Array.from(carouselListRef.children).indexOf(entry.target);
+                let index = Array.from(carouselListRef.children).indexOf(entry.target);
+                if (itemsAlwaysCentered) index -= 1; // Subtract spacer
                 dotNetHelper.invokeMethodAsync('UpdateCurrentIndex', index);
                 break;
             }
@@ -41,12 +48,13 @@ window.observeCarouselItems = (carouselListRef, dotNetHelper) => {
         observer.observe(item);
     });
 
-    // Return a cleanup handle
+    // Return a cleanup handle (not used by Blazor by default, but available)
     return {
         disconnect: () => observer.disconnect()
     };
 };
 
+// Enables drag/swipe to scroll carousel (with circular/infinite logic)
 window.enableDirectionalSwipeScroll = function (carouselListRef, dotNetHelper, itemCount, currentIndex) {
     if (!carouselListRef) return;
 
@@ -91,10 +99,12 @@ window.enableDirectionalSwipeScroll = function (carouselListRef, dotNetHelper, i
         let threshold = 30;
         let nextIndex = currentIndex;
         if (Math.abs(dx) > threshold) {
-            if (dx < 0 && currentIndex < itemCount - 1) {
-                nextIndex = currentIndex + 1;
-            } else if (dx > 0 && currentIndex > 0) {
-                nextIndex = currentIndex - 1;
+            if (dx < 0) {
+                // Swipe left → next item (wrap)
+                nextIndex = (currentIndex + 1) % itemCount;
+            } else if (dx > 0) {
+                // Swipe right → previous item (wrap)
+                nextIndex = (currentIndex - 1 + itemCount) % itemCount;
             }
             if (nextIndex !== currentIndex) {
                 dotNetHelper.invokeMethodAsync('ScrollToIndex', nextIndex);
@@ -119,3 +129,63 @@ window.enableDirectionalSwipeScroll = function (carouselListRef, dotNetHelper, i
     carouselListRef._swipeCancelHandler = swipeCancelHandler;
     carouselListRef._swipeHandlersAdded = true;
 };
+
+
+/**
+ * Prevents anchor navigation inside carousel slides if a drag/swipe occurred,
+ * but allows normal clicks/taps to follow the link.
+ *
+ * Add 'carousel-slide-link' class to <a> tags inside carousel slides.
+ */
+(function () {
+    let drag = { started: false, moved: false, threshold: 10, startX: 0, startY: 0 };
+
+    function dragStart(e) {
+        drag.started = true;
+        drag.moved = false;
+        drag.startX = e.touches ? e.touches[0].clientX : e.pageX;
+        drag.startY = e.touches ? e.touches[0].clientY : e.pageY;
+    }
+    function dragMove(e) {
+        if (!drag.started) return;
+        let x = e.touches ? e.touches[0].clientX : e.pageX;
+        let y = e.touches ? e.touches[0].clientY : e.pageY;
+        let dx = Math.abs(x - drag.startX);
+        let dy = Math.abs(y - drag.startY);
+        if (dx > drag.threshold || dy > drag.threshold) {
+            drag.moved = true;
+        }
+    }
+    function dragEnd(e) {
+        drag.started = false;
+    }
+
+    // This blocks click on links if a drag happened
+    document.addEventListener('click', function (e) {
+        if (drag.moved && e.target.closest('.carousel-slide-link')) {
+            e.preventDefault();
+            drag.moved = false; // reset
+        }
+    }, true);
+
+    // Attach handlers to carousel only (you can make this more selective)
+    document.addEventListener('mousedown', function (e) {
+        if (e.target.closest('.carousel-item')) dragStart(e);
+    });
+    document.addEventListener('mousemove', function (e) {
+        dragMove(e);
+    });
+    document.addEventListener('mouseup', function (e) {
+        dragEnd(e);
+    });
+
+    document.addEventListener('touchstart', function (e) {
+        if (e.target.closest('.carousel-item')) dragStart(e);
+    }, { passive: false });
+    document.addEventListener('touchmove', function (e) {
+        dragMove(e);
+    }, { passive: false });
+    document.addEventListener('touchend', function (e) {
+        dragEnd(e);
+    });
+})();

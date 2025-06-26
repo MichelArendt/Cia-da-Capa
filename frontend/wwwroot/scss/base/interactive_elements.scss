@@ -117,11 +117,13 @@ button {
     height: 100%;
     /* Hide browser arrows only for this field */
 }
+
 .quantity-input__field::-webkit-inner-spin-button,
 .quantity-input__field::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 .quantity-input__field[type=number] {
     -moz-appearance: textfield;
 }
@@ -382,9 +384,11 @@ button {
 .slider__content-wrapper--vertical--top {
     justify-content: flex-start;
 }
+
 .slider__content-wrapper--vertical--center {
     justify-content: center;
 }
+
 .slider__content-wrapper--vertical--bottom {
     justify-content: flex-end;
 }
@@ -392,9 +396,11 @@ button {
 .slider__content-wrapper--horizontal--left {
     align-items: flex-start;
 }
+
 .slider__content-wrapper--horizontal--center {
     align-items: center;
 }
+
 .slider__content-wrapper--horizontal--right {
     align-items: flex-end;
 }
@@ -452,8 +458,8 @@ button {
 .list {
     background: colors.opacity-set(white, 5%);
     background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(0,0,0,0.07);
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
     border-radius: 12px;
     color: #fff; // default text color for dark backgrounds
 }
@@ -466,8 +472,7 @@ button {
     color: inherit;
 }
 
-.list__content {
-}
+.list__content {}
 
 .list__content--vertical {
     @extend %flex--column;
@@ -483,8 +488,8 @@ button {
     @extend %transition--default;
 
     &.highlight {
-        background: rgba(255,255,255,0.14); // a bit more visible on hover
-        border-left: 3px solid colors.$primary-main;     // accent color
+        background: rgba(255, 255, 255, 0.14); // a bit more visible on hover
+        border-left: 3px solid colors.$primary-main; // accent color
         color: #fff;
     }
 }
@@ -495,11 +500,11 @@ a.list__item {
 
 a.list__item.highlight {
     background: colors.$secondary-main;
-    border-left: 3px solid colors.opacity-set(white, 0.2);     // accent color
+    border-left: 3px solid colors.opacity-set(white, 0.2); // accent color
 }
 
 a.list__item.highlight:hover {
-    border-left: 3px solid colors.opacity-set(white, 0.5);     // accent color
+    border-left: 3px solid colors.opacity-set(white, 0.5); // accent color
 }
 
 a.list__item:hover {
@@ -509,7 +514,7 @@ a.list__item:hover {
 
 // Navigation List
 
-.list.nav__list *{
+.list.nav__list * {
     background: unset;
     padding: 0;
 }
@@ -673,14 +678,16 @@ table tbody tr.active-row {
     display: flex;
     gap: 50px;
     /* Consistent gap calculation */
-    padding: 10px 50px;
+    padding: 10px 0px;
     width: 100%;
     touch-action: none;
     flex-grow: 0;
 }
 
 .carousel-pagination__content {
-    display: flex;
+    // display: flex;
+    @extend %flex--row--center-vertical;
+    gap: 10px;
 }
 
 .carousel-content::-webkit-scrollbar,
@@ -708,8 +715,7 @@ table tbody tr.active-row {
     background-color: #FFF;
     // display: inline-block;
 
-    > * {
-        pointer-events: none;
+    >* {
         width: 100%;
         height: 100%;
         object-fit: contain; // maintain aspect ratio
@@ -720,7 +726,6 @@ table tbody tr.active-row {
     display: flex;
     justify-content: center;
     width: 100%;
-    ;
     gap: 8px;
     margin-top: 10px;
 }
@@ -728,7 +733,29 @@ table tbody tr.active-row {
 .carousel-pagination__arrow {
     @extend %flex--row--center;
     padding: 0 5px;
+
+    svg {
+        @extend %transition--default;
+    }
 }
+
+.carousel-pagination__arrow {
+    cursor: pointer;
+
+    &:hover,
+    &:visited {
+        svg {
+            fill: colors.$primary-main;
+        }
+    }
+
+    &:active {
+        svg {
+            fill: red;
+        }
+    }
+}
+
 
 .carousel-pagination__arrow--right {
     order: 3;
@@ -749,9 +776,10 @@ table tbody tr.active-row {
     }
 }
 
+
 .carousel-pagination__dot {
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     background-color: #ddd;
     border-radius: 50%;
     cursor: pointer;
@@ -762,59 +790,25 @@ table tbody tr.active-row {
     background-color: #333;
 }
 
-// .carousel-item__content {
-//     // display: inline-block;
-//     height: 100%;
 
-//     >* {
-//         height: 100%;
-//     }
+
+
+
+
+
+// .carousel-content {
+//     justify-content: flex-start;
+//     scroll-snap-type: none; // disable snap, managed by JS
+//     padding: 10px 0; // remove horizontal padding (or minimize)
 // }
 
-// .carousel-button {
-//     display: none;
-//     position: absolute;
-//     top: 50%;
-
-//     width: 50px;
-//     height: 100%;
-
-//     transform: translateY(-50%);
-//     background: white;
+// .carousel-item {
+//     flex-shrink: 0;
+//     scroll-snap-align: none; // explicitly none
 // }
 
-// @media (min-width: variables.$breakpoint--desktop) {
-//     .carousel-button {
-//         display: block;
-//     }
-// }
-
-// .carousel-button--previous {
-//     left: 0;
-// }
-
-// .carousel-button--next {
-//     right: 0;
-// }
-
-// .carousel-pagination {
-//     display: flex;
-//     justify-content: center;
-//     gap: 8px;
-//     margin-top: 10px;
-// }
-
-// .carousel-pagination__item {
-//     width: 10px;
-//     height: 10px;
-//     border-radius: 50%;
-//     background-color: colors.$secondary-light;
-//     transition: background-color 0.2s ease-in-out;
-// }
-
-// .carousel-pagination__item--active {
-//     background-color: colors.$primary-main;
-// }
-
-
-
+.carousel-spacer {
+    flex: 0 0 50%;
+    pointer-events: none;
+    height: 1px; // so it doesn't take vertical space
+}

@@ -29,19 +29,19 @@ main {
 .banner {
     display: grid;
     width: 100%;
-    max-width: 640px;              // Mobile max width
-    aspect-ratio: 16 / 9;          // 640x360
+    max-width: 640px; // Mobile max width
+    aspect-ratio: 16 / 9; // 640x360
 
-    margin: 0 auto;                // Center horizontally
+    margin: 0 auto; // Center horizontally
 
     @media (min-width: 641px) {
         max-width: 1024px;
-        aspect-ratio: 2 / 1;       // 1024x512
+        aspect-ratio: 2 / 1; // 1024x512
     }
 
     @media (min-width: 1025px) {
         max-width: 1920px;
-        aspect-ratio: 16 / 5;      // 1920x600
+        aspect-ratio: 16 / 5; // 1920x600
     }
 
     .banner__bg,

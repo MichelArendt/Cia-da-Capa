@@ -12,55 +12,14 @@
 
 @if (bannerCarouselItems.Any())
 {
-    <Carousel Items="bannerCarouselItems" AutoScroll Pagination="Carousel.PaginationType.DOTS" MaxHeight="600" />
+    <Carousel 
+        Items="bannerCarouselItems" 
+        AutoScroll
+        PaginationArrows
+        Pagination="Carousel.PaginationType.DOTS" 
+        MaxHeight="600" 
+        ItemsAlwaysCentered />
 }
-
-@* @if (banners.Any())
-{
-    <section class="banners">
-        @foreach (var banner in banners)
-        {
-            <picture>
-                <!-- Mobile: default (640x360) -->
-                <img src="@banner.File_Path_Mobile" alt="Destaque" />
-
-                <!-- Tablet: from 769px and up -->
-                <source srcset="@banner.File_Path_Tablet" media="(min-width: 769px)" />
-
-                <!-- Desktop: from 1201px and up -->
-                <source srcset="@banner.File_Path_Desktop" media="(min-width: 1201px)" />
-            </picture>
-        }
-    </section>
-} else if (productsHighlightedRandomized.Any())
-{
-    <section class="banners">
-        @foreach (var product in productsHighlightedRandomized)
-        {
-            var img = product.Images?.OrderBy(i => i.Priority).FirstOrDefault();
-
-            if (img != null)
-            {
-                <div class="banner">
-                    <picture class="banner__bg">
-                        <!-- Mobile: default (640x360) -->
-                        <img src="/images/banners/banner-640x360.jpg" alt="Destaque" />
-
-                        <!-- Tablet: from 769px and up -->
-                        <source srcset="/images/banners/banner-1024x512.jpg" media="(min-width: 769px)" />
-
-                        <!-- Desktop: from 1201px and up -->
-                        <source srcset="/images/banners/banner-1920x600.jpg" media="(min-width: 1201px)" />
-                    </picture>
-
-                    <img class="banner__product" src="@img.MediumFilePath" alt="@product.Title"/>
-                </div>
-
-                break;
-            }
-        }
-    </section>
-} *@
 
 <section class="splash">
     <div class="splash-item">
@@ -167,9 +126,9 @@
             bannerCarouselItems = banners.Select(banner => new CarouselItem
             {
                 Content = @<picture>
-                    <img src="@banner.File_Path_Mobile" alt="@banner.Title" />
-                    <source srcset="@banner.File_Path_Tablet" media="(min-width: 769px)" />
                     <source srcset="@banner.File_Path_Desktop" media="(min-width: 1201px)" />
+                    <source srcset="@banner.File_Path_Tablet" media="(min-width: 769px)" />
+                    <img src="@banner.File_Path_Mobile" alt="@banner.Title" draggable="false" />
                 </picture>
             }).ToList();
         }
@@ -190,42 +149,19 @@
                 var img = product.Images.OrderBy(i => i.Priority).FirstOrDefault();
                 return new CarouselItem
                 {
-                    Content = @<div class="banner">
-                        <picture class="banner__bg">
-                            <img src="/images/banners/banner-640x360.jpg" alt="@product.Title" />
-                            <source srcset="/images/banners/banner-1024x512.jpg" media="(min-width: 769px)" />
-                            <source srcset="/images/banners/banner-1920x600.jpg" media="(min-width: 1201px)" />
-                        </picture>
-                        <img class="banner__product" src="@img.MediumFilePath" alt="@product.Title" />
-                    </div>
+                    Content = @<a href="produto/@product.Id" class="carousel-slide-link" draggable="false">
+                        <div class="banner">
+                            <picture class="banner__bg">
+                                <source srcset="/images/banners/banner-1920x600.jpg" media="(min-width: 1201px)" />
+                                <source srcset="/images/banners/banner-1024x512.jpg" media="(min-width: 769px)" />
+                                <img src="/images/banners/banner-640x360.jpg" alt="@product.Title" draggable="false" />
+                            </picture>
+                            <img class="banner__product" src="@img.MediumFilePath" alt="@product.Title" draggable="false" />
+                        </div>
+                    </a>
                 };
             }).ToList();
         }
-
-
-
-
-
-        // await fetchBannersApiHandler.ExecuteAsync(BannerService.GetAllBannersFunc());
-
-        // if (fetchBannersApiHandler.IsSuccess() && fetchBannersApiHandler.Content != null)
-        // {
-        //     banners = fetchBannersApiHandler.Content;
-
-        //     Check if there are no banners
-        //     if (!banners.Any())
-        //     {
-        //         No banners found, we must then check for highlighted products to use on banner
-        //         await fetchHighlightedRandomizedProductsApiHandler.ExecuteAsync(ProductService.GetRandomHighlightedProductsWithImagesFunc());
-
-        //         if ( fetchHighlightedRandomizedProductsApiHandler.IsSuccess() )
-        //         {
-        //             productsHighlightedRandomized = fetchHighlightedRandomizedProductsApiHandler.Content ?? new List<ProductDto>();
-        //         }
-        //     }
-
-        //     StateHasChanged();
-        // }
 
 
         // Fetch client logos

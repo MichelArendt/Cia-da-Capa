@@ -14,6 +14,12 @@
     --breakpoint-desktop: variables.$breakpoint--desktop; // Desktop breakpoint variable
 }
 
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 // ---------------------------
 // WEBSITE CONTAINERS
 // ---------------------------
