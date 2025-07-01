@@ -172,7 +172,7 @@ class ProductModel
      * @param int $limit
      * @param bool|null $highlighted
      * @return array
-     */ public function getRandomWithImages(int $limit = 10, ?bool $highlighted = true): array
+     */ public function getRandomWithImages(int $limit = 5, ?bool $highlighted = true): array
     {
         try {
             // Always default to highlighted products

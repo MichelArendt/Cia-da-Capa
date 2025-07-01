@@ -94,7 +94,7 @@ class ProductController
     {
         try {
             $productModel = Flight::get('productModel');
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
 
             // Default highlighted=1, allow override
             $highlighted = isset($_GET['highlighted'])

@@ -31,6 +31,7 @@ class BannerModel
         $sql = "
             CREATE TABLE IF NOT EXISTS `{$this->table}` (
                 id INT AUTO_INCREMENT PRIMARY KEY,
+                product_id INT NOT NULL,
                 title VARCHAR(255) NOT NULL,
                 file_path_mobile VARCHAR(255) NOT NULL,
                 file_path_tablet VARCHAR(255) NOT NULL,
@@ -38,7 +39,8 @@ class BannerModel
                 priority INT DEFAULT 0,
                 is_active BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES `products`(id) ON DELETE CASCADE
             );
         ";
         $this->db->exec($sql);
@@ -69,16 +71,18 @@ class BannerModel
      * Create a new banner, uploading 3 images to /images/banners/{id}/id-{resolution}.webp.
      * Only commit to DB if all uploads succeed; cleans up on failure.
      *
+     * @param int $productId
      * @param string $title
      * @param array $images ['mobile'=>$_FILES, 'tablet'=>$_FILES, 'desktop'=>$_FILES]
      * @return array ['success'=>bool, 'error'=>?string]
      */
-    public function createBanner(string $title, array $images): array
+    public function createBanner(int $productId, string $title, array $images): array
     {
         try {
             // 1. Insert the banner row first, to get the ID for its folder
-            $stmt = $this->db->prepare("INSERT INTO `{$this->table}` (title, file_path_mobile, file_path_tablet, file_path_desktop) VALUES (:title, '', '', '')");
-            $ok = $stmt->execute([':title' => $title]);
+            $stmt = $this->db->prepare("INSERT INTO `{$this->table}` (product_id, title, file_path_mobile, file_path_tablet, file_path_desktop) VALUES (:title, '', '', '')");
+            $ok = $stmt->execute([':product_id' => $productId, ':title' => $title]);
+
             if (!$ok) return ['success' => false, 'error' => 'Erro ao inserir no banco (pré-upload).'];
             $bannerId = $this->db->lastInsertId();
 

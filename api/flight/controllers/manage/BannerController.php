@@ -25,16 +25,26 @@ class BannerController
             if (!$title) {
                 HttpResponse::returnValidationError("O campo 'title' é obrigatório.");
             }
+
+            // Validate product_id
+            $productId = $_POST['product_id'] ?? null;
+            if (!$productId || !is_numeric($productId)) {
+                HttpResponse::returnValidationError("O campo 'product_id' é obrigatório e deve ser numérico.");
+            }
+
             foreach (['mobile', 'tablet', 'desktop'] as $f) {
                 if (!isset($_FILES[$f])) {
                     HttpResponse::returnValidationError("O arquivo '$f' é obrigatório.");
                 }
             }
+
             $result = $this->model->createBanner($title, [
+                (int)$productId,
                 'mobile' => $_FILES['mobile'],
                 'tablet' => $_FILES['tablet'],
                 'desktop' => $_FILES['desktop'],
             ]);
+
             if ($result['success']) {
                 HttpResponse::responseCreateSuccess("Banner criado com sucesso.", null);
             } else {
