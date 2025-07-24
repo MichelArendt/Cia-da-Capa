@@ -45,5 +45,20 @@ namespace frontend.Models.Manage.Forms
             IsHighlighted = productDto.IsHighlighted;
             Priority = productDto.Priority;
         }
+
+        public ProductDto ToProductDto(int id = 0)
+        {
+            return new ProductDto
+            {
+                Id = id,
+                Title = Title,
+                Reference = Reference,
+                CategoryId = CategoryId,
+                Description = Description,
+                IsActive = IsActive,
+                IsHighlighted = IsHighlighted,
+                Priority = Priority ?? 0
+            };
+        }
     }
 }

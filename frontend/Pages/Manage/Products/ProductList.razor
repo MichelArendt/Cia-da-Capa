@@ -72,6 +72,8 @@ else
 
             await productsApiHandler.ExecuteAsync(ProductService.GetProductsListFunc());
 
+            ProductStateService.UpdateProductsWithList(productsApiHandler.Content);
+
             StateHasChanged();
         }
         else

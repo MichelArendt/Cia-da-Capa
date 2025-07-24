@@ -16,6 +16,7 @@
             public static class Products
             {
                 public const string GetAll = $"{API}/public/products";
+                public const string GetAllShort = $"{API}/public/products/short";
 
                 /// <summary>
                 /// Builds a filtered products endpoint with query params.
@@ -99,6 +100,7 @@
             public static class Banners
             {
                 public const string Create = $"{API}/manage/banners";
+                public static string Update(int id) => $"/api/manage/banners/{id}";
                 public static string UpdateImage(int id, string size) => $"{API}/manage/banners/{id}/image/{size}";
                 public static string Delete(int id) => $"{API}/manage/banners/{id}";
                 public const string UpdateOrdering = $"{API}/manage/banners/order";
