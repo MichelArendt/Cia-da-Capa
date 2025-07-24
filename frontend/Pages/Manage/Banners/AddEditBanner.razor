@@ -4,77 +4,96 @@
 @layout ManageLayout
 
 @using frontend.DTOs
-@using frontend.Models.Manage.Forms
 @using frontend.Services.API
 @using frontend.Components.Shared.UI
+
+@using frontend.Components.Shared.UI.Forms.Smart
+@using frontend.Models.Manage.Forms
+@using frontend.ViewModels.Forms.Validation
 
 @inject NotificationService NotificationService
 @inject BannerService BannerService
 @inject NavigationManager Nav
+@inject ProductStateService ProductStateService
 
 <PageTitle>@(IsEditMode ? "Editar Banner" : "Adicionar Banner")</PageTitle>
 
-@if (IsEditMode && apiHandler.IsExecuting())
+<h3>@(IsEditMode ? "Editar Banner" : "Adicionar Banner")</h3>
+
+@if (IsEditMode && fetchBannerApiHandler.IsExecuting())
 {
     <ContentLoader DisplayMessage="Carregando informações do banner..." />
 }
-else if (!IsEditMode || (apiHandler.IsSuccess() && apiHandler.Content is not null))
+else if (!IsEditMode || (fetchBannerApiHandler.IsSuccess() && fetchBannerApiHandler.Content is not null))
 {
-    <EditForm EditContext="EditContext" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+    <SmartForm 
+            TModel="BannerFormModel" 
+            Model="FormModel"
+            Validator="ValidateWithFluent"
+            ValidateOnInitialize="@IsEditMode"
+            OnContextAvailable="ctx => _smartFormCtx = ctx"
+            OnValidationStateChanged="valid => _canSubmit = valid"
+            CanSubmitEvaluator="CanSubmitEvaluator">
+        <!-- Text field with live validation -->
+        <TextInput For="@nameof(FormModel.Title)"
+                   Label="Título"
+                   Placeholder="Ex: Bolsa masculina"
+                   IsRequired="true"
+                   LiveValidation="true" />
 
-        <div class="form-group">
-            <label for="title">Título do Banner</label>
-            <InputText id="title" class="form-control" @bind-Value="FormData.Title" />
+
+        <div class="display--row--above-breakpoint">
+            <!-- Input field with live validation -->
+            <NumberInput For="@nameof(FormModel.Priority)"
+                         Label="Prioridade"
+                         Placeholder="Ex: 0 (mais alto)"
+                         Step="1"
+                         Min="0"
+                         IsRequired="true"
+                         LiveValidation="true" />
+
+            <AutocompleteSelect TItem="ProductLookupViewModel"
+                                For="@nameof(FormModel.ProductId)"
+                                Label="Produto"
+                                Items="ProductStateService.ProductsListOrderedByReference"
+                                SearchProperty="SearchString"
+                                SelectedProperty="FullReference"
+                                SelectedValueProperty="Id"
+                                IsRequired="true"
+                                LiveValidation="true"
+                                ContainerClass="form-group">
+                <ItemTemplate Context="p">
+                    <div>
+                        <strong>@p.FullReference</strong><br />
+                        <span class="text-muted">@p.Title</span>
+                    </div>
+                </ItemTemplate>
+            </AutocompleteSelect>
         </div>
 
-        <div class="form-group">
-            <label for="priority">Prioridade</label>
-            <InputNumber id="priority" class="form-control" @bind-Value="FormData.Priority" />
-        </div>
+        <FileInput 
+            For="FormModel.FileMobile" 
+            Label="Selecione uma imagem para o banner Mobile (640x360)" 
+            IsRequired="!IsEditMode"
+            CurrentImagePath="@FormModel.ImagePathMobile"
+            LiveValidation="true" />
 
-        <div class="form-group">
-            <label for="mobile">Imagem Mobile (640x360)</label>
-            <InputFile id="mobile" OnChange="@(e => OnImageSelected(e, "mobile"))" />
+        <FileInput 
+            For="FormModel.FileTablet" 
+            Label="Selecione uma imagem para o banner Tablet (1024x512)"
+            IsRequired="!IsEditMode"
+            CurrentImagePath="@FormModel.ImagePathTablet" />
 
-            @if(IsEditMode)
-            {
-                <div class="banner-image__container">
-                    <img src="@apiHandler.Content?.File_Path_Mobile" />
-                </div>
-            }
-        </div>
+        <FileInput 
+            For="FormModel.FileDesktop" 
+            Label="Selecione uma imagem para o banner Desktop (1920x600)"
+            IsRequired="!IsEditMode"
+            CurrentImagePath="@FormModel.ImagePathDesktop" />
 
-        <div class="form-group">
-            <label for="tablet">Imagem Tablet (1024x512)</label>
-            <InputFile id="tablet" OnChange="@(e => OnImageSelected(e, "tablet"))" />
-
-            @if (IsEditMode)
-            {
-                <div class="banner-image__container">
-                    <img src="@apiHandler.Content?.File_Path_Tablet" />
-                </div>
-            }
-        </div>
-
-        <div class="form-group">
-            <label for="desktop">Imagem Desktop (1920x600)</label>
-            <InputFile id="desktop" OnChange="@(e => OnImageSelected(e, "desktop"))" />
-
-            @if (IsEditMode)
-            {
-                <div class="banner-image__container">
-                    <img src="@apiHandler.Content?.File_Path_Desktop" />
-                </div>
-            }
-        </div>
-
-        <button type="submit" class="btn btn-primary"
-                disabled="@((EditContext is null) || !EditContext.Validate() || !AreImagesValid)">
+        <button type="button" class="btn btn-primary" disabled="@(!_canSubmit)" title="@SubmitTooltip" @onclick="SubmitForm">
             @(IsEditMode ? "Salvar Alterações" : "Criar Banner")
         </button>
-    </EditForm>
+    </SmartForm>
 }
 else
 {
@@ -84,86 +103,111 @@ else
 @code {
     [Parameter] public int? Id { get; set; }
 
-    private bool IsEditMode => Id.HasValue;
-    private ApiStateHandler<BannerDto> apiHandler = new();
-    private BannerFormModel FormData = new();
-    private EditContext? EditContext;
+    // The model instance we are editing
+    private BannerFormModel FormModel = new();
 
-    private IBrowserFile? FileMobile;
-    private IBrowserFile? FileTablet;
-    private IBrowserFile? FileDesktop;
+    // Your validator instance (uses FluentValidation)
+    private BannerFormModelValidator Validator = new(new List<ProductLookupViewModel>(), isEditMode: false);
 
-    private bool AreImagesValid =>
-    IsEditMode || (FileMobile is not null && FileTablet is not null && FileDesktop is not null);
-
-
-    protected override void OnInitialized()
+    // This wraps FluentValidation logic for SmartForm usage
+    private async Task<Dictionary<string, string>> ValidateWithFluent(BannerFormModel model)
     {
-        EditContext = new EditContext(FormData);
-        EditContext.OnFieldChanged += (_, __) => StateHasChanged();
-
-        if (IsEditMode && Id.HasValue)
-        {
-            apiHandler = new(BannerService.GetByIdFunc(Id.Value));
-            apiHandler.StateHasChanged += () => NotificationService.HandleApiStateChanged(apiHandler);
-        }
+        var result = await Validator.ValidateAsync(model);
+        // Converts FluentValidation results to Dictionary<string, string>
+        return result.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.First().ErrorMessage);
     }
+
+
+    private bool IsEditMode => Id.HasValue;
+    private ApiStateHandler<BannerDto> fetchBannerApiHandler = new();
+
+    // Receives the SmartForm context for validation and state management
+    private SmartFormContext? _smartFormCtx;
+
+    private IEnumerable<string> RequiredFields => IsEditMode
+    ? BannerFormModel.RequiredFieldsEdit
+    : BannerFormModel.RequiredFieldsCreate;
+
+    // private Dictionary<string, string> FieldErrors = new();
+    // private HashSet<string> TouchedFields = new();
 
     protected override async Task OnInitializedAsync()
     {
         if (IsEditMode && Id.HasValue)
         {
-            await apiHandler.ExecuteAsync();
-            var banner = apiHandler.Content;
+            fetchBannerApiHandler = new(BannerService.GetByIdFunc(Id.Value));
+            fetchBannerApiHandler.StateHasChanged += () => NotificationService.HandleApiStateChanged(fetchBannerApiHandler);
+            await fetchBannerApiHandler.ExecuteAsync();
+
+            BannerDto? banner = fetchBannerApiHandler.Content;
 
             if (banner != null)
             {
-                FormData.Title = banner.Title;
-                FormData.Priority = banner.Priority;
+                FormModel = new BannerFormModel
+                {
+                    Title = banner.Title,
+                    Priority = banner.Priority,
+                    ProductId = banner.ProductId,
+                    ImagePathMobile = banner.File_Path_Mobile,
+                    ImagePathTablet = banner.File_Path_Tablet,
+                    ImagePathDesktop = banner.File_Path_Desktop,
+                };
             }
         }
+
+        Validator = new BannerFormModelValidator(ProductStateService.ProductsListOrderedByReference, IsEditMode);
     }
 
-    private void OnImageSelected(InputFileChangeEventArgs e, string type)
+    private bool _canSubmit = false;
+    private string SubmitTooltip => _canSubmit ? "" : "Corrija os erros antes de submeter.";
+
+    private bool CanSubmitEvaluator(SmartFormContext ctx)
     {
-        var file = e.File;
-        switch (type)
-        {
-            case "mobile": FileMobile = file; break;
-            case "tablet": FileTablet = file; break;
-            case "desktop": FileDesktop = file; break;
-        }
-        StateHasChanged(); // to update button state
+        // your existing submission logic, simplified
+        return !ctx.FieldErrors.Any() &&
+               RequiredFields.All(f => ctx.TouchedFields.Contains(f)) &&
+               RequiredFields.All(f =>
+               {
+                   var val = typeof(BannerFormModel).GetProperty(f)?.GetValue(ctx.Model);
+                   if (val is string s) return !string.IsNullOrWhiteSpace(s);
+                   return val != null;
+               });
     }
 
-    private async Task HandleValidSubmit()
+    private async Task SubmitForm()
     {
-        try
+        if (!_canSubmit)
+            return;
+
+        if (IsEditMode && Id.HasValue)
         {
-            if (IsEditMode && Id.HasValue)
+            await BannerService.UpdateAsync(Id.Value, FormModel);
+
+            // Only redirect on success
+            if (BannerService.UpdateBanner.IsSuccess())
             {
-                if (FileMobile is not null)
-                    await BannerService.UpdateSingleImageAsync(Id.Value, FileMobile, "mobile");
-                if (FileTablet is not null)
-                    await BannerService.UpdateSingleImageAsync(Id.Value, FileTablet, "tablet");
-                if (FileDesktop is not null)
-                    await BannerService.UpdateSingleImageAsync(Id.Value, FileDesktop, "desktop");
-
-                NotificationService.DisplaySuccess("Banner atualizado com sucesso.");
-            }
-            else
+                NotificationService.DisplaySuccess("Atualizado com sucesso.");
+                Nav.NavigateTo("manage/banners");
+            } else
             {
-                await BannerService.CreateAsync(FormData.Title ?? "", FileMobile, FileTablet, FileDesktop);
-
-                if (BannerService.CreateBanner.IsSuccess())
-                    NotificationService.DisplaySuccess("Banner criado com sucesso.");
+                NotificationService.Display(BannerService.UpdateBanner.GetErrorNotificationModel("Erro ao atualizar o banner. Verifique os dados e tente novamente."));
             }
-
-            Nav.NavigateTo("manage/banners");
         }
-        catch (Exception ex)
+        else
         {
-            NotificationService.DisplaySuccess($"Erro ao salvar banner: {ex.Message}");
+            await BannerService.CreateAsync(FormModel);
+
+            // Only redirect on success
+            if (BannerService.CreateBanner.IsSuccess())
+            {
+                NotificationService.DisplaySuccess("Criado com sucesso.");
+                Nav.NavigateTo("manage/banners");
+            } else
+            {
+                NotificationService.Display(BannerService.CreateBanner.GetErrorNotificationModel("Erro ao criar o banner. Verifique os dados e tente novamente."));
+            }
         }
     }
 }

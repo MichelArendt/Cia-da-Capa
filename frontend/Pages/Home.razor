@@ -130,7 +130,7 @@
                     <source srcset="@banner.File_Path_Tablet" media="(min-width: 769px)" />
                     <img src="@banner.File_Path_Mobile" alt="@banner.Title" draggable="false" />
                 </picture>
-            }).ToList();
+    }).ToList();
         }
         else
         {
@@ -147,14 +147,23 @@
             bannerCarouselItems = validProducts.Select(product =>
             {
                 var img = product.Images.OrderBy(i => i.Priority).FirstOrDefault();
+
+                if (img == null)
+                {
+                    img = new ProductImageDto
+                    {
+                        MediumFilePath = "/images/no_photo.webp" // Fallback image
+                    };
+                }
+
                 return new CarouselItem
                 {
                     Content = @<a href="produto/@product.Id" class="carousel-slide-link" draggable="false">
                         <div class="banner">
                             <picture class="banner__bg">
-                                <source srcset="/images/banners/banner-1920x600.jpg" media="(min-width: 1201px)" />
-                                <source srcset="/images/banners/banner-1024x512.jpg" media="(min-width: 769px)" />
-                                <img src="/images/banners/banner-640x360.jpg" alt="@product.Title" draggable="false" />
+                                <source srcset="/images/banners/banner-1920x600.webp" media="(min-width: 1201px)" />
+                                <source srcset="/images/banners/banner-1024x512.webp" media="(min-width: 769px)" />
+                                <img src="/images/banners/banner-640x360.webp" alt="@product.Title" draggable="false" />
                             </picture>
                             <img class="banner__product" src="@img.MediumFilePath" alt="@product.Title" draggable="false" />
                         </div>

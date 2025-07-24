@@ -34,7 +34,7 @@
     }
     else
     {
-        <span>Nenhum produto encontrado!</span>
+        <span>Nenhum banner encontrado!</span>
     }
 }
 else
@@ -64,7 +64,7 @@ else
 
         if (bannerDeleteApiHandler.IsSuccess())
         {
-            NotificationService.DisplaySuccess("Produto excluído com sucesso!");
+            NotificationService.DisplaySuccess("Banner excluído com sucesso!");
 
             // Refresh the banner list after deletion
             await bannerApiHandler.ExecuteAsync();
@@ -74,7 +74,7 @@ else
         else
         {
             NotificationService.DisplayError(
-                "Erro ao tentar excluir o produto",
+                "Erro ao tentar excluir o banner",
                 bannerDeleteApiHandler.ErrorMessage ?? "Ocorreu um erro desconhecido."
             );
         }

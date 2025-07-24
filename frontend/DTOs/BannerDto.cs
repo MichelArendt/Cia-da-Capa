@@ -3,6 +3,7 @@
     public class BannerDto
     {
         public int Id { get; set; }
+        public int ProductId { get; set; }
         public string Title { get; set; } = string.Empty;
         public int Priority { get; set; }
 
