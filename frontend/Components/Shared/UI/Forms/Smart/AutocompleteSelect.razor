@@ -1,0 +1,175 @@
+﻿@typeparam TItem
+@using Microsoft.AspNetCore.Components.Forms
+@{
+#pragma warning disable CS8669
+}
+
+<SmartInputBase T="object?"
+                For="@For"
+                Label="@Label"
+                IsRequired="@IsRequired"
+                LiveValidation="@LiveValidation"
+                Placeholder="@Placeholder"
+                LabelClass="@LabelClass"
+                ContainerClass="@ContainerClass"
+                @ref="BaseRef">
+
+    <div style="position:relative;">
+        <input type="text"
+               class="@BaseRef?.GetInputCss()"
+               value="@InputDisplay"
+               @oninput="OnInput"
+               @onfocus="ShowDropdown"
+               @onblur="OnBlur"
+               placeholder="@Placeholder" />
+
+        @if (DropdownVisible && FilteredItems.Any())
+        {
+            <div class="@DropdownClass">
+                @foreach (var item in FilteredItems)
+                {
+                    <div class="@ItemClass" @onclick="() => SelectItem(item)">
+                        @if (ItemTemplate is not null)
+                        {
+                            @ItemTemplate(item)
+                        }
+                        else
+                        {
+                            <span>@item?.ToString()</span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else if (DropdownVisible)
+        {
+            <div class="@DropdownClass">
+                <div class="@ItemClass text-muted">Nenhum item encontrado.</div>
+            </div>
+        }
+    </div>
+</SmartInputBase>
+@{
+#pragma warning restore CS8669
+}
+
+@code {
+#nullable enable
+    [Parameter, EditorRequired] public string For { get; set; } = "";
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool IsRequired { get; set; } = false;
+    [Parameter] public bool LiveValidation { get; set; } = false;
+    [Parameter] public string Placeholder { get; set; } = "Digite para buscar...";
+    [Parameter] public List<TItem> Items { get; set; } = new();
+    [Parameter] public string SearchProperty { get; set; } = "";
+    [Parameter] public string SelectedProperty { get; set; } = "";
+    [Parameter] public string SelectedValueProperty { get; set; } = "";
+    [Parameter] public RenderFragment<TItem>? ItemTemplate { get; set; }
+    [Parameter] public string LabelClass { get; set; } = "form-label";
+    [Parameter] public string ContainerClass { get; set; } = "form-group";
+    [Parameter] public string DropdownClass { get; set; } = "autocomplete-select-list";
+    [Parameter] public string ItemClass { get; set; } = "autocomplete-select-item";
+
+    private SmartInputBase<object?>? BaseRef;
+
+    private string SearchTerm { get; set; } = "";
+    private bool DropdownVisible { get; set; } = false;
+
+    private IEnumerable<TItem> FilteredItems =>
+        string.IsNullOrWhiteSpace(SearchTerm)
+            ? Items
+            : Items.Where(Matches);
+
+    private string InputDisplay
+    {
+        get
+        {
+            var selected = Items.FirstOrDefault(item =>
+            {
+                var itemValue = GetPropertyValue(item, SelectedValueProperty);
+                var refValue = BaseRef?.Value;
+                return itemValue != null && itemValue.Equals(refValue);
+            });
+
+            if (DropdownVisible || selected == null)
+                return SearchTerm;
+
+            return GetPropertyString(selected, SelectedProperty);
+        }
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        SearchTerm = e.Value?.ToString() ?? "";
+        DropdownVisible = true;
+
+        if (LiveValidation)
+            await BaseRef!.TriggerValidationAsync();
+    }
+
+    private async void SelectItem(TItem item)
+    {
+        var value = GetPropertyValue(item, SelectedValueProperty);
+        BaseRef!.Value = value;
+        SearchTerm = GetPropertyString(item, SelectedProperty);
+        DropdownVisible = false;
+
+        await BaseRef.TriggerValidationAsync();
+        StateHasChanged();
+    }
+
+    private void ShowDropdown(FocusEventArgs e)
+    {
+        DropdownVisible = true;
+        var selected = Items.FirstOrDefault(item =>
+        {
+            var itemValue = GetPropertyValue(item, SelectedValueProperty);
+            var refValue = BaseRef?.Value;
+            return itemValue != null && itemValue.Equals(refValue);
+        });
+
+        if (selected != null)
+            SearchTerm = GetPropertyString(selected, SelectedProperty);
+    }
+
+    private async Task OnBlur(FocusEventArgs e)
+    {
+        await Task.Delay(150);
+        DropdownVisible = false;
+
+        var matchedItem = Items.FirstOrDefault(item =>
+        {
+            var itemValue = GetPropertyValue(item, SelectedValueProperty);
+            var refValue = BaseRef?.Value;
+            return itemValue != null && itemValue.Equals(refValue);
+        });
+
+        if (matchedItem == null)
+            BaseRef!.Value = default;
+        else
+            BaseRef!.Value = GetPropertyValue(matchedItem, SelectedValueProperty);
+
+        await BaseRef.TriggerValidationAsync();
+        StateHasChanged();
+    }
+
+    private bool Matches(TItem item)
+    {
+        var search = SearchTerm.Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(search)) return true;
+
+        return GetPropertyString(item, SearchProperty)
+            .ToLowerInvariant()
+            .Contains(search);
+    }
+
+    private static object? GetPropertyValue(TItem item, string propertyName)
+    {
+        return typeof(TItem).GetProperty(propertyName)?.GetValue(item);
+    }
+
+    private static string GetPropertyString(TItem item, string propertyName)
+    {
+        return GetPropertyValue(item, propertyName)?.ToString() ?? "";
+    }
+}

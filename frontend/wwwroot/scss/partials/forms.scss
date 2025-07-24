@@ -35,11 +35,23 @@ form input, form textarea, form select {
     border-radius: 20px;
     border: 1px solid colors.$secondary-light;
     background-color: colors.lightness-add(colors.$secondary-light, 24%);
-    // background-color: white;
 }
 
 form input::placeholder {
     color: colors.opacity-set(colors.$primary-dark, 30%);
+}
+
+.form-control.required {
+    border-left: 10px solid #f0ad4e; /* yellow/orange for required */
+}
+.form-control.required.valid {
+    border-left: 10px solid #28a745; /* green for valid */
+}
+.form-control.valid {
+    border-left: 10px solid #28a745; /* green for valid */
+}
+.form-control.is-invalid {
+    border-left: 10px solid #dc3545; /* red for invalid */
 }
 
 .form__title {
@@ -52,7 +64,7 @@ form input::placeholder {
     @extend %flex--column--center-vertical;
     flex: 1 1 0;
     min-width: 0;
-    padding: 5px 0;
+    padding: 15px 0;
 }
 
 .form__buttons {
@@ -63,6 +75,13 @@ form input::placeholder {
 
 .form__section {
     padding: 50px 0;
+}
+
+.tooltip-invalid {
+    color: #dc3545;           /* Bootstrap error red */
+    font-size: 0.95em;
+    margin-top: 4px;
+    display: block;
 }
 
 // ---------------------------

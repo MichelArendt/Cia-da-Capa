@@ -1,0 +1,116 @@
+﻿@typeparam TModel
+
+@* 
+    Parent "controller" form component. 
+    Shares SmartFormContext to all child fields.
+    Handles validation, touched/error state, and propagates validation callbacks. 
+
+    Automatically validates all fields on initialization if requested.
+    Provides callback with the context object for external use.
+*@
+
+@* <form> only used for styling *@
+<form>
+    <CascadingValue Value="Context">
+        @ChildContent
+    </CascadingValue>
+</form>
+
+@code {
+    /// <summary>
+    /// The current model being edited. Required for the form to function.
+    /// </summary>
+    [Parameter, EditorRequired] public TModel Model { get; set; } = default!;
+
+    /// <summary>
+    /// The FluentValidation-powered validator callback. Should return one error per property.
+    /// </summary>
+    [Parameter, EditorRequired] public Func<TModel, Task<Dictionary<string, string>>> Validator { get; set; } = default!;
+
+    /// <summary>
+    /// The form body content (fields/components).
+    /// </summary>
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// If true, form runs validation immediately on all fields (typically for edit forms).
+    /// </summary>
+    [Parameter] public bool ValidateOnInitialize { get; set; } = false;
+
+    /// <summary>
+    /// Optional callback invoked after ValidateOnInitialize completes. Useful for initialization logic.
+    /// </summary>
+    [Parameter] public EventCallback OnAfterInitialValidation { get; set; }
+
+    /// <summary>
+    /// Callback providing the SmartFormContext for parent form usage.
+    /// </summary>
+    [Parameter] public Action<SmartFormContext>? OnContextAvailable { get; set; }
+
+    /// <summary>
+    /// Invoked after any validation change, so parent can update UI state (e.g. enable/disable buttons).
+    /// </summary>
+    [Parameter] public EventCallback<bool> OnValidationStateChanged { get; set; }
+
+    /// <summary>
+    /// Delegate used to determine if form is valid for submission.
+    /// Pass your custom logic to evaluate submit-readiness.
+    /// </summary>
+    [Parameter] public Func<SmartFormContext, bool>? CanSubmitEvaluator { get; set; }
+
+    // Shared context for all child fields (exposed via CascadingValue)
+    private SmartFormContext Context { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Model == null)
+            throw new InvalidOperationException("SmartForm: Model parameter must not be null.");
+        if (Validator == null)
+            throw new InvalidOperationException("SmartForm: Validator parameter must not be null.");
+
+        Context.Model = Model;
+        Context.ValidateFieldAsync = ValidateFieldAsync;
+
+        OnContextAvailable?.Invoke(Context);
+
+        // Run immediate validation if requested
+        if (ValidateOnInitialize)
+        {
+            await ValidateAllAsync();
+            await OnAfterInitialValidation.InvokeAsync();
+        }
+    }
+    /// <summary>
+    /// Triggers validation for the given field name.
+    /// Updates errors and touched state, notifies validation change.
+    /// </summary>
+    public async Task ValidateFieldAsync(string propertyName)
+    {
+        var errors = await Validator(Model);
+        Context.FieldErrors = errors;
+        Context.TouchedFields.Add(propertyName);
+
+        StateHasChanged();
+        await OnValidationStateChanged.InvokeAsync(IsValidForSubmission());
+    }
+
+    /// <summary>
+    /// Validates all fields, marks all as touched, updates errors, and triggers validation change notification.
+    /// </summary>
+    public async Task ValidateAllAsync()
+    {
+        Context.FieldErrors = await Validator(Model);
+
+        foreach (var prop in typeof(TModel).GetProperties())
+            Context.TouchedFields.Add(prop.Name);
+
+        StateHasChanged();
+        await OnValidationStateChanged.InvokeAsync(IsValidForSubmission());
+    }
+
+    /// <summary>
+    /// Checks if the form is ready for submission.
+    /// Uses your custom evaluator if provided; otherwise defaults to no errors present.
+    /// </summary>
+    public bool IsValidForSubmission() => CanSubmitEvaluator?.Invoke(Context) ?? !Context.FieldErrors.Any();
+}

@@ -683,6 +683,36 @@ table tbody tr.active-row {
   height: 1px;
 }
 
+.autocomplete-select-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  position: absolute;
+  width: 100%;
+  z-index: 999;
+  top: 100%;
+  font-size: 14px;
+}
+
+.autocomplete-select-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.autocomplete-select-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-select-item:hover,
+.autocomplete-select-item.active {
+  background: hsla(37, 59%, 54%, 0.1);
+  color: hsl(37, 59%, 54%);
+}
+
 .product-suggestions {
   text-align: center;
   padding: 50px 0;
@@ -1355,6 +1385,22 @@ form input::placeholder {
   color: hsla(240, 2%, 18%, 0.3);
 }
 
+.form-control.required {
+  border-left: 10px solid #f0ad4e; /* yellow/orange for required */
+}
+
+.form-control.required.valid {
+  border-left: 10px solid #28a745; /* green for valid */
+}
+
+.form-control.valid {
+  border-left: 10px solid #28a745; /* green for valid */
+}
+
+.form-control.is-invalid {
+  border-left: 10px solid #dc3545; /* red for invalid */
+}
+
 .form__title {
   color: hsl(37, 59%, 54%);
   text-align: center;
@@ -1364,7 +1410,7 @@ form input::placeholder {
 .form-group {
   flex: 1 1 0;
   min-width: 0;
-  padding: 5px 0;
+  padding: 15px 0;
 }
 
 .form__buttons {
@@ -1374,6 +1420,13 @@ form input::placeholder {
 
 .form__section {
   padding: 50px 0;
+}
+
+.tooltip-invalid {
+  color: #dc3545; /* Bootstrap error red */
+  font-size: 0.95em;
+  margin-top: 4px;
+  display: block;
 }
 
 .checkbox-container {

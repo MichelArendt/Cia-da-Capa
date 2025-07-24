@@ -1,0 +1,38 @@
+﻿@inherits Components.Shared.UI.Forms.BaseFormField<IBrowserFile?>
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<!--
+    Reusable file upload input field (images, docs, etc).
+    - Fires ValueChanged and OnValueChanged when file is selected.
+    - Fires OnBlur for validation/touched state.
+-->
+
+<div class="form-group">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label>@Label</label>
+    }
+    <InputFile class="@GetInputCss()"
+               OnChange="OnInputFileChanged" />
+
+    @if (!string.IsNullOrEmpty(Error) && IsTouched)
+    {
+        <div class="invalid-feedback" style="display:block">@Error</div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Selected file.
+    /// </summary>
+    [Parameter] public IBrowserFile? Value { get; set; }
+    [Parameter] public EventCallback<IBrowserFile?> ValueChanged { get; set; }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        await ValueChanged.InvokeAsync(e.File);
+        await OnValueChanged.InvokeAsync(e.File); // Custom, in base class.
+        await OnBlur.InvokeAsync();
+    }
+}

@@ -1,0 +1,90 @@
+﻿@* 
+    FileInput.razor
+    Uses SmartInputBase<IBrowserFile?> for full smart form logic.
+    Uses native HTML <input type="file">.
+    Handles file selection and triggers validation.
+    All label, error, and CSS is handled by the wrapper.
+*@
+@using Microsoft.AspNetCore.Components.Forms
+@{
+#pragma warning disable CS8669
+}
+
+<SmartInputBase T="IBrowserFile?"
+                For="@For"
+                Label="@Label"
+                IsRequired="@IsRequired"
+                LiveValidation="@LiveValidation"
+                Placeholder="@Placeholder"
+                LabelClass="@LabelClass"
+                ContainerClass="@ContainerClass"
+                @ref="BaseRef">
+
+    <input type="file"
+           class="@BaseRef?.GetInputCss()"
+           @onchange="HandleInput"
+           @onblur="HandleBlur" />
+    
+    @if ( !String.IsNullOrEmpty(CurrentImagePath) )
+    {
+        <img src="@CurrentImagePath" height="360" />
+    }
+
+    @* Optionally, show selected file name *@
+    @if (BaseRef?.Value != null)
+    {
+        <div class="form-text">@BaseRef.Value.Name</div>
+    }
+</SmartInputBase>
+@{
+#pragma warning restore CS8669
+}
+
+@code {
+    [Parameter] public string For { get; set; } = string.Empty;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? CurrentImagePath { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool LiveValidation { get; set; } = false;
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string LabelClass { get; set; } = "form-label";
+    [Parameter] public string ContainerClass { get; set; } = "form-group";
+
+    private SmartInputBase<IBrowserFile?>? BaseRef;
+
+    /// <summary>
+    /// Handles file selection and (optionally) triggers validation.
+    /// </summary>
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        if (BaseRef == null) return;
+
+        // Get file from input
+        if (e.Value is not null && e.Value is IBrowserFile file)
+        {
+            BaseRef.Value = file;
+        }
+        else if (e is { } && e is ChangeEventArgs ce && ce.Value is not null)
+        {
+            // Raw HTML input, need to use ElementReference and JS interop to get the file(s)
+            // But in most cases Blazor will bind IBrowserFile for you
+        }
+        else
+        {
+            // fallback: no file selected
+            BaseRef.Value = null;
+        }
+
+        if (LiveValidation)
+            await BaseRef.TriggerValidationAsync();
+    }
+
+    /// <summary>
+    /// Handles blur (focus lost), triggers validation.
+    /// </summary>
+    private async Task HandleBlur(FocusEventArgs e)
+    {
+        if (BaseRef != null)
+            await BaseRef.TriggerValidationAsync();
+    }
+}

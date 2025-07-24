@@ -1,0 +1,73 @@
+﻿@* 
+    NumberInput.razor
+    Native HTML number input for Smart Forms.
+    All label, error, validation, and CSS logic comes from SmartInputBase.
+    Only field-specific logic is handled here.
+*@
+<SmartInputBase T="int?"
+                For="@For"
+                Label="@Label"
+                IsRequired="@IsRequired"
+                LiveValidation="@LiveValidation"
+                Placeholder="@Placeholder"
+                LabelClass="@LabelClass"
+                ContainerClass="@ContainerClass"
+                @ref="BaseRef">
+
+    <input type="number"
+           class="@BaseRef?.GetInputCss()"
+           value="@GetStringValue()"
+           @oninput="HandleInput"
+           @onblur="HandleBlur"
+           placeholder="@Placeholder"
+           min="@Min"
+           max="@Max"
+           step="@Step" />
+</SmartInputBase>
+
+@code {
+    [Parameter] public string For { get; set; } = string.Empty;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool LiveValidation { get; set; } = false;
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string LabelClass { get; set; } = "form-label";
+    [Parameter] public string ContainerClass { get; set; } = "form-group";
+    [Parameter] public int? Min { get; set; }
+    [Parameter] public int? Max { get; set; }
+    [Parameter] public int? Step { get; set; }
+
+    private SmartInputBase<int?>? BaseRef;
+
+    /// <summary>
+    /// Helper to get string value for input (avoids showing "null").
+    /// </summary>
+    private string GetStringValue() => BaseRef?.Value?.ToString() ?? string.Empty;
+
+    /// <summary>
+    /// Handles input, parsing to int if possible, else null.
+    /// </summary>
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        if (BaseRef == null) return;
+        var str = e.Value?.ToString();
+        if (string.IsNullOrWhiteSpace(str))
+            BaseRef.Value = null;
+        else if (int.TryParse(str, out var val))
+            BaseRef.Value = val;
+        else
+            BaseRef.Value = null;
+
+        if (LiveValidation)
+            await BaseRef.TriggerValidationAsync();
+    }
+
+    /// <summary>
+    /// On blur, always validate.
+    /// </summary>
+    private async Task HandleBlur(FocusEventArgs e)
+    {
+        if (BaseRef != null)
+            await BaseRef.TriggerValidationAsync();
+    }
+}

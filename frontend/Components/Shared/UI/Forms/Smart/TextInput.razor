@@ -1,0 +1,47 @@
+﻿@* 
+    TextInput.razor
+    Uses SmartInputBase to get all label, error, validation, and CSS logic.
+    Only the input element and field-specific handlers are defined here.
+*@
+<SmartInputBase T="string"
+                For="@For"
+                Label="@Label"
+                IsRequired="@IsRequired"
+                LiveValidation="@LiveValidation"
+                Placeholder="@Placeholder"
+                LabelClass="@LabelClass"
+                ContainerClass="@ContainerClass"
+                @ref="BaseRef">
+    <input type="text"
+           class="@BaseRef?.GetInputCss()"
+           value="@BaseRef?.Value"
+           @oninput="HandleInput"
+           @onblur="HandleBlur"
+           placeholder="@Placeholder" />
+</SmartInputBase>
+
+@code {
+    [Parameter] public string For { get; set; } = string.Empty;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool LiveValidation { get; set; } = false;
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string LabelClass { get; set; } = "form-label";
+    [Parameter] public string ContainerClass { get; set; } = "form-group";
+
+    private SmartInputBase<string>? BaseRef;
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        if (BaseRef == null) return;
+        BaseRef.Value = e.Value?.ToString();
+        if (LiveValidation)
+            await BaseRef.TriggerValidationAsync();
+    }
+
+    private async Task HandleBlur(FocusEventArgs e)
+    {
+        if (BaseRef != null)
+            await BaseRef.TriggerValidationAsync();
+    }
+}

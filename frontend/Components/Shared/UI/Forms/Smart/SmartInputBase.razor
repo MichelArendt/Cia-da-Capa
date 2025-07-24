@@ -1,0 +1,97 @@
+﻿@typeparam T
+
+<div class="@ContainerClass">
+    @* Label with required asterisk *@
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="@LabelClass">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="text-danger">*</span>
+            }
+        </label>
+    }
+
+    @* Slot for native input *@
+    @ChildContent
+
+    @* Error message if touched and has error *@
+    @if (!string.IsNullOrEmpty(Error) && IsTouched)
+    {
+        <div class="invalid-feedback" style="display:block">@Error</div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] public SmartFormContext? FormContext { get; set; }
+
+    [Parameter, EditorRequired] public string For { get; set; } = string.Empty;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool LiveValidation { get; set; } = false;
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string LabelClass { get; set; } = "form-label";
+    [Parameter] public string ContainerClass { get; set; } = "form-group";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    // Reflection-based get/set for the property on the model
+    public T? Value
+    {
+        get
+        {
+            if (FormContext?.Model == null || string.IsNullOrWhiteSpace(For))
+                return default;
+            var prop = FormContext.Model.GetType().GetProperty(For);
+            if (prop == null) return default;
+            var val = prop.GetValue(FormContext.Model);
+            if (val is T v) return v;
+            if (val == null) return default;
+            try
+            {
+                return (T?)Convert.ChangeType(val, typeof(T));
+            }
+            catch
+            {
+                return default;
+            }
+        }
+        set
+        {
+            if (FormContext?.Model == null || string.IsNullOrWhiteSpace(For))
+                return;
+            var prop = FormContext.Model.GetType().GetProperty(For);
+            if (prop != null && prop.CanWrite)
+                prop.SetValue(FormContext.Model, value);
+        }
+    }
+
+    // Get error message for this field
+    public string? Error =>
+        FormContext != null && !string.IsNullOrWhiteSpace(For)
+            ? FormContext.FieldErrors.GetValueOrDefault(For)
+            : null;
+
+    // Has user interacted with this field?
+    public bool IsTouched =>
+        FormContext != null && !string.IsNullOrWhiteSpace(For)
+            ? FormContext.TouchedFields.Contains(For)
+            : false;
+
+    // Trigger validation for this field
+    public async Task TriggerValidationAsync()
+    {
+        if (FormContext?.ValidateFieldAsync != null && !string.IsNullOrWhiteSpace(For))
+            await FormContext.ValidateFieldAsync(For);
+    }
+
+    // Get input CSS for shared style and error handling
+    public string GetInputCss()
+    {
+        var css = "form-control";
+        if (IsRequired) css += " required";
+        if (!string.IsNullOrEmpty(Error)) css += " is-invalid";
+        else if (IsTouched) css += " valid";
+        return css;
+    }
+}

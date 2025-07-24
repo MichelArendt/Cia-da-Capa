@@ -790,25 +790,42 @@ table tbody tr.active-row {
     background-color: #333;
 }
 
-
-
-
-
-
-
-// .carousel-content {
-//     justify-content: flex-start;
-//     scroll-snap-type: none; // disable snap, managed by JS
-//     padding: 10px 0; // remove horizontal padding (or minimize)
-// }
-
-// .carousel-item {
-//     flex-shrink: 0;
-//     scroll-snap-align: none; // explicitly none
-// }
-
 .carousel-spacer {
     flex: 0 0 50%;
     pointer-events: none;
     height: 1px; // so it doesn't take vertical space
+}
+
+// -----------------------
+// Autocomplete Select
+// -----------------------
+.autocomplete-select-list {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background: white;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+
+    position: absolute;
+    width: 100%;
+    z-index: 999;
+    top: 100%;
+    font-size: 14px;
+}
+
+.autocomplete-select-item {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.autocomplete-select-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-select-item:hover,
+.autocomplete-select-item.active {
+    background: colors.opacity-set(colors.$primary-main, 0.1);
+    color: colors.$primary-main;
 }

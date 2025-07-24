@@ -166,11 +166,14 @@
                 NotificationService.DisplaySuccess("Produto atualizado com sucesso.");
             } else {
                 // added new product
-                if (productApiHandler.Content != null)
+                if (productApiHandler.Content is int newProductId && newProductId > 0)
                 {
                     // Redirect to edit page with the new product ID
                     NotificationService.DisplaySuccess("Produto criado com sucesso.");
-                    NavigationManager.NavigateTo($"manage/produtos/editar/{productApiHandler.Content}");
+
+                    ProductStateService.AddProductLocal(productFormModel.ToProductDto(newProductId));
+
+                    NavigationManager.NavigateTo($"manage/produtos/editar/{newProductId}");
                 } else {
                     // product added but API didn't return ID
                     errorMessage = "Produto criado, mas servidor não retornou a ID do novo produto.";
