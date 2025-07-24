@@ -107,6 +107,9 @@ try {
     Flight::set('productSizeModel', $productSizeModel);
     Flight::set('productImageModel', $productImageModel);
     Flight::set('userModel', $userModel);
+
+
+    error_log("Database connection established successfully.");
 } catch (Exception $e) {
     HttpResponse::handleException($e, 'index.php');
 }
@@ -184,6 +187,7 @@ Flight::route('GET /public/products/variants/@variantId/images', 'Controllers\Pu
 Flight::route('GET /public/products/@id/variants', 'Controllers\Public\ProductVariantController->getVariantsForProductId');
 
 // Product
+Flight::route('GET /public/products/short', 'Controllers\Public\ProductController->getAllShort');
 Flight::route('GET /public/products/highlighted', 'Controllers\Public\ProductController->getAllHighlightedWithImages');
 Flight::route('GET /public/products/random-with-images', 'Controllers\Public\ProductController->getRandomWithImages');
 Flight::route('GET /public/products/@id/full', 'Controllers\Public\ProductController->getForIdFull');
@@ -209,10 +213,11 @@ Flight::route('GET|POST|PUT|DELETE /manage/*', function () {
 });
 
 // Banners
-Flight::route('POST /manage/banners', 'Controllers\Manage\BannerController->create');
 Flight::route('POST /manage/banners/@id/image/@size', 'Controllers\Manage\BannerController->updateImage'); // @size = mobile/tablet/desktop
 Flight::route('DELETE /manage/banners/@id', 'Controllers\Manage\BannerController->delete');
 Flight::route('PUT /manage/banners/order', 'Controllers\Manage\BannerController->updateOrdering');
+Flight::route('POST /manage/banners/@id', 'Controllers\Manage\BannerController->update');
+Flight::route('POST /manage/banners', 'Controllers\Manage\BannerController->create');
 
 // User
 Flight::route('POST /manage/user/logout', 'Controllers\Manage\UserController->logout');

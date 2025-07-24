@@ -14,12 +14,14 @@ class BannerModel
 {
     private $db;
     private $table;
+    private $table_products;
     private $maxFileSize;
 
     public function __construct()
     {
         $this->db = Flight::get('db');
         $this->table = Flight::get('tables')['banners'];
+        $this->table_products = Flight::get('tables')['products'];
         $this->maxFileSize = Flight::get('upload-image__max-file-size');
     }
 
@@ -40,7 +42,7 @@ class BannerModel
                 is_active BOOLEAN DEFAULT TRUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (product_id) REFERENCES `products`(id) ON DELETE CASCADE
+                FOREIGN KEY (product_id) REFERENCES `{$this->table_products}`(id) ON DELETE CASCADE
             );
         ";
         $this->db->exec($sql);
@@ -80,8 +82,15 @@ class BannerModel
     {
         try {
             // 1. Insert the banner row first, to get the ID for its folder
-            $stmt = $this->db->prepare("INSERT INTO `{$this->table}` (product_id, title, file_path_mobile, file_path_tablet, file_path_desktop) VALUES (:title, '', '', '')");
-            $ok = $stmt->execute([':product_id' => $productId, ':title' => $title]);
+            $stmt = $this->db->prepare("
+                INSERT INTO `{$this->table}`
+                (product_id, title, file_path_mobile, file_path_tablet, file_path_desktop)
+                VALUES (:product_id, :title, '', '', '')
+            ");
+            $ok = $stmt->execute([
+                ':product_id' => $productId,
+                ':title' => $title
+            ]);
 
             if (!$ok) return ['success' => false, 'error' => 'Erro ao inserir no banco (pré-upload).'];
             $bannerId = $this->db->lastInsertId();
@@ -137,6 +146,82 @@ class BannerModel
             return ['success' => true, 'error' => null];
         } catch (Exception $e) {
             return ['success' => false, 'error' => "Exceção: " . $e->getMessage()];
+        }
+    }
+
+    /**
+     * Update banner metadata and images if files are sent.
+     * @param int $id
+     * @param int $productId
+     * @param string $title
+     * @param int $priority
+     * @param array $images Optional: associative array ['mobile' => $_FILES['mobile'], ...]
+     * @return array ['success' => bool, 'error' => ?string]
+     */
+    public function updateBanner(int $id, int $productId, string $title, int $priority, array $images = []): array
+    {
+        try {
+            // 1. Get the existing banner (for file paths)
+            $banner = $this->getById($id);
+            if (!$banner) {
+                return ['success' => false, 'error' => 'Banner não encontrado.'];
+            }
+
+            $updateFields = [
+                'product_id' => $productId,
+                'title' => $title,
+                'priority' => $priority,
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+            $updateImageFields = [];
+
+            // 2. If any file is sent, update the corresponding image and set new path
+            $resolutions = [
+                'mobile' => [640, 360, '-mobile', 'file_path_mobile'],
+                'tablet' => [1024, 512, '-tablet', 'file_path_tablet'],
+                'desktop' => [1920, 600, '-desktop', 'file_path_desktop'],
+            ];
+
+            foreach ($resolutions as $size => [$w, $h, $suf, $dbField]) {
+                if (!empty($images[$size]) && isset($images[$size]['tmp_name']) && $images[$size]['tmp_name']) {
+                    // Process and upload new image
+                    $uploadResult = \Helpers\FileHelper::handleImageUpload(
+                        $images[$size],
+                        "banners/$id",
+                        [
+                            'max_size' => $this->maxFileSize,
+                            'allowed_mimes' => ['image/jpeg', 'image/png', 'image/webp'],
+                            'generate_webp' => true,
+                            'resize' => [[$w, $h, '']],
+                            'custom_names' => [0 => "id$suf"],
+                        ]
+                    );
+                    if (!empty($uploadResult['errors'])) {
+                        return ['success' => false, 'error' => "Falha ao processar imagem '$size': " . $uploadResult['errors'][0]['error']];
+                    }
+                    $newPath = $uploadResult['success'][0]['webp'];
+
+                    // Remove the old file
+                    $this->deleteBannerImageFile($banner[$dbField]);
+                    // Update the field to point to the new file
+                    $updateFields[$dbField] = $newPath;
+                    $updateImageFields[] = $dbField;
+                }
+            }
+
+            // 3. Build SET clause dynamically
+            $setClause = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($updateFields)));
+            $sql = "UPDATE `{$this->table}` SET $setClause WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $updateFields['id'] = $id;
+            $ok = $stmt->execute($updateFields);
+
+            if (!$ok) {
+                return ['success' => false, 'error' => 'Falha ao atualizar o banner no banco de dados.'];
+            }
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 

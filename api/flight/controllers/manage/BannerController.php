@@ -38,12 +38,15 @@ class BannerController
                 }
             }
 
-            $result = $this->model->createBanner($title, [
+            $result = $this->model->createBanner(
                 (int)$productId,
-                'mobile' => $_FILES['mobile'],
-                'tablet' => $_FILES['tablet'],
-                'desktop' => $_FILES['desktop'],
-            ]);
+                $title,
+                [
+                    'mobile' => $_FILES['mobile'],
+                    'tablet' => $_FILES['tablet'],
+                    'desktop' => $_FILES['desktop'],
+                ]
+            );
 
             if ($result['success']) {
                 HttpResponse::responseCreateSuccess("Banner criado com sucesso.", null);
@@ -52,6 +55,54 @@ class BannerController
             }
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "BannerController->create");
+        }
+    }
+
+    public function update($id)
+    {
+        try {
+            // Accept multipart/form-data for image upload
+            $isMultipart = strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') !== false;
+
+            // Gather POST data
+            $data = $isMultipart ? $_POST : json_decode(file_get_contents("php://input"), true);
+
+            if (!$data) parse_str(file_get_contents("php://input"), $data);
+
+            // Validate required fields
+            if (empty($data['title'])) {
+                \Helpers\HttpResponse::returnValidationError("O campo 'Título' é obrigatório.");
+            }
+            if (!isset($data['priority']) || !is_numeric($data['priority'])) {
+                \Helpers\HttpResponse::returnValidationError("O campo 'Prioridade' é obrigatório e deve ser numérico.");
+            }
+            if (empty($data['product_id']) || !is_numeric($data['product_id'])) {
+                \Helpers\HttpResponse::returnValidationError("O campo 'Produto' é obrigatório e deve ser numérico.");
+            }
+
+            // Prepare images array (only if multipart)
+            $images = [];
+            foreach (['mobile', 'tablet', 'desktop'] as $f) {
+                if ($isMultipart && isset($_FILES[$f]) && $_FILES[$f]['tmp_name']) {
+                    $images[$f] = $_FILES[$f];
+                }
+            }
+
+            $result = $this->model->updateBanner(
+                (int)$id,
+                (int)$data['product_id'],
+                $data['title'],
+                (int)$data['priority'],
+                $images // optional images; only update what is sent
+            );
+
+            if ($result['success']) {
+                \Helpers\HttpResponse::responseUpdateSuccess("Banner atualizado com sucesso.");
+            } else {
+                \Helpers\HttpResponse::triggerError($result['error'] ?? "Erro ao atualizar o banner.", __METHOD__, "BannerController->update");
+            }
+        } catch (\Exception $e) {
+            \Helpers\HttpResponse::handleException($e, __METHOD__, "BannerController->update");
         }
     }
 
