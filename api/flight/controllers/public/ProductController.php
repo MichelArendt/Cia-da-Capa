@@ -62,6 +62,17 @@ class ProductController
         }
     }
 
+    public function getAllShort()
+    {
+        try {
+            $productModel = \Flight::get('productModel');
+            $products = $productModel->getAllShort();
+            \Helpers\HttpResponse::responseFetchSuccess($products);
+        } catch (\Exception $e) {
+            \Helpers\HttpResponse::handleException($e, __METHOD__, "ProductController->getAllShort()");
+        }
+    }
+
     public function getAllHighlighted()
     {
         try {

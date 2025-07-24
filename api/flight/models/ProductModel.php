@@ -59,6 +59,25 @@ class ProductModel
         }
     }
 
+    /**
+     * Fetch all products with only essential fields for short listing.
+     * @return array
+     */
+    public function getAllShort(): array
+    {
+        try {
+            $fields = "id, title, reference, category_id, is_active, is_highlighted, priority";
+            $sql = "SELECT $fields FROM `{$this->table}` ORDER BY reference ASC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+        } catch (\Exception $e) {
+            \Helpers\HttpResponse::handleException($e, __METHOD__, "ProductModel->getAllShort()");
+            return [];
+        }
+    }
+
+
     public function getAllFiltered(array $filters = []): array
     {
         try {
