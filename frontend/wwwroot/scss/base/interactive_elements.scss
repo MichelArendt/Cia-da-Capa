@@ -131,6 +131,9 @@ button {
 // -----------------------
 // Dropdown
 // -----------------------
+.website__nav > * {
+    height: 100%;
+}
 
 .dropdown {
     display: inline-block;
@@ -193,6 +196,11 @@ button {
     //     fill: colors.$primary-main;
     // }
 }
+
+// .dropdown__button.nav__button {
+//     height: 100%;
+//     background: red;
+// }
 
 .dropdown__button:hover {
     background: colors.$primary-main;
