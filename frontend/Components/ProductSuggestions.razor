@@ -42,9 +42,9 @@
 
                     <span>@product.Title - @ProductStateService.GetProductFullReference(product)</span>
 
-                    <button class="product-listing__shopping-button" @onclick:stopPropagation @onclick:preventDefault>
-                        <Svg Path="@Svg.Paths.ShoppingCartAdd" Width="15" Height="15" />
-                        <span>Orçamento</span>
+                    <button class="product-listing__shopping-button">
+                        <Svg Path="@Svg.Paths.Info" Width="15" Height="15" />
+                        <span>VER DETALHES</span>
                     </button>
                 </a>
             }
