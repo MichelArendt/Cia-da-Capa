@@ -1,0 +1,69 @@
+﻿@page "/produtos/{id:int}"
+
+@inject NotificationService NotificationService
+@inject ProductService ProductService
+@inject ProductStateService ProductStateService
+
+@using frontend.Components
+@using frontend.Components.Shared.UI.Carousel
+@using frontend.Utils
+@using frontend.ViewModels.TabbedNavigation
+
+@if (fetchProductListApiHandler.IsExecuting() || fetchHighlightedProductsApiHandler.IsExecuting())
+{
+    <ContentLoader />
+} else if (fetchProductListApiHandler.IsSuccess() && fetchProductListApiHandler.Content != null
+    && fetchHighlightedProductsApiHandler.IsSuccess() && fetchHighlightedProductsApiHandler.Content != null
+) {
+    <ProductSuggestions FetchFunction="ProductService.GetFilteredProductsListFunc(suggestionFilters!)">
+        <Title>
+            CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[id].Title</strong>
+        </Title>
+    </ProductSuggestions>
+
+    @* HIGHLIGHTED PRODUCTS *@
+    <ProductSuggestions FetchFunction="ProductService.GetHighlightedProductsListFunc()">
+        <Title>
+            OUTROS PRODUTOS <strong>EM DESTAQUE</strong>
+        </Title>
+    </ProductSuggestions>
+} else {
+    <p>Erro ao carregar a lista de produtos.</p>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private ApiStateHandler<List<ProductDto>> fetchProductListApiHandler = new();
+    private ApiStateHandler<List<ProductDto>> fetchHighlightedProductsApiHandler = new();
+
+    private string ClassNameTabs => $"product-details__tabs--default";
+    private string ClassNameButton => $"product-details__tab-button--default";
+    private string ClassNameContent => $"product-details__tab-content--default";
+
+    private ProductSizeDto? selectedSizeDto;
+    private ProductVariantDto? selectedVariantDto;
+
+    private IDictionary<string, object?>? suggestionFilters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        suggestionFilters = new Dictionary<string, object?>
+        {
+            ["category_id"] = id,
+            ["with_images"] = true
+        };
+
+        await fetchProductListApiHandler.ExecuteAsync(ProductService.GetFilteredProductsListFunc(suggestionFilters));
+        if (!fetchProductListApiHandler.IsSuccess())
+        {
+            NotificationService.Display(fetchProductListApiHandler.GetErrorNotificationModel());
+        }
+
+        await fetchHighlightedProductsApiHandler.ExecuteAsync(ProductService.GetHighlightedProductsListFunc());
+        if (!fetchHighlightedProductsApiHandler.IsSuccess())
+        {
+            NotificationService.Display(fetchHighlightedProductsApiHandler.GetErrorNotificationModel());
+        }
+    }
+}

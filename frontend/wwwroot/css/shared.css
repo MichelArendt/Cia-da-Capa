@@ -197,6 +197,10 @@ button {
   -moz-appearance: textfield;
 }
 
+.website__nav > * {
+  height: 100%;
+}
+
 .dropdown {
   display: inline-block;
   position: relative;
@@ -715,6 +719,7 @@ table tbody tr.active-row {
 
 .product-suggestions {
   text-align: center;
+  text-transform: uppercase;
   padding: 50px 0;
 }
 /* === BASE HEADING === */

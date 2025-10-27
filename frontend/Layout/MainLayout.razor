@@ -37,7 +37,7 @@
 						<li class="nav--highlight">Em destaque</li>
 						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
 						{
-							<li>@category.Title</li>
+							<li><a href="produtos/@category.Id">@category.Title</a></li>
 						}
 					}
 				</BodyContent>
