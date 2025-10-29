@@ -15,16 +15,19 @@
 } else if (fetchProductListApiHandler.IsSuccess() && fetchProductListApiHandler.Content != null
     && fetchHighlightedProductsApiHandler.IsSuccess() && fetchHighlightedProductsApiHandler.Content != null
 ) {
-    <ProductSuggestions FetchFunction="ProductService.GetFilteredProductsListFunc(suggestionFilters!)">
-        <Title>
-            CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[id].Title</strong>
-        </Title>
-    </ProductSuggestions>
+    if (ProductStateService.CategoriesDict.ContainsKey(id))
+    {
+        <ProductSuggestions FetchFunction="ProductService.GetFilteredProductsListFunc(suggestionFilters!)">
+            <Title>
+                CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[id].Title</strong>
+            </Title>
+        </ProductSuggestions>
+    }
 
     @* HIGHLIGHTED PRODUCTS *@
     <ProductSuggestions FetchFunction="ProductService.GetHighlightedProductsListFunc()">
         <Title>
-            OUTROS PRODUTOS <strong>EM DESTAQUE</strong>
+            PRODUTOS <strong>EM DESTAQUE</strong>
         </Title>
     </ProductSuggestions>
 } else {

@@ -34,7 +34,7 @@
 					}
 					else
 					{
-						<li class="nav--highlight">Em destaque</li>
+						<li class="nav--highlight"><a href="produtos/0">Em destaque</a></li>
 						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
 						{
 							<li><a href="produtos/@category.Id">@category.Title</a></li>
@@ -60,12 +60,12 @@
 					}
 					else
 					{
-						<li><a href="" class="list__item highlight">Em destaque</a></li>
+						<li><a href="produtos/0" class="list__item highlight">Em destaque</a></li>
 
 						@foreach (var category in ProductStateService.CategoriesListOrderedByTitle)
 						{
 
-							<li><a href="" class="list__item">@category.Title</a></li>
+							<li><a href="produtos/@category.Id" class="list__item">@category.Title</a></li>
 							
 						}
 					}
