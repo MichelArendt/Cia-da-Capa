@@ -172,6 +172,9 @@
     private int _currentIndex = 0;
     private System.Timers.Timer? _scrollTimer;
 
+    [JSInvokable]
+    public int GetCurrentIndex() => _currentIndex;
+
     protected override void OnInitialized()
     {
         AppStateService.IsMobileChanged += StateHasChanged;
@@ -180,16 +183,48 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _dotNetHelper = DotNetObjectReference.Create(this);
-
+        // Create the .NET reference only once.
+        // JS uses this to call instance methods back in Blazor.
+        if (_dotNetHelper is null)
+            _dotNetHelper = DotNetObjectReference.Create(this);
+            
+        // Attach swipe behavior.
+        // After improvement C, we will no longer pass _currentIndex here.
         await JSRuntime.InvokeVoidAsync(
             "enableDirectionalSwipeScroll",
             CarouselContentRef,
             _dotNetHelper,
-            Items.Count,
-            _currentIndex
+            Items.Count
         );
 
+        // Initialize carousel position on first render
+        if (firstRender)
+        {
+            // Wait for stable layout and then place the first item correctly.
+            await JSRuntime.InvokeVoidAsync(
+                "initializeCarouselPosition",
+                CarouselContentRef,
+                CarouselPaginationRef,
+                0,
+                ItemsAlwaysCentered
+            );
+            
+            // Keep the active state synchronized with the initialized position.
+            _currentIndex = 0;
+            StateHasChanged();
+
+            // Observe future size/layout changes and re-center the active item when needed.
+            await JSRuntime.InvokeVoidAsync(
+                "attachCarouselResizeObserver",
+                CarouselContentRef,
+                CarouselPaginationRef,
+                _dotNetHelper,
+                ItemsAlwaysCentered
+            );
+        }
+
+
+        // Set up auto-scroll timer if enabled
         if (firstRender && AutoScroll)
         {
             _scrollTimer?.Dispose();
