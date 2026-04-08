@@ -20,7 +20,7 @@
     {
         <ContentLoader DisplayMessage="Carregando produtos" />
     }
-    else if (Products.Any())
+    else if (Products != null && Products.Any())
     {
         <div class="product-listing">
             @foreach (var product in Products)
