@@ -1,4 +1,5 @@
-﻿@page "/produtos/{id:int}"
+﻿@page "/produtos/{Id:int}"
+@page "/produtos/"
 
 @inject NotificationService NotificationService
 @inject ProductService ProductService
@@ -11,21 +12,37 @@
 
 @if (fetchProductListApiHandler.IsExecuting() || fetchHighlightedProductsApiHandler.IsExecuting())
 {
-    <ContentLoader />
-} else if (fetchProductListApiHandler.IsSuccess() && fetchProductListApiHandler.Content != null
-    && fetchHighlightedProductsApiHandler.IsSuccess() && fetchHighlightedProductsApiHandler.Content != null
-) {
-    if (ProductStateService.CategoriesDict.ContainsKey(id))
+    <ContentLoader DisplayMessage="Carregando produtos" />
+} else if (
+    fetchProductListApiHandler.IsSuccessAndContentNotNull() &&
+    fetchHighlightedProductsApiHandler.IsSuccessAndContentNotNull()
+)
+{
+    if (Id.HasValue && ProductStateService.CategoriesDict.ContainsKey(Id.Value))
     {
-        <ProductSuggestions FetchFunction="ProductService.GetFilteredProductsListFunc(suggestionFilters!)">
+        <ProductSuggestions Products="fetchProductListApiHandler.Content">
             <Title>
-                CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[id].Title</strong>
+                CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[Id.Value].Title</strong>  @Id
             </Title>
         </ProductSuggestions>
+    } else
+    {
+        // Get all products, limited quantity to show, since no category ID was provided
+        @foreach (var group in GroupedProducts)
+        {
+            if (!ProductStateService.CategoriesDict.ContainsKey(group.Key))
+                continue;
+
+            <ProductSuggestions Products="group.ToList()">
+                <Title>
+                    CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[group.Key].Title</strong>
+                </Title>
+            </ProductSuggestions>
+        }
     }
 
     @* HIGHLIGHTED PRODUCTS *@
-    <ProductSuggestions FetchFunction="ProductService.GetHighlightedProductsListFunc()">
+    <ProductSuggestions Products="fetchHighlightedProductsApiHandler.Content">
         <Title>
             PRODUTOS <strong>EM DESTAQUE</strong>
         </Title>
@@ -35,7 +52,7 @@
 }
 
 @code {
-    [Parameter] public int id { get; set; }
+    [Parameter] public int? Id { get; set; }
 
     private ApiStateHandler<List<ProductDto>> fetchProductListApiHandler = new();
     private ApiStateHandler<List<ProductDto>> fetchHighlightedProductsApiHandler = new();
@@ -49,24 +66,72 @@
 
     private IDictionary<string, object?>? suggestionFilters;
 
+    private bool _hasLoadedProducts;
+    private int? _lastId;
+
+    private IEnumerable<IGrouping<int, ProductDto>> GroupedProducts =>
+    fetchProductListApiHandler.Content?
+        .GroupBy(p => p.CategoryId)
+        .OrderBy(g => ProductStateService.CategoriesDict.ContainsKey(g.Key)
+            ? ProductStateService.CategoriesDict[g.Key].Title
+            : string.Empty)
+    ?? Enumerable.Empty<IGrouping<int, ProductDto>>();
+
     protected override async Task OnInitializedAsync()
     {
-        suggestionFilters = new Dictionary<string, object?>
-        {
-            ["category_id"] = id,
-            ["with_images"] = true
-        };
-
-        await fetchProductListApiHandler.ExecuteAsync(ProductService.GetFilteredProductsListFunc(suggestionFilters));
-        if (!fetchProductListApiHandler.IsSuccess())
-        {
-            NotificationService.Display(fetchProductListApiHandler.GetErrorNotificationModel());
-        }
-
+        // Fetch highlighted products on initialization, since they are shown regardless of the category
         await fetchHighlightedProductsApiHandler.ExecuteAsync(ProductService.GetHighlightedProductsListFunc());
+
         if (!fetchHighlightedProductsApiHandler.IsSuccess())
         {
             NotificationService.Display(fetchHighlightedProductsApiHandler.GetErrorNotificationModel());
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Only refetch products if the ID parameter has changed
+
+        // Prevent unnecessary refetch
+        if (_hasLoadedProducts && _lastId == Id)
+            return;
+
+        _lastId = Id;
+        _hasLoadedProducts = true;
+
+        await LoadProductsAsync();
+    }
+
+    private async Task LoadProductsAsync()
+    {
+        if (Id.HasValue)
+        {
+            // An ID was set, so get products related to that category
+            suggestionFilters = new Dictionary<string, object?>
+            {
+                ["category_id"] = Id,
+                ["with_images"] = true
+            };
+        }
+        else
+        {
+
+            // No ID was set, so get all products, limited quantity to show, since no category ID was provided
+            suggestionFilters = new Dictionary<string, object?>
+            {
+                ["per_category_limit"] = 4,
+                ["with_images"] = true
+            };
+        }
+
+        await fetchProductListApiHandler.ExecuteAsync(
+            ProductService.GetFilteredProductsListFunc(suggestionFilters)
+        );
+
+        // Display error, if any
+        if (!fetchProductListApiHandler.IsSuccess())
+        {
+            NotificationService.Display(fetchProductListApiHandler.GetErrorNotificationModel());
         }
     }
 }
