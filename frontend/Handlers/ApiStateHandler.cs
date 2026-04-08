@@ -22,6 +22,7 @@ namespace frontend.Handlers
 
         public bool IsExecuting() => State == ExecuteState.Executing;
         public bool IsSuccess() => State == ExecuteState.Success;
+        public bool IsSuccessAndContentNotNull() => State == ExecuteState.Success && Content != null;
 
 
         public event Action? StateHasChanged;
