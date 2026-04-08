@@ -135,7 +135,7 @@
         else
         {
             // Fallback: Use all products with images as banners
-            await fetchHighlightedRandomizedProductsApiHandler.ExecuteAsync(ProductService.GetRandomHighlightedProductsWithImagesFunc());
+            await fetchHighlightedRandomizedProductsApiHandler.ExecuteAsync(ProductService.GetRandomProductsWithImagesFunc());
             productsHighlightedRandomized = fetchHighlightedRandomizedProductsApiHandler.IsSuccess() && fetchHighlightedRandomizedProductsApiHandler.Content != null
                 ? fetchHighlightedRandomizedProductsApiHandler.Content
                 : new List<ProductDto>();
