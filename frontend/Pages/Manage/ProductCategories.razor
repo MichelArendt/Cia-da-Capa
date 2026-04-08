@@ -136,7 +136,7 @@
                                 </td>
                                 <td>@category.Title</td>
                                 <td>@category.Reference</td>
-                                <td>0</td>
+                                <td>@(ProductStateService.ProductsApiHandler.Content?.Count(p => p.CategoryId == category.Id) ?? 0)</td>
                                 <td>
                                     <Svg ClassName="table__actions" Path="@Svg.Paths.Edit" Width="30" Height="30" OnClick="@(() => SetUpdating(category.Id))" />
                                     <Svg ClassName="table__actions" Path="@Svg.Paths.Delete" Width="30" Height="30" OnClick="@(() => DeleteCategory(category.Id))" />
