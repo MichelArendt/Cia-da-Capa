@@ -104,10 +104,58 @@ class ProductModel
 
             // Build the WHERE clause
             $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+
+            // If per-category limit is provided, return up to N products per category.
+            if (!empty($filters['per_category_limit'])) {
+                $sql = "
+                SELECT *
+                FROM (
+                    SELECT
+                        p.*,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY p.category_id
+                            ORDER BY p.priority ASC, p.id ASC
+                        ) AS row_num
+                    FROM `{$this->table}` p
+                    $whereClause
+                ) ranked_products
+                WHERE row_num <= :per_category_limit
+                ORDER BY category_id ASC, priority ASC, id ASC
+            ";
+
+                $stmt = $this->db->prepare($sql);
+
+                foreach ($params as $k => $v) {
+                    $stmt->bindValue($k, $v, \PDO::PARAM_INT);
+                }
+
+                $stmt->bindValue(':per_category_limit', (int)$filters['per_category_limit'], \PDO::PARAM_INT);
+                $stmt->execute();
+
+                return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            }
+
+            // Default query path: normal filtering, optional total LIMIT
             $sql = "SELECT * FROM `{$this->table}` $whereClause ORDER BY priority ASC";
 
+            // Add LIMIT if provided
+            if (!empty($filters['limit'])) {
+                $sql .= " LIMIT :limit";
+            }
+
             $stmt = $this->db->prepare($sql);
-            $stmt->execute($params);
+
+            // Bind existing params
+            foreach ($params as $k => $v) {
+                $stmt->bindValue($k, $v, \PDO::PARAM_INT);
+            }
+
+            // Bind limit safely (IMPORTANT: must be int)
+            if (!empty($filters['limit'])) {
+                $stmt->bindValue(':limit', (int)$filters['limit'], \PDO::PARAM_INT);
+            }
+
+            $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Exception $e) {

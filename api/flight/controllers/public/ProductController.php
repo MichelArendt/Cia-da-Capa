@@ -14,20 +14,23 @@ class ProductController
             $productModel = Flight::get('productModel');
 
             // --- 1. Parse query parameters (all optional) ---
-            $categoryId   = isset($_GET['category_id'])   ? (int)$_GET['category_id']   : null;
-            $excludeId    = isset($_GET['exclude_id'])    ? (int)$_GET['exclude_id']    : null;
-            $highlighted  = isset($_GET['highlighted'])   ? (int)$_GET['highlighted']   : null;
-            $withImages   = isset($_GET['with_images'])   ? (bool)$_GET['with_images']  : true;
+            $categoryId         = isset($_GET['category_id'])           ? (int)$_GET['category_id']         : null;
+            $excludeId          = isset($_GET['exclude_id'])            ? (int)$_GET['exclude_id']          : null;
+            $highlighted        = isset($_GET['highlighted'])           ? (int)$_GET['highlighted']         : null;
+            $withImages         = isset($_GET['with_images'])           ? (bool)$_GET['with_images']        : true;
+            $limit              = isset($_GET['limit'])                 ? (int)$_GET['limit']               : null;
+            $perCategoryLimit   = isset($_GET['per_category_limit'])    ? (int)$_GET['per_category_limit']  : null;
 
             // --- 2. Build a filter array ---
             $filters = [
-                'category_id'  => $categoryId,
-                'exclude_id'   => $excludeId,
-                'highlighted'  => $highlighted,
+                'category_id'           => $categoryId,
+                'exclude_id'            => $excludeId,
+                'highlighted'           => $highlighted,
+                'limit'                 => $limit,
+                'per_category_limit'    => $perCategoryLimit,
             ];
 
             error_log(print_r($filters, true));
-
 
             // --- 3. Call the model method, passing filters ---
             $products = $productModel->getAllFiltered($filters);
@@ -42,26 +45,16 @@ class ProductController
 
             HttpResponse::responseFetchSuccess($products);
 
-            // $productModel = Flight::get('productModel');
-            // $productImageModel = Flight::get('productImageModel');
-
-            // $products = $productModel->getAll();
-
-            // if ($products === null) {
-            //     throw new Exception("Failed to retrieve products.");
-            // }
-
-            // // Add images to each product
-            // foreach ($products as &$product) {
-            //     $product['images'] = $productImageModel->getForProductId($product['id']);
-            // }
-
             // HttpResponse::responseFetchSuccess($products);
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "ProductController->getAll()");
         }
     }
 
+
+    /**
+     * Fetch all products with only essential fields for short listing.
+     */
     public function getAllShort()
     {
         try {
