@@ -10,6 +10,8 @@
 @using frontend.Utils
 @using frontend.ViewModels.TabbedNavigation
 
+<PageTitle>Produtos | Cia da Capa</PageTitle>
+
 @if (fetchProductListApiHandler.IsExecuting() || fetchHighlightedProductsApiHandler.IsExecuting())
 {
     <ContentLoader DisplayMessage="Carregando produtos" />
