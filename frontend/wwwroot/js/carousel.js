@@ -68,6 +68,7 @@ window.observeCarouselItems = (carouselListRef, dotNetHelper, itemsAlwaysCentere
         disconnect: () => observer.disconnect()
     };
 };
+
 // Enables drag/swipe navigation for the carousel.
 // This version always asks Blazor for the latest current index at swipe end,
 // instead of using a stale captured index from initialization time.
@@ -315,26 +316,39 @@ window.attachCarouselResizeObserver = function (carouselListRef, paginationListR
         carouselListRef._resizeObserver.disconnect();
     }
 
+    carouselListRef.__carouselDisposed = false;
+
     let frameRequested = false;
 
     const observer = new ResizeObserver(() => {
-        if (frameRequested) return;
+        if (frameRequested || carouselListRef.__carouselDisposed) return;
 
         frameRequested = true;
-        requestAnimationFrame(async () => {
-            frameRequested = false;
 
-            const currentIndex = await dotNetHelper.invokeMethodAsync("GetCurrentIndex");
+        requestAnimationFrame(() => {
+            if (carouselListRef.__carouselDisposed) {
+                frameRequested = false;
+                return;
+            }
 
-            // Re-center instantly on resize/layout changes.
-            // Smooth animation here can look jumpy or laggy.
-            window.scrollCarouselToIndex(
-                carouselListRef,
-                paginationListRef,
-                currentIndex,
-                itemsAlwaysCentered,
-                false
-            );
+            dotNetHelper.invokeMethodAsync("GetCurrentIndex")
+                .then((currentIndex) => {
+                    if (carouselListRef.__carouselDisposed) return;
+
+                    window.scrollCarouselToIndex(
+                        carouselListRef,
+                        paginationListRef,
+                        currentIndex,
+                        itemsAlwaysCentered,
+                        false
+                    );
+                })
+                .catch(() => {
+                    // Blazor component was probably disposed before this callback completed.
+                })
+                .finally(() => {
+                    frameRequested = false;
+                });
         });
     });
 
@@ -345,4 +359,32 @@ window.attachCarouselResizeObserver = function (carouselListRef, paginationListR
     });
 
     carouselListRef._resizeObserver = observer;
+};
+
+window.disposeDirectionalSwipeScroll = (carouselListRef) => {
+    if (!carouselListRef) return;
+
+    carouselListRef.__carouselDisposed = true;
+
+    if (carouselListRef._swipeHandlersAdded) {
+        carouselListRef.removeEventListener('mousedown', carouselListRef._swipeStartHandler);
+        carouselListRef.removeEventListener('touchstart', carouselListRef._swipeStartHandler);
+        window.removeEventListener('mouseup', carouselListRef._swipeEndHandler);
+        carouselListRef.removeEventListener('touchend', carouselListRef._swipeEndHandler);
+        window.removeEventListener('mouseleave', carouselListRef._swipeCancelHandler);
+        carouselListRef.removeEventListener('touchcancel', carouselListRef._swipeCancelHandler);
+
+        carouselListRef._swipeHandlersAdded = false;
+    }
+};
+
+window.detachCarouselResizeObserver = (carouselContent) => {
+    if (!carouselContent) return;
+
+    carouselContent.__carouselDisposed = true;
+
+    if (carouselContent._resizeObserver) {
+        carouselContent._resizeObserver.disconnect();
+        carouselContent._resizeObserver = null;
+    }
 };

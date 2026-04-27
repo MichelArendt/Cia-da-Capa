@@ -1,6 +1,6 @@
-﻿@implements IDisposable
+﻿@inject AppStateService AppStateService
 
-@inject AppStateService AppStateService
+@implements IAsyncDisposable
 
 <div class="carousel" style="@CarouselStyle">
     <ul class="carousel-content" @ref="CarouselContentRef">
@@ -30,52 +30,6 @@
             <li class="carousel-spacer"></li> <!-- RIGHT SPACER -->
         }
     </ul>
-
-  @*   @if (AppStateService.IsMobile
-        || (!AppStateService.IsMobile && (Pagination == PaginationType.NONE || Pagination == PaginationType.DOTS) && !PaginationArrows))
-    {
-        <div class="carousel-pagination">
-            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
-                @for (int i = 0; i < Items.Count; i++)
-                {
-                    var index = i;
-                    <span id="pagination-item-@i" class="carousel-pagination__dot @(index == _currentIndex ? "active" : "")"
-                          @onclick="() => ScrollToIndex(index)">
-                    </span>
-                }
-            </div>
-        </div>
-    }
-    else if (!AppStateService.IsMobile && (PaginationArrows || Pagination == PaginationType.CUSTOM))
-    {
-        <div class="carousel-pagination">
-            @if (PaginationArrows)
-            {
-                <div class="carousel-pagination__arrow carousel-pagination__arrow--left"
-                     @onclick="@(() => ScrollToIndex(_currentIndex - 1))">
-                    <Svg Path="@Svg.Paths.ChevronLeft" />
-                </div>
-                <div class="carousel-pagination__arrow carousel-pagination__arrow--right"
-                     @onclick="@(() => ScrollToIndex(_currentIndex + 1))">
-                    <Svg Path="@Svg.Paths.ChevronRight" />
-                </div>
-            }
-
-            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
-                @if (Pagination == PaginationType.CUSTOM)
-                {
-                    @for (int i = 0; i < Items.Count; i++)
-                    {
-                        var index = i;
-                        <div id="pagination-item-@i" class="carousel-pagination__item carousel-pagination__custom @(index == _currentIndex ? "active" : "")"
-                             @onclick="() => ScrollToIndex(index)">
-                            @Items[index].PaginationContent
-                        </div>
-                    }
-                }
-            </div>
-        </div>
-    } *@
 
     <!--
     Pagination logic:
@@ -133,26 +87,6 @@
                 </div>
             }
         </div>
-
-
-    @* @if (!AppStateService.IsMobile)
-    {
-    }
-    else
-    {
-        <div class="carousel-pagination">
-            <div class="carousel-pagination__content" @ref="CarouselPaginationRef">
-                @for (int i = 0; i < Items.Count; i++)
-                {
-                    var index = i;
-                    <span id="pagination-item-@i"
-                          class="carousel-pagination__dot @(index == _currentIndex ? "active" : "")"
-                          @onclick="() => ScrollToIndex(index)">
-                    </span>
-                }
-            </div>
-        </div>
-    } *@
 </div>
 
 @code {
@@ -293,11 +227,30 @@
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         AppStateService.IsMobileChanged -= StateHasChanged;
+
         _scrollTimer?.Stop();
         _scrollTimer?.Dispose();
+
+        try
+        {
+            await JSRuntime.InvokeVoidAsync(
+                "disposeDirectionalSwipeScroll",
+                CarouselContentRef
+            );
+
+            await JSRuntime.InvokeVoidAsync(
+                "detachCarouselResizeObserver",
+                CarouselContentRef
+            );
+        }
+        catch
+        {
+            // Component may already be gone during navigation/reload.
+        }
+
         _dotNetHelper?.Dispose();
     }
 
