@@ -1,5 +1,6 @@
 build/
 images/
+frontend/wwwroot/config.production.js
 
 # Ignore everything in the .vscode folder
 .vscode/*
