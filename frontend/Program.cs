@@ -21,6 +21,7 @@ namespace frontend
 
             // API services
             builder.Services.AddScoped<BannerService>();
+            builder.Services.AddScoped<ContactService>();
             builder.Services.AddScoped<ProductService>();
             builder.Services.AddScoped<ProductCategoryService>();
             builder.Services.AddScoped<ProductSizeLabelService>();

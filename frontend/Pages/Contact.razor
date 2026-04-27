@@ -1,0 +1,368 @@
+﻿@page "/contato/"
+
+@using Microsoft.JSInterop
+@using frontend.Models.Forms
+
+@implements IAsyncDisposable
+
+@inject IJSRuntime JS
+
+@inject ContactService ContactService
+@inject NotificationService NotificationService
+
+<PageTitle>Contato | Cia da Capa</PageTitle>
+
+<CenterContent MinWidth="400px">
+    @if (messageSentSuccessfully)
+    {
+        <div class="success-message">
+            <h2>Mensagem enviada com sucesso!</h2>
+            <p>Entraremos em contato em breve.</p>
+
+            <button @onclick="ResetForm">
+                Enviar outra mensagem
+            </button>
+        </div>
+    }
+    else
+    {
+        <EditForm class='login-form' Model="@contactFormModel" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+            <ValidationSummary />
+
+            <div class="display--row--above-breakpoint">
+                <div class="form-group">
+                    <label for="given-name">
+                        Nome:
+                    </label>
+
+                    <InputText name="given-name"
+                                id="given-name"
+                                autocomplete="given-name"
+                                placeholder="Nome"
+                                @bind-Value="contactFormModel.GivenName"
+                                disabled="@isSubmitting" />
+                    <ValidationMessage For="@(() => contactFormModel.GivenName)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="family-name">
+                        Sobrenome:
+                    </label>
+
+                    <InputText name="family-name"
+                                id="family-name"
+                                autocomplete="family-name"
+                                placeholder="Sobrenome"
+                                @bind-Value="contactFormModel.FamilyName"
+                                disabled="@isSubmitting" />
+                    <ValidationMessage For="@(() => contactFormModel.FamilyName)" />
+                </div>
+            </div>
+
+            <div class="display--row--above-breakpoint">
+                <div class="form-group">
+                    <label for="email">
+                        Email:
+                    </label>
+
+                    <input type="email"
+                           name="email"
+                           id="email"
+                           autocomplete="email"
+                           placeholder="seuemail@gmail.com"
+                           @bind="contactFormModel.Email"
+                           @onblur="HandleEmailBlur"
+                           disabled="@isSubmitting" />
+                    @if (hasEmailBlurred &&
+                                    !string.IsNullOrWhiteSpace(contactFormModel.Email) &&
+                                    !IsEmailValid())
+                    {
+                        <div class="validation-message">
+                            Informe um email válido.
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="tel">
+                        Telefone:
+                    </label>
+
+                    <input type="tel"
+                            name="tel"
+                            id="tel"
+                            autocomplete="tel"
+                            inputmode="numeric"
+                            placeholder="(49) 9-9135-7628"
+                            minlength="14"
+                            maxlength="16"
+                            pattern="\(\d{2}\)\s(\d-\d{4}-\d{4}|\d{4}-\d{4})"
+                            @ref="phoneInput"
+                            value="@contactFormModel.Tel"
+                            @onblur="HandlePhoneBlur"
+                            disabled="@isSubmitting" />
+
+                    @if (hasPhoneBlurred && !string.IsNullOrWhiteSpace(contactFormModel.Tel) && !IsPhoneValid())
+                    {
+                        <div class="validation-message">
+                            Use (xx) xxxx-xxxx ou (xx) x-xxxx-xxxx.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="message">
+                    Mensagem:
+                </label>
+
+                <InputTextArea name="message"
+                            id="message"
+                            placeholder="Escreva sua mensagem"
+                            rows="6"
+                            @bind-Value="contactFormModel.Message"
+                            disabled="@isSubmitting" />
+                <ValidationMessage For="@(() => contactFormModel.Message)" />
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Verificação de segurança:
+                </label>
+                <div id="turnstile-container"></div>
+
+                @if (string.IsNullOrEmpty(contactFormModel.CaptchaToken))
+                {
+                    <div class="error-message">
+                        A verificação de segurança é obrigatória.
+                    </div>
+                }
+            </div>
+
+            <div>
+                @if (isSubmitting)
+                {
+                    <ContentLoader DisplayMessage="Enviando mensagem..." />
+                } 
+                else
+                {
+                    <button type="submit"
+                            disabled="@(
+                            isSubmitting ||
+                            string.IsNullOrEmpty(contactFormModel.GivenName) ||
+                            string.IsNullOrEmpty(contactFormModel.FamilyName) ||
+                            !IsEmailValid() ||
+                            !IsPhoneValid() ||
+                            string.IsNullOrEmpty(contactFormModel.Message) ||
+                            string.IsNullOrEmpty(contactFormModel.CaptchaToken)
+                            )">
+                    Enviar mensagem
+                </button>
+                }
+            </div>
+
+            <input type="text"
+                    name="website"
+                    tabindex="-1"
+                    autocomplete="off"
+                    style="position:absolute; left:-9999px; opacity:0;"
+                    @bind="contactFormModel.Website" />
+        </EditForm>
+    }
+</CenterContent>
+
+@code {
+    private ContactFormModel contactFormModel = new();
+    private string turnstileSiteKey = string.Empty;
+
+    private string? errorMessage;
+    private bool isSubmitting { get; set; } = false;
+    private bool messageSentSuccessfully = false;
+
+    private bool hasPhoneBlurred = false;
+    private bool hasEmailBlurred = false;
+
+    private ElementReference phoneInput;
+    private DotNetObjectReference<Contact>? dotNetRef;
+
+    private ApiStateHandler<object> submitContactApiHandler = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        submitContactApiHandler = new ApiStateHandler<object>(ContactService.SubmitContactFunc(contactFormModel));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            dotNetRef = DotNetObjectReference.Create(this);
+
+            await JS.InvokeVoidAsync("phoneMask.attach", phoneInput, dotNetRef);
+
+            turnstileSiteKey = await JS.InvokeAsync<string>("appConfigHelper.getTurnstileSiteKey");
+
+            await JS.InvokeVoidAsync(
+                "turnstileHelper.render",
+                "turnstile-container",
+                turnstileSiteKey,
+                dotNetRef
+            );
+        }
+    }
+
+    [JSInvokable]
+    public void UpdatePhone(string formattedValue)
+    {
+        contactFormModel.Tel = formattedValue;
+        StateHasChanged();
+    }
+
+    private bool IsPhoneValid()
+    {
+        if ( string.IsNullOrWhiteSpace(contactFormModel.Tel) )
+        {
+            return false;
+        }
+
+        return System.Text.RegularExpressions.Regex.IsMatch(contactFormModel.Tel, @"^\(\d{2}\)\s(\d-\d{4}-\d{4}|\d{4}-\d{4})$");
+    }
+
+    private bool IsEmailValid()
+    {
+        if (string.IsNullOrWhiteSpace(contactFormModel.Email))
+        {
+            return false;
+        }
+
+        return System.Text.RegularExpressions.Regex.IsMatch(
+            contactFormModel.Email,
+            @"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        );
+    }
+
+    private void HandleEmailBlur()
+    {
+        hasEmailBlurred = true;
+    }
+
+    private void HandlePhoneBlur()
+    {
+        hasPhoneBlurred = true;
+    }
+
+    [JSInvokable]
+    public void OnTurnstileSuccess(string token)
+    {
+        contactFormModel.CaptchaToken = token;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnTurnstileExpired()
+    {
+        contactFormModel.CaptchaToken = string.Empty;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnTurnstileError()
+    {
+        contactFormModel.CaptchaToken = string.Empty;
+        errorMessage = "Falha na verificação de segurança.";
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        dotNetRef?.Dispose();
+        await ValueTask.CompletedTask;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        hasEmailBlurred = true;
+        hasPhoneBlurred = true;
+
+        if (!IsEmailValid())
+        {
+            errorMessage = "Informe um email válido.";
+            StateHasChanged();
+            return;
+        }
+
+        if (!IsPhoneValid())
+        {
+            errorMessage = "Use (xx) xxxx-xxxx ou (xx) x-xxxx-xxxx no telefone.";
+            StateHasChanged();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(contactFormModel.CaptchaToken))
+        {
+            errorMessage = "Confirme a verificação de segurança.";
+            return;
+        }
+
+        isSubmitting = true;
+        errorMessage = null;
+        StateHasChanged();
+
+        await submitContactApiHandler.ExecuteAsync(
+            ContactService.SubmitContactFunc(contactFormModel)
+        );
+
+        if (!submitContactApiHandler.IsSuccess())
+        {
+            contactFormModel.CaptchaToken = string.Empty;
+
+            NotificationService.Display( submitContactApiHandler.GetErrorNotificationModel("Não foi possível enviar a mensagem.") );
+
+            errorMessage = submitContactApiHandler.ServerErrorMessage
+                ?? submitContactApiHandler.ServerMessage
+                ?? "Não foi possível enviar a mensagem.";
+        } else
+        {
+            NotificationService.DisplaySuccess("Mensagem enviada com sucesso.");
+
+            messageSentSuccessfully = true;
+        }
+
+
+        isSubmitting = false;
+        await JS.InvokeVoidAsync("turnstileHelper.reset");
+
+        StateHasChanged();
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        errorMessage = "Por favor corrija os erros abaixo.";
+    }
+
+    private async Task ResetForm()
+    {
+        contactFormModel = new ContactFormModel();
+        hasPhoneBlurred = false;
+        hasEmailBlurred = false;
+        errorMessage = null;
+        messageSentSuccessfully = false;
+
+        StateHasChanged();
+        await Task.Yield();
+
+        await JS.InvokeVoidAsync(
+            "turnstileHelper.render",
+            "turnstile-container",
+            turnstileSiteKey,
+            dotNetRef
+        );
+    }
+}

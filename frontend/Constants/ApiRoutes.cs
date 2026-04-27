@@ -13,6 +13,11 @@
                 public static string GetById(int id) => $"{API}/public/banners/{id}";
             }
 
+            public static class Contact
+            {
+                public const string Submit = "/api/public/contact";
+            }
+
             public static class Products
             {
                 public const string GetAll = $"{API}/public/products";
