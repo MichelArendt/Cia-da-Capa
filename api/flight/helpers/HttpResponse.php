@@ -3,6 +3,7 @@
 namespace Helpers;
 
 use Flight;
+use Helpers\Logger;
 
 class HttpResponse
 {
@@ -121,7 +122,7 @@ class HttpResponse
         $formattedError = "Error in {$methodName}: " . $error;
 
         // Log the error
-        error_log($formattedError);
+        Logger::error($formattedError);
 
         HttpResponse::haltResponse(
             $code,

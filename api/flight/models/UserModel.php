@@ -6,6 +6,7 @@ use PDO;
 use Flight;
 use Exception;
 use Helpers\HttpResponse;
+use Helpers\Logger;
 
 class UserModel
 {
@@ -62,7 +63,7 @@ class UserModel
                 ]);
 
                 // Optional: Log info if needed
-                error_log("Admin user created by createAdminUserIfNotExists()");
+                Logger::info("Admin user created by createAdminUserIfNotExists()");
             }
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "UserModel->createAdminUserIfNotExists()");
@@ -113,10 +114,10 @@ class UserModel
                 $stmt = $this->db->prepare("UPDATE `{$this->table}` SET token = NULL, expires_at = NULL WHERE id = ?");
                 $stmt->execute([$user['id']]);
                 // Optional: log a message
-                error_log("UserModel->logout: User with id={$user['id']} logged out successfully.");
+                Logger::info("UserModel->logout: User with id={$user['id']} logged out successfully.");
             } else {
                 // Possibly log a notice if the token didn't match
-                error_log("UserModel->logout: No user found with token={$token}.");
+                Logger::info("UserModel->logout: No user found with token={$token}.");
             }
         } catch (Exception $e) {
             HttpResponse::handleException($e, __METHOD__, "UserModel->logout()");

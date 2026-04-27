@@ -3,10 +3,14 @@
 require 'flight/Flight.php';
 require 'flight/helpers/FileHelper.php';
 require 'flight/helpers/HttpResponse.php';
+require 'flight/helpers/Logger.php';
+require 'flight/helpers/MailHelper.php';
+require 'flight/helpers/TurnstileHelper.php';
 require 'flight/helpers/ValidationHelper.php';
 require_once __DIR__ . '/flight/config/env.php';
 
 use Helpers\HttpResponse;
+use Helpers\Logger;
 
 // Detect local environment based on hostname
 $isLocal = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']);
@@ -109,7 +113,7 @@ try {
     Flight::set('userModel', $userModel);
 
 
-    error_log("Database connection established successfully.");
+    Logger::info("Database connection established successfully.");
 } catch (Exception $e) {
     HttpResponse::handleException($e, 'index.php');
 }
@@ -138,6 +142,7 @@ Flight::before('start', function () {
 // CONTROLLERS - public
 // --------------------------------
 require 'flight/controllers/public/BannerController.php';
+require 'flight/controllers/public/ContactController.php';
 require 'flight/controllers/public/ProductController.php';
 require 'flight/controllers/public/ProductCategoryController.php';
 require 'flight/controllers/public/ProductSizeController.php';
@@ -166,6 +171,9 @@ require 'flight/controllers/manage/UserController.php';
 // Banners
 Flight::route('GET /public/banners/@id', 'Controllers\Public\BannerController->getById');
 Flight::route('GET /public/banners', 'Controllers\Public\BannerController->getAll');
+
+// Contact
+Flight::route('POST /public/contact', 'Controllers\Public\ContactController->submit');
 
 // User
 Flight::route('POST /public/user/login', 'Controllers\Public\UserController->login');

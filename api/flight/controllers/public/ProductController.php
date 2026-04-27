@@ -5,6 +5,7 @@ namespace Controllers\Public;
 use Flight;
 use Exception;
 use Helpers\HttpResponse;
+use Helpers\Logger;
 
 class ProductController
 {
@@ -30,7 +31,7 @@ class ProductController
                 'per_category_limit'    => $perCategoryLimit,
             ];
 
-            error_log(print_r($filters, true));
+            // Logger::info(print_r($filters, true));
 
             // --- 3. Call the model method, passing filters ---
             $products = $productModel->getAllFiltered($filters);

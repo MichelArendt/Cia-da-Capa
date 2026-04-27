@@ -5,6 +5,7 @@ namespace Controllers\Manage;
 use Flight;
 use Exception;
 use Helpers\HttpResponse;
+use Helpers\Logger;
 
 class ProductSizeController
 {
@@ -63,7 +64,7 @@ class ProductSizeController
 
     public function update($id)
     {
-        error_log("Updating product size with ID: $id");
+        Logger::error("Updating product size with ID: $id");
         try {
             $id = (int) $id;
 

@@ -90,7 +90,6 @@ class ProductSizeModel
 
     public function update($id, $sizeLabelId, $width, $height, $depth)
     {
-        error_log("2 Updating product size with ID: $id, $sizeLabelId, $width, $height, $depth");
         try {
             $stmt = $this->db->prepare("
                 UPDATE `{$this->table}`
