@@ -1,16 +1,23 @@
 ﻿@page "/contato/"
+@page "/orcamento/"
 
 @using Microsoft.JSInterop
 @using frontend.Models.Forms
+@using frontend.Models.ShoppingCart
 
 @implements IAsyncDisposable
 
 @inject IJSRuntime JS
 
 @inject ContactService ContactService
+@inject NavigationManager Navigation
 @inject NotificationService NotificationService
+@inject ProductStateService ProductStateService
+@inject ShoppingCartService ShoppingCartService
 
-<PageTitle>Contato | Cia da Capa</PageTitle>
+<PageTitle>
+    @(IsContactPage ? "Contato | Cia da Capa" : "Orçamento | Cia da Capa")
+</PageTitle>
 
 <CenterContent MinWidth="400px">
     @if (messageSentSuccessfully)
@@ -116,6 +123,33 @@
                 </div>
             </div>
 
+            @if (!IsContactPage)
+            {
+                <div class="form-group">
+                    <h1>
+                        Produtos para cotação:
+                    </h1>
+
+                    @foreach (CartItem item in ShoppingCartService.Products)
+                    {
+                        <div class="quote-product-item">
+                            <span>[@ProductStateService.GetProductFullReference(item.Product)]</span>
+                            <span>@item.Product.Title</span>
+                            <span>Quantidade: @item.Quantity</span>
+                            @if (item.Size?.SizeLabelId is int sizeLabelId &&
+                                ProductStateService.SizeLabelsDict.TryGetValue(sizeLabelId, out var sizeLabel))
+                            {
+                                <span>Tamanho: @sizeLabel.Label</span>
+                            }
+                            @if (item.Variant != null)
+                            {
+                                <span> Variante: @item.Variant.Title</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
             <div class="form-group">
                 <label for="message">
                     Mensagem:
@@ -178,6 +212,12 @@
 
 @code {
     private ContactFormModel contactFormModel = new();
+
+    private bool IsContactPage =>
+        Navigation.ToBaseRelativePath(Navigation.Uri)
+            .TrimEnd('/')
+            .Equals("contato", StringComparison.OrdinalIgnoreCase);
+
     private string turnstileSiteKey = string.Empty;
 
     private string? errorMessage;
@@ -315,8 +355,29 @@
         errorMessage = null;
         StateHasChanged();
 
+        var messageToSend = contactFormModel.Message;
+
+        if (!IsContactPage && ShoppingCartService.Products.Any())
+        {
+            var cartText = BuildCartText();
+
+            messageToSend =
+                $"--- PRODUTOS PARA COTAÇÃO ---\n{cartText}\n\n--- MENSAGEM ---\n{contactFormModel.Message}";
+        }
+
+        var submitModel = new ContactFormModel
+        {
+            GivenName = contactFormModel.GivenName,
+            FamilyName = contactFormModel.FamilyName,
+            Email = contactFormModel.Email,
+            Tel = contactFormModel.Tel,
+            Message = messageToSend,
+            CaptchaToken = contactFormModel.CaptchaToken,
+            Website = contactFormModel.Website
+        };
+
         await submitContactApiHandler.ExecuteAsync(
-            ContactService.SubmitContactFunc(contactFormModel)
+            ContactService.SubmitContactFunc(submitModel)
         );
 
         if (!submitContactApiHandler.IsSuccess())
@@ -340,6 +401,32 @@
         await JS.InvokeVoidAsync("turnstileHelper.reset");
 
         StateHasChanged();
+    }
+
+    private string BuildCartText()
+    {
+        return string.Join("\n", ShoppingCartService.Products.Select(item =>
+        {
+            var parts = new List<string>
+            {
+            $"{ProductStateService.GetProductFullReference(item.Product)}",
+            item.Product.Title,
+            $"Qtd: {item.Quantity}"
+            };
+
+            if (item.Size?.SizeLabelId is int sizeLabelId &&
+                ProductStateService.SizeLabelsDict.TryGetValue(sizeLabelId, out var sizeLabel))
+            {
+                parts.Add($"Tamanho: {sizeLabel.Label}");
+            }
+
+            if (item.Variant != null)
+            {
+                parts.Add($"Variante: {item.Variant.Title}");
+            }
+
+            return string.Join(" | ", parts);
+        }));
     }
 
     private void HandleInvalidSubmit()

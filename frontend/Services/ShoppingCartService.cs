@@ -14,23 +14,20 @@ namespace frontend.Services
             if (productDto.Id <= 0) return false;
 
             // Prevent duplicates with same configuration
-            if (Products.Any(item =>
-                item.Product.Id == productDto.Id &&
-                (item.Size?.Id ?? 0) == (selectedSize?.Id ?? 0) &&
-                (item.Variant?.Id ?? 0) == (selectedVariant?.Id ?? 0)))
+            if (!HasProductInCartWithSameConfiguration(productDto, selectedSize, selectedVariant))
             {
-                return false;
+                Products.Add(new CartItem
+                {
+                    Product = productDto,
+                    Size = selectedSize,
+                    Variant = selectedVariant,
+                });
+
+                CartChanged?.Invoke();
+                return true;
             }
 
-            Products.Add(new CartItem
-            {
-                Product = productDto,
-                Size = selectedSize,
-                Variant = selectedVariant,
-            });
-
-            CartChanged?.Invoke();
-            return true;
+            return false;
         }
 
         public void RemoveProductFromCart(ProductDto productDto, ProductSizeDto? selectedSize = null, ProductVariantDto? selectedVariant = null)
