@@ -77,7 +77,6 @@ class ProductModel
         }
     }
 
-
     public function getAllFiltered(array $filters = []): array
     {
         try {
@@ -86,20 +85,43 @@ class ProductModel
 
             // Filter by category_id
             if (!empty($filters['category_id'])) {
-                $where[] = "category_id = :category_id";
+                $where[] = "p.category_id = :category_id";
                 $params[':category_id'] = $filters['category_id'];
             }
 
             // Exclude a specific product ID
             if (!empty($filters['exclude_id'])) {
-                $where[] = "id != :exclude_id";
+                $where[] = "p.id != :exclude_id";
                 $params[':exclude_id'] = $filters['exclude_id'];
             }
 
             // Only highlighted products (if set)
             if (isset($filters['highlighted']) && $filters['highlighted'] !== null && $filters['highlighted'] !== '') {
-                $where[] = "is_highlighted = :highlighted";
+                $where[] = "p.is_highlighted = :highlighted";
                 $params[':highlighted'] = (int)$filters['highlighted'];
+            }
+
+            // Search by:
+            // - product description
+            // - variant description
+            // - full product reference, example: BO-001
+            if (!empty($filters['search'])) {
+                $where[] = "(
+                p.description LIKE :search
+                OR CONCAT(pc.reference, '-', p.reference) LIKE :search
+                OR CONCAT(pc.reference, p.reference) LIKE :search_no_dash
+                OR EXISTS (
+                    SELECT 1
+                    FROM `{$this->table_product_variants}` pv_search
+                    WHERE pv_search.product_id = p.id
+                    AND pv_search.description LIKE :search
+                )
+            )";
+
+                $cleanSearch = trim($filters['search']);
+
+                $params[':search'] = '%' . $cleanSearch . '%';
+                $params[':search_no_dash'] = '%' . str_replace('-', '', $cleanSearch) . '%';
             }
 
             // Build the WHERE clause
@@ -108,25 +130,27 @@ class ProductModel
             // If per-category limit is provided, return up to N products per category.
             if (!empty($filters['per_category_limit'])) {
                 $sql = "
-                SELECT *
-                FROM (
-                    SELECT
-                        p.*,
-                        ROW_NUMBER() OVER (
-                            PARTITION BY p.category_id
-                            ORDER BY p.priority ASC, p.id ASC
-                        ) AS row_num
-                    FROM `{$this->table}` p
-                    $whereClause
-                ) ranked_products
-                WHERE row_num <= :per_category_limit
-                ORDER BY category_id ASC, priority ASC, id ASC
-            ";
+                    SELECT *
+                    FROM (
+                        SELECT
+                            p.*,
+                            ROW_NUMBER() OVER (
+                                PARTITION BY p.category_id
+                                ORDER BY p.priority ASC, p.id ASC
+                            ) AS row_num
+                        FROM `{$this->table}` p
+                        INNER JOIN `{$this->table_product_categories}` pc
+                            ON pc.id = p.category_id
+                        $whereClause
+                    ) ranked_products
+                    WHERE row_num <= :per_category_limit
+                    ORDER BY category_id ASC, priority ASC, id ASC
+                ";
 
                 $stmt = $this->db->prepare($sql);
 
                 foreach ($params as $k => $v) {
-                    $stmt->bindValue($k, $v, \PDO::PARAM_INT);
+                $stmt->bindValue($k, $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
                 }
 
                 $stmt->bindValue(':per_category_limit', (int)$filters['per_category_limit'], \PDO::PARAM_INT);
@@ -135,8 +159,14 @@ class ProductModel
                 return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             }
 
-            // Default query path: normal filtering, optional total LIMIT
-            $sql = "SELECT * FROM `{$this->table}` $whereClause ORDER BY priority ASC";
+            $sql = "
+                SELECT p.*
+                FROM `{$this->table}` p
+                INNER JOIN `{$this->table_product_categories}` pc
+                    ON pc.id = p.category_id
+                $whereClause
+                ORDER BY p.priority ASC
+            ";
 
             // Add LIMIT if provided
             if (!empty($filters['limit'])) {
@@ -147,7 +177,7 @@ class ProductModel
 
             // Bind existing params
             foreach ($params as $k => $v) {
-                $stmt->bindValue($k, $v, \PDO::PARAM_INT);
+            $stmt->bindValue($k, $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
 
             // Bind limit safely (IMPORTANT: must be int)
@@ -163,7 +193,6 @@ class ProductModel
             return [];
         }
     }
-
 
     // Fetch all highlighted products
     public function getAllHighlighted(): array

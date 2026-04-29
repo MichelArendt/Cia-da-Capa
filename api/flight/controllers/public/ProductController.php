@@ -21,6 +21,7 @@ class ProductController
             $withImages         = isset($_GET['with_images'])           ? (bool)$_GET['with_images']        : true;
             $limit              = isset($_GET['limit'])                 ? (int)$_GET['limit']               : null;
             $perCategoryLimit   = isset($_GET['per_category_limit'])    ? (int)$_GET['per_category_limit']  : null;
+            $search             = isset($_GET['search'])                ? trim($_GET['search'])             : null;
 
             // --- 2. Build a filter array ---
             $filters = [
@@ -29,6 +30,7 @@ class ProductController
                 'highlighted'           => $highlighted,
                 'limit'                 => $limit,
                 'per_category_limit'    => $perCategoryLimit,
+                'search'                => $search,
             ];
 
             // Logger::info(print_r($filters, true));
