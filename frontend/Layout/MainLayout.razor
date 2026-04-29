@@ -82,7 +82,7 @@
 
 	<NavPermanentButtons>
 		<Dropdown 
-			ClassName=""
+			ClassName="nav__search"
 			HeaderClassName="nav__button"
 			HideArrow="true"
 			Title="Pesquisa"
@@ -96,7 +96,53 @@
 			</BodyMobileContentTitle>
 
 			<BodyContent>
-				<input type='text' />
+				<input type="text"
+					   value="@SearchTerm"
+					   @oninput="e => OnSearchChanged(e.Value?.ToString())"
+					   @onkeydown="OnSearchKeyDown"
+					   placeholder="Buscar produto..."
+					   class="nav-search__input" />
+
+				@* @if (!string.IsNullOrWhiteSpace(SearchTerm))
+				{
+					<button type="button"
+							class="nav-search__clear"
+							@onclick="ClearSearch">
+						×
+					</button>
+				} *@
+
+				@if (!string.IsNullOrWhiteSpace(SearchTerm))
+				{
+                    // Show suggestions only if there's a search term with at least 2 characters
+					if (SearchSuggestions.Any())
+					{
+                        // Show product suggestions based on the search term
+						<ul class="nav-search__results">
+							@foreach (var product in SearchSuggestions)
+							{
+								<li>
+									<a class="light nav-search__result"
+									   href="@($"produto/{product.Id}")">
+										<strong>@product.FullReference</strong>
+										<span>@product.Title</span>
+									</a>
+								</li>
+							}
+
+							<li>
+								<button type="button"
+										class="button--light nav-search__view-all"
+										@onclick="GoToSearchPage">
+									Ver todos os resultados
+								</button>
+							</li>
+						</ul>
+					} else
+					{
+						<li>Nenhum resultado encontrado</li>
+					}
+				}
 			</BodyContent>
 		</Dropdown>
 
@@ -211,7 +257,21 @@
 	[Inject]
 	private NavigationManager Navigation { get; set; } = default!;
 
-	protected override void OnInitialized() {
+	private string? SearchTerm;
+
+	private IEnumerable<ProductLookupViewModel> SearchSuggestions =>
+		string.IsNullOrWhiteSpace(SearchTerm) || SearchTerm.Trim().Length == 0
+			? Enumerable.Empty<ProductLookupViewModel>()
+			: ProductStateService.ProductsListOrderedByReference
+				.Where(p => p.SearchString.Contains(
+					SearchTerm.Trim().ToLowerInvariant()
+				))
+				.Take(5);
+
+	private CancellationTokenSource? _cts;
+
+	protected override void OnInitialized()
+	{
 		// Subscribe to IsMobileChanged
 		@* AppState.IsMobileChanged += HandleIsMobileChanged; *@
 	}
@@ -219,6 +279,37 @@
 	private void HandleIsMobileChanged()
 	{
 		@* InvokeAsync(StateHasChanged); // Trigger re-render *@
+	}
+
+	private void OnSearchChanged(string? value)
+	{
+		SearchTerm = value;
+	}
+
+	private void GoToSearchPage()
+	{
+		if (string.IsNullOrWhiteSpace(SearchTerm))
+			return;
+
+		Navigation.NavigateTo($"produtos?busca={Uri.EscapeDataString(SearchTerm.Trim())}");
+	}
+
+	@* private void GoToProduct(ProductLookupViewModel product)
+	{
+		Navigation.NavigateTo($"produto/{product.Id}");
+	} *@
+
+	private void ClearSearch()
+	{
+		SearchTerm = null;
+	}
+
+	private void OnSearchKeyDown(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter")
+		{
+			GoToSearchPage();
+		}
 	}
 
 	public void Dispose()

@@ -9,7 +9,7 @@
   max-width: 600px;
 }
 
-.website__header-wrapper, .notifications, form > div, .slider__content, .slider__content-wrapper, .list__content--vertical, .carousel, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .website__nav, .header__logo, .nav__button, .carousel-pagination__content, .website__main, .website__header {
+.website__header-wrapper, .notifications, form > div, .dropdown__content, .slider__content, .slider__content-wrapper, .list__content--vertical, .carousel, .form-group, .product-listing__item, .form__buttons, .checkbox-container, .product-listing, .product-listing__image-container, .product-listing__shopping-button, .checkmark, .overlay__button--close, .carousel-item, .carousel-pagination__arrow, .carousel-pagination__item, .notification, .website__nav, .header__logo, .nav__button, .carousel-pagination__content, .website__main, .website__header {
   display: flex;
 }
 
@@ -30,7 +30,7 @@
   align-items: center;
 }
 
-.notifications, form > div, .slider__content, .slider__content-wrapper, .list__content--vertical, .carousel, .form-group, .product-listing__item {
+.notifications, form > div, .dropdown__content, .slider__content, .slider__content-wrapper, .list__content--vertical, .carousel, .form-group, .product-listing__item {
   flex-direction: column;
 }
 
@@ -49,9 +49,15 @@
 }
 
 html,
-body, form input, form textarea, form select {
+body, form input, form textarea, form select, .nav-search__input {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
+  font-style: normal;
+}
+
+.button--light {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -282,6 +288,43 @@ button {
     padding: 10px 15px;
   }
 }
+.nav-search__input {
+  padding: 10px;
+  margin: 10px;
+  width: 230px;
+  font-size: 16px;
+}
+
+.nav-search__results li {
+  width: 250px;
+}
+.nav-search__results > :last-child {
+  padding: 10px;
+}
+
+.nav-search__result {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.nav-search__result strong {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.nav-search__result span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .select {
   display: inline-block;
   position: relative;
@@ -1642,6 +1685,24 @@ button:hover svg {
 button:disabled {
   background: hsl(0, 0%, 73%);
   color: hsl(240, 2%, 18%);
+  cursor: not-allowed;
+}
+
+.button--light {
+  background: hsl(37, 59%, 54%);
+  color: hsl(240, 2%, 18%);
+}
+
+.button--light:hover {
+  background: hsl(20, 80%, 48%);
+}
+.button--light:hover svg {
+  fill: hsl(37, 59%, 54%);
+}
+
+.button--light:disabled {
+  background: hsl(240, 3%, 28%);
+  color: hsl(0, 0%, 73%);
   cursor: not-allowed;
 }
 

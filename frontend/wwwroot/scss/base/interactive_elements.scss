@@ -131,7 +131,7 @@ button {
 // -----------------------
 // Dropdown
 // -----------------------
-.website__nav > * {
+.website__nav>* {
     height: 100%;
 }
 
@@ -222,6 +222,8 @@ button {
     // display: flex;
     // align-items: center;
     // justify-content: center;
+
+    @extend %flex--column;
     opacity: 0;
     visibility: hidden;
     // z-index: 99;
@@ -289,6 +291,58 @@ button {
         list-style-type: none;
         padding: 10px 15px;
     }
+}
+
+// -----------------------
+// Search
+// -----------------------
+
+.nav__search {}
+
+.nav-search__input {
+    padding: 10px;
+    margin: 10px;
+    width: 230px;
+
+    font-size: 16px;
+    @extend %roboto-regular;
+}
+
+.nav-search__results {
+    li {
+        width: 250px;
+        // padding: 0 5px;
+    }
+
+    >:last-child {
+        padding: 10px;
+    }
+}
+
+.nav-search__result {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+
+    overflow: hidden;
+}
+
+.nav-search__result strong {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.nav-search__result span {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 // -----------------------

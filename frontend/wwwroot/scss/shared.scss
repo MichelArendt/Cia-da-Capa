@@ -147,6 +147,29 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.button--light {
+    background: colors.$primary-main;
+    color: colors.$primary-dark;
+
+    @extend %roboto-bold;
+}
+
+.button--light:hover {
+    background: colors.$secondary-main;
+    // color: colors.$primary-main;
+
+    svg {
+        fill: colors.$primary-main;
+    }
+}
+
+.button--light:disabled {
+    background: colors.$secondary-dark;
+    color: colors.$secondary-light;
+    cursor: not-allowed;
+}
+
+
 // ---------------------------
 // CONTENT ALIGNMENT
 // ---------------------------
