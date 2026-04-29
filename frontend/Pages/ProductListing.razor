@@ -9,8 +9,11 @@
 @using frontend.Components.Shared.UI.Carousel
 @using frontend.Utils
 @using frontend.ViewModels.TabbedNavigation
-
-<PageTitle>Produtos | Cia da Capa</PageTitle>
+<PageTitle>
+    @(string.IsNullOrWhiteSpace(Search)
+        ? "Produtos | Cia da Capa"
+        : $"Busca: {Search} | Cia da Capa")
+</PageTitle>
 
 @if (fetchProductListApiHandler.IsExecuting() || fetchHighlightedProductsApiHandler.IsExecuting())
 {
@@ -20,8 +23,18 @@
     fetchHighlightedProductsApiHandler.IsSuccessAndContentNotNull()
 )
 {
-    if (Id.HasValue && ProductStateService.CategoriesDict.ContainsKey(Id.Value))
+    if (!string.IsNullOrWhiteSpace(Search))
     {
+        // Show search results
+        <ProductSuggestions Products="fetchProductListApiHandler.Content">
+            <Title>
+                RESULTADOS PARA <strong>@Search</strong>
+            </Title>
+        </ProductSuggestions>
+    }
+    else if(Id.HasValue && ProductStateService.CategoriesDict.ContainsKey(Id.Value))
+    {
+        // Show products related to the category ID provided in the URL
         <ProductSuggestions Products="fetchProductListApiHandler.Content">
             <Title>
                 CONFIRA OPÇÕES DE <strong>@ProductStateService.CategoriesDict[Id.Value].Title</strong>  @Id
@@ -55,6 +68,13 @@
 
 @code {
     [Parameter] public int? Id { get; set; }
+
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    [SupplyParameterFromQuery(Name = "busca")]
+    public string? Search { get; set; }
+
+    private string? _lastSearch;
 
     private ApiStateHandler<List<ProductDto>> fetchProductListApiHandler = new();
     private ApiStateHandler<List<ProductDto>> fetchHighlightedProductsApiHandler = new();
@@ -92,13 +112,12 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        // Only refetch products if the ID parameter has changed
-
         // Prevent unnecessary refetch
-        if (_hasLoadedProducts && _lastId == Id)
+        if (_hasLoadedProducts && _lastId == Id && _lastSearch == Search)
             return;
 
         _lastId = Id;
+        _lastSearch = Search;
         _hasLoadedProducts = true;
 
         await LoadProductsAsync();
@@ -106,7 +125,15 @@
 
     private async Task LoadProductsAsync()
     {
-        if (Id.HasValue)
+        if (!string.IsNullOrWhiteSpace(Search))
+        {
+            suggestionFilters = new Dictionary<string, object?>
+            {
+                ["search"] = Search.Trim(),
+                ["with_images"] = true
+            };
+        }
+        else if (Id.HasValue)
         {
             // An ID was set, so get products related to that category
             suggestionFilters = new Dictionary<string, object?>
